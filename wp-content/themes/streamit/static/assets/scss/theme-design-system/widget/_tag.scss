@@ -1,0 +1,30 @@
+.tag-card {
+    // background: linear-gradient(180deg,var(--bs-dark),rgba(var(--bs-dark-rgb),0) 97%),var(--bs-gray-900);
+    background: var(--bs-gray-900);
+    border: .063em solid var(--bs-border-color);
+    text-align: center;
+    aspect-ratio: 8/2;
+    padding: .9375em;
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;  
+    border-radius: var(--bs-border-radius);  
+    transition: all .6s ease 0s;
+    .tag-title {
+        color: var(--bs-heading-color);
+        line-height: 1.75em;
+        letter-spacing: 1px;
+        font-weight: var(--bs-font-weight-medium);
+        word-break: break-word;
+        text-transform: capitalize;
+        transition: all .6s ease 0s;
+    }
+    &:hover {
+        .tag-title {
+            color: var(--bs-primary);
+        }
+    }
+}

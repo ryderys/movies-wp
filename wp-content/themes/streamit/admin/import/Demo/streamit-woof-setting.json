@@ -1,0 +1,262 @@
+{
+    "woof_autosubmit": "1",
+    "woof_checkboxes_slide": "1",
+    "woof_filter_btn_txt": "",
+    "woof_first_init": "1",
+    "woof_hide_dynamic_empty_pos": "0",
+    "woof_hide_red_top_panel": "0",
+    "woof_later_rate_alert": "1739773892",
+    "woof_reset_btn_txt": "",
+    "woof_set_automatically": "0",
+    "woof_settings": {
+        "items_order": "by_text,by_price,product_cat,product_tag,pa_size,by_author,by_onsales,by_instock,by_rating,product_visibility,pa_color",
+        "by_text": {
+            "show": "1",
+            "max_open_height": "300",
+            "taxonomy_compatibility": "0",
+            "autocomplete": "1",
+            "custom_fields": "",
+            "use_cache": "0",
+            "view_text_length": "10",
+            "max_posts": "10",
+            "min_symbols": "3",
+            "title": "",
+            "placeholder": "Search Product",
+            "behavior": "title_or_content_or_excerpt",
+            "search_by_full_word": "0",
+            "search_desc_variant": "0",
+            "how_to_open_links": "0",
+            "image": "",
+            "sku_compatibility": "1",
+            "notes_for_customer": "",
+            "template": ""
+        },
+        "by_price": {
+            "show": "1",
+            "tooltip_text": "",
+            "show_button": "0",
+            "title_text": "Product Filter",
+            "show_toggle_button": "0",
+            "ranges": "",
+            "first_option_text": "",
+            "ion_slider_step": "0",
+            "price_tax": "0",
+            "show_text_input": "0",
+            "price_slider_skin": "0"
+        },
+        "tax_type": {
+            "product_cat": "checkbox",
+            "product_tag": "checkbox",
+            "pa_size": "label",
+            "product_visibility": "radio",
+            "pa_color": "radio"
+        },
+        "excluded_terms": {
+            "product_cat": "",
+            "product_tag": "",
+            "pa_size": "",
+            "product_visibility": "",
+            "pa_color": ""
+        },
+        "tax_block_height": {
+            "product_cat": "0",
+            "product_tag": "0",
+            "pa_size": "0",
+            "product_visibility": "0",
+            "pa_color": "0"
+        },
+        "show_title_label": {
+            "product_cat": "1",
+            "product_tag": "1",
+            "pa_size": "1",
+            "product_visibility": "0",
+            "pa_color": "1"
+        },
+        "show_toggle_button": {
+            "product_cat": "0",
+            "product_tag": "0",
+            "pa_size": "0",
+            "product_visibility": "0",
+            "pa_color": "0"
+        },
+        "tooltip_text": {
+            "product_cat": "",
+            "product_tag": "",
+            "pa_size": "",
+            "product_visibility": "",
+            "pa_color": ""
+        },
+        "dispay_in_row": {
+            "product_cat": "0",
+            "product_tag": "0",
+            "pa_size": "0",
+            "product_visibility": "0",
+            "pa_color": "0"
+        },
+        "orderby": {
+            "product_cat": "-1",
+            "product_tag": "-1",
+            "pa_size": "-1",
+            "product_visibility": "-1",
+            "pa_color": "-1"
+        },
+        "order": {
+            "product_cat": "ASC",
+            "product_tag": "ASC",
+            "pa_size": "ASC",
+            "product_visibility": "ASC",
+            "pa_color": "ASC"
+        },
+        "comparison_logic": {
+            "product_cat": "OR",
+            "product_tag": "OR",
+            "pa_size": "OR",
+            "product_visibility": "OR",
+            "pa_color": "OR"
+        },
+        "custom_tax_label": {
+            "product_cat": "",
+            "product_tag": "",
+            "pa_size": "",
+            "product_visibility": "",
+            "pa_color": ""
+        },
+        "not_toggled_terms_count": {
+            "product_cat": "0",
+            "product_tag": "0",
+            "pa_size": "0",
+            "product_visibility": "0",
+            "pa_color": "0"
+        },
+        "select_radio_check_type": {
+            "product_cat": "0",
+            "product_tag": "0",
+            "pa_size": "0",
+            "product_visibility": "0",
+            "pa_color": "0"
+        },
+        "select_radio_check_height": {
+            "product_cat": "0",
+            "product_tag": "0",
+            "pa_size": "0",
+            "product_visibility": "0",
+            "pa_color": "0"
+        },
+        "tax": {
+            "product_cat": "1",
+            "product_tag": "1",
+            "pa_size": "1"
+        },
+        "by_author": {
+            "show": "0",
+            "placeholder": "",
+            "role": "0",
+            "view": "drop-down"
+        },
+        "by_onsales": {
+            "show": "0",
+            "view": "checkbox"
+        },
+        "by_instock": {
+            "show": "0",
+            "use_for": "both",
+            "new_db": "1",
+            "view": "checkbox"
+        },
+        "by_rating": {
+            "show": "0",
+            "use_star": "0"
+        },
+        "icheck_skin": "square_blue",
+        "overlay_skin": "default",
+        "overlay_skin_bg_img": "",
+        "plainoverlay_color": "",
+        "filter_blur": "0",
+        "default_overlay_skin_word": "",
+        "select_design": "chosen",
+        "use_beauty_scroll": "1",
+        "ion_slider_skin": "round",
+        "use_tooltip": "1",
+        "woof_tooltip_img": "",
+        "woof_auto_hide_button_img": "",
+        "woof_auto_hide_button_txt": "",
+        "woof_auto_subcats_plus_img": "",
+        "woof_auto_subcats_minus_img": "",
+        "image_mobile_behavior_open": "",
+        "text_mobile_behavior_open": "Open filter",
+        "image_mobile_behavior_close": "",
+        "text_mobile_behavior_close": "Close filter",
+        "toggle_type": "text",
+        "toggle_opened_text": "",
+        "toggle_closed_text": "",
+        "toggle_opened_image": "",
+        "toggle_closed_image": "",
+        "more_less_type": "text",
+        "more_less_opened_text": "Show more",
+        "more_less_closed_text": "Show less",
+        "more_less_opened_image": "",
+        "more_less_closed_image": "",
+        "custom_front_css": "",
+        "custom_css_code": "",
+        "js_after_ajax_done": "",
+        "init_only_on_reverse": "0",
+        "init_only_on": "",
+        "per_page": "-1",
+        "optimize_js_files": "0",
+        "show_images_by_attr_show": "0",
+        "listen_catalog_visibility": "1",
+        "disable_swoof_influence": "0",
+        "check_really_tax": "0",
+        "cache_count_data": "0",
+        "cache_terms": "0",
+        "price_transient": "0",
+        "show_woof_edit_view": "0",
+        "custom_extensions_path": "",
+        "result_count_redraw": "",
+        "order_dropdown_redraw": "",
+        "per_page_redraw": "",
+        "force_ext_disable": "",
+        "woof_conditionals": "",
+        "woof_init_sections": "0",
+        "sections_type": "tabs_checkbox",
+        "woof_slideout_show": "0",
+        "woof_slideout_type_btn": "0",
+        "woof_slideout_img": "",
+        "woof_slideout_txt": "Filter",
+        "woof_slideout_img_w": "50",
+        "woof_slideout_img_h": "50",
+        "woof_slideout_position": "right",
+        "woof_slideout_speed": "100",
+        "woof_slideout_action": "click",
+        "woof_slideout_offset": "100",
+        "woof_slideout_offset_t": "px",
+        "woof_slideout_width": "",
+        "woof_slideout_width_t": "px",
+        "woof_slideout_height": "",
+        "woof_slideout_height_t": "px",
+        "woof_slideout_open": "false",
+        "woof_slideout_mobile": "0",
+        "woof_url_request": {
+            "enable": "1",
+            "page_index": "1",
+            "index_deep": "2"
+        },
+        "meta_filter": {
+            "__META_KEY__": {
+                "meta_key": "__META_KEY__",
+                "title": "__TITLE__",
+                "search_view": "slider",
+                "options": "",
+                "type": "NUMERIC"
+            }
+        },
+        "activated_extensions": [
+            "9ee5e7f05a09d649f9d45d8603f62891"
+        ]
+    },
+    "woof_show_author_search": "0",
+    "woof_show_count": "0",
+    "woof_show_count_dynamic": "0",
+    "woof_sort_terms_checked": "1",
+    "woof_try_ajax": "0"
+}

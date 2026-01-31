@@ -1,0 +1,8 @@
+{
+    "require": {
+        "kucrut/vite-for-wp": "^0.8.0"
+    },
+    "config": {
+        "autoloader-suffix": "StreamitTheme"
+    }
+}

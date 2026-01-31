@@ -1,0 +1,24 @@
+.streamit-mobile-footer-menu {
+    .footer-menu {
+        padding: 0.8em 1em;
+    }
+}
+
+footer {
+    .widget {
+        .st-subscription {
+            input {
+                border-radius: 0 0.188em 0.188em 0;
+            }
+        }
+    }
+}
+
+
+@media(max-width: 479px) {
+    .streamit-mobile-footer-menu {
+        .footer-menu {
+            padding: 0.3em 1em;
+        }
+    }
+}

@@ -1,0 +1,14 @@
+.breadcrumb-item {
+
+    + .breadcrumb-item {
+      padding-right: var(--#{$prefix}breadcrumb-item-padding-x);
+      padding-left: 0;
+
+      &::before {
+        float: right;
+        padding-left: var(--#{$prefix}breadcrumb-item-padding-x);
+        padding-right: 0;
+      }
+    }
+
+  }

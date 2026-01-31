@@ -1,0 +1,96 @@
+.rtl-switcher-box {
+    position: fixed;
+    top: 12em;
+    right: -6.25em;
+    width: 6.25em;
+    z-index: 100;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    background: var(--bs-white);
+
+    &.open {
+        right: 0;
+    }
+
+    .btn-setting {
+        font-size: 1.25em;
+        padding: 0;
+        height: 2.5em;
+        width: 2.5em;
+        line-height: 2.5em;
+        color: var(--bs-white);
+        cursor: pointer;
+        display: block;
+        position: absolute;
+        left: -2.5em;
+        text-align: center;
+        top: 0;
+        background: var(--bs-gray-800);
+    }
+
+    .rtl-switcher-options {
+        background: var(--bs-gray-800);
+        height: auto;
+        top: 12em;
+        bottom: auto;
+        width: 10em;
+
+        .offcanvas-body {
+            padding: 1em;
+
+            .btn-close {
+                height: 1.5em;
+                width: 1.5em;
+                font-size: 0.75em;
+                background: var(--bs-primary);
+                color: var(--bs-white);
+                padding: 0;
+                filter: none;
+                position: absolute;
+                top: -0.625em;
+                left: -0.625em;
+                opacity: 1;
+            }
+
+            .modes {
+                .mode-option {
+                    .btn-box{
+                        display: inline-block;
+                        width: 100%;
+                        padding: .5em 1em;
+                        border: 0.0635em solid var(--bs-border-color);
+                        text-align: center;
+                        cursor: pointer;
+                        border-radius: 0.25em 0.25em 0 0;
+                    }
+
+                    .btn-check {
+                        &:checked +{
+                            .btn-box{
+                                background-color: var(--bs-primary);
+                                color: var(--bs-white);
+                                border-color: var(--bs-primary);
+                            }
+                        }
+                        &.active + {
+                            .btn-box{
+                                background-color: var(--bs-primary);
+                                color: var(--bs-white);
+                                border-color: var(--bs-primary);
+                            }
+                        }
+                    }
+                    
+                }
+
+                .mode-option{
+                    &:last-child {
+                        .btn-box {
+                            border-radius: 0 0 0.25em 0.25em;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

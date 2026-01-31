@@ -1,0 +1,44 @@
+.pmpro {
+    .pmpro_section {
+        #loginform {
+            .login-password {
+                input {
+                    padding-right: 1em;
+                    padding-left: 3.5em;
+                }
+                .password_toggle {
+                    left: 1.5em;
+                    right: auto;
+                }
+            }
+        }
+    }
+    #pmpro_login {
+        .pmpro_card {
+
+            &.pmpro_lost_password_wrap,
+            &.pmpro_reset_password_wrap {
+                .pmpro_form_field-password-toggle {
+                    .pmpro_btn-password-toggle {
+                        right: auto;
+                        left: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.streamit-login,
+.streamit-registration  {
+    .password_toggle {
+        right: auto;
+        left: 2em;
+    }
+} 
+
+.streamit-login,  .streamit-registration{
+    input#user_password {
+        padding: .782em 1em .782em 2.5em;
+    }
+}

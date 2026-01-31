@@ -1,0 +1,92 @@
+.login-device-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    max-height: 16em;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 0.313em;
+    }
+
+}
+
+.login-device-card {
+    border: 0.063em solid var(--bs-border-color);
+    background: var(--bs-gray-900);
+
+    .login-info  {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+
+        span {
+            position: relative;
+            font-size: .75em;
+
+            &:not(:last-child)::after {
+                content: "";
+                height: .375em;
+                width: .375em;
+                background: var(--bs-body-color);
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: -0.85em;
+                border-radius: 50%;
+            }
+        }
+    }
+}
+
+.login-device-card-2 {
+    background-color: var(--bs-gray-800);
+    border: 0.063em solid var(--bs-border-color);
+
+    .badge {
+        display: none;
+    }
+
+    &.active {
+        background-color: var(--bs-gray-900);
+        border-color: var(--bs-primary-border-subtle);
+
+        .badge {
+            display: inline-block;
+        }
+    }
+}
+
+.active-devices {
+    .active-devices-list {
+        max-height: 32em;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 0.313em;
+        }
+    }
+}
+
+@media (max-width: 349.98px) {
+    .login-device-card {
+        .login-info  {
+            display: flex;
+            align-items: center;
+            gap: .8em;
+
+            span {
+                position: relative;
+                font-size: 0.625em;
+
+                &:not(:last-child)::after {
+                    right: -0.8em;
+                }
+            }
+        }
+
+        .device-logout-btn {
+            font-size: .75em;
+        }
+    }
+}

@@ -1,0 +1,54 @@
+.css_prefix-card {
+    .block-images {
+        .image-box {
+            .product-premium {
+                left: 1em;
+                right: auto;
+            }
+        }
+        .card-description {
+            .genres-list {
+                li {
+                    &::after {
+                        right: auto;
+                        left: -1.3125em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// overlay card
+.css_prefix-card-overlay {
+    .block-images {
+        .image-box {
+            .product-premium {
+                left: 1em;
+                right: auto;
+            }
+        }       
+    }
+    .card-description {
+        .genres-list {
+            li {
+                &::after {
+                    right: auto;
+                    left: -1.3125em;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .title {
+        margin-bottom: 1em;
+    }
+}
+
+@media (max-width: 479px) {
+    .title {
+        margin-bottom: .5em;
+    }
+}

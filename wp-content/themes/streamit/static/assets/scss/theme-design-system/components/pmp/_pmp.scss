@@ -1,0 +1,358 @@
+.pmpro {
+    .pmpro_form_input-text.pmpro_form_input-error,
+	.pmpro_form_input-email.pmpro_form_input-error,
+	.pmpro_form_input-url.pmpro_form_input-error,
+	.pmpro_form_input-password.pmpro_form_input-error,
+	.pmpro_form_input-search.pmpro_form_input-error,
+	.pmpro_form_input-select.pmpro_form_input-error,
+	.pmpro_form_input-checkbox.pmpro_form_input-error,
+	.pmpro_form_input-radio.pmpro_form_input-error,
+	.pmpro_form_input-multiselect.pmpro_form_input-error,
+	.pmpro_form_input-number.pmpro_form_input-error,
+	.pmpro_form_input-file.pmpro_form_input-error,
+	.pmpro_form_input-date.pmpro_form_input-error,
+	.pmpro_form_input-textarea.pmpro_form_input-error {
+		border-color: var(--bs-primary) !important;
+		box-shadow: none;
+	}
+
+    .pmpro_section_title {
+        margin-bottom: .5em;
+    }
+
+    .pmpro_card_actions {
+        padding: .5em 0 1em;
+    }
+
+    .pmpro_font-x-large {
+        font-size: $h3-font-size;
+    }
+
+    .pmpro_card_title {
+        padding: 0;
+        margin-bottom: .5em;
+
+        .pmpro_tag {
+            font-size: initial;
+        }
+    }
+
+    .pmpro_card_content {
+        .pmpro_list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1em 1.5em;
+            margin-bottom: 1em;
+
+            li {
+                margin: 0;
+            }
+        }
+    }
+
+    .pmpro_table {
+        thead {
+            th {
+                background-color: var(--bs-gray-900);
+                color: var(--bs-white);
+            }
+        }
+
+        tbody,
+        tfoot {
+
+            th,
+            td {
+                background-color: var(--bs-body-bg);
+                border-bottom: .0635em solid var(--bs-gray-900);
+                border-top: 0;
+                color: var(--bs-body-color);
+            }
+        }
+    }
+
+    .pmpro_card {
+        margin: 0;
+        background: var(--bs-gray-900);
+        padding: 1em;
+        border-radius: var(--bs-border-radius);
+        border: none;
+        box-shadow: none;
+
+        .pmpro_tag-success {
+            background: var(--bs-success);
+            color: var(--bs-white);
+        }
+
+        .pmpro_table_orders {
+            .pmpro_tag-success {
+                background: var(--bs-success);
+                color: var(--bs-white);
+            }
+        }
+
+        .select2-container--default {
+            .select2-selection--single {
+                background-color: var(--bs-body-bg);
+            }
+        }
+
+        .pmpro_card_content {
+            input {
+                display: block;
+                width: 100%;
+                padding: 0.782em 1em;
+                font-size: 1em;
+                font-weight: 400;
+                line-height: 1.5;
+                color: var(--bs-body-color);
+                appearance: none;
+                background: var(--bs-body-bg);
+                border: var(--bs-border-width) solid var(--bs-body-bg);
+                border-radius: 0;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+                &:focus{
+                    border-color: var(--bs-primary);
+                    box-shadow: none;
+                }
+
+                &[type="submit"], &[type="button"] {
+                    width: inherit;
+                    background: var(--bs-primary);
+                    color: var(--bs-white);
+                    border: none;
+                    border-radius: var(--bs-border-radius);
+                    cursor: pointer;
+                    padding: .782em 1.5em;
+                    font-size: 1em;
+                    font-weight: 600;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                }
+            }
+            .pmpro_form_field-password-toggle{
+                .pmpro_btn-password-toggle{
+                    box-shadow: none;
+                    &:active{
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .pmpro_tag-success {
+        padding: .375em 1.25em;
+        background: var(--bs-gray-900);
+        border-radius: var(--bs-border-radius);
+        color: var(--bs-primary);
+        border: none;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-normal;
+    }
+
+    .pmpro_table_orders {
+        .pmpro_tag {
+            display: inline-block;
+        }
+    }
+
+    #pmpro_order_single {
+        .pmpro_card_title {
+            gap: .5em;
+            font-size: 1.77em;
+            margin: 0;
+        }
+    }
+
+    .pmpro_form_field.pmpro_form_field-password {
+        position: relative;
+        .pmpro_form_input-password {
+            padding-right: 3em;
+        }
+        .password_toggle {
+            position: absolute;
+            left: auto;
+            right: 1em;
+            top: 3em;
+        }
+        .pmpro_form_field-password-toggle {
+            display: none;
+        }
+    }
+
+    #pmpro_pricing_fields {
+        .pmpro_card_content {
+            background-color: var(--bs-body-bg);
+            padding: 1rem;
+            border-radius: var(--bs-border-radius);
+            .pmpro_level_name_text {
+                strong {
+                    color: var(--bs-heading-color);
+                }
+            }
+            .pmpro_level_description_text {
+               margin-top: 1em; 
+               strong {
+                    color: var(--bs-heading-color);
+               }
+            }
+            .pmpro_level_cost_text {
+                strong {
+                    color: var(--bs-heading-color);
+                }
+            }
+            #pmpro_level_cost {
+                .pmpro_level_cost_text {
+                    background-color: var(--bs-gray-900);
+                    padding: 1rem;
+                    border-radius: var(--bs-border-radius);
+                    margin-top: 1.5rem;
+                    strong {
+                        color: var(--bs-success);
+                    }
+                    ul {
+                        margin: 0;
+                        padding: 0;
+                        li {
+                            font-size: .875em;
+                            margin-bottom: .5em;
+
+                            &:last-child {
+                                margin-bottom: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.pmpro-checkout {
+    .pmpro {
+        .pmpro_card {
+            margin-bottom: 1.5em;
+        }
+    }
+}
+
+.pmpro_actions_nav {
+    &:not(#pmpro_login .pmpro_actions_nav) {
+        margin-top: 1em;
+    }
+}
+
+.pmpro-invoice {
+    .pmpro {
+        .pmpro_card_title {
+            margin-top: 1em;
+        }
+    }
+}
+
+.pmpro_message {
+    text-align: inherit;
+}
+
+.site-main {
+    .pmpro_message {
+        max-width: 85.625em;
+        margin: 0 auto .5em;
+        width: calc(100% - 2em);
+    }
+}
+
+.pmpro-checkout {
+    .pmpro {
+        .pmpro_form {
+            .pmpro_card_actions {
+                margin-top: 1em;
+            }
+        }
+    }
+}
+
+.price-card {
+    position: relative;
+    background-color: var(--bs-gray-900);
+    border-radius: var(--bs-border-radius);
+
+    &.disable {
+        pointer-events: none;
+        opacity: .5;
+    }
+
+    .badge {
+        position: absolute;
+        top: -.8em;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: .3125em .625em;
+        background: var(--bs-warning-bg-subtle);
+        color: var(--bs-warning);
+    }
+}
+
+.pmpro_tag-success {
+    background-color: var(--pmpro--color--success-text);
+    border-color: var(--pmpro--color--success-border);
+    color: var(--pmpro--color--base);
+}
+
+.pmpro_form_field {
+    position: relative;
+    .pmpro_form_input-password {
+        padding-inline-end: 2.3rem !important;
+    }
+    .password_toggle {
+        position: absolute;
+        top: 3rem;
+        inset-inline-end: 1rem;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .pmpro {
+        .pmpro_font-x-large {
+            font-size: 1.777em;
+        }
+
+        #pmpro_order_single-items{
+            .pmpro_table{
+                tbody{
+                    td{
+                        &[data-title="Amount"]{
+                            text-align: right;
+                        }
+                    }
+                }
+                tfoot {
+                    td{
+                        &[data-title="Total"]{
+                            text-align: right;
+                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .pmpro {
+        .pmpro_font-x-large {
+            font-size: 1.33em;
+        }
+
+        .pmpro_card {
+            .pmpro_card_content {
+                padding: 0;
+            }
+        }
+
+    }
+}

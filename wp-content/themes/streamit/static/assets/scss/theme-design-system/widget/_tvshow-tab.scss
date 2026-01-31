@@ -1,0 +1,620 @@
+.trending-slider-tab-nav:not(:has(> .slick-list)) {
+    .slick-item {
+        max-width: 16.66%;
+        flex: 0 0 16.66%;
+    }
+}
+.trending-slider-tab:not(:has(> .slick-list)) {
+    display: flex;
+    .slick-item {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+}
+.css_prefix-tvshow-season:not(:has(> .slick-list)){
+    display: flex;
+    .slick-item {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+}
+
+.css_prefix-tvshow-season-parent {
+    .css_prefix-thumb-items {
+        position: relative;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        height: 46.75em;
+        padding: 5.625em 0;
+        display: flex;
+        align-items: center;
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(270deg, rgba(var(--bs-black-rgb), 0.5) 0.6%, rgba(var(--bs-black-rgb), 0) 29.9%), linear-gradient(90deg, var(--bs-black), rgba(var(--bs-black-rgb), 0) 38.52%), linear-gradient(0deg, rgba(var(--bs-black-rgb), 0.7), rgba(var(--bs-black-rgb), 0));
+            z-index: 1;
+        }
+
+        .thumbnail-list-wrapper {
+            width: 40em;
+            max-width: 100%;
+            left: 6.125em;
+            right: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .css_prefix-tvshow-details {
+            .series {
+                img {
+                    width: 3.75em;
+                    height: 3.75em;
+                    object-fit: cover;
+                    border-radius: var(--bs-border-radius);
+                }
+
+                .text-gold {
+                    font-weight: 700;
+                    font-size: 1.125em;
+                }
+            }
+        }
+    }
+
+    .css_prefix-tvshow-season {
+        &.slick-slider.slick-dotted {
+            margin-bottom: 0;
+        }
+
+        .slick-dots {
+            margin-top: 0;
+            bottom: 1em;
+        }
+
+        .slick-arrow {
+            top: auto;
+            bottom: 6.25em;
+
+            &.PreArrow-two {
+                left: 6.375em;
+            }
+
+            &.NextArrow-two {
+                left: 9.375em;
+                right: auto;
+            }
+        }
+
+        .home-slider {
+            .slider-text {
+                font-size: 3.157em;
+            }
+        }
+    }
+
+    .css_prefix-tvshow-detail-meta {
+        span {
+            position: relative;
+
+            &::after {
+                content: "";
+                background-color: var(--bs-primary);
+                height: .5em;
+                width: .5em;
+                border-radius: 50%;
+                position: absolute;
+                right: -1.3em;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            &:last-child {
+                &::after {
+                    content: none;
+                }
+            }
+        }
+    }
+
+    .css_prefix-wrap-details {
+        width: 27.375em;
+        position: absolute;
+        right: 6.125em;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: var(--bs-border-radius);
+        z-index: 1;
+        background: var(--bs-gray-900);
+        padding: 2em 0;
+        z-index: 2;
+
+        .episodes-tab {
+            position: relative;
+
+            .trending-info {
+                padding: 0;
+                overflow: hidden;
+
+                .all-episodes {
+                    padding: 0 2em;
+
+                    .trending-text {
+                        font-size: 1.125em;
+                        font-weight: 500;
+                    }
+                }
+
+                .nav-tabs {
+                    white-space: nowrap;
+                    flex-wrap: nowrap;
+                    max-width: 100%;                    
+                    border-bottom: 0;
+                    position: relative;
+                    padding: 0 2em 0;
+                    margin-bottom: 1.25em;
+
+                    &::-webkit-scrollbar-thumb {
+                        display: none;
+                    }
+
+                    &::before {
+                        content: '';
+                        border-bottom: .0625em solid #404043;
+                        width: 100%;
+                        position: absolute;
+                        height: .0625em;
+                        bottom: 0;
+                        right: 0;
+                        left: 0;
+                    }
+
+                    .nav-tabs-inner {
+                        display: flex;
+                        gap: 2.8125em;
+                        cursor: pointer;
+                        border-bottom: .0625em solid #404043;
+                        overflow-x: auto;
+                        overflow-y: hidden;
+                        .nav-link {
+                            color: var(--bs-body-color);
+                            position: relative;
+                            font-size: 1em;
+                            font-weight: 500;
+                            padding: .9375em 0 .5em 0;
+
+                            &::after {
+                                content: "";
+                                position: absolute;
+                                bottom: 0;
+                                height: .0625em;
+                                width: 0;
+                                left: auto;
+                                right: 0;
+                                background: transparent;
+                                transition: all .8s linear;
+                            }
+
+                            &.active {
+                                background: transparent;
+                                border: 0;
+
+                                &::after {
+                                    background: var(--bs-primary);
+                                    width: 100%;
+                                    left: 0;
+                                    right: auto;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .season-content {
+                    height: 25em;
+                    overflow-y: auto;
+                    padding: 0 2.1875em;
+
+                    .season-episodes-details {
+                        display: flex !important;
+                        flex-direction: column;
+                        gap: 1.25em;
+
+                        .episodes-info {
+                            display: flex;
+                            align-items: center;
+                            gap: 1.5em;
+
+                            .episode-img {
+                                flex-shrink: 0;
+
+                                img {
+                                    width: 7.5em;
+                                    height: 5.3125em !important;
+                                    object-fit: cover;
+                                    border-radius: var(--bs-border-radius) !important;
+                                }
+                            }
+
+                            .episodes-meta {
+                                .episode-name {
+                                    font-weight: 600;
+                                    color: var(--bs-white);
+
+                                    a {
+                                        color: inherit;
+                                    }
+                                }
+
+                                .episode-time {
+                                    font-size: $font-size-sm;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Tv-show Top tab
+.css_prefix-tvshow-tab {
+    overflow: hidden;
+
+    .trending-tvshow-contens {
+        .trending-slider-tab-nav {
+            .slick-list {
+                padding-bottom: 2.5em !important;
+                overflow: visible;
+            }
+
+            .episod-block {
+                border: .75em solid transparent;
+                transition: all .4s ease;
+                z-index: -1;
+
+                img {
+                    aspect-ratio: 4 / 2.3;
+                    object-fit: cover;
+                    width: 100%;
+                    height: fit-content !important;
+                }
+            }
+
+            .slick-current.slick-active {
+                transform: scale3d(1.3, 1.3, 1) translate3d(0, 0, 0) perspective(31.25em);
+                transform-origin: 50% 50%;
+                transition: all .6s ease 0s;
+                box-shadow: 0 0 .75em rgba(var(--bs-black-rg), .9);
+
+                .episod-block {
+                    transition: all .4s ease;
+                    padding: .625em;
+                    background: rgba(var(--bs-black-rgb), .5) !important;
+                    backdrop-filter: blur(0.0625em);
+                    border: .0625em solid var(--bs-border-color);
+                }
+            }
+
+            .slick-slide {
+                &.slick-current.slick-active:first-child {
+                    transform: scale3d(1.3, 1.3, 1) translate3d(2.6em, 0, 0) perspective(31.25em);
+                }
+
+                &.slick-current.slick-active:last-child {
+                    transform: scale3d(1.3, 1.3, 1) translate3d(-2.6em, 0, 0) perspective(31.25em);
+                }
+
+                &.slick-current.slick-active:only-child {
+                    transform: scale3d(1.3, 1.3, 1) translate3d(0, 0, 0) perspective(31.25em);
+                }
+            }
+        }
+
+        .trending-slider-tab {
+            .tranding-block {
+                background-size: cover;
+                background-position: top right;
+                position: relative;
+                min-height: 40em;
+
+                .trending-custom-tab {
+                    .episodes-slider {
+                        .slick-dots {
+                            position: static;
+                            margin-top: 1em;
+                        }
+                    }
+
+                    .tab-title-info {
+                        .trending-pills {
+                            background-color: rgba(var(--bs-black-rgb), .5);
+                            position: relative;
+                            z-index: 9;
+
+                            .nav-item {
+                                .nav-link {
+                                    color: var(--bs-white);
+                                    position: relative;
+                                    overflow: hidden;
+                                    border-radius: 0;
+                                    text-transform: uppercase;
+                                    padding: 1em 0;
+                                    margin: 0 1em;
+                                    cursor: pointer;
+                                    &::after {
+                                        content: '';
+                                        position: absolute;
+                                        left: 0;
+                                        top: auto;
+                                        bottom: 0;
+                                        width: 0;
+                                        height: .1875em;
+                                        background: var(--bs-primary);
+                                        opacity: 0;
+                                        transition: all .8s linear;
+                                    }
+
+                                    &.active {
+                                        color: var(--bs-primary);
+                                        background-color: transparent;
+
+                                        &::after {
+                                            opacity: 1;
+                                            width: 100%;
+                                        }
+                                    }
+
+                                    &:hover {
+                                        color: var(--bs-primary);
+                                        background-color: transparent;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .trending-content {
+                        padding: 0 3.125em;
+                        min-height: 40em;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+
+                        .tab-pane {
+                            width: 100%;
+                            height: 100%;
+
+                            &.overview-tab {
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 90%;
+                                    height: 100%;
+                                    background: linear-gradient(90deg, rgba(var(--bs-black-rgb), 0.9), rgba(var(--bs-black-rgb), 0.9) 15%, rgba(var(--bs-light-rgb), 0));
+                                    z-index: 1;
+                                }
+                            }
+
+                            &.overlay-tab {
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    right: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                    background: rgba(var(--bs-black-rgb), .8);
+                                    z-index: 1;
+                                }
+                            }
+
+                            .trending-info {
+                                position: relative;
+                                z-index: 99;
+                                padding: 3.750em 0;
+                                width: 38.5em;
+
+                                .text-detail {
+                                    font-size: 1.250em;
+                                    font-weight: 500;
+                                    letter-spacing: .044em;
+                                }
+
+                                .series {
+                                    img {
+                                        width: 3.75em;
+                                        height: 3.75em;
+                                        object-fit: cover;
+                                        border-radius: var(--bs-border-radius);
+                                    }
+                                }
+
+                                .css_prefix-custom-select {
+                                    position: relative;
+                                    margin-top: 0;
+
+                                    .select2-container {
+                                        width: 9.375em !important;
+                                    }
+                                }
+
+                                .episodes-contens {
+                                    margin-top: 1.875em;
+                                    min-height: 21.125em;
+
+                                    .slick-slider-tvshow-tab {
+                                        .slick-list {
+                                            margin: 0 -.438em;
+
+                                            .episode-item {
+                                                padding: 0 .438em;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1024.98px) {
+    .css_prefix-tvshow-season-parent {
+        .css_prefix-thumb-items {
+            .thumbnail-list-wrapper {
+                left: 2em;
+            }
+        }
+
+        .css_prefix-wrap-details {
+            right: 2em;
+        }
+
+        .css_prefix-tvshow-season {
+            .slick-arrow {
+                &.PreArrow-two {
+                    left: 2em;
+                }
+
+                &.NextArrow-two {
+                    left: 5.375em;
+                }
+            }
+        }
+    }
+
+    .css_prefix-tvshow-tab {
+        .trending-tvshow-contens {
+            .trending-slider-tab {
+                .tranding-block {
+                    .trending-custom-tab {
+                        .trending-content {
+                            padding: 0 2em;
+                        }
+                    }
+                }
+            }
+        }
+        .slick-arrow {
+            display: none;
+        }
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .css_prefix-tvshow-season-parent {
+        .css_prefix-wrap-details {
+            display: none;
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .css_prefix-tvshow-season-parent {
+        .css_prefix-thumb-items {
+            padding: 5em 0;
+            height: 30em;
+
+            .thumbnail-list-wrapper {
+                left: 1em;
+                width: 90%;
+            }
+        }
+
+        .css_prefix-tvshow-season {
+            .home-slider {
+                .slider-text {
+                    font-size: 2em;
+                }
+            }
+
+            .slick-arrow {
+                bottom: 1em;
+
+                &.PreArrow-two {
+                    left: 1em;
+                }
+
+                &.NextArrow-two {
+                    left: 4.375em;
+                }
+            }
+        }
+    }
+
+    .css_prefix-tvshow-tab {
+        .trending-tvshow-contens {
+
+            .trending-slider-tab-nav {
+                .slick-list {
+                    padding-bottom: 1.5em !important;
+                }
+
+                .slick-slide {
+                    &.slick-current.slick-active:first-child {
+                        transform: scale3d(1.3, 1.3, 1) translate3d(2em, 0, 0) perspective(31.25em);
+                    }
+
+                    &.slick-current.slick-active:last-child {
+                        transform: scale3d(1.3, 1.3, 1) translate3d(-2em, 0, 0) perspective(31.25em);
+                    }
+
+                    &.slick-current.slick-active:only-child {
+                        transform: scale3d(1.3, 1.3, 1) translate3d(0, 0, 0) perspective(31.25em);
+                    }
+                }
+            }
+
+            .trending-slider-tab {
+                .tranding-block {
+                    .trending-custom-tab {
+                        .trending-content {
+                            .tab-pane {
+                                .trending-info {
+                                    width: 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 480.98px) {
+    .css_prefix-tvshow-tab {
+        .trending-tvshow-contens {
+            .trending-slider-tab-nav {
+                .slick-slide {
+                    &.slick-current.slick-active:first-child {
+                        transform: scale3d(1.3, 1.3, 1) translate3d(1.3em, 0, 0) perspective(31.25em);
+                    }
+
+                    &.slick-current.slick-active:last-child {
+                        transform: scale3d(1.3, 1.3, 1) translate3d(-1.3em, 0, 0) perspective(31.25em);
+                    }
+
+                    &.slick-current.slick-active:only-child {
+                        transform: scale3d(1.3, 1.3, 1) translate3d(0, 0, 0) perspective(31.25em);
+                    }
+                }
+            }
+
+        }
+    }
+}

@@ -1,0 +1,43 @@
+.css_prefix-slick-general {
+    .slick-track {
+        margin-left: auto;
+        margin-right: 0;
+    }
+}
+
+.episodes-slider {
+    .slick-track {
+        margin-left: auto;
+        margin-right: 0;
+    }
+}
+
+.slick-arrow {
+
+    &.PreArrow-two,
+    &.PrevArrow-two {
+        right: -3em;
+        left: auto;
+        transform: scaleX(-1);
+    }
+
+    &.NextArrow-two {
+        right: auto;
+        left: -3em;
+        transform: scaleX(-1);
+    }
+}
+
+@include media-breakpoint-down(xl) {
+    .slick-arrow {
+
+        &.PreArrow-two,
+        &.PrevArrow-two {
+            right: 0;
+        }
+
+        &.NextArrow-two {
+            left: 0;
+        }
+    }
+}

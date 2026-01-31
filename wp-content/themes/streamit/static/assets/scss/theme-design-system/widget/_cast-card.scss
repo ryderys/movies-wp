@@ -1,0 +1,21 @@
+.cast-card {
+    position: relative;
+    overflow: hidden;
+    .cast-image {
+        display: block;
+        position: relative;
+        img {
+            height: 100%;
+            width: 100%;
+            aspect-ratio: 1 / 1.2;
+            object-position: top;
+            border-radius: var(--bs-border-radius);
+        }
+    }
+    .cast-title {
+        color: var(--bs-heading-color);
+        font-weight: 500;
+        line-height: 28px;
+        text-align: center;
+    }
+}

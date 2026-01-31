@@ -1,0 +1,80 @@
+body {
+    &.admin-bar {
+        header {
+            margin-top: 2em;
+
+            &.header-sticky {
+                margin-top: 0;
+                top: 2em;
+            }
+        }
+        &.st-movie-single,
+        &.st-tvshow-single,
+        &.st-video-single {
+            header {
+                margin-top: 0;
+            }
+        }
+        .offcanvas-review{
+            margin-top: 2em;
+        }
+    }
+}
+
+html {
+    &:has(body.admin-bar:not(#wpadminbar)) {
+        margin-top: 0 !important;
+    }
+}
+
+
+@include media-breakpoint-down(xl) {
+    body {
+        &.admin-bar {
+            .css_prefix-offcanvas-menu {
+                top: 2em;
+            }
+        }
+    }
+}
+
+@media (max-width:782px) {
+    body {
+        &.admin-bar {
+            header {
+                margin-top: 2.875em;
+                &.header-sticky {
+                    margin-top: 0;
+                    top: 2.875em;
+                }
+
+            }
+
+            .css_prefix-offcanvas-menu {
+                top: 2.875em;
+            }
+            .offcanvas-review{
+                margin-top: 2.875em;
+            }
+        }
+    }
+}
+
+@media (max-width:600px) {
+    body {
+        &.admin-bar {
+            header {
+                margin-top: 2.875em;
+                &.header-sticky {
+                    margin-top: 0;
+                    top: 0;
+
+                    .css_prefix-offcanvas-menu {
+                        top: 0;
+                    }
+                }
+
+            }
+        }
+    }
+}

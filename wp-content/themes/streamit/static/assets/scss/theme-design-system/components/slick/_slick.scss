@@ -1,0 +1,195 @@
+.css_prefix-slick-general:not(:has(> .slick-list)) {
+  display: flex;
+  .slick-item {
+      max-width: 16.66%;
+      flex: 0 0 16.66%;
+  }
+}
+.css_prefix-product-banner:not(:has(> .slick-list)) {
+  display: flex;
+  .slick-item {
+      max-width: 100%;
+      flex: 0 0 100%;
+  }
+}
+
+.episodes-slider:not(:has(> .slick-list)) {
+  display: flex;
+  .episode-item {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
+
+.css_prefix-slick-general {
+  .slick-track {
+    margin-left: 0;
+  }
+
+  .slick-list {
+    margin: 0 -.625em;
+    z-index: 1;
+  }
+
+  .slick-item {
+    position: relative;
+    padding: 0 .438em;
+  }
+}
+
+.episodes-slider {
+  .slick-track {
+    margin-left: 0;
+  }
+}
+
+// Slick dots
+.slick-dots {
+  list-style: none;
+  display: flex !important;
+  justify-content: center;
+  padding: 0;
+  margin-top: 1.25em;
+
+  li {
+    position: relative;
+    margin: 0 .3125em;
+    width: 0.625em;
+    height: 0.625em;
+
+    button {
+      display: block;
+      font-size: 0;
+      padding: 0;
+      border: none;
+      width: initial;
+      height: initial;
+
+      &::before {
+        content: "";
+        display: inline-block;
+        background-color: var(--bs-primary);
+        border-radius: 50%;
+        width: 0.625em;
+        height: 0.625em;
+        border: none;
+        padding: 0;
+        opacity: .5;
+        font-size: initial;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all .3s ease-in-out;
+      }
+    }
+
+    &.slick-active {
+      button {
+        &::before {
+          background-color: var(--bs-primary);
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+.slick-arrow {
+  background-color: transparent;
+  border-radius: 50%;
+  height: 1.875em;
+  width: 1.875em;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: .0625em solid var(--bs-white);
+  color: var(--bs-white);
+  z-index: 1;
+  transition: all .3s ease-in-out;
+  font-size: initial;
+  padding: 0;
+  z-index: 2;
+
+  i {
+    font-size: .75em;
+  }
+
+  &.PreArrow-two, &.PrevArrow-two {
+    left: -3em;
+  }
+
+  &.NextArrow-two {
+    right: -3em;
+  }
+
+  &:hover {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+  }
+
+  &.slick-disabled{
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.slick-dots {
+  bottom: -1.5625em;
+}
+
+@media (max-width: 1430px) {
+  .slick-arrow {
+    &.PreArrow-two, &.PrevArrow-two {
+      left: 0;
+    }
+    
+    &.NextArrow-two {
+      right: 0;
+    }
+  }
+}
+
+@include media-breakpoint-down(xl){
+  .slick-arrow {
+    &.PreArrow-two, &.PrevArrow-two {
+      left: 0;
+    }
+    
+    &.NextArrow-two {
+      right: 0;
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .css_prefix-slick-general {
+    .slick-arrow {
+      display: none !important;
+    }
+  }
+  .css_prefix-slick-general:not(:has(> .slick-list)) {
+    .slick-item {
+        max-width: 25%;
+        flex: 0 0 25%;
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  .css_prefix-slick-general:not(:has(> .slick-list)) {
+    .slick-item {
+        max-width: 33.33%;
+        flex: 0 0 33.33%;
+    }
+  }
+}
+
+@media (max-width: 449px) {
+  .css_prefix-slick-general:not(:has(> .slick-list)) {
+    .slick-item {
+        max-width: 50%;
+        flex: 0 0 50%;
+    }
+  }
+}

@@ -1,0 +1,200 @@
+.modal-content {
+    .form-control {
+        background-color: var(--bs-body-bg);
+        border-color: var(--bs-body-bg);
+    }
+    .select2-container--default {
+        .select2-selection--single {
+            background-color: var(--bs-body-bg);
+        }
+    }
+}
+
+// downloadmodal
+.downloadModal {
+    .downloadModal-list {
+        max-height: 16.875em;
+        overflow-y: auto;
+
+        li{
+            padding-bottom: 1em;
+            margin-bottom: 1em;
+            border-bottom: 0.063em solid var(--bs-border-color);
+
+            &:last-child {
+                padding-bottom: 0;
+                margin-bottom: 0;
+                border-bottom: 0;
+            }
+        }
+    }
+}
+
+// viewMoreDataModal
+.view-more-data-modal {
+    .modal-header {
+        .texture-text {
+            font-size: 1.33em;
+            margin: 0 !important;
+        }
+    }
+
+    .movie-metalist, .tvshow-metalist, .video-metalist {
+        .imdb-logo {
+            img {
+                width: 2.5em;
+            }
+        }
+    }
+
+    .movie-geners, .video-geners, .tvshow-geners {
+        li {
+            padding-right: 1.725em;
+            font-size: 0.875em;
+            a {
+                color: var(--bs-body-color);
+                &:hover {
+                    color: var(--bs-primary);
+                }
+            }
+            &::before {
+                content: "";
+                height: 0.375em;
+                width: 0.375em;
+                background: var(--bs-body-color);
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 0.65em;
+                border-radius: 50%;
+            }
+
+            &:last-child {
+                padding-right: 0;
+
+                &::before {
+                    content: none;
+                }
+            }
+        }
+    }
+
+    .movie-tags, .video-tags, .tvshow-tags {
+        li {
+            a {
+                background-color: var(--bs-secondary);
+                font-size: 0.875em;
+                color: var(--bs-white);
+                padding: 0.2em 0.8em;
+                font-weight: 400;
+                border-radius: var(--bs-border-radius);
+                &:hover {
+                    background-color: var(--bs-primary);
+                    color: var(--bs-white);
+                }
+            }
+        }
+    }
+}
+
+// trailerModal
+.trailerModal {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.7);
+
+    &.show {
+        opacity: 1;
+        visibility: visible;
+        
+        .modal-dialog {
+            transform: scale(1);
+        }
+    }
+
+    &.hiding {
+        opacity: 0;
+        visibility: hidden;
+        
+        .modal-dialog {
+            transform: scale(0.95);
+        }
+    }
+
+    .modal-content {
+        background: transparent;
+    }
+
+    .modal-dialog {
+        width: 100%;
+        max-width: 100%; 
+        margin: 0 auto;
+        position: relative;
+        pointer-events: inherit;
+        transform: scale(0.95);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .btn-close {
+        position: absolute;
+        top: -15px;
+        right: -30px;
+        opacity: 1;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .modal-body {
+        padding: 0;
+
+        .streamit_trailer_player {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; // 16:9 aspect ratio
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        iframe,
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 8px;
+        }
+    }
+}
+
+// Desktop (>= md)
+@include media-breakpoint-up(md) {
+    .trailerModal {
+        .modal-dialog {
+            max-width: 60%; 
+        }
+    }
+}
+
+// Tablet (< md)
+@include media-breakpoint-down(md) {
+    .trailerModal {
+        .modal-dialog {
+            max-width: 95%; 
+        }
+    }
+}
+
+// Mobile (< sm)
+@include media-breakpoint-down(sm) {
+    .trailerModal {
+        .modal-dialog {
+            max-width: 100%; 
+            width: 100%;
+            margin: 0;
+        }
+    }
+}

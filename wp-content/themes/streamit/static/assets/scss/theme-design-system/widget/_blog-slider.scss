@@ -1,0 +1,18 @@
+.css_prefix-blog-slider{
+
+    .blog-img {
+        aspect-ratio: 4 / 2.3;
+        width: 100%;
+        object-fit: cover;
+        border-radius: var(--bs-border-radius);
+        mix-blend-mode: overlay;
+        height: fit-content !important;
+    }
+
+    .slider-caption {
+        .slider-caption-title {
+            margin-top: 1.5em;
+            margin-bottom: 0;
+        }
+    }
+}

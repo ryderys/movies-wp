@@ -1,0 +1,86 @@
+header {
+    position: relative;
+    transition: all .3s ease 0s;
+    &.header-sticky {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--bs-gray-900);
+        z-index: 999;
+        transition: all .3s ease 0s;
+    }
+    .subscribe-btn {
+        &.btn-warning-subtle {
+            &:hover {
+                color: var(--bs-warning);
+                background-color: var(--bs-warning-bg-subtle);
+            }
+        }
+       
+    }
+}
+
+body {
+    &.st-movie-single,
+    &.st-tvshow-single,
+    &.st-video-single {
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9;
+            &.header-sticky {
+                position: fixed;
+            }
+        }
+        &.admin-bar {
+            header {
+                top: 2em;
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    header {
+        &.header-sticky {
+            position: static;
+        }
+    }
+}
+
+@media(max-width: 782px) {
+    body {
+        &.st-movie-single,
+        &.st-tvshow-single,
+        &.st-video-single {
+            &.admin-bar {
+                header {
+                    top: 2.875em;
+
+                    &.header-sticky{
+                        top: 2.875em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media(max-width: 600px) {
+    body {
+        &.st-movie-single,
+        &.st-tvshow-single,
+        &.st-video-single {
+            &.admin-bar {
+                header {
+                    &.header-sticky {
+                        top: 0;
+                    }
+                }
+            }
+        }
+    }
+}

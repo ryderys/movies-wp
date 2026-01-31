@@ -1,0 +1,56 @@
+header {
+    .sf-menu {
+        ul {
+            ul {
+                left: auto;
+                right: 100%;
+            }
+        }
+        ul.sub-menu {
+            li {
+                a {
+                    .toggledrop {
+                        float: left;
+                    }
+                }
+                &:hover {
+                    >a {
+                        padding-left: 0;
+                        padding-right: 1em;
+                    }
+                    .toggledrop {
+                        transform: rotate(90deg);
+                    }
+                }
+            }
+        }
+    }
+
+    .css_prefix-header-right {
+        .dropdown-shopping-wrapper {
+            .shopping-cart-panel {
+                .widget-shopping-cart-content {
+                    .product-list-content {
+                        ul {
+                            li {
+                                .css_prefix-cart-content {
+                                    .remove {
+                                        right: auto;
+                                        left: 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .dropdown-toggle {
+                .css_prefix-cart-count {
+                    right: auto;
+                    left: -1em;
+                }
+            }
+        }
+    }
+}

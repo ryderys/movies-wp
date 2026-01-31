@@ -1,0 +1,22 @@
+.select2-results {
+    padding: 1rem 1rem 1rem 0;
+}
+.select2{
+    &.select2-container {
+        direction: rtl;
+
+        .select2-selection--single {
+            .select2-selection__arrow {
+                left: .375em;
+                right: auto;
+            }
+
+        }
+    }
+
+} 
+.select2-container--open {
+    .select2-dropdown {
+        direction: rtl;
+    }
+}

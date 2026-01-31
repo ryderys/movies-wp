@@ -1,0 +1,9 @@
+// Navigation
+.blog-navigation {
+    
+    &:has(.previous-post) {
+        .next-post {
+            text-align: left;
+        }
+    }
+}

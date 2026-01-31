@@ -1,0 +1,2 @@
+function a(n,e){return jQuery.ajax({url:stAjax.ajaxurl,type:"GET",data:{...e,action:"st_ajax_get",_ajax_nonce:stAjax._ajax_nonce,route_name:n}})}function o(n,e){let t={processData:!1,contentType:!1};return e instanceof FormData?(e.append("action","st_ajax_post"),e.append("route_name",n)):e={...e,action:"st_ajax_post",_ajax_nonce:window.stAjax._ajax_nonce,route_name:n},jQuery.ajax({url:window.stAjax.ajaxurl,type:"POST",data:e,...e instanceof FormData?t:{}})}export{a as g,o as p};
+//# sourceMappingURL=streamit-theme-ajax.aeca5b15.js.map

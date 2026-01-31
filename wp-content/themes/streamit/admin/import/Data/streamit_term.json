@@ -1,0 +1,4039 @@
+[
+    {
+        "term_id": 1,
+        "term_name": "Action",
+        "term_slug": "action",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "1",
+                "post_id": "1",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "5",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "6",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "7",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "9",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "10",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "12",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "13",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "17",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "19",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "20",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "21",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "24",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "25",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "27",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "28",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "29",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "31",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "32",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "34",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "35",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "36",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "17",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "18",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "1",
+                "post_id": "18",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "39",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "1",
+                "post_id": "40",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "1",
+                "post_id": "41",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "1",
+                "post_id": "41",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "19",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "20",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "1",
+                "post_id": "22",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "1",
+                "post_id": "19",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 2,
+        "term_name": "Adventure",
+        "term_slug": "adventure",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "2",
+                "post_id": "3",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "4",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "5",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "7",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "8",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "9",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "10",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "12",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "17",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "18",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "20",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "21",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "29",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "32",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "34",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "35",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "17",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "37",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "18",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "18",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "2",
+                "post_id": "39",
+                "taxonomy": "movie_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 3,
+        "term_name": "Animation",
+        "term_slug": "animation",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "3",
+                "post_id": "1",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "2",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "3",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "6",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "9",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "10",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "18",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "28",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "29",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "30",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "13",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "3",
+                "post_id": "21",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 4,
+        "term_name": "Assassin",
+        "term_slug": "assassin",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "4",
+                "post_id": "4",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "4",
+                "post_id": "30",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "4",
+                "post_id": "40",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 5,
+        "term_name": "Comedy",
+        "term_slug": "comedy",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "5",
+                "post_id": "1",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "2",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "3",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "4",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "5",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "7",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "8",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "13",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "26",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "30",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "31",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "36",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "40",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "25",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "25",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "5",
+                "post_id": "27",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "27",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 6,
+        "term_name": "Drama",
+        "term_slug": "drama",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "6",
+                "post_id": "8",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "6",
+                "post_id": "21",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "6",
+                "post_id": "30",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "6",
+                "post_id": "15",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "6",
+                "post_id": "32",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "6",
+                "post_id": "34",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "6",
+                "post_id": "37",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "6",
+                "post_id": "38",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 7,
+        "term_name": "Family",
+        "term_slug": "family",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "7",
+                "post_id": "15",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "7",
+                "post_id": "31",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "7",
+                "post_id": "33",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "7",
+                "post_id": "36",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 8,
+        "term_name": "Fantasy",
+        "term_slug": "fantasy",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "8",
+                "post_id": "2",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "8",
+                "post_id": "3",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "8",
+                "post_id": "4",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "8",
+                "post_id": "40",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "8",
+                "post_id": "21",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 9,
+        "term_name": "History",
+        "term_slug": "history",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "9",
+                "post_id": "19",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "9",
+                "post_id": "29",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "9",
+                "post_id": "34",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "9",
+                "post_id": "35",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "9",
+                "post_id": "36",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "9",
+                "post_id": "40",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 10,
+        "term_name": "Hitman",
+        "term_slug": "hitman",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "10",
+                "post_id": "3",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "10",
+                "post_id": "4",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "10",
+                "post_id": "33",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "10",
+                "post_id": "35",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 11,
+        "term_name": "Horror",
+        "term_slug": "horror",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "11",
+                "post_id": "2",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "6",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "22",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "24",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "25",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "28",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "31",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "33",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "17",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "11",
+                "post_id": "23",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 12,
+        "term_name": "Mystery",
+        "term_slug": "mystery",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "12",
+                "post_id": "5",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "6",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "7",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "8",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "20",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "26",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "27",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "31",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "32",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "33",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "18",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "12",
+                "post_id": "18",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "12",
+                "post_id": "23",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 13,
+        "term_name": "Recommended",
+        "term_slug": "recommended",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "13",
+                "post_id": "31",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "13",
+                "post_id": "17",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "13",
+                "post_id": "18",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "13",
+                "post_id": "18",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "13",
+                "post_id": "38",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "13",
+                "post_id": "27",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 14,
+        "term_name": "Revenge",
+        "term_slug": "revenge",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "14",
+                "post_id": "31",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "14",
+                "post_id": "33",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 15,
+        "term_name": "Sci-Fi",
+        "term_slug": "sci-fi",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "15",
+                "post_id": "7",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "15",
+                "post_id": "33",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "15",
+                "post_id": "38",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 16,
+        "term_name": "Thriller",
+        "term_slug": "thriller",
+        "taxonomy": "movie_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "16",
+                "post_id": "31",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "16",
+                "post_id": "33",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "16",
+                "post_id": "36",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "16",
+                "post_id": "37",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "16",
+                "post_id": "38",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "16",
+                "post_id": "22",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "16",
+                "post_id": "23",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "16",
+                "post_id": "26",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 17,
+        "term_name": "Action",
+        "term_slug": "action",
+        "taxonomy": "movie_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/action.webp",
+        "term_relation": [
+            {
+                "term_id": "17",
+                "post_id": "2",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "5",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "7",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "8",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "9",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "10",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "12",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "13",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "17",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "19",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "20",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "21",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "22",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "24",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "25",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "27",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "28",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "29",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "30",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "31",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "32",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "33",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "34",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "17",
+                "post_id": "37",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "17",
+                "post_id": "19",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 18,
+        "term_name": "Adventure",
+        "term_slug": "adventure",
+        "taxonomy": "movie_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/adventure.webp",
+        "term_relation": [
+            {
+                "term_id": "18",
+                "post_id": "1",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "3",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "4",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "5",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "6",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "7",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "8",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "9",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "10",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "12",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "17",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "18",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "20",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "21",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "29",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "30",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "32",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "33",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "18",
+                "post_id": "34",
+                "taxonomy": "movie_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 19,
+        "term_name": "Animation",
+        "term_slug": "animation",
+        "taxonomy": "movie_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/animation.webp",
+        "term_relation": [
+            {
+                "term_id": "19",
+                "post_id": "2",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "4",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "6",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "8",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "9",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "10",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "21",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "28",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "29",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "19",
+                "post_id": "13",
+                "taxonomy": "movie_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 20,
+        "term_name": "Crime",
+        "term_slug": "crime",
+        "taxonomy": "movie_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/Crime.webp",
+        "term_relation": [
+            {
+                "term_id": "20",
+                "post_id": "1",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "3",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "4",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "7",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "18",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "24",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "25",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "31",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "32",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "33",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "37",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "20",
+                "post_id": "38",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "20",
+                "post_id": "39",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "20",
+                "post_id": "40",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "41",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "20",
+                "post_id": "41",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 21,
+        "term_name": "Horror",
+        "term_slug": "horror",
+        "taxonomy": "movie_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/horror.webp",
+        "term_relation": [
+            {
+                "term_id": "21",
+                "post_id": "1",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "2",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "3",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "4",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "6",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "8",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "22",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "24",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "25",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "27",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "30",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "31",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "33",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "40",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "21",
+                "post_id": "22",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "21",
+                "post_id": "18",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 22,
+        "term_name": "Mystery",
+        "term_slug": "mystery",
+        "taxonomy": "movie_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/mystery.webp",
+        "term_relation": [
+            {
+                "term_id": "22",
+                "post_id": "4",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "5",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "6",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "7",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "13",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "17",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "20",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "26",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "27",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "28",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "31",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "15",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "32",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "33",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "34",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "22",
+                "post_id": "18",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 23,
+        "term_name": "Romance",
+        "term_slug": "romance",
+        "taxonomy": "movie_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/romance.webp",
+        "term_relation": [
+            {
+                "term_id": "23",
+                "post_id": "1",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "23",
+                "post_id": "2",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "23",
+                "post_id": "3",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "23",
+                "post_id": "15",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "23",
+                "post_id": "29",
+                "taxonomy": "movie_genre"
+            },
+            {
+                "term_id": "23",
+                "post_id": "21",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "23",
+                "post_id": "22",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "23",
+                "post_id": "23",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 24,
+        "term_name": "Actor",
+        "term_slug": "actor",
+        "taxonomy": "person_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "24",
+                "post_id": "20",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "24",
+                "post_id": "21",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "24",
+                "post_id": "22",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "24",
+                "post_id": "23",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "24",
+                "post_id": "24",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "24",
+                "post_id": "25",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "24",
+                "post_id": "26",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "24",
+                "post_id": "17",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "24",
+                "post_id": "18",
+                "taxonomy": "person_category"
+            }
+        ]
+    },
+    {
+        "term_id": 25,
+        "term_name": "Actress",
+        "term_slug": "actress",
+        "taxonomy": "person_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "25",
+                "post_id": "19",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "25",
+                "post_id": "27",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "25",
+                "post_id": "1",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "25",
+                "post_id": "4",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "25",
+                "post_id": "14",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "25",
+                "post_id": "41",
+                "taxonomy": "movie_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 26,
+        "term_name": "Director",
+        "term_slug": "director",
+        "taxonomy": "person_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "26",
+                "post_id": "3",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "26",
+                "post_id": "8",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "26",
+                "post_id": "10",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "26",
+                "post_id": "2",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "26",
+                "post_id": "5",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "26",
+                "post_id": "13",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "26",
+                "post_id": "15",
+                "taxonomy": "person_category"
+            }
+        ]
+    },
+    {
+        "term_id": 27,
+        "term_name": "Producer",
+        "term_slug": "producer",
+        "taxonomy": "person_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "27",
+                "post_id": "1",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "27",
+                "post_id": "2",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "27",
+                "post_id": "6",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "27",
+                "post_id": "11",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "27",
+                "post_id": "7",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "27",
+                "post_id": "9",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "27",
+                "post_id": "12",
+                "taxonomy": "person_category"
+            },
+            {
+                "term_id": "27",
+                "post_id": "15",
+                "taxonomy": "person_category"
+            }
+        ]
+    },
+    {
+        "term_id": 28,
+        "term_name": "Action",
+        "term_slug": "action",
+        "taxonomy": "person_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "28",
+                "post_id": "1",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "3",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "17",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "18",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "20",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "21",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "24",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "26",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "4",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "5",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "6",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "7",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "8",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "10",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "11",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "14",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "28",
+                "post_id": "15",
+                "taxonomy": "person_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 29,
+        "term_name": "Drama",
+        "term_slug": "drama",
+        "taxonomy": "person_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "29",
+                "post_id": "1",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "2",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "6",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "8",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "10",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "13",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "17",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "18",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "19",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "20",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "21",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "22",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "23",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "25",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "27",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "3",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "9",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "12",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "14",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "29",
+                "post_id": "15",
+                "taxonomy": "person_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 30,
+        "term_name": "Animation",
+        "term_slug": "animation",
+        "taxonomy": "person_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "30",
+                "post_id": "1",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "4",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "5",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "7",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "12",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "14",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "15",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "19",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "22",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "24",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "30",
+                "post_id": "27",
+                "taxonomy": "person_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 31,
+        "term_name": "Comedy",
+        "term_slug": "comedy",
+        "taxonomy": "person_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "31",
+                "post_id": "9",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "31",
+                "post_id": "11",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "31",
+                "post_id": "23",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "31",
+                "post_id": "25",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "31",
+                "post_id": "2",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "31",
+                "post_id": "4",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "31",
+                "post_id": "13",
+                "taxonomy": "person_tag"
+            },
+            {
+                "term_id": "31",
+                "post_id": "15",
+                "taxonomy": "person_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 32,
+        "term_name": "4K Ultra",
+        "term_slug": "4k-ultra",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "32",
+                "post_id": "13",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "32",
+                "post_id": "7",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "32",
+                "post_id": "6",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "32",
+                "post_id": "14",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "32",
+                "post_id": "15",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "32",
+                "post_id": "16",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "32",
+                "post_id": "17",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 33,
+        "term_name": "Agents",
+        "term_slug": "agents",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "33",
+                "post_id": "1",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "33",
+                "post_id": "2",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "33",
+                "post_id": "7",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "33",
+                "post_id": "8",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "33",
+                "post_id": "10",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "33",
+                "post_id": "13",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "33",
+                "post_id": "17",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 34,
+        "term_name": "Brother",
+        "term_slug": "brother",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "34",
+                "post_id": "1",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "2",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "3",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "4",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "5",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "6",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "7",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "8",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "12",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "17",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "17",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "34",
+                "post_id": "17",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "24",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "34",
+                "post_id": "26",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 35,
+        "term_name": "Brother Relationship",
+        "term_slug": "brother-relationship",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "35",
+                "post_id": "4",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "35",
+                "post_id": "8",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "35",
+                "post_id": "10",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "35",
+                "post_id": "12",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "35",
+                "post_id": "13",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "35",
+                "post_id": "17",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "35",
+                "post_id": "17",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "35",
+                "post_id": "24",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 36,
+        "term_name": "Cricket",
+        "term_slug": "cricket",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "36",
+                "post_id": "1",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "2",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "3",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "4",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "6",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "7",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "8",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "10",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "39",
+                "taxonomy": "movie_tag"
+            },
+            {
+                "term_id": "36",
+                "post_id": "41",
+                "taxonomy": "movie_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 37,
+        "term_name": "Detective",
+        "term_slug": "detective",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "37",
+                "post_id": "3",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "37",
+                "post_id": "5",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "37",
+                "post_id": "8",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "37",
+                "post_id": "13",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 38,
+        "term_name": "Dragons",
+        "term_slug": "dragons",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "38",
+                "post_id": "6",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "38",
+                "post_id": "7",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "38",
+                "post_id": "9",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "38",
+                "post_id": "10",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "38",
+                "post_id": "12",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 39,
+        "term_name": "Drama",
+        "term_slug": "drama",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "39",
+                "post_id": "1",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "39",
+                "post_id": "5",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "39",
+                "post_id": "10",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "39",
+                "post_id": "12",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "39",
+                "post_id": "13",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "39",
+                "post_id": "17",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 40,
+        "term_name": "Family",
+        "term_slug": "family",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "40",
+                "post_id": "4",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "40",
+                "post_id": "6",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "40",
+                "post_id": "9",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "40",
+                "post_id": "17",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 41,
+        "term_name": "Guns",
+        "term_slug": "guns",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "41",
+                "post_id": "1",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "41",
+                "post_id": "6",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 42,
+        "term_name": "Kings",
+        "term_slug": "kings",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "42",
+                "post_id": "1",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "42",
+                "post_id": "9",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 43,
+        "term_name": "Mythology",
+        "term_slug": "mythology",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "43",
+                "post_id": "3",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "43",
+                "post_id": "4",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "43",
+                "post_id": "18",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "43",
+                "post_id": "19",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "43",
+                "post_id": "24",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "43",
+                "post_id": "24",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "43",
+                "post_id": "26",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 44,
+        "term_name": "Pirates",
+        "term_slug": "pirates",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "44",
+                "post_id": "4",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "44",
+                "post_id": "7",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 45,
+        "term_name": "romance",
+        "term_slug": "romance",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "45",
+                "post_id": "11",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 46,
+        "term_name": "Ships",
+        "term_slug": "ships",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "46",
+                "post_id": "3",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "46",
+                "post_id": "11",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "46",
+                "post_id": "15",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 47,
+        "term_name": "thriller",
+        "term_slug": "thriller",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "47",
+                "post_id": "11",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "47",
+                "post_id": "16",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 48,
+        "term_name": "Treasure",
+        "term_slug": "treasure",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "48",
+                "post_id": "11",
+                "taxonomy": "tvshow_tag"
+            },
+            {
+                "term_id": "48",
+                "post_id": "15",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 49,
+        "term_name": "Vikings",
+        "term_slug": "vikings",
+        "taxonomy": "tvshow_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "49",
+                "post_id": "11",
+                "taxonomy": "tvshow_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 50,
+        "term_name": "Action",
+        "term_slug": "action",
+        "taxonomy": "tvshow_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/action.webp",
+        "term_relation": [
+            {
+                "term_id": "50",
+                "post_id": "2",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "3",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "4",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "5",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "8",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "9",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "10",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "11",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "12",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "13",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "14",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "15",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "16",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "50",
+                "post_id": "17",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 51,
+        "term_name": "Adventure",
+        "term_slug": "adventure",
+        "taxonomy": "tvshow_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/adventure.webp",
+        "term_relation": [
+            {
+                "term_id": "51",
+                "post_id": "1",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "2",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "4",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "5",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "6",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "7",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "8",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "9",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "11",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "14",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "15",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "17",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "51",
+                "post_id": "19",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 52,
+        "term_name": "Animation",
+        "term_slug": "animation",
+        "taxonomy": "tvshow_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/animation.webp",
+        "term_relation": [
+            {
+                "term_id": "52",
+                "post_id": "1",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "2",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "3",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "7",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "8",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "9",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "10",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "11",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "12",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "13",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "52",
+                "post_id": "20",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 53,
+        "term_name": "Crime",
+        "term_slug": "crime",
+        "taxonomy": "tvshow_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/Crime.webp",
+        "term_relation": [
+            {
+                "term_id": "53",
+                "post_id": "1",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "3",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "4",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "5",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "6",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "7",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "8",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "11",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "17",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "53",
+                "post_id": "20",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 54,
+        "term_name": "Horror",
+        "term_slug": "horror",
+        "taxonomy": "tvshow_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/horror.webp",
+        "term_relation": [
+            {
+                "term_id": "54",
+                "post_id": "1",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "54",
+                "post_id": "4",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "54",
+                "post_id": "5",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "54",
+                "post_id": "7",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "54",
+                "post_id": "8",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "54",
+                "post_id": "11",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "54",
+                "post_id": "12",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "54",
+                "post_id": "13",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "54",
+                "post_id": "16",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 55,
+        "term_name": "Mystery",
+        "term_slug": "mystery",
+        "taxonomy": "tvshow_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/mystery.webp",
+        "term_relation": [
+            {
+                "term_id": "55",
+                "post_id": "4",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "55",
+                "post_id": "6",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "55",
+                "post_id": "7",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "55",
+                "post_id": "9",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "55",
+                "post_id": "12",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "55",
+                "post_id": "15",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "55",
+                "post_id": "16",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "55",
+                "post_id": "17",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 56,
+        "term_name": "Romance",
+        "term_slug": "romance",
+        "taxonomy": "tvshow_genre",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/romance.webp",
+        "term_relation": [
+            {
+                "term_id": "56",
+                "post_id": "1",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "56",
+                "post_id": "6",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "56",
+                "post_id": "10",
+                "taxonomy": "tvshow_genre"
+            },
+            {
+                "term_id": "56",
+                "post_id": "13",
+                "taxonomy": "tvshow_genre"
+            }
+        ]
+    },
+    {
+        "term_id": 57,
+        "term_name": "Action",
+        "term_slug": "action",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "57",
+                "post_id": "2",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "4",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "5",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "6",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "7",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "8",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "11",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "12",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "13",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "14",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "15",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "57",
+                "post_id": "16",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 58,
+        "term_name": "Adventure",
+        "term_slug": "adventure",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "58",
+                "post_id": "1",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "2",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "3",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "4",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "5",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "6",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "7",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "10",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "11",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "13",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "14",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "15",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "58",
+                "post_id": "16",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 59,
+        "term_name": "Animation",
+        "term_slug": "animation",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "59",
+                "post_id": "3",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "59",
+                "post_id": "6",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "59",
+                "post_id": "7",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "59",
+                "post_id": "10",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "59",
+                "post_id": "1",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "59",
+                "post_id": "15",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 60,
+        "term_name": "Astronomy",
+        "term_slug": "astronomy",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "60",
+                "post_id": "1",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "60",
+                "post_id": "2",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "60",
+                "post_id": "3",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "60",
+                "post_id": "4",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "60",
+                "post_id": "5",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "60",
+                "post_id": "6",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "60",
+                "post_id": "7",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "60",
+                "post_id": "8",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "60",
+                "post_id": "10",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 61,
+        "term_name": "circus",
+        "term_slug": "circus",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "61",
+                "post_id": "2",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "61",
+                "post_id": "3",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "61",
+                "post_id": "4",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "61",
+                "post_id": "5",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "61",
+                "post_id": "6",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "61",
+                "post_id": "7",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "61",
+                "post_id": "8",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "61",
+                "post_id": "10",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 62,
+        "term_name": "Comedy",
+        "term_slug": "comedy",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "62",
+                "post_id": "1",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "62",
+                "post_id": "3",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "62",
+                "post_id": "6",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "62",
+                "post_id": "10",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 63,
+        "term_name": "Crime",
+        "term_slug": "crime",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "63",
+                "post_id": "2",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "63",
+                "post_id": "3",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "63",
+                "post_id": "4",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "63",
+                "post_id": "5",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "63",
+                "post_id": "8",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 64,
+        "term_name": "Dragons",
+        "term_slug": "dragons",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "64",
+                "post_id": "1",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "64",
+                "post_id": "4",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "64",
+                "post_id": "15",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 65,
+        "term_name": "Drama",
+        "term_slug": "drama",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "65",
+                "post_id": "8",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 66,
+        "term_name": "Family",
+        "term_slug": "family",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": []
+    },
+    {
+        "term_id": 67,
+        "term_name": "Fantasy",
+        "term_slug": "fantasy",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": []
+    },
+    {
+        "term_id": 68,
+        "term_name": "Horror",
+        "term_slug": "horror",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": []
+    },
+    {
+        "term_id": 69,
+        "term_name": "Magic",
+        "term_slug": "magic",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "69",
+                "post_id": "9",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "69",
+                "post_id": "21",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 70,
+        "term_name": "Melodrama",
+        "term_slug": "melodrama",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "70",
+                "post_id": "9",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "70",
+                "post_id": "20",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 71,
+        "term_name": "Romance",
+        "term_slug": "romance",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "71",
+                "post_id": "9",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "71",
+                "post_id": "1",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 72,
+        "term_name": "Thriller",
+        "term_slug": "thriller",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "72",
+                "post_id": "9",
+                "taxonomy": "video_tag"
+            },
+            {
+                "term_id": "72",
+                "post_id": "26",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 73,
+        "term_name": "Universe",
+        "term_slug": "universe",
+        "taxonomy": "video_tag",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": false,
+        "term_relation": [
+            {
+                "term_id": "73",
+                "post_id": "9",
+                "taxonomy": "video_tag"
+            }
+        ]
+    },
+    {
+        "term_id": 74,
+        "term_name": "Action",
+        "term_slug": "action",
+        "taxonomy": "video_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/action.webp",
+        "term_relation": [
+            {
+                "term_id": "74",
+                "post_id": "1",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "6",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "7",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "8",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "9",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "10",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "11",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "12",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "13",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "14",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "15",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "74",
+                "post_id": "16",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 75,
+        "term_name": "Adventure",
+        "term_slug": "adventure",
+        "taxonomy": "video_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/adventure.webp",
+        "term_relation": [
+            {
+                "term_id": "75",
+                "post_id": "2",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "3",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "4",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "5",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "6",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "7",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "9",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "11",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "13",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "14",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "75",
+                "post_id": "16",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 76,
+        "term_name": "Animation",
+        "term_slug": "animation",
+        "taxonomy": "video_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/animation.webp",
+        "term_relation": [
+            {
+                "term_id": "76",
+                "post_id": "1",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "2",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "3",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "5",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "6",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "7",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "8",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "9",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "10",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "11",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "13",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "76",
+                "post_id": "15",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 77,
+        "term_name": "Crime",
+        "term_slug": "crime",
+        "taxonomy": "video_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/Crime.webp",
+        "term_relation": [
+            {
+                "term_id": "77",
+                "post_id": "2",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "77",
+                "post_id": "3",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "77",
+                "post_id": "4",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "77",
+                "post_id": "5",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "77",
+                "post_id": "6",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "77",
+                "post_id": "7",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "77",
+                "post_id": "9",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "77",
+                "post_id": "15",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 80,
+        "term_name": "Horror",
+        "term_slug": "horror",
+        "taxonomy": "video_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/horror.webp",
+        "term_relation": [
+            {
+                "term_id": "80",
+                "post_id": "1",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "80",
+                "post_id": "3",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "80",
+                "post_id": "4",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "80",
+                "post_id": "8",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "80",
+                "post_id": "10",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 81,
+        "term_name": "Mystery",
+        "term_slug": "mystery",
+        "taxonomy": "video_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/mystery.webp",
+        "term_relation": [
+            {
+                "term_id": "81",
+                "post_id": "3",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "81",
+                "post_id": "4",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "81",
+                "post_id": "10",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "81",
+                "post_id": "12",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "81",
+                "post_id": "16",
+                "taxonomy": "video_category"
+            }
+        ]
+    },
+    {
+        "term_id": 82,
+        "term_name": "Romance",
+        "term_slug": "romance",
+        "taxonomy": "video_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2024\/11\/romance.webp",
+        "term_relation": [
+            {
+                "term_id": "82",
+                "post_id": "1",
+                "taxonomy": "video_category"
+            },
+            {
+                "term_id": "82",
+                "post_id": "8",
+                "taxonomy": "video_category"
+            }
+        ]
+    }
+]

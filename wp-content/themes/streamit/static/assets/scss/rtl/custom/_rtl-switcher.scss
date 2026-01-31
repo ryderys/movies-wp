@@ -1,0 +1,17 @@
+.rtl-switcher-box {
+    right: auto;
+    left: -6.25em;
+    .btn-setting {
+        left: auto;
+        right: -2.3em;
+    }
+    .rtl-switcher-options {
+        .offcanvas-body {
+            .btn-close {
+                left: auto;
+                right: -0.625em;
+            }
+        }
+    }
+}
+

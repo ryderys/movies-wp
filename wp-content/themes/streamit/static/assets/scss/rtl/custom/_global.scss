@@ -1,0 +1,41 @@
+// Contact Us
+.contact-form {
+
+    .cfield {
+        direction: rtl;
+
+    }
+
+    .iq-checkbox {
+        direction: rtl;
+    }
+
+}
+
+.wpcf7 form.invalid .wpcf7-response-output,
+.wpcf7 form.unaccepted .wpcf7-response-output,
+.wpcf7 form.payment-required .wpcf7-response-output {
+    direction: rtl;
+}
+
+.no_data_found {
+    border-left: none;
+    border-right: 0.125em solid var(--bs-primary);
+}
+
+.archive-page-filters-action {
+    .select2-container {
+        &.select2-container--default {
+            .select2-selection {
+                .select2-selection__rendered {
+                    padding: 0.7em 1.25em 0.7em 2.25em;
+                }
+
+                .select2-selection__arrow {
+                    right: auto;
+                    left: .5em;
+                }
+            }
+        }
+    }
+}

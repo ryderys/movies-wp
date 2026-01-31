@@ -1,0 +1,19 @@
+.genres-slider {
+    .slick-item {
+        &.first {
+            .genres-card {
+                &:hover {
+                    transform: scale3d(1.1, 1.1, 1) translate3d(-5%, 0, 0) perspective(31.25em);
+                }
+            }
+        }
+
+        &.last {
+            .genres-card {
+                &:hover {
+                    transform: scale3d(1.1, 1.1, 1) translate3d(5%, 0, 0) perspective(31.25em);
+                }
+            }
+        }
+    }
+}

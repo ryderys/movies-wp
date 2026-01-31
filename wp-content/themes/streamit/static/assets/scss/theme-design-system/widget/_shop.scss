@@ -1,0 +1,120 @@
+// banner
+.css_prefix-product-banner-slider {
+    .css_prefix-product-banner {
+        .slick-arrow{
+            &.NextArrow-two {
+                right: 1em;
+            }
+
+            &.PreArrow-two {
+                left: 1em;
+            }
+        }
+    }
+}
+
+.css_prefix-categories {
+    text-align: center;
+
+    .css_prefix-category-inner{
+        position: relative;
+    }
+
+    .category_image {
+        position: relative;
+        border: 0.1875em solid var(--bs-gray-900);
+        >a {
+            &::before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: 7.25em;
+                background:linear-gradient(0deg,var(--bs-black),rgba(var(--bs-black-rgb),0));
+                z-index: 1;
+            }
+        }
+        img {
+            width: 100%;
+            height: fit-content !important;
+            aspect-ratio: 3 / 2;
+            margin: 0 auto;
+            object-fit: cover;
+            box-shadow: var(--bs-box-shasow);
+        }
+
+        .css_prefix-category-details {
+            position: absolute;
+            bottom: 1em;
+            left: 0;
+            right: 0;
+            z-index: 9;
+            .css_prefix-title {
+                color: var(--bs-white);
+                letter-spacing: 0.0625em;
+                font-weight: 500;
+                margin: 0;
+                a {
+                    color: inherit;
+                }
+            }
+        }
+    }
+}
+
+.css_prefix-product-box {
+    position: relative;
+    height: 31.25em;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0 3.125em 3.125em 3.125em;
+    &:hover{
+        .css_prefix-card-img-overlay {
+        transform: scale(1.1);
+        }
+    }
+
+    .css_prefix-card-link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    .card-title {
+        font-size: 0.75em;
+        font-weight: 500;
+        line-height: 1.625em;
+        letter-spacing: 2px;
+    }
+    .css_prefix-parent-heading {
+        margin: 0.5em 0 1.5em;
+    }
+
+    .btn-link {
+        svg {
+            height: 1em;
+            width: 1em;
+            fill: currentColor;
+        }
+    }
+}
+.css_prefix-card-img-overlay {
+	position: absolute;
+	padding: 0 3.125em 3.125em 3.125em;
+	inset: 0;
+	background-repeat: no-repeat;
+	z-index: -1;
+	background-position: center center;
+	background-size: cover;
+	height: 100%;
+	transform: scale(1);
+	transform-origin: top right;
+	transition: all 1s ease-in-out;
+}

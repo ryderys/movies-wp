@@ -1,0 +1,33 @@
+table {
+    width: 100%;
+    margin-bottom: 1.25em;
+    border: .063em solid var(--bs-border-color);
+    th {
+        padding: .313em .5em;
+        text-align: center;
+        border: .063em solid var(--bs-border-color);
+    }
+    td {
+        padding: .313em .5em;
+        text-align: center;
+        border: .063em solid var(--bs-border-color);
+    }
+}
+
+.wp-block-table {
+    &.is-style-stripes {
+        td {
+            
+        }
+        th {
+
+        }
+        tbody {
+            tr {
+                &:nth-child(odd) {
+                    background: var(--bs-gray-900);
+                }
+            }
+        }
+    } 
+}

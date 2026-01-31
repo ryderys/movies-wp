@@ -1,0 +1,614 @@
+form {
+    &#loginform {
+        display: block;
+        position: relative;
+        padding: 3.125em;
+        background: rgba(var(--bs-black-rgb), .6);
+        width: 38em;
+        margin: 0 auto;
+        backdrop-filter: blur(1.5625em);
+        border-radius: var(--bs-border-radius);
+
+        label {
+            color: var(--bs-white);
+        }
+
+        .logo {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 11.25em;
+            margin-bottom: 3em;
+        }
+
+        .login-remember {
+            label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+        }
+
+        #rememberme {
+            width: 1.2em;
+            height: 1.2em;
+            padding: 0;
+            border: .125em solid var(--bs-white);
+            background: transparent;
+            appearance: none;
+            position: relative;
+            border-radius: .3em;
+            cursor: pointer;
+            -webkit-box-flex: 0;
+            flex: none;
+            font-size: .937em;
+
+            &::before {
+                content: "\e042";
+                font-family: "Iconly";
+                font-weight: 400;
+                font-size: .7em;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                transition: all .15s ease-in-out;
+            }
+
+            &:checked {
+                border-color: var(--bs-primary);
+
+                &::before {
+                    color: var(--bs-primary);
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    &#streamit-registration-form {
+        #iqonic_term_condition {
+            width: 1.2em;
+            height: 1.2em;
+            padding: 0;
+            border: .125em solid var(--bs-white);
+            background: transparent;
+            appearance: none;
+            position: relative;
+            border-radius: .3em;
+            cursor: pointer;
+            -webkit-box-flex: 0;
+            flex: none;
+            font-size: .937em;
+    
+            &::before {
+                content: "\e042";
+                font-family: "Iconly";
+                font-weight: 400;
+                font-size: .7em;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                transition: all .15s ease-in-out;
+            }
+    
+            &:checked {
+                border-color: var(--bs-primary);
+    
+                &::before {
+                    color: var(--bs-primary);
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+
+.streamit-login,
+.streamit-registration {
+    display: block;
+    position: relative;
+    padding: 3.125em;
+    background: rgba(var(--bs-black-rgb), 0.7);
+    margin: 0 auto;
+    border-radius: var(--bs-border-radius);
+
+    h2 {
+        margin-top: 0;
+        font-size: 2em;
+    }
+
+    .logo {
+        display: block;
+        margin: 0 auto 3em;
+        width: 11.25em;
+    }
+
+    label {
+        font-size: .875em;
+        font-weight: 500;
+        margin: 0 0 .5em;
+    }
+
+    input {
+        // border-color: var(--bs-gray-900);
+        border-color: var(--bs-border-color);
+        background-color: rgba(var(--bs-black-rgb), .5);
+        &:not([type="checkbox"]) {
+            &:focus {
+                background-color: rgba(var(--bs-black-rgb), .5);
+            }
+        }
+    }
+
+    input#user_password {
+        padding-right: 2.5em;
+    }
+
+    .forgot-password {
+        text-align: right;
+        margin-bottom: 1.5em;
+        a {
+            font-size: .875em;
+        }
+    }
+
+    .registration-fields{
+        .login-password{
+            position: relative;
+            .password_toggle {
+                position: absolute;
+                color: var(--bs-heading-color);
+                cursor: pointer;
+                top: 3.5em;
+                right: 2em;
+                font-size: .875em;
+            
+            }
+        }
+    }
+
+    .password_toggle {
+        cursor: pointer;
+        position: absolute;
+        left: auto;
+        right: 2em;
+        top: 3em;
+    }
+}
+
+.pmpro_section {
+    #loginform {
+        .login-password {
+            position: relative;
+        }
+    }
+}
+
+.pmpro-login {
+    .pmpro {
+
+        .pmpro_section:has(#loginform),
+        .pmpro_card_content:not(.widget .pmpro_section:has(#loginform) .pmpro_card_content) {
+            padding-top: 0 !important;
+        }
+    }
+}
+
+.pmpro {
+    #pmpro_login {
+        .pmpro_card {
+            background: transparent;
+            padding: 0;
+            border: none;
+            box-shadow: none;
+
+            &.pmpro_lost_password_wrap,
+            &.pmpro_reset_password_wrap {
+                margin: 0 auto;
+                padding: 3.125em;
+                background: rgba(var(--bs-dark), .6);
+                backdrop-filter: blur(.625em);
+                border: none;
+                width: 27%;
+                position: relative;
+                .pmpro_form_field-password-toggle {
+                    display: block;
+                    position: relative;
+                    .pmpro_btn-password-toggle {
+                        font-size: 0;
+                        position: absolute;
+                        top: 50%;
+                        left: auto;
+                        right: 0;
+                        transform: translateY(30px);
+                        svg {
+                            stroke: var(--bs-primary);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    .pmpro_card_content {
+        padding: 0;
+
+        &+.pmpro_card_actions {
+            border: none;
+            padding: 0;
+            background: transparent;
+        }
+    }
+
+    .pmpro_btn {
+        background: var(--bs-primary);
+        border-color: var(--bs-primary);
+
+        &:hover {
+            color: var(--bs-white);
+            background: var(--bs-primary-hover-bg);
+            border-color: var(--bs-primary-hover-border);
+        }
+    }
+
+    .pmpro_btn-outline {
+        color: var(--bs-white);
+    }
+
+    .pmpro_section {
+        #loginform {
+            .input {
+                padding: 0.782em 1em;
+                font-size: 1em;
+                background-color: var(--bs-gray-900);
+                color: var(--bs-body-color);
+                border-color: var(--bs-gray-900);
+                border-radius: 0;
+
+                &:focus {
+                    background: var(--bs-gray-900);
+                    border-color: var(--bs-primary);
+                    box-shadow: none;
+                }
+            }
+
+            .login-submit {
+
+                margin: 1.125em 0 0;
+
+                .button {
+                    background-color: var(--bs-primary);
+                    border: 1px solid var(--bs-primary);
+                    border-radius: var(--bs-border-radius);
+                    box-shadow: none;
+                    color: var(--bs-white);
+                    font-size: 1em;
+                    min-height: 2.5em;
+                    padding: 0.75em 1.125em;
+
+                    &:hover {
+                        color: var(--bs-white);
+                        background-color: var(--bs-primary-hover-bg);
+                        border-color: var(--bs-primary-hover-border);
+                    }
+                }
+            }
+
+            .pmpro_form_field-password-toggle {
+                display: none;
+            }
+
+            .login-username {
+                gap: calc(0.75em / 2);
+                margin: 0 0 1.125em;
+            }
+
+            .login-password {
+
+                gap: calc(0.75em / 2);
+                margin: 0 0 1.125em;
+                input {
+                    padding-right: 3.5em;
+                }
+                .password_toggle {
+                    position: absolute;
+                    top: 2.9em;
+                    right: 1.5em;
+                    color: var(--bs-primary);
+                    cursor: pointer;
+                }
+
+                .pmpro_form_field-password-toggle {
+                    position: absolute;
+                    top: 2.8em;
+                    right: 1.5em;
+
+                    button {
+                        &:focus {
+                            box-shadow: none;
+                            color: var(--bs-primary);
+
+                            svg {
+                                stroke: var(--bs-body-color);
+                            }
+                        }
+
+                        &.active {
+                            box-shadow: none;
+                            color: var(--bs-primary);
+
+                            svg {
+                                stroke: var(--bs-body-color);
+                            }
+                        }
+                    }
+                }
+
+                .password_toogle {
+                    position: absolute;
+                    right: 1em;
+                    bottom: 1.1em;
+                    color: var(--bs-primary);
+                    cursor: pointer;
+                }
+            }
+
+            .custom-links {
+                text-align: right;
+                margin-bottom: 1.5em;
+
+                &.forgot-password {
+                    float: right;
+                }
+
+                a {
+                    color: var(--bs-primary);
+                    font-style: italic;
+
+                    h6 {
+                        color: var(--bs-primary);
+                    }
+                }
+            }
+        }
+
+        #lostpasswordform {
+            margin-bottom: 30px;
+
+            .pmpro_form_input {
+                background-color: var(--bs-gray-900);
+                color: var(--bs-body-color);
+                border-color: transparent;
+                border-radius: 0;
+
+                &:focus {
+                    background: var(--bs-gray-900);
+                    border-color: var(--bs-primary);
+                    box-shadow: none;
+                }
+            }
+
+            .pmpro_btn-submit {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.pmpro_card_actions {
+    .pmpro_actions_nav {
+        text-align: center;
+        >a {
+            padding: .625em;
+            border-radius: var(--bs-border-radius);
+            font-size: .875em;
+            position: relative;
+            z-index: 0;
+            display: inline-block;
+            overflow: hidden;
+            font-weight: $font-weight-medium;
+            width: 100%;
+            color: var(--bs-primary);
+            background: transparent;
+        }
+    }
+}
+
+.css_prefix-social-login-section {
+    .mo-openid-app-icons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        p {
+            display: none;
+            color: var(--bs-white) !important;
+        }
+    }
+}
+
+.css_prefix-separator {
+    position: relative;
+    text-align: center;
+    margin: 1.5em 0;
+
+    &::before {
+        position: absolute;
+        content: "";
+        top: 50%;
+        bottom: 0;
+        left: 0;
+        right: auto;
+        background: var(--bs-border-color);
+        height: 1px;
+        transform: translateY(-50%);
+        width: 45%;
+    }
+
+    &::after {
+        position: absolute;
+        content: "";
+        top: 50%;
+        bottom: 0;
+        left: auto;
+        right: 0;
+        background: var(--bs-border-color);
+        height: 1px;
+        transform: translateY(-50%);
+        width: 45%;
+    }
+
+    .or-section {
+        padding: 0 1.5em;
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.btn-loader {
+    display: none;
+    align-items: center;
+    justify-content: center
+}
+
+#login-submit-btn {
+    position: relative;
+
+    &:disabled {
+        .btn-loader {
+            display: inline-flex;
+        }
+    }
+}
+
+.field-error-message {
+    color: var(--bs-danger) !important;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+    animation: fadeIn 0.3s ease-in;
+    background-color: var(--bs-danger-bg-subtle);
+    border: 1px solid var(--bs-danger);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    &.show,
+    &[style*="display: block"] {
+        display: block;
+    }
+}
+
+.form-control:invalid,
+.form-control.is-invalid,
+input:invalid,
+input.is-invalid,
+input[type="password"]:invalid,
+input[type="password"].is-invalid {
+    background-image: none !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-control.is-invalid {
+    &.is-invalid {
+        border-color: var(--bs-danger);
+        &:focus {
+            border-color: var(--bs-danger);
+        }
+    }
+}
+
+@include media-breakpoint-down(xl) {
+    .pmpro {
+        #pmpro_login {
+            .pmpro_card {
+
+                &.pmpro_lost_password_wrap,
+                &.pmpro_reset_password_wrap {
+                    width: 40%;
+                }
+            }
+
+        }
+    }
+}
+@include media-breakpoint-down(lg) {
+    .pmpro {
+        #pmpro_login {
+            .pmpro_card {
+
+                &.pmpro_lost_password_wrap,
+                &.pmpro_reset_password_wrap {
+                    padding: 1.5rem;
+                }
+            }
+
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    form {
+        &#loginform {
+            width: 30em;
+        }
+    }
+
+    .streamit-registration {
+        width: 30em;
+    }
+    .streamit-login,
+    .streamit-registration {
+        padding: 1.25em;
+    }
+    .pmpro {
+        #pmpro_login {
+            .pmpro_card {
+
+                &.pmpro_lost_password_wrap,
+                &.pmpro_reset_password_wrap {
+                    width: 80%;
+                }
+            }
+
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    form {
+        &#loginform {
+            width: 100%;
+            padding: 1.5em;
+        }
+    }
+
+    .streamit-registration {
+        width: 100%;
+        padding: 1.5em;
+    }
+
+    .pmpro {
+        .pmpro_card_content {
+            padding: 1em;
+        }
+    }
+}

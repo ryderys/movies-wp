@@ -1,0 +1,570 @@
+.upcoming-content-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Full viewport height to match player container size */
+    width: 100%; /* Ensure it takes full width of the player container */
+    background: var(--bs-gray-900); /* Match player background if needed */
+    position: relative;
+    .upcoming-badge {
+        position: absolute;
+        top: 20px;
+        left: 30px;
+        background: var(--bs-primary);
+        color: var(--bs-white);
+        font-size: 0.6rem;
+        font-weight: 600;
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+    .upcoming-content {
+        text-align: center;
+        h4 {
+            color: var(--bs-white);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 1.5rem 0;
+        }
+    }
+}
+
+.page-episode{
+    min-height: 60vh; 
+}
+
+.release-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    svg {
+        width: 18px;
+        height: 18px;
+        color: var(--bs-primary);
+    }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .upcoming-content-placeholder {
+        .upcoming-content {
+            h4 {
+                font-size: 1.3rem;
+            }
+        }
+    }
+
+    .release-date {
+        font-size: 0.5rem;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .upcoming-content-placeholder {
+        .upcoming-content {
+            h4 {
+                font-size: 1.1rem;
+            }
+        }
+    }
+
+    .release-date {
+        font-size: 0.5rem;
+    }
+
+    .upcoming-content-placeholder {
+        .upcoming-badge {
+            font-size: 0.5rem;
+            padding: 0.2rem 0.6rem;
+            top: 15px;
+            left: 15px;
+        }
+    }
+}
+
+/* Upcoming Season Badge Styles */
+.episode-upcoming-player {
+    .upcoming-badge {
+        position: absolute;
+        top: .7rem;
+        left: 1rem;
+        right: 0;
+            z-index: 1;
+        span {
+            background: var(--bs-primary);
+            color: var(--bs-white);
+            border: none;
+            font-weight: 500;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(var(--bs-primary-rgb), 0.3);
+            transition: all 0.3s ease;
+        }
+    }
+}
+
+/* Upcoming Season Info Container */
+.upcoming-season-info {
+    background: var(--bs-gray-900);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--bs-border-color);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* Season Image/Poster */
+.season-poster {
+    flex: 0 0 450px;
+    height: 300px;
+    background: var(--bs-gray-900);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bs-body-color);
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.season-poster-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.season-poster::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(220, 53, 69, 0.1), rgba(255, 193, 7, 0.1));
+    z-index: 1;
+}
+
+.season-poster-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Season Content */
+.season-content {
+    flex: 1;
+    color: #ffffff;
+}
+
+/* Upcoming Season Badge in Content */
+.upcoming-season-info .upcoming-badge {
+    background: var(--bs-primary);
+    color: #ffffff;
+    border: 2px solid var(--bs-primary);
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 12px 20px;
+    box-shadow: 0 4px 8px rgba(var(--bs-primary-rgb), 0.3);
+}
+
+/* Season Title */
+.season-content h4 {
+    color: var(--bs-heading-color) ;
+    font-weight: 700 ;
+    font-size: 2rem ;
+    margin-bottom: 1rem ;
+}
+
+/* Release Date */
+.season-content .release-date {
+    color: var(--bs-heading-color);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.release-date svg {
+    width: 16px;
+    height: 16px;
+    color: var(--bs-primary);
+}
+
+/* Season Description */
+.season-content .season-description p {
+    color: var(--bs-body-color);
+    line-height: 1.6;
+    font-size: 16px;
+    margin-bottom: 2rem;
+}
+
+/* Action Buttons */
+.season-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.notify-btn {
+    background: var(--bs-secondary);
+    color: var(--bs-white);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.notify-btn:hover {
+    background: var(--bs-secondary);
+    color: var(--bs-white);
+    transform: translateY(-1px);
+}
+
+.notify-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .upcoming-season-info {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+        margin: 0.5rem 0;
+    }
+
+    .season-poster {
+        flex: none;
+        width: 100%;
+        max-width: 250px;
+        height: 200px;
+        margin: 0 auto 1.5rem;
+    }
+
+    .season-content h4 {
+        font-size: 1.5rem;
+    }
+
+    .season-actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .upcoming-season-info {
+        padding: 1rem;
+    }
+
+    .season-poster {
+        height: 150px;
+    }
+
+    .season-content h4 {
+        font-size: 1.25rem;
+    }
+
+    .season-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .notify-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Hover effects for season tabs */
+.nav-link:hover .upcoming-badge {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+}
+
+/* Icon styling */
+.upcoming-badge svg,
+.upcoming-notice svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+}
+
+.upcoming-season-info .upcoming-badge svg {
+    width: 18px;
+    height: 18px;
+}
+
+// upcoming player
+.detail-page .player:has(.episode-upcoming-player) {
+    padding-bottom: 0;
+    height: auto;
+}
+.episode-upcoming-player {
+    .cta-container {
+        margin-top: 3rem;
+    }
+}
+/* Release date banner */
+.release-banner {
+    display: inline-block;
+    background: rgba(var(--bs-primary-rgb), 0.6);
+    padding: 8px 16px;
+    margin-bottom: 50px;
+    border-radius: 8px;
+    animation: fadeIn 3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.release-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+
+    50%,
+    100% {
+        left: 100%;
+    }
+}
+
+.release-text {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.release-date {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* Countdown timer */
+.upcoming-data-container.countdown {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 60px;
+    animation: fadeIn 3.5s ease;
+}
+
+.time-unit {
+    background: rgba(255,255,255,.1);
+    backdrop-filter: blur(10px);
+    padding: 30px 25px;
+    border-radius: 12px;
+    min-width: 120px;
+    transition: all 0.3s ease;
+}
+
+.time-unit:hover {
+    transform: translateY(-8px) scale(1.05);
+    border-color: rgba(var(--bs-primary-rgb), 0.5);
+}
+
+.time-value {
+    font-size: 56px;
+    font-weight: bold;
+    display: block;
+    color: var(--bs-heading-color);
+}
+
+.time-label {
+    font-size: 14px;
+    color: var(--bs-body-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 12px;
+}
+
+/* CTA Buttons */
+.cta-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 50px;
+    animation: fadeIn 4s ease;
+    flex-wrap: wrap;
+    margin-top: 6rem;
+}
+
+
+.device-restricted-section {
+    height: 100vh; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    background: var(--bs-body-bg); 
+    z-index: 9999; 
+    overflow: hidden;
+    padding: 2em 0;
+    &.page-episode { 
+        position: static !important; 
+    }
+    &.playlist-login-limit-restriction {
+        position: static !important; 
+        height: auto;
+    }
+}
+
+.st-media-player-single {
+    .upcoming-image-box {
+        height: 100%;
+    }
+}
+
+.upcoming-image-box {
+    position: relative;
+    background-position: top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 2rem 1rem;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    &::after {
+        position: absolute;
+        content: "";
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(var(--bs-body-bg-rgb), .6);
+    }
+    .upcoming-content-data {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.css_prefix-video-player:has(.upcoming-image-box) {
+    height: 100vh;
+}
+
+a.btn.remind-me-big-btn {
+    padding: 1rem 2rem;
+}
+
+.episode-upcoming-player {
+    .upcoming-image-box {
+        height: 70vh;
+    }
+}
+
+.episode-limit-login-player {
+    .device-restricted-section.page-episode {
+        min-height: auto;
+        height: auto;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .upcoming-data-container.countdown {
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .time-unit {
+        min-width: 90px;
+        padding: 20px 15px;
+    }
+
+    .time-value {
+        font-size: 40px;
+    }
+
+    .cta-container {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 0;
+    }    
+}
+
+@media (max-width: 575px) {
+    .time-unit {
+        min-width: 80px;
+        padding: 12px 5px;
+        .time-value {
+            font-size: 20px;
+        }
+        .time-label {
+            font-size: 12px;
+        }
+    }
+}
+
+@media (max-width: 499px) {
+    .upcoming-image-box {
+        height: auto;
+    }
+}
+
+@media (max-width: 479px) {
+    .release-banner{
+        margin-bottom: 20px;
+    }
+    .episode-upcoming-player .cta-container {
+        margin-top: 2rem;
+    }
+    .episode-upcoming-player {
+        .upcoming-image-box {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+    .time-unit {
+        min-width: 58px;
+        padding: 12px 5px;
+        .time-value {
+            font-size: 16px;
+        }
+        .time-label {
+            font-size: 10px;
+            letter-spacing: .5px;    
+        }
+    }
+}

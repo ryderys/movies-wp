@@ -1,0 +1,29 @@
+.person-info-details {
+    .person-category {
+        padding-right: 0;
+
+        li {
+            &::after {
+                right: auto;
+                left: -1.1em;
+            }
+        }
+    }
+}
+
+.person-information {
+    .person-birth-detail {
+        li {
+            &::after {
+                right: auto;
+                left: -1.1em;
+            }
+
+            &:last-child {
+                &::after {
+                    content: none;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,4498 @@
+# Copyright (C) 2025 iqonic
+# This file is distributed under the same license as the Streamit plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Streamit 1.3.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/streamit\n"
+"Last-Translator: \n"
+"Language-Team: Persian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-11-20T06:50:28+00:00\n"
+"PO-Revision-Date: 2025-11-26 14:17+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: streamit-core\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Loco-Version: 2.8.0; wp-6.8.3; php-8.2.12"
+
+#: admin/view/import/html-general-settings.php:72
+msgid " OMDB API Key ( On/Off ) "
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:48
+msgid " TMDb API Key ( On/Off ) "
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:96
+msgid " VIMEO API Key ( On/Off ) "
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:120
+msgid " YouTube API Key ( On/Off ) "
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:228
+msgid "#"
+msgstr ""
+
+#: includes/functions/pmp/streamit-pmp-function.php:688
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:377
+msgid "%s %s"
+msgstr ""
+
+#: admin/class-streamit-routes-handler.php:186
+msgid "%s dependency file not found at the desired location"
+msgstr ""
+
+#: includes/class-streamit-validator.php:118
+msgid "%s is required"
+msgstr ""
+
+#: includes/class-streamit-validator.php:127
+msgid "%s must be a boolean"
+msgstr ""
+
+#: includes/class-streamit-validator.php:119
+msgid "%s must be a string"
+msgstr ""
+
+#: includes/class-streamit-validator.php:121
+msgid "%s must be a valid date"
+msgstr ""
+
+#: includes/class-streamit-validator.php:124
+msgid "%s must be a valid email address"
+msgstr ""
+
+#: includes/class-streamit-validator.php:126
+msgid "%s must be a valid URL"
+msgstr ""
+
+#: includes/class-streamit-validator.php:128
+msgid "%s must be an array"
+msgstr ""
+
+#: includes/class-streamit-validator.php:120
+msgid "%s must be an integer"
+msgstr ""
+
+#: includes/class-streamit-validator.php:129
+msgid "%s must be serializable"
+msgstr ""
+
+#: includes/theme/Widget/navigation-menu.php:87
+msgid "&mdash; Select &mdash;"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:198
+#: admin/listable/movie/class-streamit-movielisttable.php:223
+#: admin/listable/person/class-streamit-personlisttable.php:330
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:228
+#: admin/listable/video/class-streamit-videolistable.php:223
+msgid "0 views"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:570
+msgid "<p>Thank you for your Pay-Per-View purchase!</p>"
+msgstr ""
+
+#: includes/theme/Widget/download-app.php:14
+msgid "A widget to display app download links."
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movielisttable.php:128
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:131
+#: admin/listable/video/class-streamit-videolistable.php:130
+#: admin/view/invoice-template/html-invoice-template.php:289
+#: admin/view/invoice-template/html-invoice-template.php:317
+msgid "Access"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:143
+#: admin/content-import/streamit-tmdb_movie-function.php:142
+#: admin/content-import/streamit-tmdb_tvshow-function.php:155
+msgid "Access denied. You do not have permission to access this resource."
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:468
+#: includes/classes/pmp/class-streamit-pmp.php:484
+msgid "Access Duration"
+msgstr ""
+
+#: includes/functions/helper/streamit-helper-function.php:1027
+msgid "Account Settings"
+msgstr "تنظیمات حساب کاربری"
+
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:70
+#: admin/listable/person/class-streamit-person-categorylisttable.php:38
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:101
+#: admin/listable/video/class-streamit-video-categorylistable.php:101
+msgid "Action"
+msgstr ""
+
+#: admin/listable/comment/class-streamit-commentlistable.php:37
+#: admin/listable/episode/class-streamit-episode-playlistlistable.php:100
+#: admin/listable/episode/class-streamit-episodelisttable.php:69
+#: admin/listable/movie/class-streamit-movie-playlistlistable.php:130
+#: admin/listable/movie/class-streamit-movie-taglistable.php:128
+#: admin/listable/movie/class-streamit-movielisttable.php:131
+#: admin/listable/person/class-streamit-person-taglisttable.php:100
+#: admin/listable/person/class-streamit-personlisttable.php:40
+#: admin/listable/tvshow/class-streamit-tvshow-playlistlistable.php:69
+#: admin/listable/tvshow/class-streamit-tvshow-taglistable.php:99
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:134
+#: admin/listable/video/class-streamit-video-playlistlistable.php:38
+#: admin/listable/video/class-streamit-video-taglistable.php:36
+#: admin/listable/video/class-streamit-videolistable.php:133
+msgid "Actions"
+msgstr ""
+
+#: admin/view/movie-meta/html-cast-tab.php:34
+#: admin/view/movie-meta/html-crew-tab.php:36
+#: admin/view/tvshow-meta/html-cast-tab.php:33
+#: admin/view/tvshow-meta/html-crew-tab.php:34
+msgid "Add"
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-category.php:73
+#: admin/view/video-forms/html-entry-video-category.php:88
+msgid "Add Category"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:762
+msgid ""
+"Add custom features and benefits that will be displayed in the membership "
+"plan selection interface. These features help users understand what's "
+"included in each plan."
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:169
+msgid "Add Episode"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:69
+msgid "Add Episodes"
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-genre.php:105
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:100
+msgid "Add Genre"
+msgstr ""
+
+#: admin/view/movie-forms/html-add-movie-tamplate.php:162
+msgid "Add Movie"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:23
+#: admin/class-streamit-person-menu.php:22
+#: admin/class-streamit-tvshow-menu.php:22
+#: admin/class-streamit-video-menu.php:25
+#: admin/view/episode-forms/html-entry-tvshow-template.php:16
+#: admin/view/movie-forms/html-entry-movie.php:24
+#: admin/view/person-forms/html-entry-person-template.php:18
+#: admin/view/tvshow-forms/html-entry-tvshow.php:18
+#: admin/view/video-forms/html-entry-video.php:19
+msgid "Add New"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:37
+#: admin/class-streamit-video-menu.php:42
+#: admin/view/person-forms/html-entry-person-category.php:12
+msgid "Add New Category"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:77
+#: admin/view/episode-forms/html-add-episode-template.php:15
+msgid "Add New Episode"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:815
+msgid "Add New Feature"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:40
+#: admin/class-streamit-tvshow-menu.php:37
+#: admin/view/movie-forms/html-entry-movie-genre.php:14
+msgid "Add New Genre"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:12
+msgid "Add new genre"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:22
+#: admin/view/movie-forms/html-add-movie-tamplate.php:15
+msgid "Add New Movie"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:21
+#: admin/view/person-forms/html-add-person-template.php:14
+msgid "Add New Person"
+msgstr ""
+
+#: admin/view/episode-forms/html-entry-episode-playlist.php:12
+#: admin/view/movie-forms/html-entry-movie-playlist.php:13
+#: admin/view/tvshow-forms/html-entry-tvshow-playlist.php:12
+msgid "Add New Playlist"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:77
+#: admin/class-streamit-tvshow-menu.php:93
+#: admin/class-streamit-video-menu.php:78
+msgid "Add New Playlists"
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-tag.php:14
+#: admin/view/person-forms/html-entry-person-tag.php:12
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:13
+msgid "Add New Tag"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:58
+#: admin/class-streamit-person-menu.php:53
+#: admin/class-streamit-tvshow-menu.php:53
+#: admin/class-streamit-video-menu.php:60
+msgid "Add New Tags"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:15
+msgid "Add New TV Show"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:21
+msgid "Add New TVshow"
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:24
+#: admin/view/video-forms/html-add-video-tamplate.php:15
+msgid "Add New Video"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-category.php:11
+msgid "Add New Video Category"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-playlist.php:15
+msgid "Add New Video Playlist"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-tag.php:12
+msgid "Add New Video Tag"
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-category.php:55
+#: admin/view/video-forms/html-entry-video-category.php:53
+msgid "Add Parent Category"
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-genre.php:63
+msgid "Add Parent Genre"
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:161
+msgid "Add Person"
+msgstr ""
+
+#: admin/view/episode-forms/html-entry-episode-playlist.php:50
+#: admin/view/movie-forms/html-entry-movie-playlist.php:47
+#: admin/view/tvshow-forms/html-entry-tvshow-playlist.php:50
+msgid "Add Playlist"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-seasons-episodes-tab.php:8
+msgid "Add Season"
+msgstr ""
+
+#: admin/view/episode-meta/html-source-tab.php:9
+#: admin/view/movie-meta/html-source-tab.php:9
+msgid "Add Source"
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-tag.php:66
+#: admin/view/person-forms/html-entry-person-tag.php:61
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:67
+msgid "Add Tag"
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:504
+msgid "Add to Menu"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:164
+msgid "Add TV Show"
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:161
+msgid "Add Video"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-playlist.php:55
+msgid "Add Video Playlist"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-tag.php:63
+msgid "Add Video Tag"
+msgstr ""
+
+#: includes/theme/Widget/navigation-menu.php:100
+msgid "Additional CSS class:"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:194
+#: admin/class-streamit-tvshow-menu.php:206
+#: admin/class-streamit-tvshow-menu.php:441
+#: admin/class-streamit-video-menu.php:161
+msgid "Additional Data"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:259
+msgid "Address"
+msgstr ""
+
+#: includes/redux_option/fields/spacing/class-redux-spacing.php:169
+msgid "All"
+msgstr ""
+
+#: admin/listable/comment/class-streamit-commentlistable.php:209
+#: admin/listable/episode/class-streamit-episodelisttable.php:249
+#: admin/listable/movie/class-streamit-movielisttable.php:188
+#: admin/listable/person/class-streamit-personlisttable.php:182
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:184
+#: admin/listable/video/class-streamit-videolistable.php:183
+msgid "All (%d)"
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:258
+msgid "All data imported successfully."
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:79
+msgid "All Video Playlists"
+msgstr ""
+
+#: includes/redux_option/Options/Page/download.php:16
+msgid "Allow Download?"
+msgstr ""
+
+#: includes/redux_option/Options/Page/download.php:27
+msgid "Allow Non-Logged-In Users?"
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:21
+msgid "Also Known As"
+msgstr ""
+
+#: admin/class-streamit-admin.php:179
+msgid "AM"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:424
+msgid "Amount Paid"
+msgstr ""
+
+#: includes/redux_option/templates/panel/header.tpl.php:32
+msgid "and"
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:39
+#: admin/view/tvshow-meta/html-pmp-tab.php:39
+#: admin/view/video-meta/html-pmp-tab.php:39
+msgid "Any One of Them(Plan or PPV)"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:152
+#: admin/content-import/streamit-tmdb_movie-function.php:151
+#: admin/content-import/streamit-tmdb_tvshow-function.php:164
+msgid "API error occurred: %s"
+msgstr ""
+
+#: admin/content-import/streamit-vimeo-function.php:132
+msgid "API request failed"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:129
+#: admin/content-import/streamit-tmdb_movie-function.php:128
+#: admin/content-import/streamit-tmdb_tvshow-function.php:141
+#: admin/content-import/streamit-youtube_movie-function.php:101
+#: admin/content-import/streamit-youtube_video-function.php:114
+msgid "API request failed (HTTP %d): %s"
+msgstr ""
+
+#: admin/content-import/streamit-vimeo-function.php:127
+msgid "API request failed with status code "
+msgstr ""
+
+#: admin/view/comment-forms/html-edit-comment.php:110
+msgid "Approve"
+msgstr ""
+
+#: admin/listable/comment/class-streamit-commentlistable.php:215
+msgid "Approved (%d)"
+msgstr ""
+
+#: admin/class-streamit-admin.php:155
+msgid "Are you sure you want to delete the selected items?"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:66
+#: admin/listable/person/class-streamit-personlisttable.php:37
+#: admin/view/comment-forms/html-edit-comment.php:33
+#: admin/view/episode-forms/html-add-episode-template.php:57
+#: admin/view/movie-forms/html-add-movie-tamplate.php:54
+#: admin/view/person-forms/html-add-person-template.php:53
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:56
+#: admin/view/video-forms/html-add-video-tamplate.php:56
+msgid "Author"
+msgstr ""
+
+#: admin/view/comment-forms/html-edit-comment.php:47
+msgid "Author Email"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:472
+msgid "Available until"
+msgstr ""
+
+#: admin/view/person-meta/html-personal-tab.php:21
+msgid "Awards"
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:257
+msgid "Batch imported, send next request."
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:239
+msgid "Bill To"
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:45
+msgid "Birth Date"
+msgstr ""
+
+#: includes/redux_option/fields/spacing/class-redux-spacing.php:246
+msgid "Bottom"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:169
+#: admin/class-streamit-tvshow-menu.php:181
+msgid "Cast"
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:9
+msgid "Cast & Crew"
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:30
+msgid "Cast button title"
+msgstr ""
+
+#: admin/class-streamit-admin.php:262
+msgid "Catalog and search results"
+msgstr ""
+
+#: admin/class-streamit-admin.php:263
+msgid "Catalog only"
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:97
+#: admin/view/tvshow-meta/html-general-tab.php:44
+#: admin/view/video-meta/html-general-tab.php:85
+msgid "Catalog Visibility"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:165
+#: admin/view/movie-meta/html-general-tab.php:172
+msgid "Catalog visibility"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:38
+msgid "Categories"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:124
+#: admin/class-streamit-video-menu.php:43
+#: admin/class-streamit-video-menu.php:151
+msgid "Category"
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-category.php:66
+#: admin/view/video-forms/html-entry-video-category.php:64
+msgid "Category Description"
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-category.php:23
+#: admin/view/video-forms/html-entry-video-category.php:21
+msgid "Category Name"
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-category.php:38
+#: admin/view/video-forms/html-entry-video-category.php:36
+msgid "Category Slug"
+msgstr ""
+
+#: admin/view/movie-meta/html-cast-tab.php:11
+#: admin/view/tvshow-meta/html-cast-tab.php:11
+msgid "Choose Cast"
+msgstr ""
+
+#: admin/view/movie-meta/html-crew-tab.php:13
+#: admin/view/movie-meta/html-crew-tab.php:23
+#: admin/view/tvshow-meta/html-crew-tab.php:12
+#: admin/view/tvshow-meta/html-crew-tab.php:21
+msgid "Choose crew member"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:36
+msgid "Choose Episode Method"
+msgstr ""
+
+#: includes/redux_option/Options/Page/download.php:28
+msgid "Choose if guests can download without logging in."
+msgstr ""
+
+#: includes/redux_option/Options/Page/download.php:17
+msgid "Choose if you want to allow users to see the download button."
+msgstr ""
+
+#: admin/view/meta/html-meta-upload-video.php:27
+msgid "Choose Media to Upload"
+msgstr ""
+
+#: admin/view/movie-meta/html-cast-tab.php:20
+msgid "Choose movie Cast"
+msgstr ""
+
+#: admin/view/movie-meta/html-genre-list-tab.php:31
+msgid "Choose Movie Genres"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:20
+msgid "Choose movie Method"
+msgstr ""
+
+#: admin/view/movie-meta/html-tag-list-tab.php:31
+msgid "Choose Movie Tags"
+msgstr ""
+
+#: admin/view/person-meta/html-genre-list-tab.php:32
+msgid "Choose Person Category"
+msgstr ""
+
+#: admin/view/person-meta/html-tag-list-tab.php:31
+msgid "Choose Person Tags"
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:57
+#: admin/view/person-meta/html-pmp-tab.php:26
+#: admin/view/tvshow-meta/html-pmp-tab.php:57
+#: admin/view/video-meta/html-pmp-tab.php:57
+msgid "Choose PMP Levels"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-genre-list-tab.php:29
+msgid "Choose TV Show Genres"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tag-list-tab.php:30
+msgid "Choose TV Show Tags"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-cast-tab.php:20
+msgid "Choose tvshow cast"
+msgstr ""
+
+#: admin/view/video-meta/html-category-list-tab.php:33
+msgid "Choose Video Category"
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:21
+msgid "Choose video Method"
+msgstr ""
+
+#: admin/view/video-meta/html-tag-list-tab.php:33
+msgid "Choose Video Tags"
+msgstr ""
+
+#: admin/view/meta/html-meta-datetime-field.php:106
+msgid "Clear date"
+msgstr ""
+
+#: admin/view/meta/html-meta-datetime-field.php:123
+msgid "Clear time"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:824
+msgid ""
+"Click on the input field, then choose a placeholder from the list below to "
+"insert it into the Description or Confirmation Message field."
+msgstr ""
+
+#: admin/view/meta/html-meta-datetime-field.php:102
+msgid "Click to select date"
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:15
+#: admin/view/movie-meta/html-movie-cast.php:18
+#: admin/view/movie-meta/html-movie-crew.php:17
+#: admin/view/movie-meta/html-movie-source.php:15
+#: admin/view/tvshow-meta/html-tvshow-cast.php:16
+#: admin/view/tvshow-meta/html-tvshow-crew.php:17
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:15
+msgid "Click to toggle"
+msgstr ""
+
+#: admin/view/comment-forms/html-edit-comment.php:93
+msgid "Comment Content"
+msgstr ""
+
+#: admin/view/comment-forms/html-edit-comment.php:109
+msgid "Comment Status"
+msgstr ""
+
+#: admin/controllers/class.streamit-comment-controller.php:65
+msgid "Comment Status Upgraded."
+msgstr ""
+
+#: includes/functions/notification/streamit-notification-function.php:105
+msgid ""
+"Congratulations! You have successfully purchased the %s plan. Enjoy your new "
+"benefits!"
+msgstr ""
+
+#: includes/functions/notification/streamit-notification-function.php:106
+msgid ""
+"Congratulations! You have successfully purchased the %s. Enjoy your new "
+"benefits!"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:113
+#: admin/view/movie-forms/html-add-movie-tamplate.php:108
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:111
+#: includes/redux_option/Options/content.php:15
+msgid "Content"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:828
+msgid "Content Duration"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:10
+#: admin/class-streamit-content-import.php:11
+msgid "Content Import"
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_movie-function.php:281
+#: admin/content-import/streamit-tmdb_tvshow-function.php:308
+#: admin/content-import/streamit-vimeo-function.php:266
+msgid "Content Import Successfully."
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:827
+msgid "Content Name"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:829
+msgid "Content Price"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:826
+msgid "Content Type"
+msgstr ""
+
+#: includes/redux_option/Options/limit_login.php:6
+msgid "Control number of simultaneous logins per user."
+msgstr ""
+
+#: admin/view/permalink/html-permalink-section.php:11
+msgid "Copy URL"
+msgstr ""
+
+#: admin/view/permalink/html-permalink-section.php:13
+msgid "Copying..."
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode.php:837
+msgid "Could not delete episode from the database"
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode-playlist.php:460
+msgid "Could not delete episode tag from the database"
+msgstr ""
+
+#: includes/classes/movie/class-streamit-movie.php:1219
+msgid "Could not delete movie from the database"
+msgstr ""
+
+#: includes/classes/movie/class-streamit-movie-playlist.php:474
+msgid "Could not delete movie tag from the database"
+msgstr ""
+
+#: includes/classes/notification/class-streamit-notification.php:546
+msgid "Could not delete notification from the database"
+msgstr ""
+
+#: includes/classes/person/class-streamit-person.php:838
+msgid "Could not delete person from the database"
+msgstr ""
+
+#: includes/classes/term/class-streamit-term.php:639
+msgid "Could not delete term from the database"
+msgstr ""
+
+#: includes/classes/term/class-streamit-term.php:645
+msgid "Could not delete term relationship from the database"
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow.php:1205
+msgid "Could not delete tvshow from the database"
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow-playlist.php:420
+msgid "Could not delete tvshow tag from the database"
+msgstr ""
+
+#: includes/classes/video/class-streamit-video.php:1189
+msgid "Could not delete video from the database"
+msgstr ""
+
+#: includes/classes/video/class-streamit-video-playlist.php:463
+msgid "Could not delete video playlist from the database"
+msgstr ""
+
+#: includes/classes/comment/class-streamit-comment.php:572
+msgid "Could not insert comment into the database"
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode.php:797
+msgid "Could not insert episode into the database"
+msgstr ""
+
+#: includes/classes/movie/class-streamit-movie.php:1175
+msgid "Could not insert movie into the database"
+msgstr ""
+
+#: includes/classes/notification/class-streamit-notification.php:500
+msgid "Could not insert notification into the database"
+msgstr ""
+
+#: includes/classes/person/class-streamit-person.php:798
+msgid "Could not insert person into the database"
+msgstr ""
+
+#: includes/classes/term/class-streamit-term.php:281
+msgid "Could not insert term into the database"
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow.php:1163
+msgid "Could not insert tvshow into the database"
+msgstr ""
+
+#: includes/classes/video/class-streamit-video.php:1149
+msgid "Could not insert video into the database"
+msgstr ""
+
+#: includes/classes/comment/class-streamit-comment.php:758
+msgid "Could not update comment in the database"
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode.php:1011
+msgid "Could not update episode in the database"
+msgstr ""
+
+#: includes/classes/movie/class-streamit-movie.php:1405
+#: includes/classes/notification/class-streamit-notification.php:651
+msgid "Could not update movie in the database"
+msgstr ""
+
+#: includes/classes/person/class-streamit-person.php:1017
+msgid "Could not update person in the database"
+msgstr ""
+
+#: includes/classes/term/class-streamit-term.php:370
+msgid "Could not update term in the database"
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow.php:1386
+msgid "Could not update tvshow in the database"
+msgstr ""
+
+#: includes/classes/video/class-streamit-video.php:1367
+msgid "Could not update video in the database"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:69
+#: admin/listable/movie/class-streamit-movie-taglistable.php:127
+#: admin/listable/person/class-streamit-person-categorylisttable.php:37
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:100
+#: admin/listable/tvshow/class-streamit-tvshow-taglistable.php:98
+#: admin/listable/video/class-streamit-video-categorylistable.php:100
+#: admin/listable/video/class-streamit-video-taglistable.php:35
+msgid "Count"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:174
+#: admin/class-streamit-tvshow-menu.php:186
+msgid "Crew"
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:51
+msgid "Crew button title"
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:224
+msgid "CSV file is empty or headers are missing."
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:200
+msgid "CSV file not found."
+msgstr ""
+
+#: admin/class-streamit-content-import.php:41
+msgid "CSV Import"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:231
+msgid "Customer ID:"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:169
+#: admin/content-import/streamit-tmdb_movie-function.php:167
+msgid "Data fatched successfully."
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:64
+#: admin/content-import/streamit-tmdb_movie-function.php:64
+#: admin/content-import/streamit-youtube_movie-function.php:47
+#: admin/content-import/streamit-youtube_video-function.php:53
+msgid "Data fetched successfully"
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_tvshow-function.php:76
+#: admin/content-import/streamit-tmdb_tvshow-function.php:182
+#: admin/content-import/streamit-vimeo-function.php:82
+#: admin/content-import/streamit-vimeo-function.php:157
+#: admin/content-import/streamit-youtube_movie-function.php:129
+#: admin/content-import/streamit-youtube_video-function.php:142
+msgid "Data fetched successfully."
+msgstr ""
+
+#: includes/classes/term/class-streamit-term.php:591
+msgid "Database query failed."
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:103
+#: admin/view/movie-meta/html-movie-source.php:110
+msgid "Date Added"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:67
+#: admin/listable/movie/class-streamit-movielisttable.php:122
+#: admin/listable/person/class-streamit-personlisttable.php:38
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:125
+#: admin/listable/video/class-streamit-videolistable.php:124
+msgid "Date and Time"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:470
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/view/person-meta/html-general-tab.php:59
+msgid "Death Date"
+msgstr ""
+
+#: includes/redux_option/Options/limit_login.php:21
+msgid "Default Login Limit"
+msgstr ""
+
+#: includes/redux_option/Options/limit_login.php:22
+msgid "Default number of devices a user can stay logged in simultaneously."
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episode-playlistlistable.php:113
+#: admin/listable/episode/class-streamit-episodelisttable.php:165
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:143
+#: admin/listable/movie/class-streamit-movie-playlistlistable.php:143
+#: admin/listable/movie/class-streamit-movie-taglistable.php:141
+#: admin/listable/movie/class-streamit-movielisttable.php:165
+#: admin/listable/person/class-streamit-person-categorylisttable.php:51
+#: admin/listable/person/class-streamit-person-taglisttable.php:111
+#: admin/listable/person/class-streamit-personlisttable.php:161
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:114
+#: admin/listable/tvshow/class-streamit-tvshow-playlistlistable.php:82
+#: admin/listable/tvshow/class-streamit-tvshow-taglistable.php:112
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:162
+#: admin/listable/video/class-streamit-video-categorylistable.php:114
+#: admin/listable/video/class-streamit-video-playlistlistable.php:50
+#: admin/listable/video/class-streamit-video-taglistable.php:110
+#: admin/listable/video/class-streamit-videolistable.php:157
+msgid "Delete"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:147
+#: admin/listable/movie/class-streamit-movielisttable.php:151
+#: admin/listable/person/class-streamit-personlisttable.php:148
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:152
+#: admin/listable/video/class-streamit-videolistable.php:150
+msgid "Delete Permanently"
+msgstr ""
+
+#: admin/class-streamit-meta-controller.php:79
+msgid "Delete permanently"
+msgstr ""
+
+#: admin/view/movie-meta/html-movie-crew.php:45
+#: admin/view/tvshow-meta/html-tvshow-crew.php:45
+msgid "Department"
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-genre.php:93
+#: admin/view/movie-forms/html-entry-movie-tag.php:56
+msgid "Description"
+msgstr ""
+
+#: includes/redux_option/templates/panel/header.tpl.php:12
+#: includes/redux_option/templates/panel/header.tpl.php:47
+msgid "Developer Mode Enabled"
+msgstr ""
+
+#: includes/functions/helper/streamit-helper-function.php:1010
+msgid "Device Limit"
+msgstr "محدودیت دستگاه ها"
+
+#: includes/redux_option/Options/limit_login.php:15
+msgid "Disabled"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:363
+#: includes/classes/pmp/class-streamit-pmp.php:858
+msgid "Discount"
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:113
+#: admin/view/tvshow-meta/html-pmp-tab.php:116
+#: admin/view/video-meta/html-pmp-tab.php:116
+msgid "Discount (%)"
+msgstr ""
+
+#: includes/theme/Widget/footer-contact.php:115
+msgid "Display Address?"
+msgstr ""
+
+#: includes/theme/Widget/footer-contact.php:108
+msgid "Display Email?"
+msgstr ""
+
+#: includes/theme/Widget/navigation-menu.php:97
+msgid "Display Menu Text?"
+msgstr ""
+
+#: includes/theme/Widget/navigation-menu.php:17
+msgid "Display Navigation Menu Links Using Toggle."
+msgstr ""
+
+#: includes/theme/Widget/footer-contact.php:101
+msgid "Display Phone Number?"
+msgstr ""
+
+#: includes/theme/Widget/recent-post.php:219
+msgid "Display post Author Name?"
+msgstr ""
+
+#: includes/theme/Widget/recent-post.php:212
+msgid "Display post Date?"
+msgstr ""
+
+#: includes/theme/Widget/social_media.php:75
+msgid "Display social text insted of icon?"
+msgstr ""
+
+#: includes/redux_option/Options/Page/counter.php:19
+msgid "Display View Count On Detail Page/Screen"
+msgstr ""
+
+#: includes/redux_option/Options/Page/download.php:8
+msgid "Download Button"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:634
+msgid "Download Invoice"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:112
+#: admin/view/video-meta/html-additional-tab.php:137
+msgid "Download Link"
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:118
+#: admin/view/movie-meta/html-movie-source.php:126
+msgid "Download URL"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:81
+#: admin/view/movie-forms/html-add-movie-tamplate.php:77
+#: admin/view/person-forms/html-add-person-template.php:77
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:79
+#: admin/view/video-forms/html-add-video-tamplate.php:80
+msgid "Draft"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:255
+#: admin/listable/movie/class-streamit-movielisttable.php:194
+#: admin/listable/person/class-streamit-personlisttable.php:188
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:190
+#: admin/listable/video/class-streamit-videolistable.php:189
+msgid "Draft (%d)"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:45
+msgid "e.g. 2025"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:789
+msgid "e.g., Only 1 device"
+msgstr ""
+
+#: admin/class-streamit-comment-menu.php:27
+#: admin/class-streamit-meta-controller.php:87
+msgid "Edit"
+msgstr ""
+
+#: admin/class-streamit-comment-menu.php:26
+#: admin/view/comment-forms/html-edit-comment.php:14
+msgid "Edit Comment"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:15
+#: includes/classes/class-streamit-theme-template.php:351
+msgid "Edit Episode"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:101
+#: admin/class-streamit-tvshow-menu.php:102
+msgid "Edit Episode Playlist"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:31
+#: admin/class-streamit-movie-menu.php:32
+#: admin/view/movie-forms/html-add-movie-tamplate.php:15
+#: includes/classes/class-streamit-theme-template.php:274
+msgid "Edit Movie"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:49
+#: admin/class-streamit-movie-menu.php:50
+msgid "Edit Movie Genre"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:86
+#: admin/class-streamit-movie-menu.php:87
+msgid "Edit Movie Playlist"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:67
+#: admin/class-streamit-movie-menu.php:68
+msgid "Edit Movie Tag"
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:14
+#: includes/classes/class-streamit-theme-template.php:447
+msgid "Edit Person"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:29
+#: admin/class-streamit-person-menu.php:30
+msgid "Edit person"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:45
+#: admin/class-streamit-person-menu.php:46
+msgid "Edit Person Category"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:61
+#: admin/class-streamit-person-menu.php:62
+msgid "Edit Person Tag"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:15
+msgid "Edit TV Show"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:30
+#: includes/classes/class-streamit-theme-template.php:399
+msgid "Edit Tv Show"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:46
+msgid "Edit Tv Show Category"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:29
+msgid "Edit TVshow"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:45
+msgid "Edit TVshow Category"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:85
+#: admin/class-streamit-tvshow-menu.php:86
+msgid "Edit TVshow Episode"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:61
+#: admin/class-streamit-tvshow-menu.php:62
+msgid "Edit TVshow Tag"
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:33
+#: admin/class-streamit-video-menu.php:34
+#: admin/view/video-forms/html-add-video-tamplate.php:15
+#: includes/classes/class-streamit-theme-template.php:322
+msgid "Edit Video"
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:51
+#: admin/class-streamit-video-menu.php:52
+msgid "Edit Video Category"
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:87
+#: admin/class-streamit-video-menu.php:88
+msgid "Edit Video Playlist"
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:69
+#: admin/class-streamit-video-menu.php:70
+msgid "Edit Video Tag"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:247
+msgid "Email"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:39
+msgid "Embed Episode"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:70
+msgid "Embed Episode Content"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:23
+msgid "Embed movie"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:56
+msgid "Embed Movie Content"
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:24
+msgid "Embed video"
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:110
+#: admin/view/video-meta/html-general-tab.php:56
+msgid "Embed video Content"
+msgstr ""
+
+#: includes/redux_option/Options/limit_login.php:12
+msgid "Enable Login Limit"
+msgstr ""
+
+#: includes/redux_option/Options/limit_login.php:14
+msgid "Enabled"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:58
+msgid "Enter a brief description of this season"
+msgstr ""
+
+#: admin/view/permalink/html-permalink-section.php:16
+msgid ""
+"Enter a custom base to use. A base must be set or WordPress will use the "
+"default instead."
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:22
+msgid "Enter alternate names of the person"
+msgstr ""
+
+#: admin/view/person-meta/html-personal-tab.php:24
+msgid "Enter awards of the person"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:115
+msgid "Enter content of the episode."
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:112
+msgid "Enter content of the video."
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:114
+msgid "Enter Discount Percent"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-pmp-tab.php:117
+#: admin/view/video-meta/html-pmp-tab.php:117
+msgid "Enter discount percent"
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:80
+#: admin/view/tvshow-meta/html-pmp-tab.php:80
+#: admin/view/video-meta/html-pmp-tab.php:80
+msgid "Enter duration in days"
+msgstr ""
+
+#: admin/view/person-meta/html-personal-tab.php:65
+msgid "Enter eelatives of the person"
+msgstr ""
+
+#: admin/view/movie-forms/html-add-movie-tamplate.php:146
+msgid "Enter excerpt content of the movie."
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:147
+msgid "Enter excerpt content of the person"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:150
+msgid "Enter excerpt content of the TVshow."
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:147
+msgid "Enter excerpt content of the video."
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:153
+msgid "Enter excerpt of the episode."
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-genre.php:95
+msgid "Enter genre description here."
+msgstr ""
+
+#: admin/view/person-meta/html-personal-tab.php:52
+msgid "Enter height of the person"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:129
+msgid "Enter IMDb ID of the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:130
+msgid "Enter IMDb ID of the movie."
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:74
+msgid "Enter IMDb ID of the person"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-general-tab.php:21
+msgid "Enter IMDb ID of the TV Show."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:148
+#: admin/view/movie-meta/html-additional-tab.php:131
+#: admin/view/tvshow-meta/html-additional-tab.php:114
+msgid "Enter IMDb rating manually"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:149
+#: admin/view/movie-meta/html-additional-tab.php:134
+#: admin/view/tvshow-meta/html-additional-tab.php:117
+msgid "Enter IMDb rating."
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-tag.php:30
+#: admin/view/person-forms/html-entry-person-tag.php:26
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:30
+#: admin/view/video-forms/html-entry-video-tag.php:27
+msgid "Enter name of the tag."
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:98
+#: admin/view/tvshow-meta/html-pmp-tab.php:99
+#: admin/view/video-meta/html-pmp-tab.php:99
+msgid "Enter price"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:31
+msgid "Enter season name"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:61
+#: admin/view/movie-meta/html-additional-tab.php:83
+#: admin/view/person-meta/html-general-tab.php:127
+#: admin/view/tvshow-meta/html-additional-tab.php:82
+#: admin/view/video-meta/html-additional-tab.php:59
+msgid "Enter SEO description."
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-category.php:41
+msgid "Enter slug for the category"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-category.php:39
+msgid "Enter slug of the category."
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:98
+msgid "Enter slug of the episode."
+msgstr ""
+
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:44
+msgid "Enter slug of the genre"
+msgstr ""
+
+#: admin/view/movie-forms/html-add-movie-tamplate.php:94
+msgid "Enter slug of the movie."
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:95
+msgid "Enter slug of the person."
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-tag.php:43
+#: admin/view/person-forms/html-entry-person-tag.php:41
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:45
+#: admin/view/video-forms/html-entry-video-tag.php:42
+msgid "Enter slug of the tag."
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:96
+msgid "Enter slug of the tvshow."
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:97
+msgid "Enter slug of the video."
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-tag.php:59
+msgid "Enter tag description here."
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:46
+msgid "Enter the birth date of Person."
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:34
+msgid "Enter the birth place of Person."
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:61
+msgid "Enter the death date of Person."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:114
+#: admin/view/episode-meta/html-episodes-source.php:119
+#: admin/view/movie-meta/html-movie-source.php:127
+msgid "Enter the download link."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:72
+msgid "Enter the embed content for the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:58
+msgid "Enter the embed content to the movie."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:117
+msgid "Enter the episode censor rating."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:153
+msgid "Enter the episode label."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:24
+msgid "Enter the episode number."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:88
+msgid "Enter the external URL for the episode."
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:51
+#: admin/view/movie-meta/html-general-tab.php:73
+#: admin/view/movie-meta/html-movie-source.php:50
+msgid "Enter the external URL to the video."
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:116
+msgid "Enter the movie censor rating."
+msgstr ""
+
+#: admin/view/episode-forms/html-entry-episode-playlist.php:27
+#: admin/view/movie-forms/html-entry-movie-playlist.php:27
+#: admin/view/tvshow-forms/html-entry-tvshow-playlist.php:27
+msgid "Enter the name of the playlist."
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-playlist.php:30
+msgid "Enter the name of the video playlist."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:237
+msgid "Enter the release date of the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:210
+msgid "Enter the release date of the movie."
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-genre.php:48
+msgid "Enter the slug of the genre."
+msgstr ""
+
+#: admin/view/episode-forms/html-entry-episode-playlist.php:42
+#: admin/view/movie-forms/html-entry-movie-playlist.php:40
+#: admin/view/tvshow-forms/html-entry-tvshow-playlist.php:42
+msgid "Enter the slug of the playlist."
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-playlist.php:47
+msgid "Enter the slug of the video playlist."
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:104
+msgid "Enter the source added date of the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-movie-source.php:111
+msgid "Enter the source added date of the movie."
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:90
+msgid "Enter the source language of the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-movie-source.php:78
+msgid "Enter the source language of the movie."
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:33
+msgid "Enter the source name of the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-movie-source.php:32
+msgid "Enter the source name of the movie."
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:76
+msgid "Enter the source quality of the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-movie-source.php:94
+msgid "Enter the source quality of the movie."
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-genre.php:32
+msgid "Enter the title of the genre."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:80
+#: admin/view/movie-meta/html-additional-tab.php:103
+#: admin/view/tvshow-meta/html-additional-tab.php:101
+msgid "Enter the trailer link."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-general-tab.php:60
+msgid "Enter the TV show censor rating."
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:99
+msgid "Enter the video censor rating."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:186
+msgid "Enter the views count of the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:116
+msgid "Enter the views count of the movie."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-additional-tab.php:132
+msgid "Enter the views count of the tvshow."
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:103
+msgid "Enter the views count of the video."
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-category.php:26
+#: admin/view/video-forms/html-entry-video-category.php:24
+msgid "Enter title of the category."
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:48
+msgid "Enter title of the episode."
+msgstr ""
+
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:29
+msgid "Enter title of the genre."
+msgstr ""
+
+#: admin/view/movie-forms/html-add-movie-tamplate.php:45
+msgid "Enter title of the movie."
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:44
+msgid "Enter title of the person."
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:46
+msgid "Enter title of the TVShow."
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:46
+msgid "Enter title of the video."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:141
+msgid "Enter TMDb ID of the episode."
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:144
+msgid "Enter TMDb ID of the movie."
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:86
+msgid "Enter TMDb ID of the person."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-general-tab.php:33
+msgid "Enter TMDb ID of the TV Show."
+msgstr ""
+
+#: admin/view/comment-forms/html-comment-entry.php:36
+msgid "Episode"
+msgstr ""
+
+#: admin/controllers/class.streamit-episodes-controller.php:161
+msgid "Episode added successfully."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:116
+msgid "Episode Censor Rating"
+msgstr ""
+
+#: admin/controllers/class.streamit-episodes-controller.php:343
+msgid "Episode deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-episodes-controller.php:193
+msgid "Episode ID and title are required."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:152
+msgid "Episode Label"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:21
+msgid "Episode Number"
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:508
+msgid "Episode Playlist"
+msgstr ""
+
+#: admin/controllers/class.streamit-episode-playlist-controller.php:34
+msgid "episode playlist added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-episode-playlist-controller.php:87
+#: admin/controllers/class.streamit-episode-playlist-controller.php:123
+msgid "episode playlist updated successfully."
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:94
+msgid "Episode Playlists"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:236
+msgid "Episode Release Date"
+msgstr ""
+
+#: admin/controllers/class.streamit-episodes-controller.php:366
+msgid "Episode Status Upgraded."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:105
+msgid "Episode Time Duration"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:45
+msgid "Episode Title"
+msgstr ""
+
+#: admin/controllers/class.streamit-episodes-controller.php:319
+msgid "Episode updated successfully."
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:50
+#: admin/view/episode-meta/html-general-tab.php:40
+#: admin/view/episode-meta/html-general-tab.php:84
+msgid "Episode URL"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:185
+msgid "Episode Views Count"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:69
+msgid "Episode(s)"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:70
+#: admin/view/episode-forms/html-entry-tvshow-template.php:13
+#: includes/classes/class-streamit-permalink-handler.php:449
+msgid "Episodes"
+msgstr ""
+
+#: includes/classes/term/class-streamit-term-relationship.php:276
+msgid "Error retrieving term relationships"
+msgstr ""
+
+#: includes/functions/pmp/streamit-pmp-function.php:1058
+msgid "Error: Invoice template file not found."
+msgstr ""
+
+#: includes/classes/helper/class-streamit-helper.php:95
+#: includes/classes/pmp/class-streamit-pmp.php:101
+msgid "Every 10 Minutes"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:151
+#: admin/view/movie-forms/html-add-movie-tamplate.php:144
+msgid "Excerpt"
+msgstr ""
+
+#: includes/redux_option/templates/panel/header.tpl.php:61
+msgid "Expand"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:36
+msgid "External Data Import"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:114
+#: admin/content-import/streamit-tmdb_movie-function.php:113
+#: admin/content-import/streamit-tmdb_tvshow-function.php:126
+#: admin/content-import/streamit-youtube_movie-function.php:87
+#: admin/content-import/streamit-youtube_video-function.php:100
+msgid ""
+"Failed to connect to the API. Please check your network or try again later."
+msgstr ""
+
+#: includes/classes/playlist-relation/class-streamit-playlist-relation.php:314
+msgid "Failed to delete playlist relations."
+msgstr ""
+
+#: includes/classes/term/class-streamit-term-relationship.php:193
+msgid "Failed to delete term relationship."
+msgstr ""
+
+#: includes/classes/term/class-streamit-term-relationship.php:160
+#: includes/classes/term/class-streamit-term-relationship.php:218
+msgid "Failed to delete term relationships."
+msgstr ""
+
+#: admin/content-import/streamit-import-csv-function.php:1020
+#: admin/content-import/streamit-omdb-function.php:392
+#: admin/content-import/streamit-tmdb_movie-function.php:564
+#: admin/content-import/streamit-tmdb_tvshow-function.php:696
+#: admin/content-import/streamit-vimeo-function.php:419
+#: admin/content-import/streamit-youtube_movie-function.php:313
+#: admin/content-import/streamit-youtube_video-function.php:353
+msgid "Failed to download image."
+msgstr ""
+
+#: admin/content-import/streamit-import-csv-function.php:1084
+msgid "Failed to download video."
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_tvshow-function.php:331
+msgid "Failed to fetch TV show data."
+msgstr ""
+
+#: admin/content-import/streamit-vimeo-function.php:296
+msgid "Failed to fetch video data from Vimeo."
+msgstr ""
+
+#: admin/content-import/streamit-youtube_movie-function.php:234
+#: admin/content-import/streamit-youtube_video-function.php:263
+msgid "Failed to fetch video data."
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode-playlist.php:215
+msgid "Failed to insert episode playlist"
+msgstr ""
+
+#: includes/classes/movie/class-streamit-movie-playlist.php:213
+msgid "Failed to insert movie playlist"
+msgstr ""
+
+#: includes/classes/playlist-relation/class-streamit-playlist-relation.php:218
+msgid "Failed to insert playlist relation."
+msgstr ""
+
+#: includes/classes/term/class-streamit-term-relationship.php:43
+msgid "Failed to insert term relationships."
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow-playlist.php:206
+msgid "Failed to insert tvshow playlist"
+msgstr ""
+
+#: includes/classes/video/class-streamit-video-playlist.php:218
+msgid "Failed to insert video playlist"
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:209
+msgid "Failed to open CSV file."
+msgstr ""
+
+#: includes/classes/term/class-streamit-term-relationship.php:83
+#: includes/classes/term/class-streamit-term-relationship.php:247
+#: includes/classes/term/class-streamit-term-relationship.php:311
+msgid "Failed to retrieve term relationships."
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode-playlist.php:426
+msgid "Failed to update episode playlist"
+msgstr ""
+
+#: includes/classes/movie/class-streamit-movie-playlist.php:440
+msgid "Failed to update movie playlist"
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode.php:1061
+msgid "Failed to update the episode status"
+msgstr ""
+
+#: includes/classes/movie/class-streamit-movie.php:1455
+msgid "Failed to update the movie status"
+msgstr ""
+
+#: includes/classes/notification/class-streamit-notification.php:706
+msgid "Failed to update the notification status"
+msgstr ""
+
+#: includes/classes/person/class-streamit-person.php:1068
+msgid "Failed to update the person status"
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow.php:1435
+msgid "Failed to update the tvshow status"
+msgstr ""
+
+#: includes/classes/video/class-streamit-video.php:1417
+msgid "Failed to update the vidoe status"
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow-playlist.php:390
+msgid "Failed to update tvshow playlist"
+msgstr ""
+
+#: includes/classes/video/class-streamit-video-playlist.php:426
+msgid "Failed to update video playlist"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:781
+msgid "Feature Text"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:794
+msgid "Feature Type"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:172
+#: admin/view/movie-meta/html-general-tab.php:150
+#: admin/view/person-meta/html-general-tab.php:104
+#: admin/view/tvshow-meta/html-general-tab.php:81
+#: admin/view/video-meta/html-general-tab.php:121
+msgid "Featured"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movielisttable.php:251
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:256
+#: admin/listable/video/class-streamit-videolistable.php:251
+#: admin/view/movie-meta/html-pmp-tab.php:36
+#: admin/view/tvshow-meta/html-pmp-tab.php:36
+#: admin/view/video-meta/html-pmp-tab.php:36
+msgid "Free"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:154
+#: admin/class-streamit-person-menu.php:119
+#: admin/class-streamit-tvshow-menu.php:176
+#: admin/class-streamit-tvshow-menu.php:431
+#: admin/class-streamit-video-menu.php:146
+msgid "General"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:46
+msgid "General Settings"
+msgstr ""
+
+#. translators: %s: $key Key to check
+#: includes/abstracts/abstract-streamit-data.php:391
+msgid ""
+"Generic add/update/get meta methods should not be used for internal meta "
+"data, including \"%s\". Use getters and setters."
+msgstr ""
+
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:88
+msgid "Genre Description"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:26
+msgid "Genre Name"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:41
+msgid "Genre Slug"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:41
+#: admin/class-streamit-movie-menu.php:184
+#: admin/class-streamit-tvshow-menu.php:38
+#: admin/class-streamit-tvshow-menu.php:196
+#: admin/view/movie-forms/html-add-movie-genre.php:23
+msgid "Genres"
+msgstr ""
+
+#: admin/view/person-meta/html-personal-tab.php:49
+#: includes/redux_option/fields/dimensions/class-redux-dimensions.php:185
+msgid "Height"
+msgstr ""
+
+#: admin/class-streamit-admin.php:265
+msgid "Hidden"
+msgstr ""
+
+#: admin/class-streamit-admin.php:166
+msgid ""
+"HLS streaming URL (.m3u8) requires the Live Streaming plugin to be active"
+msgstr ""
+
+#: admin/view/meta/html-meta-time-field.php:49
+msgid "Hours"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: streamit.php
+msgid "https://iqonic.design"
+msgstr ""
+
+#. Author URI of the plugin
+#: streamit.php
+msgid "https://iqonic.design/"
+msgstr ""
+
+#: admin/view/person-meta/html-personal-tab.php:38
+msgid "https://www.imdb.com"
+msgstr ""
+
+#: includes/redux_option/templates/panel/header.tpl.php:37
+msgid ""
+"If you are not a developer, your theme/plugin author shipped with developer "
+"mode enabled. Contact them directly to fix it."
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:64
+#: admin/listable/movie/class-streamit-movielisttable.php:120
+#: admin/listable/person/class-streamit-personlisttable.php:35
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:123
+#: admin/listable/video/class-streamit-videolistable.php:122
+msgid "Image"
+msgstr ""
+
+#: admin/content-import/streamit-import-csv-function.php:1058
+#: admin/content-import/streamit-omdb-function.php:430
+#: admin/content-import/streamit-tmdb_movie-function.php:602
+#: admin/content-import/streamit-tmdb_tvshow-function.php:733
+#: admin/content-import/streamit-vimeo-function.php:457
+#: admin/content-import/streamit-youtube_movie-function.php:351
+#: admin/content-import/streamit-youtube_video-function.php:391
+msgid "Image upload failed."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:128
+msgid "IMDb Episode ID"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:129
+#: admin/view/person-meta/html-general-tab.php:73
+#: admin/view/tvshow-meta/html-general-tab.php:20
+msgid "IMDb ID"
+msgstr ""
+
+#: admin/view/import/html-csv-import.php:64
+#: admin/view/import/html-data-import.php:121
+msgid "Import"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:798
+msgid "Include"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:823
+msgid "Insert Placeholders For Pay Per View"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:142
+#: admin/content-import/streamit-tmdb_movie-function.php:141
+#: admin/content-import/streamit-tmdb_tvshow-function.php:154
+msgid "Invalid API key. Please check your credentials."
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:86
+#: admin/content-import/streamit-tmdb_movie-function.php:85
+#: admin/content-import/streamit-tmdb_tvshow-function.php:98
+#: admin/content-import/streamit-youtube_movie-function.php:61
+#: admin/content-import/streamit-youtube_video-function.php:74
+msgid "Invalid API request URL."
+msgstr ""
+
+#: includes/functions/comment/streamit-comment-function.php:44
+msgid "Invalid comment ID"
+msgstr ""
+
+#: admin/class-streamit-comment-menu.php:50
+msgid "Invalid comment ID."
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:285
+msgid "Invalid Episode ID."
+msgstr ""
+
+#: admin/content-import/streamit-import-csv-function.php:1039
+#: admin/content-import/streamit-omdb-function.php:411
+#: admin/content-import/streamit-tmdb_movie-function.php:583
+#: admin/content-import/streamit-tmdb_tvshow-function.php:714
+#: admin/content-import/streamit-vimeo-function.php:438
+#: admin/content-import/streamit-youtube_movie-function.php:332
+#: admin/content-import/streamit-youtube_video-function.php:372
+msgid "Invalid file type. Only images are allowed."
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_tvshow-function.php:41
+msgid "Invalid filter provided."
+msgstr ""
+
+#: admin/content-import/streamit-import-csv-function.php:1002
+#: admin/content-import/streamit-omdb-function.php:374
+#: admin/content-import/streamit-tmdb_movie-function.php:546
+#: admin/content-import/streamit-tmdb_tvshow-function.php:678
+#: admin/content-import/streamit-vimeo-function.php:401
+#: admin/content-import/streamit-youtube_movie-function.php:295
+#: admin/content-import/streamit-youtube_video-function.php:335
+msgid "Invalid image URL."
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:133
+#: admin/class-streamit-movie-menu.php:241
+#: admin/class-streamit-movie-menu.php:257
+#: admin/class-streamit-movie-menu.php:273
+msgid "Invalid movie ID."
+msgstr ""
+
+#: admin/class-streamit-routes-handler.php:115
+msgid "Invalid nonce in request"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:270
+#: admin/content-import/streamit-vimeo-function.php:251
+#: admin/content-import/streamit-youtube_movie-function.php:211
+msgid "Invalid or empty import IDs provided."
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:99
+#: admin/class-streamit-person-menu.php:166
+#: admin/class-streamit-person-menu.php:182
+#: includes/functions/person/streamit-person-function.php:320
+msgid "Invalid person ID."
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow-playlist.php:279
+msgid "Invalid playlist ID"
+msgstr ""
+
+#: admin/controllers/class.streamit-episode-playlist-controller.php:69
+#: admin/controllers/class.streamit-movie-playlist-controller.php:64
+#: admin/controllers/class.streamit-movie-playlist-controller.php:102
+#: admin/controllers/class.streamit-tvshow-playlist-controller.php:69
+msgid "Invalid playlist ID."
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode-playlist.php:343
+msgid "Invalid playlist identifier"
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode.php:1043
+#: includes/classes/movie/class-streamit-movie.php:1437
+#: includes/classes/notification/class-streamit-notification.php:683
+#: includes/classes/person/class-streamit-person.php:1050
+#: includes/classes/tvshow/class-streamit-tvshow.php:1417
+#: includes/classes/video/class-streamit-video.php:1399
+msgid "Invalid status provided"
+msgstr ""
+
+#: includes/classes/term/class-streamit-term.php:492
+msgid "Invalid term identifier"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:155
+#: admin/class-streamit-tvshow-menu.php:252
+#: admin/class-streamit-tvshow-menu.php:268
+#: admin/class-streamit-tvshow-menu.php:308
+msgid "Invalid tvshow ID."
+msgstr ""
+
+#: admin/content-import/streamit-import-csv-function.php:1103
+msgid "Invalid video file type."
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:126
+#: admin/class-streamit-video-menu.php:204
+#: admin/class-streamit-video-menu.php:218
+#: admin/class-streamit-video-menu.php:232
+#: admin/controllers/class.streamit-video-controller.php:211
+msgid "Invalid video ID."
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:227
+#: includes/functions/pmp/streamit-pmp-function.php:1058
+msgid "Invoice"
+msgstr ""
+
+#. Author of the plugin
+#: streamit.php
+msgid "iqonic"
+msgstr ""
+
+#: includes/theme/Widget/footer-contact.php:13
+msgid "Iqonic Contact"
+msgstr ""
+
+#: includes/theme/Widget/footer-contact.php:14
+msgid "Iqonic Contact."
+msgstr ""
+
+#: includes/theme/Widget/footer-logo.php:55
+msgid "iqonic2"
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:59
+#: admin/view/movie-meta/html-general-tab.php:85
+#: admin/view/movie-meta/html-movie-source.php:59
+msgid "Is Affiliate URL ?"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:207
+msgid "Is Upcoming Episode"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:174
+msgid "Is Upcoming Movie"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:97
+msgid "Is Upcoming Season"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-additional-tab.php:172
+msgid "Is Upcoming TV Show"
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:89
+#: admin/view/movie-meta/html-general-tab.php:188
+#: admin/view/movie-meta/html-movie-source.php:77
+#: admin/view/tvshow-meta/html-general-tab.php:73
+#: admin/view/video-meta/html-general-tab.php:113
+msgid "Language"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:144
+msgid "Latest"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:702
+msgid ""
+"Leave the Total Device Login Limit blank if you do not want to set a login "
+"limit for this plan."
+msgstr ""
+
+#: includes/redux_option/fields/spacing/class-redux-spacing.php:284
+msgid "Left"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:485
+#: includes/functions/pmp/streamit-pmp-function.php:689
+#: includes/functions/pmp/streamit-pmp-function.php:883
+#: includes/functions/pmp/streamit-pmp-function.php:911
+msgid "Lifetime"
+msgstr ""
+
+#: includes/functions/helper/streamit-helper-function.php:1016
+msgid "Liked Content"
+msgstr "علاقه مندی ها"
+
+#: admin/listable/movie/class-streamit-movielisttable.php:124
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:127
+#: admin/listable/video/class-streamit-videolistable.php:126
+msgid "Likes"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:99
+#: admin/view/video-meta/html-additional-tab.php:124
+msgid "Link"
+msgstr ""
+
+#: includes/redux_option/Options/limit_login.php:4
+msgid "Login Limit"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:701
+msgid "Login Limit Settings"
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:964
+msgid "Media Player"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:205
+#: admin/class-streamit-tvshow-menu.php:217
+#: admin/class-streamit-video-menu.php:172
+#: includes/functions/helper/streamit-helper-function.php:1022
+msgid "Membership"
+msgstr "عضویت"
+
+#: includes/classes/pmp/class-streamit-pmp.php:761
+msgid "Membership Plan Features"
+msgstr ""
+
+#: includes/theme/Widget/navigation-menu.php:66
+msgid "Menu"
+msgstr ""
+
+#: admin/controllers/class.streamit-permalink-controller.php:74
+msgid "Menu items added successfully"
+msgstr ""
+
+#: admin/class-streamit-routes-handler.php:89
+#: admin/class-streamit-routes-handler.php:102
+msgid "Method is not allowed"
+msgstr ""
+
+#: admin/view/meta/html-meta-time-field.php:60
+msgid "Minutes"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:720
+msgid "Mobile"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:161
+msgid "Most Likes"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:162
+msgid "Most Plays"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:160
+msgid "Most Views"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:160
+#: admin/listable/movie/class-streamit-movielisttable.php:160
+#: admin/listable/person/class-streamit-personlisttable.php:160
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:163
+#: admin/listable/video/class-streamit-videolistable.php:160
+msgid "Move to Trash"
+msgstr ""
+
+#: admin/view/comment-forms/html-comment-entry.php:33
+msgid "Movie"
+msgstr "فیلم"
+
+#: admin/view/movie-meta/html-pmp-tab.php:34
+msgid "Movie Access"
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-controller.php:228
+msgid "Movie added successfully."
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:115
+msgid "Movie Censor Rating"
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-controller.php:257
+msgid "Movie deleted successfully."
+msgstr ""
+
+#: admin/class-streamit-content-import.php:112
+msgid "Movie From OMDB"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:106
+msgid "Movie From TMDb"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:122
+msgid "Movie From YouTube"
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:526
+msgid "Movie Genre"
+msgstr "ژانر فیلم"
+
+#: admin/controllers/class.streamit-movie-genre-controller.php:45
+msgid "Movie Genre added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-genre-controller.php:123
+msgid "Movie Genre deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-genre-controller.php:98
+msgid "Movie Genre updated successfully."
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:455
+msgid "Movie Genres"
+msgstr "ژانر فیلم ها"
+
+#: admin/class-streamit-movie-menu.php:11
+msgid "Movie List"
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:470
+msgid "Movie Playlist"
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-playlist-controller.php:33
+msgid "Movie Playlist added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-playlist-controller.php:112
+msgid "Movie playlist deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-playlist-controller.php:78
+msgid "Movie playlist updated successfully."
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:78
+msgid "Movie Playlists"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:209
+msgid "Movie Release Date"
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-controller.php:579
+msgid "Movie Status Upgraded."
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_movie-function.php:533
+msgid "Movie successfully added."
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-tag-controller.php:42
+msgid "Movie Tag added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-tag-controller.php:116
+msgid "Movie Tag deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-tag-controller.php:92
+msgid "Movie Tag updated successfully."
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:459
+#: includes/classes/class-streamit-theme-template.php:738
+msgid "Movie Tags"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:102
+msgid "Movie Time Duration"
+msgstr ""
+
+#: admin/controllers/class.streamit-movie-controller.php:480
+msgid "Movie updated successfully."
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:24
+#: admin/view/movie-meta/html-general-tab.php:69
+#: admin/view/movie-meta/html-movie-source.php:49
+msgid "Movie URL"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:115
+msgid "Movie Views Count"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:12
+#: admin/view/movie-forms/html-entry-movie.php:19
+#: includes/classes/class-streamit-permalink-handler.php:447
+#: includes/classes/class-streamit-theme-template.php:250
+msgid "Movies"
+msgstr "فیلم ها"
+
+#: admin/content-import/streamit-omdb-function.php:284
+msgid "Movies imported successfully from OMDB."
+msgstr ""
+
+#: includes/functions/pmp/streamit-pmp-function.php:744
+#: includes/functions/pmp/streamit-pmp-function.php:914
+msgid "N/A"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:66
+#: admin/listable/person/class-streamit-person-categorylisttable.php:34
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:97
+#: admin/listable/video/class-streamit-video-categorylistable.php:97
+#: admin/view/episode-meta/html-episodes-source.php:32
+#: admin/view/movie-forms/html-entry-movie-genre.php:29
+#: admin/view/movie-forms/html-entry-movie-tag.php:27
+#: admin/view/movie-meta/html-movie-source.php:31
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:30
+msgid "Name"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:78
+msgid "New Episodes"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:195
+msgid "Next Episode Overlay Timer (HH:MM:SS)"
+msgstr ""
+
+#: admin/listable/comment/class-streamit-commentlistable.php:127
+#: admin/view/episode-meta/html-additional-tab.php:98
+#: admin/view/video-meta/html-additional-tab.php:123
+#: includes/redux_option/Options/Page/download.php:31
+msgid "No"
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:175
+msgid "No csv file found"
+msgstr ""
+
+#: includes/functions/term/streamit-term-function.php:214
+#: includes/functions/term/streamit-term-function.php:262
+msgid "No Data found"
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:83
+#: admin/controllers/class.streamit-content-import-controller.php:130
+msgid "No data found"
+msgstr ""
+
+#: admin/content-import/streamit-vimeo-function.php:150
+msgid "No data found or an error occurred."
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:141
+#: admin/content-import/streamit-tmdb_movie-function.php:140
+#: admin/content-import/streamit-tmdb_tvshow-function.php:153
+msgid "No data found."
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:203
+#: admin/content-import/streamit-tmdb_movie-function.php:196
+#: admin/content-import/streamit-tmdb_tvshow-function.php:214
+#: admin/content-import/streamit-vimeo-function.php:185
+#: admin/content-import/streamit-youtube_movie-function.php:157
+#: admin/content-import/streamit-youtube_video-function.php:175
+msgid "No description available"
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:187
+msgid "No function found"
+msgstr ""
+
+#: includes/redux_option/fields/media/class-redux-media.php:92
+msgid "No media selected"
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_movie-function.php:303
+#: admin/content-import/streamit-youtube_movie-function.php:238
+#: admin/content-import/streamit-youtube_movie-function.php:244
+#: admin/content-import/streamit-youtube_video-function.php:267
+#: admin/content-import/streamit-youtube_video-function.php:273
+msgid "No movie data found."
+msgstr ""
+
+#: includes/classes/term/class-streamit-term-relationship.php:26
+msgid "No terms provided for the relationship."
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:200
+#: admin/content-import/streamit-tmdb_movie-function.php:193
+#: admin/content-import/streamit-tmdb_tvshow-function.php:211
+#: admin/content-import/streamit-vimeo-function.php:182
+#: admin/content-import/streamit-youtube_movie-function.php:154
+#: admin/content-import/streamit-youtube_video-function.php:172
+msgid "No title available"
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_tvshow-function.php:338
+msgid "No TV show data found."
+msgstr ""
+
+#: includes/classes/episode/class-streamit-episode.php:998
+#: includes/classes/movie/class-streamit-movie.php:1392
+#: includes/classes/person/class-streamit-person.php:1004
+#: includes/classes/tvshow/class-streamit-tvshow.php:1373
+#: includes/classes/video/class-streamit-video.php:1354
+msgid "No valid data to update"
+msgstr ""
+
+#: admin/content-import/streamit-vimeo-function.php:301
+msgid "No video data found."
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:164
+#: admin/listable/person/class-streamit-person-categorylisttable.php:135
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:138
+#: admin/listable/video/class-streamit-video-categorylistable.php:134
+msgid "None"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:799
+msgid "Not Include"
+msgstr ""
+
+#: admin/view/permalink/html-permalink-section.php:19
+msgid "Note: This option does not work with the \"Plain\" permalink structure."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:159
+#: admin/view/movie-meta/html-additional-tab.php:143
+#: admin/view/tvshow-meta/html-additional-tab.php:143
+#: admin/view/video-meta/html-additional-tab.php:202
+#: includes/functions/helper/streamit-helper-function.php:1017
+msgid "Notification"
+msgstr "اعلانات"
+
+#: admin/view/episode-meta/html-additional-tab.php:167
+#: admin/view/episode-meta/html-additional-tab.php:169
+#: admin/view/movie-meta/html-additional-tab.php:151
+#: admin/view/movie-meta/html-additional-tab.php:153
+#: admin/view/movie-meta/html-additional-tab.php:155
+#: admin/view/tvshow-meta/html-additional-tab.php:151
+#: admin/view/tvshow-meta/html-additional-tab.php:153
+#: admin/view/video-meta/html-additional-tab.php:210
+#: admin/view/video-meta/html-additional-tab.php:212
+msgid "Notify User"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:171
+#: admin/view/tvshow-meta/html-additional-tab.php:155
+#: admin/view/video-meta/html-additional-tab.php:214
+msgid "Notify User."
+msgstr ""
+
+#: includes/theme/Widget/recent-post.php:183
+msgid "Number of posts to show:"
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:21
+#: includes/redux_option/Options/Page/cast.php:42
+#: includes/redux_option/Options/Page/comment.php:23
+#: includes/redux_option/Options/Page/comment.php:34
+#: includes/redux_option/Options/Page/comment.php:45
+#: includes/redux_option/Options/Page/counter.php:23
+#: includes/redux_option/Options/Page/download.php:20
+#: includes/redux_option/Options/Page/playlist.php:22
+#: includes/redux_option/Options/Page/recommended.php:22
+#: includes/redux_option/Options/Page/related-movies.php:22
+#: includes/redux_option/Options/Page/related-videos.php:20
+msgid "Off"
+msgstr ""
+
+#: admin/view/person-meta/html-personal-tab.php:35
+msgid "Offical Site"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:73
+msgid "OMDB"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:80
+msgid "OMDB API KEY"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:83
+msgid "OMDB developer key"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:145
+msgid "OMDB server is currently down. Please try again later."
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:20
+#: includes/redux_option/Options/Page/cast.php:41
+#: includes/redux_option/Options/Page/comment.php:22
+#: includes/redux_option/Options/Page/comment.php:33
+#: includes/redux_option/Options/Page/comment.php:44
+#: includes/redux_option/Options/Page/counter.php:22
+#: includes/redux_option/Options/Page/download.php:19
+#: includes/redux_option/Options/Page/playlist.php:21
+#: includes/redux_option/Options/Page/recommended.php:21
+#: includes/redux_option/Options/Page/related-movies.php:21
+#: includes/redux_option/Options/Page/related-videos.php:19
+msgid "On"
+msgstr ""
+
+#: admin/class-streamit-admin.php:143
+msgid "Only Image files are allowed!"
+msgstr ""
+
+#: admin/class-streamit-admin.php:144
+msgid "Only Video files are allowed!"
+msgstr ""
+
+#: includes/redux_option/Options/content.php:16
+msgid "Options for managing content of Movie/TV Show/Video."
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:267
+msgid "Order Summary"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movielisttable.php:237
+#: admin/listable/movie/class-streamit-movielisttable.php:244
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:242
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:249
+#: admin/listable/video/class-streamit-videolistable.php:237
+#: admin/listable/video/class-streamit-videolistable.php:244
+#: admin/view/invoice-template/html-invoice-template.php:220
+msgid "Paid"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movielisttable.php:241
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:246
+#: admin/listable/video/class-streamit-videolistable.php:241
+msgid "Paid/Rent"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:68
+#: admin/listable/person/class-streamit-person-categorylisttable.php:36
+#: admin/listable/video/class-streamit-video-categorylistable.php:99
+#: admin/view/person-forms/html-entry-person-category.php:54
+#: admin/view/video-forms/html-entry-video-category.php:52
+msgid "Parent Category"
+msgstr ""
+
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:99
+#: admin/view/movie-forms/html-entry-movie-genre.php:62
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:58
+msgid "Parent Genre"
+msgstr ""
+
+#: includes/functions/helper/streamit-helper-function.php:1023
+#: includes/functions/pmp/streamit-pmp-function.php:433
+msgid "Pay Per View"
+msgstr "پرداخت به ازای هر بازدید"
+
+#: templates/paid-memberships-pro/pages/checkout.php:108
+msgid "Pay-Per-View Information"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:416
+msgid "Payment Date"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:395
+msgid "Payment Details"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:400
+msgid "Payment Method"
+msgstr ""
+
+#: admin/controllers/class.streamit-person-controller.php:80
+msgid "Person added successfully."
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-category.php:25
+#: includes/classes/class-streamit-permalink-handler.php:452
+msgid "Person Categories"
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:685
+msgid "Person Category"
+msgstr ""
+
+#: admin/controllers/class.streamit-person-category-controller.php:42
+msgid "Person Category added successfully"
+msgstr ""
+
+#: admin/controllers/class.streamit-person-category-controller.php:117
+msgid "Person Category deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-person-category-controller.php:93
+msgid "Person Category updated successfully"
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:109
+msgid "Person Content"
+msgstr ""
+
+#: admin/controllers/class.streamit-person-controller.php:109
+msgid "Person deleted successfully."
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:145
+msgid "Person Excerpt"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:11
+msgid "Person List"
+msgstr ""
+
+#: admin/controllers/class.streamit-person-controller.php:230
+msgid "Person Status Upgraded."
+msgstr ""
+
+#: admin/controllers/class.streamit-person-tag-controller.php:41
+msgid "Person Tag added successfully"
+msgstr ""
+
+#: admin/controllers/class.streamit-person-tag-controller.php:114
+msgid "Person Tag deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-person-tag-controller.php:91
+msgid "Person Tag updated successfully."
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:456
+#: includes/classes/class-streamit-theme-template.php:897
+msgid "Person Tags"
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:41
+msgid "Person Title"
+msgstr ""
+
+#: admin/controllers/class.streamit-person-controller.php:190
+msgid "Person updated successfully"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:134
+msgid "Personal Data"
+msgstr ""
+
+#: admin/class-streamit-person-menu.php:12
+#: includes/classes/class-streamit-permalink-handler.php:448
+#: includes/classes/class-streamit-theme-template.php:422
+msgid "Persons"
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-template.php:14
+msgid "Persons list"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:253
+msgid "Phone"
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:32
+msgid "Place of Birth"
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:37
+#: admin/view/tvshow-meta/html-pmp-tab.php:37
+#: admin/view/video-meta/html-pmp-tab.php:37
+msgid "Plan(PMP)"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:708
+msgid "Platform Selection"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-playlist.php:23
+#: admin/view/movie-forms/html-add-movie-playlist.php:23
+#: admin/view/tvshow-forms/html-add-tvshow-playlist.php:22
+#: includes/functions/helper/streamit-helper-function.php:1014
+#: includes/redux_option/Options/Page/playlist.php:10
+msgid "Playlist"
+msgstr "پلی لیست"
+
+#: includes/classes/playlist-relation/class-streamit-playlist-relation.php:272
+#: includes/functions/playlist-relation/streamit-playlist-relation-function.php:30
+#: includes/functions/playlist-relation/streamit-playlist-relation-function.php:55
+msgid "Playlist ID and post type are required."
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episode-playlistlistable.php:98
+#: admin/listable/movie/class-streamit-movie-playlistlistable.php:128
+#: admin/listable/tvshow/class-streamit-tvshow-playlistlistable.php:67
+#: admin/listable/video/class-streamit-video-playlistlistable.php:36
+#: admin/view/episode-forms/html-entry-episode-playlist.php:24
+#: admin/view/movie-forms/html-entry-movie-playlist.php:24
+#: admin/view/tvshow-forms/html-entry-tvshow-playlist.php:24
+#: admin/view/video-forms/html-entry-video-playlist.php:27
+msgid "Playlist Name"
+msgstr ""
+
+#: includes/classes/tvshow/class-streamit-tvshow-playlist.php:297
+msgid "Playlist not found"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episode-playlistlistable.php:99
+#: admin/listable/movie/class-streamit-movie-playlistlistable.php:129
+#: admin/listable/tvshow/class-streamit-tvshow-playlistlistable.php:68
+#: admin/listable/video/class-streamit-video-playlistlistable.php:37
+#: admin/view/episode-forms/html-entry-episode-playlist.php:39
+#: admin/view/movie-forms/html-entry-movie-playlist.php:37
+#: admin/view/tvshow-forms/html-entry-tvshow-playlist.php:39
+#: admin/view/video-forms/html-entry-video-playlist.php:44
+msgid "Playlist Slug"
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:460
+msgid "Playlists"
+msgstr "پلی لیست ها"
+
+#: admin/content-import/streamit-omdb-function.php:19
+msgid "Please Add OMDB Api Key."
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:256
+msgid "Please Add OMDb Api Key."
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_tvshow-function.php:20
+msgid "Please Add TMDb API Key."
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_movie-function.php:14
+#: admin/content-import/streamit-tmdb_movie-function.php:251
+#: admin/content-import/streamit-tmdb_tvshow-function.php:263
+msgid "Please Add TMDb Api Key."
+msgstr ""
+
+#: admin/content-import/streamit-vimeo-function.php:234
+msgid "Please Add Vimeo Api Key."
+msgstr ""
+
+#: admin/content-import/streamit-vimeo-function.php:20
+msgid "Please add Vimeo API Key."
+msgstr ""
+
+#: admin/content-import/streamit-youtube_movie-function.php:13
+#: admin/content-import/streamit-youtube_movie-function.php:197
+#: admin/content-import/streamit-youtube_video-function.php:19
+#: admin/content-import/streamit-youtube_video-function.php:222
+msgid "Please Add Youtube Api Key."
+msgstr ""
+
+#: admin/class-streamit-admin.php:169
+msgid "Please enter a PPV price."
+msgstr ""
+
+#: admin/class-streamit-admin.php:121
+msgid "Please enter a rating between 1 and 10."
+msgstr ""
+
+#: admin/class-streamit-admin.php:174
+msgid "Please enter a valid number for PPV discount."
+msgstr ""
+
+#: admin/class-streamit-admin.php:171
+msgid "Please enter a valid number for PPV price."
+msgstr ""
+
+#: admin/class-streamit-admin.php:127
+msgid "Please Enter Positive Digit"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:28
+#: admin/content-import/streamit-youtube_movie-function.php:22
+#: admin/content-import/streamit-youtube_video-function.php:28
+msgid "Please enter text to search."
+msgstr ""
+
+#: admin/class-streamit-admin.php:130
+msgid "Please fill all required fields"
+msgstr ""
+
+#: admin/content-import/streamit-vimeo-function.php:39
+msgid "Please fill in the search content field."
+msgstr ""
+
+#: admin/class-streamit-admin.php:159
+msgid ""
+"Please note, the import process may take some time depending on the amount "
+"of data and network connectivity."
+msgstr ""
+
+#: admin/class-streamit-admin.php:158
+msgid ""
+"Please note, the search process may take some time depending on the amount "
+"of data and network connectivity."
+msgstr ""
+
+#: admin/class-streamit-admin.php:124
+msgid "Please select at least one option."
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:265
+#: admin/content-import/streamit-tmdb_movie-function.php:263
+#: admin/content-import/streamit-tmdb_tvshow-function.php:275
+#: admin/content-import/streamit-vimeo-function.php:246
+#: admin/content-import/streamit-youtube_movie-function.php:206
+#: admin/content-import/streamit-youtube_video-function.php:231
+msgid "Please select content."
+msgstr ""
+
+#: admin/class-streamit-admin.php:180
+msgid "PM"
+msgstr ""
+
+#: admin/class-streamit-admin.php:172
+msgid "PMP Level is required."
+msgstr ""
+
+#: admin/class-streamit-content-import.php:146
+msgid "Popular"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:40
+msgid "Portrait File"
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:37
+msgid "Portrait Image"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-additional-tab.php:59
+msgid "Portrait image File"
+msgstr ""
+
+#: includes/classes/playlist-relation/class-streamit-playlist-relation.php:202
+msgid "Post Already Available in Playlist"
+msgstr ""
+
+#: includes/functions/playlist-relation/streamit-playlist-relation-function.php:81
+msgid "Post ID and post type are required."
+msgstr ""
+
+#: admin/view/comment-forms/html-edit-comment.php:61
+msgid "Post Type"
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:20
+msgid "Poster Image"
+msgstr ""
+
+#: admin/class-streamit-admin.php:173
+msgid "PPV discount must be between 0 and 99."
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:79
+#: admin/view/tvshow-meta/html-pmp-tab.php:79
+#: admin/view/video-meta/html-pmp-tab.php:79
+msgid "PPV Duration (Days)"
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:97
+#: admin/view/tvshow-meta/html-pmp-tab.php:98
+#: admin/view/video-meta/html-pmp-tab.php:98
+msgid "PPV Price"
+msgstr ""
+
+#: admin/class-streamit-admin.php:170
+msgid "PPV price cannot be negative or greater than 0."
+msgstr ""
+
+#: admin/view/movie-meta/html-pmp-tab.php:38
+#: admin/view/tvshow-meta/html-pmp-tab.php:38
+#: admin/view/video-meta/html-pmp-tab.php:38
+msgid "PPV(Rent)"
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:461
+#: includes/classes/class-streamit-theme-template.php:1015
+msgid "Profile"
+msgstr "پروفایل"
+
+#: admin/view/episode-forms/html-add-episode-template.php:80
+#: admin/view/movie-forms/html-add-movie-tamplate.php:76
+#: admin/view/person-forms/html-add-person-template.php:76
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:78
+#: admin/view/video-forms/html-add-video-tamplate.php:79
+msgid "Published"
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:75
+#: admin/view/movie-meta/html-movie-source.php:93
+msgid "Quality"
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:992
+msgid "Rate & Review"
+msgstr ""
+
+#: admin/view/comment-forms/html-edit-comment.php:75
+msgid "Rating"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:162
+#: admin/content-import/streamit-tmdb_movie-function.php:161
+#: admin/content-import/streamit-tmdb_tvshow-function.php:174
+#: admin/content-import/streamit-youtube_movie-function.php:123
+#: admin/content-import/streamit-youtube_video-function.php:136
+msgid "Received empty response from API. Please try again."
+msgstr ""
+
+#: includes/redux_option/Options/Page/recommended.php:10
+msgid "Recommeded"
+msgstr ""
+
+#: includes/redux_option/Options/Page/recommended.php:31
+msgid "Recommended button title"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:159
+#: admin/view/movie-meta/html-linked-movie-tab.php:20
+#: includes/redux_option/Options/Page/related-movies.php:33
+msgid "Recommended Movies"
+msgstr ""
+
+#: includes/redux_option/Options/Page/related-movies.php:31
+msgid "Related button title"
+msgstr ""
+
+#: includes/redux_option/Options/Page/related-movies.php:10
+msgid "Related Movies"
+msgstr ""
+
+#: includes/redux_option/Options/Page/related-videos.php:30
+msgid "Related Video title"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:164
+#: admin/view/movie-meta/html-linked-video-tab.php:19
+#: includes/redux_option/Options/Page/related-videos.php:8
+#: includes/redux_option/Options/Page/related-videos.php:31
+msgid "Related Videos"
+msgstr ""
+
+#: admin/view/person-meta/html-personal-tab.php:62
+msgid "Relatives"
+msgstr ""
+
+#: admin/class-streamit-admin.php:177
+msgid "Release date and time is required for upcoming content."
+msgstr ""
+
+#: admin/view/episode-meta/html-episodes-source.php:14
+#: admin/view/movie-meta/html-movie-cast.php:17
+#: admin/view/movie-meta/html-movie-crew.php:16
+#: admin/view/movie-meta/html-movie-source.php:14
+#: admin/view/tvshow-meta/html-tvshow-cast.php:15
+#: admin/view/tvshow-meta/html-tvshow-crew.php:16
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:14
+msgid "Remove"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:806
+msgid "Remove Feature"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movielisttable.php:247
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:252
+#: admin/listable/video/class-streamit-videolistable.php:247
+#: admin/view/invoice-template/html-invoice-template.php:291
+msgid "Rent"
+msgstr ""
+
+#: includes/functions/helper/streamit-helper-function.php:1021
+msgid "Rental Collection"
+msgstr "دسته بندی اجاره ای ها"
+
+#: admin/content-import/streamit-omdb-function.php:144
+#: admin/content-import/streamit-tmdb_movie-function.php:143
+#: admin/content-import/streamit-tmdb_tvshow-function.php:156
+msgid "Requested resource not found."
+msgstr ""
+
+#: includes/functions/episode/streamit-episode-function.php:195
+#: includes/functions/episode/streamit-episode-function.php:230
+#: includes/functions/movie/streamit-movie-function.php:452
+#: includes/functions/movie/streamit-movie-function.php:486
+#: includes/functions/person/streamit-person-function.php:260
+#: includes/functions/tvshow/streamit-tvshow-function.php:377
+#: includes/functions/tvshow/streamit-tvshow-function.php:413
+#: includes/functions/video/streamit-video-function.php:375
+#: includes/functions/video/streamit-video-function.php:459
+msgid "Required Meta in array"
+msgstr ""
+
+#: includes/functions/person/streamit-person-function.php:224
+msgid "Required meta in array"
+msgstr ""
+
+#: includes/redux_option/templates/panel/footer.tpl.php:65
+msgid "Reset All"
+msgstr ""
+
+#: includes/redux_option/templates/panel/footer.tpl.php:64
+msgid "Reset Section"
+msgstr ""
+
+#: admin/class-streamit-meta-controller.php:75
+#: admin/listable/episode/class-streamit-episodelisttable.php:152
+#: admin/listable/movie/class-streamit-movielisttable.php:146
+#: admin/listable/person/class-streamit-personlisttable.php:152
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:155
+#: admin/listable/video/class-streamit-videolistable.php:153
+msgid "Restore"
+msgstr ""
+
+#: admin/class-streamit-comment-menu.php:16
+msgid "Review"
+msgstr ""
+
+#: includes/redux_option/Options/Page/comment.php:11
+msgid "Review and Rating"
+msgstr ""
+
+#: admin/class-streamit-comment-menu.php:15
+msgid "Review List"
+msgstr ""
+
+#: admin/view/comment-forms/html-comment-entry.php:15
+msgid "Review list"
+msgstr ""
+
+#: includes/redux_option/fields/spacing/class-redux-spacing.php:265
+msgid "Right"
+msgstr ""
+
+#: admin/view/movie-meta/html-movie-cast.php:32
+#: admin/view/movie-meta/html-movie-crew.php:30
+#: admin/view/tvshow-meta/html-tvshow-cast.php:29
+#: admin/view/tvshow-meta/html-tvshow-crew.php:30
+msgid "Role"
+msgstr ""
+
+#: admin/class-streamit-routes-handler.php:45
+#: admin/class-streamit-routes-handler.php:74
+msgid "Route not found"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:141
+msgid "Save"
+msgstr ""
+
+#: includes/redux_option/templates/panel/footer.tpl.php:60
+#: includes/redux_option/templates/panel/header.tpl.php:77
+msgid "Save Changes"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episode-playlistlistable.php:233
+#: admin/listable/episode/class-streamit-episodelisttable.php:385
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:272
+#: admin/listable/movie/class-streamit-movie-playlistlistable.php:257
+#: admin/listable/movie/class-streamit-movie-taglistable.php:259
+#: admin/listable/movie/class-streamit-movielisttable.php:399
+#: admin/listable/person/class-streamit-person-categorylisttable.php:233
+#: admin/listable/person/class-streamit-person-taglisttable.php:220
+#: admin/listable/person/class-streamit-personlisttable.php:377
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:236
+#: admin/listable/tvshow/class-streamit-tvshow-playlistlistable.php:227
+#: admin/listable/tvshow/class-streamit-tvshow-taglistable.php:226
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:415
+#: admin/listable/video/class-streamit-video-categorylistable.php:229
+#: admin/listable/video/class-streamit-video-playlistlistable.php:219
+#: admin/listable/video/class-streamit-video-taglistable.php:215
+#: admin/listable/video/class-streamit-videolistable.php:396
+#: admin/view/import/html-data-import.php:107
+msgid "Search"
+msgstr ""
+
+#: admin/listable/person/class-streamit-person-categorylisttable.php:232
+#: admin/listable/video/class-streamit-video-categorylistable.php:228
+msgid "Search Categories..."
+msgstr ""
+
+#: admin/view/import/html-data-import.php:90
+msgid "Search Content"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:384
+msgid "Search Episode..."
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:271
+msgid "Search Genre..."
+msgstr ""
+
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:235
+msgid "Search genres..."
+msgstr ""
+
+#: admin/class-streamit-content-import.php:142
+#: admin/class-streamit-content-import.php:153
+msgid "Search ID"
+msgstr ""
+
+#: admin/view/import/html-data-import.php:93
+msgid "Search keyword"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movielisttable.php:398
+msgid "Search Movies..."
+msgstr ""
+
+#: admin/class-streamit-content-import.php:141
+#: admin/class-streamit-content-import.php:152
+#: admin/class-streamit-content-import.php:159
+msgid "Search Name"
+msgstr ""
+
+#: admin/listable/person/class-streamit-personlisttable.php:376
+msgid "Search Person..."
+msgstr ""
+
+#: admin/listable/video/class-streamit-video-playlistlistable.php:218
+msgid "Search Playlist.."
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episode-playlistlistable.php:232
+#: admin/listable/movie/class-streamit-movie-playlistlistable.php:256
+#: admin/listable/tvshow/class-streamit-tvshow-playlistlistable.php:226
+msgid "Search Playlist..."
+msgstr ""
+
+#: admin/class-streamit-admin.php:264
+msgid "Search results only"
+msgstr ""
+
+#: admin/listable/video/class-streamit-video-taglistable.php:214
+msgid "Search Tag..."
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-taglistable.php:258
+#: admin/listable/person/class-streamit-person-taglisttable.php:219
+msgid "Search Tags..."
+msgstr ""
+
+#: admin/listable/tvshow/class-streamit-tvshow-taglistable.php:225
+msgid "Search TVShow Tag..."
+msgstr ""
+
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:414
+msgid "Search TVShow.."
+msgstr ""
+
+#: admin/listable/video/class-streamit-videolistable.php:395
+msgid "Search Video..."
+msgstr ""
+
+#: includes/functions/notification/streamit-notification-function.php:178
+msgid "Season"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:56
+msgid "Season Description"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:43
+msgid "Season Year"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:191
+msgid "Seasons & Episodes"
+msgstr ""
+
+#: admin/view/meta/html-meta-time-field.php:73
+msgid "Seconds"
+msgstr ""
+
+#: admin/view/import/html-csv-import.php:19
+msgid "Select CSV Provider"
+msgstr ""
+
+#: admin/view/meta/html-meta-datetime-field.php:103
+msgid "Select Date"
+msgstr ""
+
+#: admin/view/import/html-data-import.php:37
+#: admin/view/import/html-data-import.php:53
+#: admin/view/import/html-data-import.php:68
+msgid "Select Filters"
+msgstr ""
+
+#: admin/view/import/html-data-import.php:23
+msgid "Select Import Provider"
+msgstr ""
+
+#: includes/theme/Widget/navigation-menu.php:85
+msgid "Select Menu:"
+msgstr ""
+
+#: admin/class-streamit-admin.php:147
+msgid "Select or Upload Image"
+msgstr ""
+
+#: admin/class-streamit-admin.php:148
+msgid "Select or Upload Video"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:230
+#: admin/view/tvshow-meta/html-additional-tab.php:208
+#: admin/view/video-meta/html-additional-tab.php:73
+msgid "Select Related Product"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:221
+#: admin/view/movie-meta/html-additional-tab.php:192
+#: admin/view/tvshow-meta/html-additional-tab.php:187
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:114
+#: admin/view/video-meta/html-additional-tab.php:189
+msgid "Select release date and time"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:224
+msgid "Select the date and time when this upcoming episode will be released."
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:195
+msgid "Select the date and time when this upcoming movie will be released."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:117
+msgid "Select the date and time when this upcoming season will be released."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-additional-tab.php:190
+msgid "Select the date and time when this upcoming TV show will be released."
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:192
+msgid "Select the date and time when this upcoming video will be released."
+msgstr ""
+
+#: admin/view/movie-meta/html-linked-movie-tab.php:22
+msgid "Select the recommended movies."
+msgstr ""
+
+#: admin/class-streamit-admin.php:178
+#: admin/view/meta/html-meta-datetime-field.php:120
+msgid "Select Time"
+msgstr ""
+
+#: includes/theme/Widget/recent-post.php:190
+msgid "Select Title Tag:"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:735
+msgid "Select which platforms user are able to login."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:52
+#: admin/view/movie-meta/html-additional-tab.php:74
+#: admin/view/person-meta/html-general-tab.php:118
+#: admin/view/tvshow-meta/html-additional-tab.php:73
+#: admin/view/video-meta/html-additional-tab.php:50
+msgid "SEO discription"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:146
+#: admin/content-import/streamit-tmdb_movie-function.php:145
+#: admin/content-import/streamit-tmdb_tvshow-function.php:158
+msgid "Service unavailable. Please retry after some time."
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:753
+msgid ""
+"Set the maximum number of devices that can be logged in simultaneously. "
+"Leave as 0 for unlimited."
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:42
+msgid "Settings updated successfully."
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:17
+msgid "Show Cast"
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:38
+msgid "Show Crew"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:96
+#: admin/view/video-meta/html-additional-tab.php:121
+msgid "Show Download Button"
+msgstr ""
+
+#: includes/redux_option/Options/Page/comment.php:19
+msgid "Show Movie Review and Rating"
+msgstr ""
+
+#: includes/redux_option/Options/Page/playlist.php:18
+msgid "Show Playlist"
+msgstr ""
+
+#: includes/redux_option/Options/Page/recommended.php:18
+msgid "Show Recommended"
+msgstr ""
+
+#: includes/redux_option/Options/Page/related-movies.php:18
+msgid "Show Related Movies"
+msgstr ""
+
+#: includes/redux_option/Options/Page/related-videos.php:16
+msgid "Show Related Videos"
+msgstr ""
+
+#: includes/redux_option/Options/Page/comment.php:30
+msgid "Show Tv-Show Review and Rating"
+msgstr ""
+
+#: includes/redux_option/Options/Page/comment.php:41
+msgid "Show Video Review and Rating"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:67
+#: admin/listable/person/class-streamit-person-categorylisttable.php:35
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:98
+#: admin/listable/video/class-streamit-video-categorylistable.php:98
+#: admin/view/episode-forms/html-add-episode-template.php:95
+#: admin/view/movie-forms/html-add-movie-tamplate.php:91
+#: admin/view/movie-forms/html-entry-movie-genre.php:45
+#: admin/view/movie-forms/html-entry-movie-tag.php:40
+#: admin/view/person-forms/html-add-person-template.php:92
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:93
+#: admin/view/video-forms/html-add-video-tamplate.php:94
+msgid "Slug"
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_tvshow-function.php:299
+msgid "Some content failed to import: %s"
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:50
+msgid "Something went wrong while updating settings."
+msgstr ""
+
+#: admin/controllers/class.streamit-episodes-controller.php:339
+#: admin/controllers/class.streamit-movie-controller.php:254
+#: admin/controllers/class.streamit-movie-genre-controller.php:120
+#: admin/controllers/class.streamit-movie-playlist-controller.php:109
+#: admin/controllers/class.streamit-movie-tag-controller.php:113
+#: admin/controllers/class.streamit-person-category-controller.php:114
+#: admin/controllers/class.streamit-person-controller.php:106
+#: admin/controllers/class.streamit-person-tag-controller.php:112
+#: admin/controllers/class.streamit-tvshow-controller.php:652
+#: admin/controllers/class.streamit-tvshow-genre-controller.php:124
+#: admin/controllers/class.streamit-tvshow-tag-controller.php:113
+#: admin/controllers/class.streamit-video-category-controller.php:64
+#: admin/controllers/class.streamit-video-controller.php:180
+#: admin/controllers/class.streamit-video-tag-controller.php:117
+msgid "Something went wrong."
+msgstr ""
+
+#: admin/controllers/class.streamit-comment-controller.php:60
+msgid "Somthing Went Wrong."
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:179
+#: admin/class-streamit-tvshow-menu.php:436
+msgid "Sources"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:78
+#: admin/view/movie-forms/html-add-movie-tamplate.php:74
+#: admin/view/person-forms/html-add-person-template.php:74
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:76
+#: admin/view/video-forms/html-add-video-tamplate.php:77
+msgid "Status"
+msgstr ""
+
+#. Plugin Name of the plugin
+#: streamit.php
+msgid "Streamit"
+msgstr ""
+
+#: includes/redux_option/Options/content.php:19
+msgid "Streamit Content"
+msgstr ""
+
+#: includes/redux_option/class-streamit-core-reduxoptions.php:188
+#: includes/redux_option/class-streamit-core-reduxoptions.php:189
+msgid "Streamit Core Options"
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:414
+msgid "Streamit Directories"
+msgstr ""
+
+#: includes/theme/Widget/download-app.php:13
+msgid "Streamit Download App Widget"
+msgstr ""
+
+#. Description of the plugin
+#: streamit.php
+msgid ""
+"Streamit is a plugin that enables you to add and manage Movies, TV Shows, "
+"Videos, and Persons."
+msgstr ""
+
+#: includes/theme/Widget/navigation-menu.php:16
+msgid "Streamit Services Menu"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:321
+msgid "Subscription"
+msgstr "اشتراک"
+
+#: admin/view/invoice-template/html-invoice-template.php:344
+#: admin/view/invoice-template/html-invoice-template.php:353
+msgid "Subtotal"
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-tag.php:53
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:57
+#: admin/view/video-forms/html-entry-video-tag.php:54
+msgid "Tag Description"
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-tags.php:26
+#: admin/view/tvshow-forms/html-add-tvshow-tags.php:25
+msgid "Tag list"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-taglistable.php:125
+#: admin/listable/person/class-streamit-person-taglisttable.php:98
+#: admin/listable/tvshow/class-streamit-tvshow-taglistable.php:96
+#: admin/listable/video/class-streamit-video-taglistable.php:33
+#: admin/view/person-forms/html-entry-person-tag.php:23
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:27
+#: admin/view/video-forms/html-entry-video-tag.php:24
+msgid "Tag Name"
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-taglistable.php:126
+#: admin/listable/person/class-streamit-person-taglisttable.php:99
+#: admin/listable/tvshow/class-streamit-tvshow-taglistable.php:97
+#: admin/listable/video/class-streamit-video-taglistable.php:34
+#: admin/view/person-forms/html-entry-person-tag.php:38
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:42
+#: admin/view/video-forms/html-entry-video-tag.php:39
+msgid "Tag Slug"
+msgstr ""
+
+#: admin/class-streamit-movie-menu.php:59
+#: admin/class-streamit-movie-menu.php:189
+#: admin/class-streamit-person-menu.php:54
+#: admin/class-streamit-person-menu.php:129
+#: admin/class-streamit-tvshow-menu.php:54
+#: admin/class-streamit-tvshow-menu.php:201
+#: admin/class-streamit-video-menu.php:61
+#: admin/class-streamit-video-menu.php:156
+#: admin/view/movie-forms/html-add-movie-tags.php:25
+msgid "Tags"
+msgstr ""
+
+#: includes/classes/term/class-streamit-term.php:533
+msgid "Term not found."
+msgstr ""
+
+#: includes/functions/pmp/streamit-pmp-function.php:435
+msgid ""
+"Thank you for your Pay-Per-View purchase of the {{Content_Type}} "
+"{{Content_Name}}."
+msgstr ""
+
+#: includes/class-streamit-validator.php:125
+msgid "The %s and %s must match"
+msgstr ""
+
+#: includes/class-streamit-validator.php:122
+msgid "The %s may not be greater than :max characters"
+msgstr ""
+
+#: includes/class-streamit-validator.php:123
+msgid "The %s must be at least :min characters"
+msgstr ""
+
+#: admin/class-streamit-admin.php:108
+msgid "The attachment is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:102
+msgid "The author is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:100
+msgid "The comment content is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:115
+msgid "The date is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:116
+msgid "The download URL is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:109
+msgid "The embed code is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:114
+msgid "The language is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:110
+msgid "The link is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:98 admin/class-streamit-admin.php:133
+msgid "The name is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:107
+msgid "The portrait thumbnail is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:113
+msgid "The quality is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:101
+msgid "The rating is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:99
+msgid "The slug is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:117
+msgid "The source name is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:118
+msgid "The source URL is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:106
+msgid "The thumbnail is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:97
+msgid "The title is required."
+msgstr ""
+
+#: admin/class-streamit-admin.php:103
+msgid "The url formate is invalid"
+msgstr ""
+
+#: includes/redux_option/templates/panel/header.tpl.php:35
+msgid "This has been automatically enabled because"
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:174
+msgid "This is  Upcoming Video"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:179
+msgid "This is a featured Episode"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:158
+#: admin/view/tvshow-meta/html-general-tab.php:88
+msgid "This is a featured movie"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:159
+msgid "This is a featured movie."
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:111
+#: admin/view/person-meta/html-general-tab.php:112
+msgid "This is a featured person."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-general-tab.php:89
+msgid "This is a featured TV Show."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:180
+msgid "This is a featured tv show."
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:128
+msgid "This is a featured video"
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:129
+msgid "This is a featured video."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:205
+msgid "This Is Upcoming Episode"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:172
+msgid "This Is Upcoming Movie"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:176
+msgid "This Is Upcoming Movie."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:95
+msgid "This Is Upcoming Season"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-additional-tab.php:170
+msgid "This Is Upcoming TV Show"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-additional-tab.php:173
+msgid "This Is Upcoming TV Show."
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:172
+msgid "This Is Upcoming Video"
+msgstr ""
+
+#: includes/redux_option/Options/Page/counter.php:20
+msgid "This option Provide show or Hide View Count In detail Page/Screen"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:174
+msgid "This setting determines which catalog pages movie will be listed on."
+msgstr ""
+
+#: admin/view/person-meta/html-general-tab.php:99
+msgid "This setting determines which catalog pages person will be listed on."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:167
+msgid ""
+"This setting determines which catalog pages the episode will be listed on."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-general-tab.php:46
+msgid ""
+"This setting determines which catalog pages the TV Show will be listed on."
+msgstr ""
+
+#: includes/classes/term/class-streamit-term.php:237
+msgid "This term is already exists."
+msgstr ""
+
+#: admin/listable/movie/class-streamit-movie-categorylistable.php:65
+#: admin/listable/tvshow/class-streamit-tvshow-categorylistable.php:96
+#: admin/listable/video/class-streamit-video-categorylistable.php:96
+#: admin/view/episode-forms/html-add-episode-template.php:132
+#: admin/view/movie-forms/html-add-movie-tamplate.php:125
+#: admin/view/movie-forms/html-entry-movie-genre.php:78
+#: admin/view/person-forms/html-add-person-template.php:126
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:129
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:71
+#: admin/view/video-forms/html-add-video-tamplate.php:127
+#: admin/view/video-forms/html-entry-video-category.php:77
+msgid "Thumbnail"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:65
+#: admin/listable/movie/class-streamit-movielisttable.php:121
+#: admin/listable/person/class-streamit-personlisttable.php:36
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:124
+#: admin/listable/video/class-streamit-videolistable.php:123
+#: admin/view/movie-forms/html-add-movie-tamplate.php:42
+msgid "Title"
+msgstr ""
+
+#: includes/theme/Widget/footer-contact.php:93
+#: includes/theme/Widget/footer-logo.php:68
+#: includes/theme/Widget/navigation-menu.php:81
+#: includes/theme/Widget/recent-post.php:176
+#: includes/theme/Widget/social_media.php:64
+#: includes/theme/Widget/working-days.php:85
+msgid "Title:"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:68
+msgid "TMDb"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:56
+msgid "TMDb API KEY"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:59
+msgid "TMDb developer key"
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:140
+msgid "TMDb Episode ID"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:143
+#: admin/view/person-meta/html-general-tab.php:85
+#: admin/view/tvshow-meta/html-general-tab.php:32
+msgid "TMDb ID"
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_movie-function.php:144
+#: admin/content-import/streamit-tmdb_tvshow-function.php:157
+msgid "TMDb server is currently down. Please try again later."
+msgstr ""
+
+#: includes/redux_option/fields/spacing/class-redux-spacing.php:227
+msgid "Top"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:143
+msgid "Top Rated"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:379
+msgid "Total Amount"
+msgstr ""
+
+#: includes/classes/pmp/class-streamit-pmp.php:741
+msgid "Total Device Login Limit"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:22
+#: admin/view/movie-meta/html-additional-tab.php:40
+#: admin/view/tvshow-meta/html-additional-tab.php:40
+msgid "Trailer Image"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:77
+#: admin/view/movie-meta/html-additional-tab.php:100
+#: admin/view/tvshow-meta/html-additional-tab.php:98
+msgid "Trailer Link"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:20
+#: admin/view/tvshow-meta/html-additional-tab.php:21
+msgid "Trailer Logo"
+msgstr ""
+
+#: admin/view/invoice-template/html-invoice-template.php:408
+msgid "Transaction ID"
+msgstr ""
+
+#: admin/class-streamit-meta-controller.php:83
+msgid "Trash"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:262
+#: admin/listable/movie/class-streamit-movielisttable.php:201
+#: admin/listable/person/class-streamit-personlisttable.php:195
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:197
+#: admin/listable/video/class-streamit-videolistable.php:196
+msgid "Trash (%d)"
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:18
+msgid "Turn on to display the Cast "
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:39
+msgid "Turn on to display the Crew "
+msgstr ""
+
+#: includes/redux_option/Options/Page/playlist.php:19
+msgid "Turn on to display the playlist "
+msgstr ""
+
+#: includes/redux_option/Options/Page/recommended.php:19
+msgid "Turn on to display the Recommended "
+msgstr ""
+
+#: includes/redux_option/Options/Page/related-movies.php:19
+msgid "Turn on to display the Related Movies"
+msgstr ""
+
+#: includes/redux_option/Options/Page/related-videos.php:17
+msgid "Turn on to display the Related Videos"
+msgstr ""
+
+#: includes/redux_option/Options/Page/comment.php:20
+#: includes/redux_option/Options/Page/comment.php:31
+#: includes/redux_option/Options/Page/comment.php:42
+msgid "Turn on to display the Review and Rating "
+msgstr ""
+
+#: admin/view/comment-forms/html-comment-entry.php:34
+msgid "Tv Show"
+msgstr "سریال"
+
+#: admin/view/tvshow-meta/html-pmp-tab.php:34
+msgid "TV Show Access"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-general-tab.php:59
+msgid "TV Show Censor Rating"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:148
+msgid "TV Show Excerpt Content"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:107
+msgid "TV Show From TMDb"
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:454
+msgid "TV Show Genres"
+msgstr "ژانر سریال ها"
+
+#: admin/view/tvshow-forms/html-entry-tvshow.php:14
+msgid "TV Show list"
+msgstr ""
+
+#: includes/classes/class-streamit-permalink-handler.php:458
+msgid "TV Show Tags"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:43
+msgid "TV Show Title"
+msgstr ""
+
+#: admin/view/tvshow-meta/html-additional-tab.php:131
+msgid "Tv Show Views Count"
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:12
+#: includes/classes/class-streamit-permalink-handler.php:450
+msgid "TV Shows"
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-controller.php:320
+msgid "TvShow added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-controller.php:655
+msgid "TvShow deleted successfully."
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:632
+msgid "Tvshow Genre"
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-genre-controller.php:44
+msgid "TvShow Genre added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-genre-controller.php:127
+msgid "TvShow Genre deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-genre-controller.php:99
+msgid "TvShow Genre updated successfully."
+msgstr ""
+
+#: admin/class-streamit-tvshow-menu.php:11
+msgid "TVshow List"
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-playlist-controller.php:34
+msgid "TVshow playlist added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-playlist-controller.php:87
+#: admin/controllers/class.streamit-tvshow-playlist-controller.php:123
+msgid "tvshow playlist updated successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-controller.php:678
+msgid "TvShow Status Upgraded."
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-tag-controller.php:37
+msgid "TvShow Tag added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-tag-controller.php:116
+msgid "TvShow Tag deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-tag-controller.php:87
+msgid "TvShow Tag updated successfully."
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:844
+msgid "Tvshow Tags"
+msgstr ""
+
+#: admin/controllers/class.streamit-tvshow-controller.php:625
+msgid "TvShow updated successfully."
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:374
+msgid "TvShows"
+msgstr ""
+
+#: admin/content-import/streamit-tmdb_movie-function.php:324
+msgid "Unable to add movie."
+msgstr ""
+
+#: admin/view/comment-forms/html-edit-comment.php:110
+msgid "Unapprove"
+msgstr ""
+
+#: admin/listable/comment/class-streamit-commentlistable.php:222
+msgid "Unapproved (%d)"
+msgstr ""
+
+#: includes/redux_option/fields/dimensions/class-redux-dimensions.php:207
+#: includes/redux_option/fields/dimensions/class-redux-dimensions.php:215
+#: includes/redux_option/fields/dimensions/class-redux-dimensions.php:217
+#: includes/redux_option/fields/spacing/class-redux-spacing.php:298
+#: includes/redux_option/fields/spacing/class-redux-spacing.php:302
+msgid "Units"
+msgstr ""
+
+#: admin/content-import/streamit-omdb-function.php:136
+#: admin/content-import/streamit-tmdb_movie-function.php:135
+#: admin/content-import/streamit-tmdb_tvshow-function.php:148
+msgid "Unknown API error"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:145
+#: admin/view/episode-meta/html-additional-tab.php:196
+#: admin/view/movie-meta/html-additional-tab.php:162
+#: admin/view/tvshow-meta/html-additional-tab.php:161
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:86
+#: admin/view/video-meta/html-additional-tab.php:163
+msgid "Upcoming"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:219
+#: admin/view/movie-meta/html-additional-tab.php:190
+#: admin/view/tvshow-meta/html-additional-tab.php:185
+#: admin/view/tvshow-meta/html-tvshow-seasons.php:112
+#: admin/view/video-meta/html-additional-tab.php:187
+msgid "Upcoming Release Date & Time"
+msgstr ""
+
+#: admin/view/person-forms/html-entry-person-category.php:12
+#: admin/view/person-forms/html-entry-person-category.php:73
+#: admin/view/video-forms/html-entry-video-category.php:88
+msgid "Update Category"
+msgstr ""
+
+#: admin/view/comment-forms/html-edit-comment.php:117
+msgid "Update Comment"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:169
+msgid "Update Episode"
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-genre.php:14
+#: admin/view/movie-forms/html-entry-movie-genre.php:105
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:12
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:100
+msgid "Update Genre"
+msgstr ""
+
+#: admin/view/movie-forms/html-add-movie-tamplate.php:162
+msgid "Update Movie"
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:161
+msgid "Update Person"
+msgstr ""
+
+#: admin/view/episode-forms/html-entry-episode-playlist.php:12
+#: admin/view/episode-forms/html-entry-episode-playlist.php:50
+#: admin/view/movie-forms/html-entry-movie-playlist.php:13
+#: admin/view/movie-forms/html-entry-movie-playlist.php:47
+#: admin/view/tvshow-forms/html-entry-tvshow-playlist.php:12
+#: admin/view/tvshow-forms/html-entry-tvshow-playlist.php:50
+msgid "Update Playlist"
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-tag.php:14
+#: admin/view/movie-forms/html-entry-movie-tag.php:66
+#: admin/view/person-forms/html-entry-person-tag.php:12
+#: admin/view/person-forms/html-entry-person-tag.php:61
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:13
+#: admin/view/tvshow-forms/html-entry-tvshow-tag.php:67
+msgid "Update Tag"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:164
+msgid "Update TV Show"
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:161
+msgid "Update Video"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-category.php:11
+msgid "Update Video Category"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-playlist.php:15
+#: admin/view/video-forms/html-entry-video-playlist.php:55
+msgid "Update Video Playlist"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-tag.php:12
+#: admin/view/video-forms/html-entry-video-tag.php:63
+msgid "Update Video Tag"
+msgstr ""
+
+#: admin/view/import/html-csv-import.php:47
+msgid "Uplaod CSV File"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:100
+#: admin/view/video-meta/html-additional-tab.php:125
+msgid "Upload"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:46
+#: admin/view/episode-meta/html-additional-tab.php:132
+#: admin/view/movie-meta/html-additional-tab.php:66
+#: admin/view/tvshow-meta/html-additional-tab.php:65
+#: admin/view/video-meta/html-additional-tab.php:43
+#: admin/view/video-meta/html-additional-tab.php:155
+msgid "Upload a file."
+msgstr ""
+
+#: admin/view/episode-meta/html-general-tab.php:38
+#: admin/view/episode-meta/html-general-tab.php:53
+msgid "Upload Episode"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:137
+#: admin/view/episode-meta/html-general-tab.php:57
+msgid "Upload Episode Thumbnail"
+msgstr ""
+
+#: admin/view/movie-forms/html-entry-movie-genre.php:82
+#: admin/view/tvshow-forms/html-entry-tvshow-genre.php:76
+msgid "Upload Genre Thumbnail"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:22
+#: admin/view/movie-meta/html-general-tab.php:39
+msgid "Upload movie"
+msgstr ""
+
+#: admin/view/movie-meta/html-general-tab.php:44
+msgid "Upload Movie Thumbnail"
+msgstr ""
+
+#: admin/view/movie-forms/html-add-movie-tamplate.php:130
+msgid "Upload movie Thumbnail"
+msgstr ""
+
+#: includes/redux_option/fields/media/class-redux-media.php:253
+msgid "Upload or browse a file"
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:131
+msgid "Upload Person Thumbnail"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:60
+msgid "Upload Potrait Image"
+msgstr ""
+
+#: admin/view/movie-meta/html-additional-tab.php:26
+msgid "Upload the movie logo."
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:28
+#: admin/view/movie-meta/html-additional-tab.php:46
+#: admin/view/tvshow-meta/html-additional-tab.php:46
+msgid "Upload the trailer image."
+msgstr ""
+
+#: admin/view/tvshow-meta/html-additional-tab.php:27
+msgid "Upload the TV show logo."
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:26
+msgid "Upload the video poster image."
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video-category.php:81
+msgid "Upload Thumbnail"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:134
+msgid "Upload tvshow Thumbnail"
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:38
+msgid "Upload video"
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:23
+msgid "Upload video "
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:132
+msgid "Upload video thumbnail"
+msgstr ""
+
+#: admin/view/import/html-csv-import.php:53
+msgid "Upload your csv file to import."
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:43
+#: admin/view/video-meta/html-general-tab.php:44
+msgid "Upload your video file"
+msgstr ""
+
+#: admin/view/episode-meta/html-additional-tab.php:126
+#: admin/view/video-meta/html-additional-tab.php:149
+msgid "Uploaded File"
+msgstr ""
+
+#: includes/functions/episode/streamit-episode-function.php:366
+msgid "Use a valid Episode ID"
+msgstr ""
+
+#: includes/functions/movie/streamit-movie-function.php:592
+msgid "Use a valid Movie ID"
+msgstr ""
+
+#: includes/functions/person/streamit-person-function.php:178
+msgid "Use a valid Person ID"
+msgstr ""
+
+#: includes/functions/tvshow/streamit-tvshow-function.php:490
+msgid "Use a valid tvshow ID"
+msgstr ""
+
+#: includes/functions/video/streamit-video-function.php:437
+msgid "Use a valid Video ID"
+msgstr ""
+
+#: admin/class-streamit-admin.php:151
+msgid "Use this image"
+msgstr ""
+
+#: admin/class-streamit-admin.php:152
+msgid "Use this video"
+msgstr ""
+
+#: includes/class-streamit-validator.php:141
+msgid "Validation failed"
+msgstr ""
+
+#: admin/view/comment-forms/html-comment-entry.php:35
+msgid "Video"
+msgstr ""
+
+#: admin/view/video-meta/html-pmp-tab.php:34
+msgid "Video Access"
+msgstr ""
+
+#: admin/controllers/class.streamit-video-controller.php:153
+msgid "Video added successfully."
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-genre.php:24
+#: includes/classes/class-streamit-permalink-handler.php:453
+msgid "Video Categories"
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:579
+msgid "Video Category"
+msgstr ""
+
+#: admin/controllers/class.streamit-video-category-controller.php:41
+msgid "Video category added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-video-category-controller.php:67
+msgid "Video Category deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-video-category-controller.php:104
+msgid "Video Category updated successfully."
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:98
+msgid "Video Censor Rating"
+msgstr ""
+
+#: admin/controllers/class.streamit-video-controller.php:185
+msgid "Video deleted successfully."
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:145
+msgid "Video Excerpt Content"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:117
+msgid "Video From Vimeo"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:123
+msgid "Video From YouTube"
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:13
+msgid "Video List"
+msgstr ""
+
+#: includes/classes/class-streamit-theme-template.php:489
+msgid "Video Playlist"
+msgstr ""
+
+#: admin/controllers/class.streamit-video-playlist-controller.php:33
+msgid "Video Playlist added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-video-playlist-controller.php:114
+msgid "Video playlist deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-video-playlist-controller.php:72
+msgid "Video playlist updated successfully."
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-playlist.php:27
+msgid "Video Playlists"
+msgstr ""
+
+#: admin/controllers/class.streamit-video-controller.php:392
+msgid "Video Status Upgraded."
+msgstr ""
+
+#: admin/controllers/class.streamit-video-tag-controller.php:42
+msgid "Video Tag added successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-video-tag-controller.php:119
+msgid "Video Tag deleted successfully."
+msgstr ""
+
+#: admin/controllers/class.streamit-video-tag-controller.php:91
+msgid "Video Tag updated successfully."
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tags.php:26
+#: includes/classes/class-streamit-permalink-handler.php:457
+#: includes/classes/class-streamit-theme-template.php:791
+msgid "Video Tags"
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:88
+msgid "Video Time Duration"
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:43
+msgid "Video Title"
+msgstr ""
+
+#: admin/controllers/class.streamit-video-controller.php:353
+msgid "Video updated successfully."
+msgstr ""
+
+#: admin/content-import/streamit-import-csv-function.php:1111
+msgid "Video upload failed."
+msgstr ""
+
+#: admin/view/video-meta/html-general-tab.php:25
+#: admin/view/video-meta/html-general-tab.php:69
+msgid "Video URL"
+msgstr ""
+
+#: admin/view/video-meta/html-additional-tab.php:102
+msgid "Video Views Count"
+msgstr ""
+
+#: admin/class-streamit-video-menu.php:14
+#: includes/classes/class-streamit-permalink-handler.php:451
+#: includes/classes/class-streamit-theme-template.php:297
+msgid "Videos"
+msgstr ""
+
+#: admin/view/video-forms/html-entry-video.php:15
+msgid "Videos list"
+msgstr ""
+
+#: admin/class-streamit-meta-controller.php:91
+msgid "View"
+msgstr ""
+
+#: includes/redux_option/Options/Page/counter.php:10
+msgid "View Counter"
+msgstr ""
+
+#: admin/view/episode-forms/html-add-episode-template.php:22
+msgid "View Episode"
+msgstr ""
+
+#: admin/view/movie-forms/html-add-movie-tamplate.php:21
+msgid "View Movie"
+msgstr ""
+
+#: admin/view/person-forms/html-add-person-template.php:20
+msgid "View Person"
+msgstr ""
+
+#: admin/view/tvshow-forms/html-add-tvshow-template.php:21
+msgid "View TV Show"
+msgstr ""
+
+#: admin/view/video-forms/html-add-video-tamplate.php:22
+msgid "View Video"
+msgstr ""
+
+#: admin/listable/episode/class-streamit-episodelisttable.php:68
+#: admin/listable/movie/class-streamit-movielisttable.php:123
+#: admin/listable/person/class-streamit-personlisttable.php:39
+#: admin/listable/tvshow/class-streamit-tvshowlisttable.php:126
+#: admin/listable/video/class-streamit-videolistable.php:125
+msgid "Views"
+msgstr ""
+
+#: admin/class-streamit-content-import.php:78
+msgid "Vimeo"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:104
+msgid "VIMEO API KEY"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:107
+msgid "Vimeo developer key"
+msgstr ""
+
+#: includes/functions/helper/streamit-helper-function.php:1015
+msgid "Watchlist"
+msgstr "لیست تماشا"
+
+#: includes/classes/pmp/class-streamit-pmp.php:731
+msgid "Website"
+msgstr ""
+
+#: includes/redux_option/fields/dimensions/class-redux-dimensions.php:153
+msgid "Width"
+msgstr ""
+
+#: includes/redux_option/templates/panel/footer.tpl.php:69
+#: includes/redux_option/templates/panel/header.tpl.php:81
+msgid "Working..."
+msgstr ""
+
+#: includes/redux_option/templates/panel/header.tpl.php:21
+msgid "WP_DEBUG is enabled"
+msgstr ""
+
+#: admin/view/meta/html-meta-upload-video.php:57
+msgid "X"
+msgstr ""
+
+#: admin/listable/comment/class-streamit-commentlistable.php:127
+#: includes/redux_option/Options/Page/download.php:30
+msgid "Yes"
+msgstr ""
+
+#: includes/redux_option/Options/Page/cast.php:23
+#: includes/redux_option/Options/Page/cast.php:44
+#: includes/redux_option/Options/Page/comment.php:25
+#: includes/redux_option/Options/Page/comment.php:36
+#: includes/redux_option/Options/Page/comment.php:47
+#: includes/redux_option/Options/Page/counter.php:25
+#: includes/redux_option/Options/Page/playlist.php:24
+#: includes/redux_option/Options/Page/recommended.php:24
+#: includes/redux_option/Options/Page/related-movies.php:24
+#: includes/redux_option/Options/Page/related-videos.php:22
+msgid "yes"
+msgstr ""
+
+#: templates/paid-memberships-pro/pages/checkout.php:121
+msgid "You are purchasing Pay-Per-View access for %s."
+msgstr ""
+
+#: includes/functions/pmp/streamit-pmp-function.php:434
+msgid ""
+"You are purchasing Pay-Per-View access. Once purchased, this {{Content_Type}}"
+" {{Content_Name}} will be unlocked for you and available to watch for "
+"{{Content_Duration}}."
+msgstr ""
+
+#: includes/redux_option/templates/panel/header.tpl.php:27
+msgid "you are working in a localhost environment"
+msgstr ""
+
+#: admin/class-streamit-routes-handler.php:139
+msgid "You do not have permission to access this resource."
+msgstr ""
+
+#: admin/controllers/class.streamit-content-import-controller.php:19
+msgid "You do not have permission to update settings."
+msgstr ""
+
+#: templates/paid-memberships-pro/pages/checkout.php:149
+msgid "Your current active membership plan is %s."
+msgstr ""
+
+#: admin/class-streamit-content-import.php:83
+msgid "Youtube"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:128
+msgid "YouTube API KEY"
+msgstr ""
+
+#: admin/content-import/streamit-youtube_movie-function.php:113
+#: admin/content-import/streamit-youtube_video-function.php:126
+msgid "YouTube API request failed (Error %d): %s"
+msgstr ""
+
+#: admin/view/import/html-general-settings.php:131
+msgid "YouTube developer key"
+msgstr ""
+
+#: admin/content-import/streamit-youtube_movie-function.php:224
+#: admin/content-import/streamit-youtube_video-function.php:245
+msgid "YouTube videos imported successfully."
+msgstr ""
+
+#: includes/functions/notification/streamit-notification-function.php:104
+msgid "✨ A new %s plan is now available. Explore and enjoy!"
+msgstr ""
+
+#: includes/functions/notification/streamit-notification-function.php:103
+msgid "🔥 New %s Released: \"%s\""
+msgstr ""

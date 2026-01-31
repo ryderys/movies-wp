@@ -1,0 +1,166 @@
+.continue-watching-card {
+    overflow: hidden;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+    transition: all .6s ease;
+
+    &:hover {
+        .trash-continue-watching {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .continue-watching-details {
+            .left-time {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .continue-watching-desc {
+                i {
+                    opacity: 1;
+                    visibility: visible;
+                }
+            }
+        }
+    }
+
+    .trash-continue-watching {
+        padding: 0;
+        position: absolute;
+        top: 0.1875em;
+        right: 0.375em;
+        left: auto;
+        background-color: rgba(var(--bs-black-rgb), 0.5);
+        border: 0;
+        width: 1.5em;
+        height: 1.5em;
+        line-height: 1.5em;
+        border-radius: 50%;
+        color: var(--bs-white);
+        opacity: 0;
+        visibility: hidden;
+        z-index: 10;
+        transition: all .3s ease;
+
+        i {
+            font-size: .75em;
+            vertical-align: middle;
+        }
+    }
+
+    .img-box {
+        background: linear-gradient(360deg, var(--bs-dark) 0%, rgba(var(--bs-dark-rgb), 0) 51.04%, rgba(var(--bs-dark-rgb), 0.5) 99%);
+        transition: all 0.6s ease 0s;
+
+        img {
+            height: 100%;
+            width: 100%;
+            aspect-ratio: 5/3;
+            object-position: top;
+            mix-blend-mode: overlay;
+            object-fit: cover;
+            border-radius: var(--bs-border-radius);
+        }
+    }
+
+
+    .css_prefix-progress {
+        background: var(--bs-secondary);
+        height: .125em;
+        width: 100%;
+        display: block;
+        position: absolute;
+        top: auto;
+        bottom: 3px;
+        z-index: 9;
+
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            width: var(--progress-percentage);
+            background: var(--bs-primary);
+        }
+    }
+
+    .continue-watching-details {
+        position: absolute;
+        bottom: .688em;
+        left: 0;
+        right: 0;
+        padding: 0 .5em;
+
+        .left-time {
+            font-size: .875em;
+            line-height: 1.625em;
+            font-weight: $font-weight-semibold;
+            color: var(--bs-heading-color);
+            opacity: 0;
+            visibility: hidden;
+            transition: all .3s ease;
+        }
+
+        .continue-watching-desc {
+            ul {
+                li {
+                    position: relative;
+                    font-size: .875em;
+                    line-height: 1.625em;
+                    font-weight: $font-weight-semibold;
+
+                    &:first-child {
+                        flex-basis: 8em;
+                    }
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        right: -.7em;
+                        width: .25em;
+                        height: .25em;
+                        background-color: var(--bs-body-color);
+                        border-radius: 50%;
+                    }
+
+                    &:last-child {
+                        &::after {
+                            content: none;
+                        }
+                    }
+                }
+            }
+
+            i {
+                color: var(--bs-white);
+                opacity: 0;
+                visibility: hidden;
+                transition: all .3s ease;
+            }
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .continue-watching-card {
+        .continue-watching-details {
+            .continue-watching-desc {
+                ul {
+                    li {
+                        font-size: .75em;
+
+                        &::after {
+                            content: none;
+                        }
+
+                        &:last-child {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    } 
+}

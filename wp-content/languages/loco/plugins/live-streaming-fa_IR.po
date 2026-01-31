@@ -1,0 +1,1873 @@
+# Copyright (C) 2025 iqonic
+# This file is distributed under the GPL-2.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: Live Streaming 2.0.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/live-streaming\n"
+"Last-Translator: \n"
+"Language-Team: فارسی\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-07-26T08:13:26+02:00\n"
+"PO-Revision-Date: 2025-11-30 09:41+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: live-streaming\n"
+"Language: fa_IR\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Loco-Version: 2.8.0; wp-6.8.3; php-8.2.12"
+
+#. Plugin Name of the plugin
+#: live-streaming.php admin/class-live-streaming-menu.php:36
+#: admin/class-live-streaming-menu.php:37
+#: admin/partials/html-admin-live-streaming-banner-options.php:11
+#: admin/streamit/class-ls-admin-streamit-integration.php:121
+#: admin/streamit/class-ls-admin-streamit-integration.php:148
+#: admin/streamit/class-ls-admin-streamit-integration.php:160
+msgid "Live Streaming"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: live-streaming.php
+msgid "https://iqonic.design"
+msgstr ""
+
+#. Description of the plugin
+#: live-streaming.php
+msgid ""
+"A powerful plugin to manage and organize live streaming events from your "
+"WordPress dashboard. Create, schedule, and display live streams effortlessly."
+msgstr ""
+
+#. Author of the plugin
+#: live-streaming.php
+msgid "iqonic"
+msgstr ""
+
+#. Author URI of the plugin
+#: live-streaming.php
+msgid "https://iqonic.design/"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:122
+msgid "Please upload a valid thumbnail image."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:123
+msgid "Stream URL (HLS) is required."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:124
+#: admin/class-live-streaming-admin.php:130
+msgid "Please enter a valid EPG URL."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:125
+#: admin/class-live-streaming-admin.php:131
+msgid "Please enter a valid EPG update interval in hour."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:126
+msgid "Please select a valid EPG timezone."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:127
+msgid "Cache duration must be at least 1 hour."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:128
+#: admin/class-live-streaming-admin.php:129
+msgid "Please enter a valid cache duration in hour."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:132
+msgid "EPG update interval must be at least 1 hour."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:133
+msgid "Please enter a valid VAST URL."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:134
+msgid "Please enter a valid number for mid-roll ads time."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:135
+msgid "Mid-roll ads time must be at least 1 minute."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:136
+msgid "Please enter a valid URL for the ad."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:137
+msgid "Please enter a valid video URL."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:138
+msgid "Please enter a category name."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:139
+msgid "Please enter a category slug."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:140
+msgid "Please select a category thumbnail."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:141
+#: includes/controllers/class.ls-category-controller.php:97
+msgid "Category updated successfully."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:142
+msgid "Error updating category."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:143
+msgid "Title must not contain special characters."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:144
+msgid "Please enter a channel title."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:145
+msgid "Please enter a valid stream URL"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:146
+msgid "Special characters and symbols are not allowed"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:147
+msgid "Please enter a positive number"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:148
+msgid "Please enter a valid image URL"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:149
+msgid "Please fill all required fields"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:154
+msgid "Are you sure you want to delete this category?"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:155
+msgid "Shortcode copied!"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:156
+msgid "Failed to copy shortcode."
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:157
+msgid "Choose Image"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:158
+msgid "Choose Video"
+msgstr ""
+
+#: admin/class-live-streaming-admin.php:159
+msgid "Are you sure you want to delete this advertisement?"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:83 admin/class-live-streaming-epg.php:84
+#: admin/class-live-streaming-epg.php:131
+msgid "EPG Manager"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:133
+msgid "Refresh EPG Data"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:138
+msgid "EPG Status"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:142
+msgid "API URL"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:145
+msgid "Not set"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:152
+msgid "Update Interval"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:157
+#: admin/class-live-streaming-epg.php:365 includes/functions/ls-epg-cron.php:41
+msgid "Every %d hours"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:165
+msgid "Cache Duration"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:170
+msgid "%d hours"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:178
+msgid "Next Update"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:186
+msgid "Not scheduled"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:194
+msgid "Recent EPG Activity"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:212
+#: admin/class-live-streaming-epg.php:253
+msgid "No EPG activity has been recorded yet."
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:218
+msgid "Date/Time"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:219
+#: admin/class-live-streaming-epg.php:260
+msgid "Event"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:220
+#: admin/class-live-streaming-epg.php:262
+#: admin/listable/class-ls-tv-channel-listtable.php:139
+#: admin/view/ls-forms/channel/html-channel-entry.php:86
+msgid "Status"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:221
+msgid "Details"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:259
+#: admin/listable/class-ls-tv-channel-listtable.php:141
+msgid "Date & Time"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:261
+msgid "Detail"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:358 includes/functions/ls-epg-cron.php:25
+msgid "Every 12 hours"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:437 includes/functions/ls-epg-cron.php:82
+msgid "Scheduled EPG updates every %d hours"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:466
+msgid "Cached EPG data for channel ID %d"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:484
+msgid "API URL not configured for channel ID %d"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:502
+msgid "API request failed for channel ID %d: %s"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:514
+msgid "Invalid data received for channel ID %d"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:524
+msgid "Successfully fetched EPG data for channel ID %d"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:563
+#: includes/controllers/class.ls-epg-controller.php:471
+msgid "Unknown Program"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:585
+msgid "Scheduled EPG update started"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:593
+msgid "EPG functionality is disabled in settings"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:629
+msgid "No channels found for EPG update"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:647
+msgid "Updated EPG data for channel: %s (ID: %d)"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:654
+msgid "Failed to update EPG data for channel: %s (ID: %d)"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:662
+msgid "Error updating EPG data for channel: %s (ID: %d) - %s"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:673
+msgid "Scheduled update completed. Updated: %d, Failed: %d, Total: %d"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:697
+msgid "Scheduled EPG Update"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:699
+msgid "Channel EPG Update"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:701
+msgid "API Fetch"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:703
+msgid "Cache Data"
+msgstr ""
+
+#: admin/class-live-streaming-epg.php:705
+msgid "Manual Refresh"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:47
+#: admin/class-live-streaming-menu.php:48
+#: admin/view/ls-forms/channel/html-channel-list.php:17
+msgid "TV Channel"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:56
+msgid "Add New Live Streaming"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:57
+#: admin/view/html-admin-live-streaming-tab.php:23
+#: admin/view/html-admin-live-streaming-tab.php:48
+#: admin/view/ls-forms/channel/html-channel-list.php:21
+msgid "Add New"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:65
+#: admin/class-live-streaming-menu.php:66
+#: admin/view/html-admin-live-streaming-silder-options.php:19
+#: admin/view/ls-forms/category/html-category-list.php:28
+#: public/elementor-widget/elements/channel-slider/widget.php:78
+msgid "Category"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:74
+#: admin/view/ls-forms/category/html-category-entry.php:14
+#: admin/view/ls-forms/category/html-category-entry.php:98
+msgid "Update Category"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:83
+msgid "settings"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:84
+msgid "Settings"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:158
+msgid "General"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:163
+msgid "Player"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:168
+msgid "EPG"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:173
+#: admin/streamit/class-ls-admin-streamit-integration.php:59
+msgid "Advertisement"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:178
+msgid "Global Ads"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:204
+#: includes/controllers/class.ls-category-controller.php:78
+msgid "Something went wrong"
+msgstr ""
+
+#: admin/class-live-streaming-menu.php:206
+#: admin/view/ls-forms/category/html-category-entry.php:18
+msgid "Go Back"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:122
+msgid "Show more details"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:137
+#: admin/listable/class-ls-tv-channel-listtable.php:137
+msgid "Image"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:138
+#: admin/listable/class-ls-tv-channel-listtable.php:138
+#: admin/view/ls-forms/channel/html-channel-entry.php:47
+#: public/elementor-widget/elements/channel-slider/widget.php:46
+#: public/elementor-widget/elements/term-slider/widget.php:52
+msgid "Title"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:139
+#: admin/view/ls-forms/category/html-category-entry.php:50
+#: admin/view/ls-forms/channel/html-channel-entry.php:60
+msgid "Slug"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:140
+msgid "Count"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:141
+#: admin/listable/class-ls-tv-channel-listtable.php:142
+msgid "Actions"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:149
+#: admin/listable/class-ls-tv-channel-listtable.php:159
+msgid "Delete"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:163
+msgid "None"
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:278
+msgid "Search Category..."
+msgstr ""
+
+#: admin/listable/class-ls-category-listable.php:279
+#: admin/listable/class-ls-tv-channel-listtable.php:359
+msgid "Search"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:140
+msgid "Shortcode"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:153
+msgid "Delete Permanently"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:154
+msgid "Restore"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:160
+msgid "Move to Trash"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:179
+msgid "All (%d)"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:185
+msgid "Draft (%d)"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:192
+msgid "Trash (%d)"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:214
+msgid "Copy Shortcode"
+msgstr ""
+
+#: admin/listable/class-ls-tv-channel-listtable.php:358
+msgid "Search channels..."
+msgstr ""
+
+#: admin/partials/html-admin-live-streaming-banner-options.php:16
+msgid "Select Live Streaming"
+msgstr ""
+
+#: admin/partials/html-admin-live-streaming-banner-options.php:35
+msgid "Upload Image"
+msgstr ""
+
+#: admin/partials/html-admin-live-streaming-banner-options.php:36
+msgid "Remove Image"
+msgstr ""
+
+#: admin/partials/html-admin-live-streaming-banner-options.php:37
+msgid "Please upload an image"
+msgstr ""
+
+#: admin/partials/html-admin-live-streaming-banner-options.php:40
+msgid "Remove Banner"
+msgstr ""
+
+#: admin/streamit/class-ls-admin-streamit-integration.php:107
+#: includes/controllers/class.ls-category-controller.php:128
+#: includes/controllers/class.ls-channel-controller.php:246
+msgid "Something went wrong."
+msgstr ""
+
+#: admin/streamit/class-ls-admin-streamit-integration.php:108
+msgid "No Data Found."
+msgstr ""
+
+#: admin/view/fields/html-button-field.php:16
+#: admin/view/html-admin-live-streaming-tab.php:72
+msgid "Submit"
+msgstr ""
+
+#: admin/view/fields/html-text-field.php:44
+msgid "Reset"
+msgstr ""
+
+#: admin/view/fields/html-upload-media.php:58
+msgid "Choose Media to Upload"
+msgstr ""
+
+#: admin/view/fields/html-upload-media.php:85
+msgid "X"
+msgstr ""
+
+#: admin/view/html-admin-live-streaming-silder-options.php:14
+#: public/elementor-widget/elements/channel-slider/widget.php:74
+msgid "Select Filter"
+msgstr ""
+
+#: admin/view/html-admin-live-streaming-silder-options.php:18
+#: public/elementor-widget/elements/channel-slider/widget.php:77
+msgid "Latest"
+msgstr ""
+
+#: admin/view/html-admin-live-streaming-silder-options.php:20
+#: public/elementor-widget/elements/channel-slider/widget.php:79
+msgid "Selected"
+msgstr ""
+
+#: admin/view/html-admin-live-streaming-tab.php:15
+msgid "Live Streaming Banner"
+msgstr ""
+
+#: admin/view/html-admin-live-streaming-tab.php:22
+msgid "Add Banner"
+msgstr ""
+
+#: admin/view/html-admin-live-streaming-tab.php:47
+msgid "Add Slider"
+msgstr ""
+
+#: admin/view/html-admin-live-streaming-tab.php:84
+msgid ""
+"This feature requires the Streamit API plugin to be installed and activated."
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:14
+msgid "Add New Category"
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:33
+msgid "Name"
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:36
+msgid "Enter the title of the category."
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:53
+msgid "Enter the slug of the category."
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:70
+msgid "Thumbnail"
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:76
+msgid "Please select a category thumbnail image."
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:87
+msgid "Description"
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:89
+msgid "Enter categort description here."
+msgstr ""
+
+#: admin/view/ls-forms/category/html-category-entry.php:98
+msgid "Add Category"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:10
+msgid "Enable/Disable Ads Feature"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:15
+#: admin/view/ls-forms/channel/html-adds-module.php:106
+#: admin/view/ls-forms/channel/html-adds-module.php:170
+#: admin/view/ls-forms/channel/html-adds-module.php:208
+#: admin/view/settings/global-ads/global-ads-module.php:22
+#: admin/view/settings/global-ads/global-ads-module.php:77
+#: admin/view/settings/global-ads/global-ads-module.php:157
+#: admin/view/settings/global-ads/global-ads-module.php:222
+#: admin/view/settings/html-epg-tab.php:39
+msgid "Enable"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:19
+#: admin/view/ls-forms/channel/html-adds-module.php:110
+#: admin/view/ls-forms/channel/html-adds-module.php:174
+#: admin/view/ls-forms/channel/html-adds-module.php:212
+#: admin/view/settings/global-ads/global-ads-module.php:26
+#: admin/view/settings/global-ads/global-ads-module.php:78
+#: admin/view/settings/global-ads/global-ads-module.php:158
+#: admin/view/settings/global-ads/global-ads-module.php:223
+#: admin/view/settings/html-epg-tab.php:43
+msgid "Disable"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:34
+msgid "Ads Source"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:39
+msgid "Global"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:43
+msgid "Manually"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:61
+#: admin/view/settings/global-ads/global-ads-module.php:42
+msgid "Ads Type"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:63
+#: admin/view/settings/global-ads/global-ads-module.php:44
+msgid "VAST"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:64
+#: admin/view/settings/global-ads/global-ads-module.php:45
+msgid "HTML"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:81
+msgid "VAST URL"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:82
+msgid "Enter vast URL."
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:90
+msgid "Mid Roll Ads"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:101
+msgid "Enable/Disable Mid-Roll Ads"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:123
+#: admin/view/settings/global-ads/global-ads-module.php:169
+msgid "New Ad"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:135
+#: admin/view/settings/global-ads/global-ads-module.php:182
+msgid "Ad Interval (Seconds)"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:156
+msgid "Pre Roll Ads"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:165
+msgid "Enable/Disable Pre-Roll Ads"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:195
+msgid "Post Roll Ads"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-adds-module.php:203
+msgid "Enable/Disable Post-Roll Ads"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:19
+msgid "Edit TV Channel"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:19
+msgid "Add TV Channel"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:26
+msgid "View TV Channel"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:48
+msgid "Enter title."
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:61
+msgid "Enter slug."
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:69
+msgid "Author"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:88
+msgid "Published"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:89
+msgid "Draft"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:109
+msgid "EPG Channel ID"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:123
+#: public/elementor-widget/elements/channel-slider/widget.php:39
+msgid "Content"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:132
+msgid "SEO Description"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:147
+msgid "Thumbnail Image"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:162
+msgid "Portrait Image"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:182
+msgid "Stream URL (HLS)"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:184
+msgid "Enter the HLS stream URL (.m3u8)"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:195
+msgid "Recommended Channels"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:207
+msgid "Select Category"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:224
+msgid "Update Channel"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-channel-entry.php:224
+msgid "Add Channel"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:20
+#: admin/view/settings/global-ads/global-ads-html-module.php:13
+#: admin/view/settings/global-ads/global-ads-module.php:91
+#: admin/view/settings/global-ads/global-ads-module.php:232
+msgid "Advertisement %d"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:23
+#: admin/view/settings/global-ads/global-ads-html-module.php:18
+msgid "Remove"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:25
+#: admin/view/settings/global-ads/global-ads-html-module.php:21
+#: admin/view/settings/global-ads/global-ads-module.php:93
+#: admin/view/settings/global-ads/global-ads-module.php:234
+msgid "Click to toggle"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:41
+msgid "Ad Structure Type"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:43
+msgid "Full Screen Video"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:44
+msgid "Companion Ad"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:45
+msgid "Overlay Ad"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:56
+#: admin/view/settings/global-ads/global-ads-html-module.php:51
+#: admin/view/settings/global-ads/global-ads-module.php:107
+msgid "Pre-Roll Video Source URL"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:56
+#: admin/view/settings/global-ads/global-ads-html-module.php:51
+msgid "Full Screen Video Source URL"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:65
+#: admin/view/settings/global-ads/global-ads-html-module.php:60
+msgid "Enter the URL for the pre-roll video ad."
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:65
+#: admin/view/settings/global-ads/global-ads-html-module.php:60
+msgid "Enter the URL for the video ad (only for Full Screen Mid-Roll)."
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:82
+#: admin/view/settings/global-ads/global-ads-html-module.php:76
+#: admin/view/settings/global-ads/global-ads-module.php:116
+#: admin/view/settings/global-ads/global-ads-module.php:257
+msgid "Enable Ad Skip Option"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:86
+#: admin/view/settings/global-ads/global-ads-html-module.php:80
+#: admin/view/settings/global-ads/global-ads-module.php:120
+#: admin/view/settings/global-ads/global-ads-module.php:261
+#: public/elementor-widget/elements/channel-slider/widget.php:120
+#: public/elementor-widget/elements/streaming-banner/widget.php:49
+#: public/elementor-widget/elements/streaming-banner/widget.php:73
+#: public/elementor-widget/elements/streaming-banner/widget.php:86
+#: public/elementor-widget/elements/term-slider/widget.php:106
+msgid "Yes"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:90
+#: admin/view/settings/global-ads/global-ads-html-module.php:84
+#: admin/view/settings/global-ads/global-ads-module.php:121
+#: admin/view/settings/global-ads/global-ads-module.php:262
+#: public/elementor-widget/elements/channel-slider/widget.php:121
+#: public/elementor-widget/elements/streaming-banner/widget.php:50
+#: public/elementor-widget/elements/streaming-banner/widget.php:74
+#: public/elementor-widget/elements/streaming-banner/widget.php:87
+#: public/elementor-widget/elements/term-slider/widget.php:107
+msgid "No"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:104
+#: admin/view/settings/global-ads/global-ads-html-module.php:115
+#: admin/view/settings/global-ads/global-ads-module.php:133
+#: admin/view/settings/global-ads/global-ads-module.php:274
+msgid "Skippable After (seconds)"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:106
+msgid "Ad Display Duration (seconds)"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:136
+#: admin/view/settings/global-ads/global-ads-html-module.php:144
+msgid "Ad Duration (seconds)"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:137
+msgid "Ad will be automatically removed after this duration"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:152
+#: admin/view/settings/global-ads/global-ads-html-module.php:155
+msgid "Ad Title"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:166
+#: admin/view/settings/global-ads/global-ads-html-module.php:165
+msgid "Ad Description"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:179
+#: admin/view/settings/global-ads/global-ads-html-module.php:174
+msgid "Branding Logo URL"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:192
+msgid "CTA URL (Call to Action)"
+msgstr ""
+
+#: admin/view/ls-forms/channel/html-single-html-adds.php:205
+#: admin/view/settings/global-ads/global-ads-html-module.php:192
+msgid "CTA Button Text"
+msgstr ""
+
+#: admin/view/permalink/html-permallink-section.php:9
+msgid "Copy URL"
+msgstr ""
+
+#: admin/view/permalink/html-permallink-section.php:11
+msgid "Copying..."
+msgstr ""
+
+#: admin/view/permalink/html-permallink-section.php:14
+msgid ""
+"Enter a custom base to use. A base must be set or WordPress will use the "
+"default instead."
+msgstr ""
+
+#: admin/view/permalink/html-permallink-section.php:17
+msgid "Note: This option does not work with the \"Plain\" permalink structure."
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-html-module.php:37
+msgid "Select Ad Structure"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-html-module.php:39
+msgid "Full Screen"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-html-module.php:40
+msgid "Companion (Banner)"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-html-module.php:41
+msgid "Overlay (Non-Intrusive)"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-html-module.php:183
+msgid "CTA URL"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-module.php:17
+msgid "Enable/Disable Global Ads"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-module.php:56
+msgid "VAST Ad URL"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-module.php:58
+msgid "Enter the VAST ad tag URL."
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-module.php:73
+msgid "Pre-Roll Ads"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-module.php:153
+msgid "Mid-Roll Ads"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-module.php:218
+msgid "Post-Roll Ads"
+msgstr ""
+
+#: admin/view/settings/global-ads/global-ads-module.php:248
+msgid "Post-Roll Video Source URL"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:25
+msgid "Advertisement Settings"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:34
+msgid "Ad Title Color"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:37
+msgid "Default color for mid-roll ad titles"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:46
+msgid "Ad Description Color"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:49
+msgid "Default color for mid-roll ad descriptions"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:59
+msgid "CTA Button Text Color"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:62
+msgid "Default color for CTA button text"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:72
+msgid "CTA Button Color"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:75
+msgid "Default background color for CTA buttons"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:84
+msgid "CTA Button Hover Color"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:87
+msgid "Default hover color for CTA buttons"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:96
+msgid "Ad Background Color"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:99
+msgid "Default background color for ads"
+msgstr ""
+
+#: admin/view/settings/html-advertisement-tab.php:108
+#: admin/view/settings/html-global-ads-tab.php:26
+msgid "Save Settings"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:30
+msgid "EPG Settings"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:34
+msgid "Enable EPG"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:58
+msgid "EPG API URL"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:60
+msgid "URL for the EPG data source API"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:71
+msgid "API Key"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:74
+msgid "API key for EPG service authentication (if required)"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:83
+msgid "Update Interval (hours)"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:88
+msgid "How often to refresh EPG data from the source"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:97
+msgid "Cache Duration (hours)"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:102
+msgid "How long to store EPG data in the cache"
+msgstr ""
+
+#: admin/view/settings/html-epg-tab.php:111
+#: admin/view/settings/html-general-tab.php:137
+#: admin/view/settings/html-player-tab.php:61
+msgid "Save Setting"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:31
+msgid "General Settings"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:40
+msgid "Primary Color"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:52
+msgid "Primary Hover Color"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:64
+msgid "Body Background Color"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:77
+msgid "Body Title Color"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:90
+msgid "Body Text Color"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:103
+msgid "Border Color"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:116
+msgid "Card Background Color"
+msgstr ""
+
+#: admin/view/settings/html-general-tab.php:131
+msgid "Custom CSS"
+msgstr ""
+
+#: admin/view/settings/html-global-ads-tab.php:21
+msgid "Global Ads Settings"
+msgstr ""
+
+#: admin/view/settings/html-player-tab.php:33
+msgid "Player Settings"
+msgstr ""
+
+#: admin/view/settings/html-player-tab.php:40
+msgid "Player Controller Color"
+msgstr ""
+
+#: admin/view/settings/html-player-tab.php:52
+msgid "Player Text Color"
+msgstr ""
+
+#: admin/view/settings/html-settings.php:19
+msgid "Live Streaming Settings"
+msgstr ""
+
+#: admin/view/settings/html-settings.php:42
+msgid "Tab content not found."
+msgstr ""
+
+#. translators: %s: $key Key to check
+#: includes/abstracts/abstract-live-streaming-data.php:372
+msgid ""
+"Generic add/update/get meta methods should not be used for internal meta "
+"data, including \"%s\". Use getters and setters."
+msgstr ""
+
+#: includes/class-live-streaming-routes-handler.php:48
+#: includes/class-live-streaming-routes-handler.php:77
+msgid "Route not found"
+msgstr ""
+
+#: includes/class-live-streaming-routes-handler.php:92
+#: includes/class-live-streaming-routes-handler.php:105
+msgid "Method is not allowed"
+msgstr ""
+
+#: includes/class-live-streaming-routes-handler.php:118
+#: includes/class-live-streaming-routes-handler.php:123
+msgid "Invalid nonce in request"
+msgstr ""
+
+#: includes/class-live-streaming-routes-handler.php:169
+msgid "%s dependency file not found at the desired location"
+msgstr ""
+
+#: includes/class-live-streaming.php:112 includes/class-live-streaming.php:115
+msgid "Clear Live Streaming Cache"
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:459
+#: includes/classes/channel/class-ls-channel.php:604
+msgid "Channel title is required."
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:567
+msgid "Could not insert channel into the database."
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:593
+#: includes/classes/channel/class-ls-channel.php:740
+msgid "Invalid channel ID."
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:599
+msgid "Channel not found."
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:609
+msgid "Channel slug is required."
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:716
+msgid "Could not update channel in the database."
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:750
+msgid "Could not delete channel from the database."
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:1123
+msgid "Invalid status provided"
+msgstr ""
+
+#: includes/classes/channel/class-ls-channel.php:1141
+msgid "Failed to update the channel status"
+msgstr ""
+
+#: includes/classes/class-ls-permalink-handler.php:141
+msgid "Channels"
+msgstr ""
+
+#: includes/classes/class-ls-permalink-handler.php:270
+msgid "Channel Category"
+msgstr ""
+
+#: includes/classes/term/class-ls-term-relationship.php:26
+msgid "No terms provided for the relationship."
+msgstr ""
+
+#: includes/classes/term/class-ls-term-relationship.php:43
+msgid "Failed to insert term relationships."
+msgstr ""
+
+#: includes/classes/term/class-ls-term-relationship.php:73
+#: includes/classes/term/class-ls-term-relationship.php:233
+#: includes/classes/term/class-ls-term-relationship.php:296
+msgid "Failed to retrieve term relationships."
+msgstr ""
+
+#: includes/classes/term/class-ls-term-relationship.php:146
+#: includes/classes/term/class-ls-term-relationship.php:204
+msgid "Failed to delete term relationships."
+msgstr ""
+
+#: includes/classes/term/class-ls-term-relationship.php:179
+msgid "Failed to delete term relationship."
+msgstr ""
+
+#: includes/classes/term/class-ls-term-relationship.php:262
+msgid "Error retrieving term relationships"
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:293
+msgid "Missing required fields: slug or taxonomy."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:299
+msgid "This term already exists."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:326
+msgid "Could not insert term into the database."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:351
+msgid "Term ID is required and must be numeric."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:399
+msgid "No valid data provided for update."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:412
+msgid "Could not update term in the database."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:539
+msgid "Invalid term identifier provided."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:576
+#: includes/classes/term/class-ls-term.php:587
+msgid "Term not found."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:639
+msgid "Database query failed."
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:677
+msgid "Could not delete term from the database"
+msgstr ""
+
+#: includes/classes/term/class-ls-term.php:683
+msgid "Could not delete term relationship from the database"
+msgstr ""
+
+#: includes/controllers/class.ls-append-ajax-controller.php:27
+#: includes/controllers/class.ls-append-ajax-controller.php:39
+msgid "Function not found"
+msgstr ""
+
+#: includes/controllers/class.ls-append-ajax-controller.php:83
+#: includes/controllers/class.ls-append-ajax-controller.php:126
+#: includes/controllers/class.ls-append-ajax-controller.php:177
+msgid "Data not found."
+msgstr ""
+
+#: includes/controllers/class.ls-category-controller.php:21
+#: includes/controllers/class.ls-category-controller.php:72
+#: includes/controllers/class.ls-channel-controller.php:21
+#: includes/controllers/class.ls-channel-controller.php:109
+#: includes/controllers/class.ls-settings-controller.php:26
+msgid "Invalid nonce"
+msgstr ""
+
+#: includes/controllers/class.ls-category-controller.php:39
+msgid "Category added successfully."
+msgstr ""
+
+#: includes/controllers/class.ls-category-controller.php:131
+msgid "Category deleted successfully."
+msgstr ""
+
+#: includes/controllers/class.ls-channel-controller.php:76
+msgid "Channel added successfully."
+msgstr ""
+
+#: includes/controllers/class.ls-channel-controller.php:115
+msgid "Something went wrong, channel ID is missing."
+msgstr ""
+
+#: includes/controllers/class.ls-channel-controller.php:176
+msgid "Channel updated successfully."
+msgstr ""
+
+#: includes/controllers/class.ls-channel-controller.php:215
+msgid "Channel Status Upgraded."
+msgstr ""
+
+#: includes/controllers/class.ls-channel-controller.php:249
+msgid "Channel deleted successfully."
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:162
+#: includes/controllers/class.ls-epg-controller.php:1087
+msgid "Channel ID is required"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:167
+#: includes/controllers/class.ls-epg-controller.php:210
+#: includes/controllers/class.ls-epg-controller.php:1092
+#: includes/controllers/class.ls-epg-controller.php:1141
+msgid "EPG functionality is not enabled"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:184
+msgid "EPG data not available for this channel"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:226
+msgid "EPG data for channel ID %d updated successfully with %d programs"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:232
+msgid "Failed to fetch EPG data for this channel"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:240
+msgid "No channels found"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:255
+msgid "EPG data updated for %d channels"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:289
+msgid "EPG cache for channel ID %d cleared successfully"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:297
+msgid "EPG cache cleared for all channels"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:520
+msgid "You do not have permission to refresh EPG data."
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:537
+msgid "No channels found to refresh EPG data."
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:572
+msgid "Refreshed: %d, Failed: %d, Total: %d"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:584
+msgid "EPG data refreshed for %d channels. Failed for %d channels."
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:1077
+#: includes/controllers/class.ls-epg-controller.php:1126
+msgid "Invalid security token."
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:1102
+msgid "EPG data retrieved successfully"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:1106
+msgid "No EPG data available for this channel"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:1136
+msgid "Channel IDs are required"
+msgstr ""
+
+#: includes/controllers/class.ls-epg-controller.php:1173
+msgid "EPG data retrieved for %d channels"
+msgstr ""
+
+#: includes/controllers/class.ls-settings-controller.php:60
+msgid "Settings Saved Successfully."
+msgstr ""
+
+#: includes/functions/channel/ls-channel-functions.php:221
+#: includes/functions/channel/ls-channel-functions.php:255
+msgid "Required Meta in array"
+msgstr ""
+
+#: includes/functions/channel/ls-channel-functions.php:309
+msgid "Use a valid channel ID"
+msgstr ""
+
+#: includes/functions/ls-epg-cron.php:198
+msgid "Refreshed: %d, Failed: %d, Total: %d, Dates Updated: %d"
+msgstr ""
+
+#: includes/functions/ls-helper-functions.php:158
+msgid "Click me"
+msgstr ""
+
+#: includes/functions/term/ls-term-functions.php:190
+msgid "No categories found"
+msgstr ""
+
+#: includes/functions/term/ls-term-functions.php:239
+msgid "No Data found"
+msgstr ""
+
+#: live-streaming.php:80
+msgid "Composer autoload file is missing. Please run `composer install`."
+msgstr ""
+
+#: live-streaming.php:81
+msgid "Plugin Error"
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:25
+msgid "No details found."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:37
+msgid "channel Details."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:68
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:133
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:283
+#: templates/channel/archive/entry.php:43
+msgid "No channels found."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:74
+msgid "Recommended channels."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:124
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:245
+msgid "EPG functionality is not enabled."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:223
+msgid "EPG data retrieved successfully."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:378
+msgid "Multi-day EPG data retrieved successfully."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:574
+msgid "Channels retrieved successfully."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:587
+msgid "No categories found."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-callback.php:606
+msgid "Categories retrieved successfully."
+msgstr ""
+
+#: public/API/controllers/channel-routes/class-ls-api-channel-routes.php:74
+msgid "Optional category ID to retrieve channels."
+msgstr ""
+
+#: public/class-live-streaming-public.php:105
+msgid "Skip"
+msgstr ""
+
+#: public/class-live-streaming-public.php:106
+msgid "Skip in %ss"
+msgstr ""
+
+#: public/elementor-widget/class-ls-elementor.php:37
+msgid "Live Streaming Widgets"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:16
+msgid "Desktop view Slides"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:21
+msgid "Number of slides to show on Desktop."
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:28
+msgid "Laptop view Slides"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:33
+msgid "Number of slides to show on Laptops."
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:40
+msgid "Tablet view Slides"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:45
+msgid "Number of slides to show on Tablets."
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:52
+msgid "Mobile view Slides"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:57
+msgid "Number of slides to show on Mobile."
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:64
+#: public/elementor-widget/elements/streaming-banner/widget.php:145
+msgid "Autoplay"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:67
+#: public/elementor-widget/control/ls-slick-control.php:91
+#: public/elementor-widget/control/ls-slick-control.php:115
+#: public/elementor-widget/control/ls-slick-control.php:127
+#: public/elementor-widget/elements/streaming-banner/widget.php:149
+#: public/elementor-widget/elements/streaming-banner/widget.php:183
+#: public/elementor-widget/elements/streaming-banner/widget.php:195
+msgid "True"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:68
+#: public/elementor-widget/control/ls-slick-control.php:92
+#: public/elementor-widget/control/ls-slick-control.php:116
+#: public/elementor-widget/control/ls-slick-control.php:128
+#: public/elementor-widget/elements/streaming-banner/widget.php:150
+#: public/elementor-widget/elements/streaming-banner/widget.php:184
+#: public/elementor-widget/elements/streaming-banner/widget.php:196
+msgid "False"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:77
+msgid "Autoplay Speed (ms)"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:88
+msgid "Infinite Loop"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:101
+msgid "Transition Speed (ms)"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:111
+msgid "Show Arrows"
+msgstr ""
+
+#: public/elementor-widget/control/ls-slick-control.php:123
+msgid "Show pagination"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:21
+msgid "Channel Slider"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:48
+msgid "Live Channels"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:49
+msgid "Enter slider title"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:57
+#: public/elementor-widget/elements/term-slider/widget.php:62
+msgid "Title Tag"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:60
+#: public/elementor-widget/elements/term-slider/widget.php:65
+msgid "h1"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:61
+#: public/elementor-widget/elements/term-slider/widget.php:66
+msgid "h2"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:62
+#: public/elementor-widget/elements/term-slider/widget.php:67
+msgid "h3"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:63
+#: public/elementor-widget/elements/term-slider/widget.php:68
+msgid "h4"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:64
+#: public/elementor-widget/elements/term-slider/widget.php:69
+msgid "h5"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:65
+#: public/elementor-widget/elements/term-slider/widget.php:70
+msgid "h6"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:88
+msgid "Select Channels"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:97
+msgid "Manually select which channels to display."
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:104
+msgid "Select Categories"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:110
+msgid "Select categories to display channels from."
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:118
+msgid "Use View All Button?"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:132
+#: public/elementor-widget/elements/term-slider/widget.php:130
+msgid "Slider Controls"
+msgstr ""
+
+#: public/elementor-widget/elements/channel-slider/widget.php:215
+#: public/elementor-widget/elements/term-slider/widget.php:118
+msgid "View All"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:20
+msgid "Streaming Banner"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:38
+#: public/elementor-widget/elements/term-slider/widget.php:44
+msgid "Template Settings"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:45
+msgid "Show Live Button?"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:58
+msgid "Play Now Text"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:60
+#: public/elementor-widget/elements/streaming-banner/widget.php:227
+msgid "Play Now"
+msgstr "تماشا"
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:69
+msgid "Show Title?"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:82
+msgid "Show Category?"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:97
+msgid "Banner Content"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:106
+msgid "Select Channel"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:116
+msgid "Slider Image"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:127
+msgid "Banner Slides"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:138
+msgid "Banner Slider Controls"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:158
+msgid "Autoplay Speed"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:169
+msgid "Slide Animation Time"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:179
+msgid "Arrow"
+msgstr ""
+
+#: public/elementor-widget/elements/streaming-banner/widget.php:191
+msgid "pagination"
+msgstr ""
+
+#: public/elementor-widget/elements/term-slider/widget.php:20
+#: public/elementor-widget/elements/term-slider/widget.php:54
+msgid "Term Slider"
+msgstr ""
+
+#: public/elementor-widget/elements/term-slider/widget.php:82
+msgid "Content Controls"
+msgstr ""
+
+#: public/elementor-widget/elements/term-slider/widget.php:89
+msgid "Select Channel Category"
+msgstr ""
+
+#: public/elementor-widget/elements/term-slider/widget.php:104
+msgid "View All Button"
+msgstr ""
+
+#: public/elementor-widget/elements/term-slider/widget.php:116
+msgid "View All Text"
+msgstr ""
+
+#: templates/channel/archive/entry.php:28
+#: templates/channel/category/entry.php:28
+msgid "Load More"
+msgstr ""
+
+#: templates/channel/category/entry.php:42
+msgid "No channel categorys found."
+msgstr ""
+
+#: templates/channel/single/player.php:28
+msgid "No live stream is available at the moment."
+msgstr ""
+
+#: templates/channel/single/player.php:83
+msgid "Quality"
+msgstr ""
+
+#: templates/channel/single/player.php:84
+msgid "Speed"
+msgstr ""
+
+#: templates/channel/single/player.php:85
+msgid "Normal"
+msgstr ""
+
+#: templates/channel/single/player.php:86
+msgid "Go to Live"
+msgstr ""
+
+#: templates/channel/single/player.php:112
+msgid "Your browser does not support HTML5 video."
+msgstr ""
+
+#: templates/channel/single/recommended-channel.php:82
+#: templates/elementor_widgets/Elements/channel-slider/html-channel-slider.php:88
+msgid "Channel Thumbnail"
+msgstr ""
+
+#: templates/channel/single/recommended-channel.php:134
+msgid "Next channel"
+msgstr ""
+
+#: templates/channel/single/recommended-channel.php:135
+msgid "Previous channel"
+msgstr ""
+
+#: templates/channel/single/recommended-channel.php:139
+msgid "Channel pagination"
+msgstr ""
+
+#: templates/channel/single/share-button.php:15
+msgid "Share this channel"
+msgstr ""
+
+#: templates/channel/single/share-button.php:16
+#: templates/channel/single/share-model.php:24
+msgid "Share"
+msgstr ""
+
+#: templates/channel/single/share-model.php:18
+msgid "Close share modal"
+msgstr ""
+
+#: templates/channel/single/share-model.php:32
+msgid "Share on Facebook"
+msgstr ""
+
+#: templates/channel/single/share-model.php:39
+msgid "Facebook"
+msgstr ""
+
+#: templates/channel/single/share-model.php:47
+msgid "Share on Twitter"
+msgstr ""
+
+#: templates/channel/single/share-model.php:54
+msgid "Twitter"
+msgstr ""
+
+#: templates/channel/single/share-model.php:58
+msgid "Instagram sharing is only available in the app."
+msgstr ""
+
+#: templates/channel/single/share-model.php:67
+msgid "Instagram"
+msgstr ""
+
+#: templates/channel/single/share-model.php:75
+msgid "Share on WhatsApp"
+msgstr ""
+
+#: templates/channel/single/share-model.php:82
+msgid "WhatsApp"
+msgstr ""
+
+#: templates/elementor_widgets/Elements/channel-slider/html-channel-slider.php:120
+#: templates/elementor_widgets/Elements/streaming-banner/html-streaming-banner.php:101
+#: templates/elementor_widgets/Elements/term-slider/html-term-slider.php:111
+msgid "Previous slide"
+msgstr ""
+
+#: templates/elementor_widgets/Elements/channel-slider/html-channel-slider.php:121
+#: templates/elementor_widgets/Elements/streaming-banner/html-streaming-banner.php:102
+#: templates/elementor_widgets/Elements/term-slider/html-term-slider.php:112
+msgid "Next slide"
+msgstr ""
+
+#: templates/elementor_widgets/Elements/streaming-banner/html-streaming-banner.php:79
+msgid "Live"
+msgstr ""
+
+#: templates/elementor_widgets/Elements/streaming-banner/html-streaming-banner.php:90
+msgid "View Stream"
+msgstr ""

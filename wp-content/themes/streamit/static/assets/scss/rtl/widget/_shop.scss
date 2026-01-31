@@ -1,0 +1,29 @@
+// banner
+.css_prefix-product-banner-slider {
+    .css_prefix-product-banner {
+        .slick-arrow{
+            &.NextArrow-two {
+                right: auto;
+                left: 1em;
+            }
+
+            &.PreArrow-two {
+                left: auto;
+                right: 1em;
+
+            }
+        }
+    }
+}
+
+.css_prefix-product-box {
+    .css_prefix-card-img-overlay {
+        transform: scaleX(-1) scaleY(1);
+        transform-origin: top center;
+    }
+    &:hover {
+        .css_prefix-card-img-overlay {
+            transform: scaleX(-1.1) scaleY(1.1);
+        }
+    }
+}

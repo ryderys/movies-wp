@@ -1,0 +1,328 @@
+.btn,
+.button {
+    position: relative;
+    z-index: 0;
+    letter-spacing: .008em;
+    border-radius: var(--bs-border-radius);
+
+    &.btn-link {
+        padding: 0;
+        border-radius: 0;
+        i {
+            font-size: .875em;
+        }
+        &::after,
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            z-index: 1;
+            height: 1px;
+            transition: 0.4s;
+            background: currentColor;
+        }
+        &::before {
+            left: 0;
+            right: auto;
+            width: 0;
+            transition-delay: 0s;
+        }
+
+        &::after {
+            right: 0;
+            left: auto;
+            width: 100%;
+        }
+
+        &:hover {
+            background: transparent;
+            &::before {
+                width: 100%;
+                transition-delay: 0.4s;
+            }
+            &::after {
+                width: 0;
+            }
+        }
+    }
+
+    &.btn-primary,
+    &.button-primary {
+        background-color: var(--bs-btn-hover-bg);
+        border-color: var(--bs-btn-hover-border-color);
+
+        &::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bs-primary);
+            border: .0625em solid var(--bs-primary);
+            transform: scaleX(1);
+            transform-origin: 50%;
+            transition: transform .3s ease-out;
+            border-radius: var(--bs-border-radius);
+        }
+
+        &:hover {
+            &::after {
+                transform: scaleX(0);
+            }
+        }
+
+        &:focus {
+            color: var(--bs-white);
+        }
+    }
+
+    &.btn-secondary,
+    &.button-secondary {
+        background-color: var(--bs-btn-hover-bg);
+        border-color: var(--bs-btn-hover-border-color);
+
+        &::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bs-secondary);
+            border: .0625em solid var(--bs-secondary);
+            transform: scaleX(1);
+            transform-origin: 50%;
+            transition: transform .3s ease-out;
+            border-radius: var(--bs-border-radius);
+        }
+
+        &:hover {
+            &::after {
+                transform: scaleX(0);
+            }
+        }
+
+        &:focus {
+            color: var(--bs-white);
+        }
+    }
+
+    &.btn-purple,
+    &.button-purple {
+        background-color: var(--bs-btn-hover-bg);
+        border-color: var(--bs-btn-hover-border-color);
+
+        &::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bs-purple);
+            border: .0625em solid var(--bs-purple);
+            transform: scaleX(1);
+            transform-origin: 50%;
+            transition: transform .3s ease-out;
+            border-radius: var(--bs-border-radius);
+        }
+
+        &:hover {
+            &::after {
+                transform: scaleX(0);
+            }
+        }
+
+        &:focus {
+            color: var(--bs-white);
+        }
+    }
+
+     &.btn-warning-subtle{
+        background-color: rgba(var(--bs-warning-rgb),.3);
+        border-color: var(--bs-warning-bg-subtle);
+
+        .rent-price{
+            color: var(--bs-body-color);
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bs-warning-bg-subtle);
+            border: .0625em solid var(--bs-warning-bg-subtle);
+            transform: scaleX(1);
+            transform-origin: 50%;
+            transition: transform .3s ease-out;
+            border-radius: var(--bs-border-radius);
+        }
+
+        &:hover {
+            &::after {
+                transform: scaleX(0);
+            }
+            .rent-price {
+                color: var(--bs-white);
+            }
+        }
+
+        &:focus {
+            color: var(--bs-white);
+        }
+    }
+   
+    &:focus-visible {
+        border: none;
+        box-shadow: none;
+    }
+}
+a {
+    &.btn-warning-subtle {
+        &:focus {
+            color: var(--bs-white);
+        }
+    }
+}
+.btn-close {
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+.btn-primary {
+    &:focus {
+        color: var(--bs-white);
+    }
+}
+
+// dummy
+.wp-block-button {
+    float: none;
+    margin: 1em 0;
+
+    .wp-block-button__link {
+        background-color: var(--bs-primary-hover-bg);
+        border-color: var(--bs-primary-hover-bg);
+        color: var(--bs-white);
+        position: relative;
+        z-index: 0;
+        letter-spacing: .008em;
+        border-radius: var(--bs-border-radius);
+
+        &::after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-radius: var(--bs-border-radius);
+            background: var(--bs-primary);
+            border: 0.0625em solid var(--bs-primary);
+            transform: scaleX(1);
+            transform-origin: 50%;
+            transition: transform 0.3s ease-out;
+        }
+
+        &:hover {
+            border-radius: var(--bs-border-radius);
+
+            &::after {
+                transform: scaleX(0);
+            }
+        }
+    }
+
+    &.is-style-squared {
+        .wp-block-button__link {
+            border-radius: 0;
+        }
+    }
+
+    &.is-style-outline {
+        .wp-block-button__link {
+            background: var(--bs-body-bg);
+
+            &:after {
+                background: var(--bs-body-bg);
+                border-color: var(--bs-body-bg);
+            }
+
+            &:hover {
+                background: var(--bs-primary-hover-bg);
+
+                &:after {
+                    background: var(--bs-primary);
+                    border-color: var(--bs-primary);
+                }
+            }
+        }
+    }
+
+    &.alignright {
+        margin-left: 2em;
+        margin-top: 0;
+        text-align: right;
+    }
+}
+
+.st-btn-container {
+    .btn {
+        svg {
+            height: 1em;
+            width: 1em;
+            color: currentColor;
+            fill: currentColor;
+        }
+    }
+}
+
+// wocommerse
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) #respond input#submit,
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) a.button,
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) button.button,
+.woocommerce:where(body:not(.woocommerce-block-theme-has-button-styles)) input.button,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce #respond input#submit,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce a.button,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce button.button,
+:where(body:not(.woocommerce-block-theme-has-button-styles)) .woocommerce input.button {
+    font-size: var(--bs-btn-font-size);
+    font-weight: var(--bs-btn-font-weight);
+    letter-spacing: 0.008em;
+    border-radius: var(--bs-border-radius);
+    color: var(--bs-white);
+    background-color: var(--bs-primary-hover-bg);
+    border-color: var(--bs-primary-hover-bg);
+
+    &::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bs-primary);
+        border: .0625em solid var(--bs-primary);
+        transform-origin: 50%;
+        transition: transform .3s ease-out;
+        border-radius: var(--bs-border-radius);
+    }
+
+    &:hover {
+        color: var(--bs-white);
+        border-radius: var(--bs-border-radius);
+        background-color: var(--bs-primary-hover-bg);
+        border-color: var(--bs-primary-hover-bg);
+    }
+}

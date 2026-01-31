@@ -1,0 +1,43 @@
+:root {
+    /* Container */
+	--content-width: 87.5em;
+	--content-width-sm: 73.125em;
+
+    /* Page Spacing */
+	--global-page-top-spacing: 3.75em;
+	--global-page-bottom-spacing: 3.75em;
+	--global-page-top-spacing-tablet: 3.75em;
+	--global-page-bottom-spacing-tablet: 3.75em;
+	--global-page-top-spacing-mobile: 2em;
+	--global-page-bottom-spacing-mobile: 2em;
+
+	// PMP Pro
+	--pmpro--color--base: var(--bs-white) !important;
+    --pmpro--color--contrast: var(--bs-body-color) !important;
+    --pmpro--color--accent: var(--bs-primary) !important;
+    --pmpro--color--accent--variation: hsl(var(--bs-primary-rgb)) !important;
+	--pmpro--color--border--variation: var(--bs-border-color);
+	--pmpro--color--border: var(--bs-border-color);
+	--pmpro--color--info-background: var(--bs-info-bg-subtle);
+	--pmpro--color--info-border: var(--bs-info-border-subtle);
+	--pmpro--color--info-text: var(--bs-info);
+	--pmpro--color--info-link: var(--bs-info);
+	--pmpro--color--success-background: var(--bs-success-bg-subtle);
+	--pmpro--color--success-border: var(--bs-success-border-subtle);
+	--pmpro--color--success-text: var(--bs-success);
+	--pmpro--color--success-link: var(--bs-success);
+	--pmpro--color--error-background: var(--bs-danger-bg-subtle);
+	--pmpro--color--error-border: var(--bs-danger-border-subtle);
+	--pmpro--color--error-text: var(--bs-danger);
+	--pmpro--color--error-link: var(--bs-danger);
+	--pmpro--color--alert-background: var(--bs-warning-bg-subtle);
+	--pmpro--color--alert-border: var(--bs-warning-border-subtle);
+	--pmpro--color--alert-text: var(--bs-warning);
+	--pmpro--color--alert-link: var(--bs-warning);
+	--pmpro--color--alert2-background: var(--bs-warning-bg-subtle);
+	--pmpro--color--alert2-border: var(--bs-warning-border-subtle);
+	--pmpro--color--alert2-text: var(--bs-warning);
+	--pmpro--color--alert2-link: var(--bs-warning);
+}
+
+

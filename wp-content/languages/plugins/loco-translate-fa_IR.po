@@ -1,0 +1,2244 @@
+# Translation of Plugins - Loco Translate - Stable (latest release) in Persian
+# This file is distributed under the same license as the Plugins - Loco Translate - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2025-02-12 09:28:36+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: fa\n"
+"Project-Id-Version: Plugins - Loco Translate - Stable (latest release)\n"
+
+#: tpl/admin/config/apis.php:146
+msgid "Configured externally"
+msgstr "پیکربندی خارجی"
+
+#: src/js/Strings.php:17 tpl/admin/config/apis.php:146
+msgid "No API key"
+msgstr "کلید API وجود ندارد"
+
+#. translators: %s will be replaced with a PO file name
+#: src/admin/init/InitPoController.php:385
+msgid "Copy %s instead"
+msgstr "در عوض %s را کپی کنید"
+
+#: tpl/admin/init/init-copy.php:18
+msgid "You can copy an existing PO file (recommended), or extract directly from source (advanced)"
+msgstr "می‌توانید یک فایل PO موجود را کپی کرده (توصیه می‌شود)، یا مستقیما از منبع استخراج نمایید (پیشرفته)"
+
+#: src/admin/init/InitPoController.php:396
+msgid "You're creating translations from a POT file"
+msgstr "شما در حال ایجاد ترجمه از یک فایل POT هستید"
+
+#: src/admin/init/InitPoController.php:237
+msgid "Copy PO file"
+msgstr "فایل PO را کپی کنید"
+
+#: src/admin/DebugController.php:929
+msgid "String debugger"
+msgstr "خطایاب رشته"
+
+#: src/admin/config/BaseController.php:22
+msgid "System"
+msgstr "سیستم"
+
+#: src/admin/bundle/ViewController.php:152
+msgid "Custom translations may not work without System translations installed"
+msgstr "ترجمه‌های سفارشی ممکن است بدون نصب ترجمه‌‎های سیستمی کار نکنند"
+
+#: tpl/admin/help/side-bar.php:6
+msgid "Useful links:"
+msgstr "پیوندهای مفید:"
+
+#: tpl/admin/bundle/setup.php:27
+msgid "Current configuration as XML"
+msgstr "پیکربندی فعلی به عنوان XML"
+
+#: tpl/admin/bundle/inc-po-table.php:19
+msgid "Strings"
+msgstr "رشته‌ها"
+
+#. translators: Author credit: (1) Product name (2) version number, (3) author
+#. name.
+#: src/package/Header.php:89
+msgid "\"%1$s\" %2$s by %3$s"
+msgstr "((%1$s)) %2$s توسط %3$s"
+
+#: src/js/Strings.php:57
+msgid "Check the translations marked with a warning sign"
+msgstr "ترجمه‌هایی که با علامت هشدار مشخص شده‌اند را بررسی کنید"
+
+#. translators: %s refers to a non-zero amount of errors detected. xgettext:
+#. javascript-format
+#: src/js/Strings.php:54
+msgid "%s possible error detected"
+msgid_plural "%s possible errors detected"
+msgstr[0] "%s خطای محتمل شناسایی شد"
+
+#. translators: Result of validation when all strings pass validation
+#: src/js/Strings.php:50
+msgid "No formatting errors detected"
+msgstr "هیچ خطای قالب‌بندی شناسایی نشد"
+
+#. Translators: Button that validates current translation formatting
+#: src/admin/file/EditController.php:224
+msgctxt "Editor"
+msgid "Check"
+msgstr "بررسی"
+
+#. translators: %u is a number of files which were successfully deleted
+#: src/admin/file/DeleteController.php:59
+msgid "%u file deleted"
+msgid_plural "%u files deleted"
+msgstr[0] "%u فایل حذف شد"
+
+#: src/admin/bundle/SetupController.php:253
+msgid "This bundle doesn't declare a domain path. Add one via the Advanced tab if needed"
+msgstr "این بسته یک مسیر دامنه را اعلام نمی‌کند. در صورت نیاز از طریق زبانه پیشرفته یک مسیر اضافه کنید"
+
+#: src/admin/bundle/SetupController.php:250
+msgid "The default \"languages\" domain path has been detected"
+msgstr "مسیر پیش‌فرض ((languages)) دامنه شناسایی شده است"
+
+#. Translators: %s will be replaced with a relative path like "/languages"
+#: src/admin/bundle/SetupController.php:245
+msgid "The domain path is declared by the author as \"%s\""
+msgstr "مسیر دامنه توسط نویسنده به عنوان ((%s)) اعلام شده است"
+
+#: src/admin/bundle/SetupController.php:239
+msgid "This bundle does't declare a text domain; try configuring it in the Advanced tab"
+msgstr "این بسته یک دامنه متنی را اعلام نمی‌کند. سعی کنید آن را در سربرگ پیشرفته پیکربندی کنید"
+
+#: src/admin/bundle/SetupController.php:235
+msgid "This text domain is not in Loco Translate's bundle configuration"
+msgstr "این دامنه متنی در پیکربندی بسته ترجمه‌ی لوکو نیست"
+
+#. Translators: This warning is shown when a text domain has defaulted to same
+#. as the folder name (or slug)
+#: src/admin/bundle/SetupController.php:229
+msgid "This plugin doesn't declare a text domain. It's assumed to be the same as the slug, but this could be wrong"
+msgstr "این افزونه دامنه متنی را اعلام نمی‌کند. فرض بر این است که همان slug است، اما ممکن است اشتباه باشد"
+
+#. Translators: %s will be replaced with a text domain, e.g. "loco-translate"
+#: src/admin/bundle/SetupController.php:222
+msgid "WordPress says the primary text domain is \"%s\""
+msgstr "وردپرس می‌گوید دامنه متن اصلی ((%s)) است"
+
+#. Translators: Shown when a PO file's Plural-Forms header has a different
+#. formula from the Unicode CLDR rules
+#: src/Locale.php:500
+msgid "Plural forms differ from Loco Translate's built in rules for this language"
+msgstr "اشکال جمع با قوانین ساخته شده توسط ترجمه‌ی لوکو برای این زبان متفاوت است"
+
+#: src/js/Strings.php:197
+msgid "Mismatching placeholder type; check against source text formatting"
+msgstr "عدم تطابق نوع متن جایگزین؛ در برابر قالب‌بندی متن منبع بررسی کنید"
+
+#: src/js/Strings.php:186
+msgid "Possible syntax error in string formatting"
+msgstr "خطای نحوی احتمالی در قالب‌بندی رشته"
+
+#. translators: %s is the number of formatting arguments accepted by the source
+#. text of a translation xgettext: javascript-format
+#: src/js/Strings.php:194
+msgid "Missing placeholders; source text formatting suggests at least %s"
+msgstr "بدون متن جایگزین؛ قالب‌بندی متن منبع حداقل %s را پیشنهاد می‌کند"
+
+#. translators: %s is the number of formatting arguments accepted by the source
+#. text of a translation xgettext: javascript-format
+#: src/js/Strings.php:190
+msgid "Too many placeholders; source text formatting suggests a maximum of %s"
+msgstr "متن جایگزین بسیار زیاد؛ قالب‌بندی متن منبع حداکثر %s را پیشنهاد می‌کند"
+
+#: tpl/admin/file/head.php:10
+msgid "Edit file headers"
+msgstr "ویرایش فایل سربرگ"
+
+#: tpl/admin/file/conf.php:23
+msgid "Relative path to template file"
+msgstr "مسیر نسبی پرونده‌ی قالب"
+
+#: tpl/admin/file/conf.php:57 tpl/admin/file/head.php:34
+msgid "Save"
+msgstr "ذخيره"
+
+#: tpl/admin/file/conf.php:48 tpl/admin/init/init-po.php:149
+msgid "Merge strings from related JSON files"
+msgstr "ادغام رشته‌ها از پرونده‌های JSON مرتبط"
+
+#. translators: Summary of translations copied from a PO file during Sync
+#. xgettext: javascript-format
+#: src/js/Strings.php:40
+msgid "%s translation copied"
+msgid_plural "%s translations copied"
+msgstr[0] "%s ترجمه کپی شد"
+
+#: src/admin/config/ApisController.php:76
+msgid "API URL"
+msgstr "آدرس API"
+
+#. translators: Where %s is any number of strings
+#. translators: Shows total string count at top of editor xgettext:
+#. javascript-format
+#: src/gettext/Metadata.php:191 src/js/Strings.php:109
+msgid "%s string"
+msgid_plural "%s strings"
+msgstr[0] "%s رشته"
+
+#. translators: %s is the quantity of files which were successfully moved
+#: src/admin/file/MoveController.php:87
+msgid "%s file moved"
+msgid_plural "%s files moved"
+msgstr[0] "%s پرونده جابه‌جا شد"
+
+#: tpl/admin/file/info-pot.php:31
+msgid "%s word"
+msgid_plural "%s words"
+msgstr[0] "%s کلمه"
+
+#: src/gettext/Compiler.php:280
+msgid "PO file saved and MO/JSON files compiled"
+msgstr "پرونده‌ی PO ذخیره و پرونده‌های MO/JSON تدوین شد"
+
+#. translators: %s refers to a JSON file which could not be compiled due to an
+#. error
+#: src/gettext/Compiler.php:148 src/gettext/Compiler.php:213
+msgid "JSON compilation failed for %s"
+msgstr "تدوین JSON برای %s انجام نشد"
+
+#: tpl/admin/config/version.php:74
+msgid "Update Now"
+msgstr "هم‌اکنون به‌روزرسانی کنید"
+
+#. translators: Where %s is the full version number of WordPress
+#: tpl/admin/config/version.php:68
+msgid "WordPress %s"
+msgstr "وردپرس %s"
+
+#. translators: (1) Name of software, e.g. "WordPress" (2) Version number, e.g.
+#. "5.6"
+#: tpl/admin/config/version.php:53 tpl/admin/config/version.php:71
+msgid "Your version of %1$s is out of date. We recommend you upgrade to at least v%2$s, but preferably to the latest stable version."
+msgstr "نسخه %1$s شما قدیمی است. ما به شما توصیه می‌کنیم حداقل به ورژن %2$s، اما ترجیحاً به آخرین نسخه پایدار، ارتقا دهید."
+
+#. translators: Where %s is the full version number of PHP
+#: tpl/admin/config/version.php:49
+msgid "PHP %s"
+msgstr "PHP %s"
+
+#: tpl/admin/config/settings.php:162
+msgid "Delete redundant files"
+msgstr "حذف پرونده‌های زائد"
+
+#: tpl/admin/config/settings.php:156
+msgid "Pretty formatting"
+msgstr "قالب‌بندی زیبا"
+
+#: tpl/admin/config/settings.php:145 tpl/admin/config/settings.php:151
+msgid "Compiling JSON files"
+msgstr "تدوین پرونده‌های JSON"
+
+#: tpl/admin/init/upload.php:50
+msgid "Your file must be named as shown above where %1$s is the language code, e.g. %2$s"
+msgstr "پرونده‌ی شما باید همان‌طور که در بالا نشان داده شده است در جایی که %1$s کدزبان است، نام‌گذاری شود. مثلا %2$s"
+
+#: tpl/admin/init/upload.php:45
+msgid "Upload PO file"
+msgstr "بارگذاری پرونده‌ی PO"
+
+#. translators: Indicates that POT files are optional, which is not recommended
+#: tpl/admin/config/settings.php:107
+msgid "Sync with source when template missing"
+msgstr "همگام‌سازی با منبع در صورت عدم وجود الگو"
+
+#: tpl/admin/config/settings.php:99
+msgid "Fuzzy matching tolerance"
+msgstr "اغماض تطبیق فازی"
+
+#: tpl/admin/config/settings.php:89 tpl/admin/config/settings.php:95
+msgid "Syncing PO files"
+msgstr "همگام‌سازی پرونده‌های PO"
+
+#: tpl/admin/help/side-bar.php:15
+msgid "Info and tutorials"
+msgstr "اطلاعات و آموزش‌ها"
+
+#: src/ajax/ApisController.php:30
+msgid "Need a human?"
+msgstr "به یک انسان نیاز دارید؟"
+
+#: src/ajax/UploadController.php:70
+msgid "Your file is identical to the existing one"
+msgstr "پرونده‌ی شما با پرونده‌ی موجود یکسان است"
+
+#: src/admin/init/UploadController.php:52
+msgid "Upload a translation file"
+msgstr "بارگذاری یک پرونده‌ی ترجمه"
+
+#: src/admin/init/UploadController.php:29 tpl/admin/init/upload.php:58
+msgid "Upload"
+msgstr "بارگذاری"
+
+#: src/admin/bundle/ViewController.php:107
+msgid "Upload PO"
+msgstr "بارگذاری PO"
+
+#. Translators: %s will be replaced with the name of a missing POT file
+#: src/ajax/SyncController.php:55
+msgid "Falling back to source extraction because %s is missing"
+msgstr "در حال بازگشت به استخراج منبع، زیرا %s موجود نیست"
+
+#: tpl/admin/bundle/inc-po-table.php:63
+msgid "Move"
+msgstr "انتقال"
+
+#: tpl/admin/config/prefs.php:29 tpl/admin/config/prefs.php:33
+msgid "Restrict locales"
+msgstr "محدودسازی محل‌ها"
+
+#. Translators: Button that opens window for auto-translating
+#: src/admin/file/EditController.php:222
+msgctxt "Editor"
+msgid "Auto"
+msgstr "خودکار"
+
+#: src/js/Strings.php:171
+msgctxt "Editor"
+msgid "Suggest translation"
+msgstr "پیشنهاد ترجمه"
+
+#: src/js/Strings.php:168
+msgctxt "Editor"
+msgid "Toggle Fuzzy"
+msgstr "تغییر فازی"
+
+#: src/js/Strings.php:102
+msgid "Keep this translation"
+msgstr "حفظ این ترجمه"
+
+#: src/js/Strings.php:99
+msgid "Loading suggestions"
+msgstr "بارگیری پیشنهادات"
+
+#: src/js/Strings.php:90
+msgid "Suggested translations"
+msgstr "ترجمه‌های پیشنهادی"
+
+#: src/js/Strings.php:87
+msgid "Use this translation"
+msgstr "استفاده از این ترجمه"
+
+#: src/js/Strings.php:84
+msgid "Nothing needed updating"
+msgstr "هیچ بروزرسانی لازم نیست"
+
+#. translators: %s is the quantity of strings modified during a batch process
+#. xgettext: javascript-format
+#: src/js/Strings.php:81
+msgid "%s string updated"
+msgid_plural "%s strings updated"
+msgstr[0] "%s رشته بروز شد"
+
+#. translators: 1: Number of strings; 2: Service provider; e.g. "50 strings
+#. translated via Google Translate" xgettext: javascript-format
+#: src/js/Strings.php:77
+msgid "%1$s string translated via %2$s"
+msgid_plural "%1$s strings translated via %2$s"
+msgstr[0] "%1$s رشته ترجمه‌شده توسط %2$s"
+
+#. translators: %s is the quantity of strings left unprocessed after a job was
+#. stopped prematurely xgettext: javascript-format
+#: src/js/Strings.php:73
+msgid "Translation job aborted with %s string remaining"
+msgid_plural "Translation job aborted with %s strings remaining"
+msgstr[0] "کار ترجمه با %s رشته‌ی مانده باطل شد"
+
+#. translators: %s%% is a percentage, e.g. 50% xgettext: javascript-format
+#: src/js/Strings.php:69
+msgid "Translation progress %s%%"
+msgstr "پیشرفت ترجمه %s%%"
+
+#. translators: characters meaning individual unicode characters of source text
+#. xgettext: javascript-format
+#: src/js/Strings.php:65
+msgid "%s characters will be sent for translation."
+msgstr "%s کاراکتر برای ترجمه ارسال می‌شود."
+
+#. translators: %s: the number of strings to be sent for translation xgettext:
+#. javascript-format
+#: src/js/Strings.php:61
+msgid "%s unique source strings."
+msgstr "%s رشته‌های منبع منحصر به فرد."
+
+#. translators: Message appears after sync operation, where %s refers to a POT
+#. file. xgettext: javascript-format
+#: src/js/Strings.php:44
+msgid "Strings up to date with %s"
+msgstr "رشته‌ها بروز با %s"
+
+#. translators: Summary of existing translations where the source text has
+#. changed slightly xgettext: javascript-format
+#: src/js/Strings.php:36
+msgid "%s string marked Fuzzy"
+msgid_plural "%s strings marked Fuzzy"
+msgstr[0] "%s رشته‌ی فازی مشخص‌شده"
+
+#: tpl/admin/config/apis.php:160
+msgid "See full disclaimer"
+msgstr "مشاهده‌ی سلب مسئولیت کامل"
+
+#: tpl/admin/config/apis.php:159
+msgid "Third party services are subject to their own terms of use and may incur costs from the provider"
+msgstr "خدمات ثالث منوط به شرایط استفاده خودشان است و ممکن است هزینه‌هایی را از طرف ارائه‌دهنده متحمل شود"
+
+#: tpl/admin/config/apis.php:157
+msgid "Important"
+msgstr "مهم"
+
+#: src/admin/config/ApisController.php:77
+msgid "API region"
+msgstr "منطقه‌ی API"
+
+#: src/admin/config/ApisController.php:75
+msgid "API key"
+msgstr "کلید API"
+
+#: src/admin/config/ApisController.php:12
+#: src/admin/config/BaseController.php:20
+#: src/admin/config/BaseController.php:40 tpl/admin/help/tab-config-apis.php:2
+msgid "API keys"
+msgstr "کلیدهای API"
+
+#: tpl/ajax/modal-apis-empty.php:11
+msgid "Add automatic translation services in the plugin settings."
+msgstr "خدمات ترجمه‌ی خودکار را در تنظیمات افزونه اضافه کنید."
+
+#: tpl/ajax/modal-apis-empty.php:9
+msgid "No translation APIs configured"
+msgstr "هیچ API مترجمی پیکربندی نشده"
+
+#: tpl/ajax/modal-apis-batch.php:29
+msgid "Mark new translations as Fuzzy"
+msgstr "ترجمه‌های جدید را به عنوان فازی علامت‌گذاری کنید"
+
+#: tpl/ajax/modal-apis-batch.php:23
+msgid "Overwrite existing translations"
+msgstr "بازنویسی ترجمه‌های موجود"
+
+#: tpl/ajax/modal-apis-batch.php:10
+msgid "Auto-translate this file"
+msgstr "ترجمه‌ی خودکار این پرونده"
+
+#: src/admin/file/EditController.php:181
+msgid "This is NOT a translation file. Manual editing of source strings is not recommended."
+msgstr "این یک پرونده‌ی ترجمه نیست. ویرایش دستی رشته‌های منبع توصیه نمی‌شود."
+
+#: src/fs/FileWriter.php:324
+msgid "Modification of POT (template) files is disallowed by the plugin settings"
+msgstr "طبق تنظیمات افزونه، تغییر پرونده‌های POT (الگو) مجاز نیست"
+
+#: tpl/admin/file/move-pot.php:14
+msgid "Enter a new location for this file"
+msgstr "مکان جدیدی برای این پرونده وارد کنید"
+
+#: tpl/admin/file/move.php:17
+msgid "The following file will be moved/renamed to the new location:"
+msgid_plural "The following files will be moved/renamed to the new location:"
+msgstr[0] "پرونده‌های زیر به مکان جدید منتقل می‌شوند / تغییر نام می‌یابند:"
+
+#: tpl/admin/file/move.php:14
+msgid "Confirm relocation"
+msgstr "تایید نقل مکان"
+
+#: tpl/admin/file/move-po.php:14
+msgid "Choose a new location for these translations"
+msgstr "مکان جدیدی برای این ترجمه‌ها انتخاب کنید"
+
+#: tpl/admin/bundle/alias.php:14
+msgid "This plugin doesn't have its own translation files, but can be translated in the default text domain"
+msgstr "این افزونه پرونده‌های ترجمه خود را ندارد، اما در دامنه‌ی متن پیش‌فرض قابل ترجمه است"
+
+#: tpl/admin/config/settings.php:197
+msgid "Editing of POT (template) files"
+msgstr "شروع ویرایش پرونده‌‌های POT (الگو)"
+
+#: tpl/admin/config/settings.php:81
+msgid "Recommended"
+msgstr "پیشنهادی"
+
+#: tpl/admin/config/settings.php:81
+msgid "Enable Ajax file uploads"
+msgstr "فعال‌سازی بارگذاری پرونده‌ی آژاکس"
+
+#: src/fs/FileWriter.php:249
+msgid "Parent directory isn't writable"
+msgstr "دایرکتوری والد قابل نوشتن نیست"
+
+#: src/ajax/FsConnectController.php:160
+msgid "This move operation requires permission"
+msgstr "این عملیات انتقال نیاز به اجازه دارد"
+
+#: src/ajax/FsConnectController.php:127
+msgid "This directory is managed by WordPress. Removed files may be restored during updates"
+msgstr "این دایرکتوری توسط وردپرس مدیریت می‌شود. پرونده‌های حذف‌شده ممکن است در هنگام بروزرسانی بازیابی شوند"
+
+#. translators: Page title where %s is the name of a file to be moved
+#: src/admin/file/MoveController.php:111 src/admin/file/MoveController.php:140
+msgid "Move %s"
+msgstr "انتقال %s"
+
+#. translators: %s is the quantity of files which failed to be moved
+#: src/admin/file/MoveController.php:92
+msgid "%s file could not be moved"
+msgid_plural "%s files could not be moved"
+msgstr[0] "%s پرونده قابل انتقال نیست"
+
+#: src/admin/file/BaseController.php:121
+msgid "Relocate"
+msgstr "نقل مکان"
+
+#: tpl/admin/file/move.php:24
+msgid "Move files"
+msgstr "انتقال پرونده‌ها"
+
+#: tpl/admin/errors/file-sec.php:14
+msgid "Access to this file is blocked for security reasons"
+msgstr "دسترسی به این پرونده به دلایل امنیتی مسدود شده است"
+
+#: tpl/admin/errors/file-sec.php:11
+msgid "File access disallowed"
+msgstr "دسترسی به پرونده مجاز نیست"
+
+#: src/admin/bundle/ViewController.php:116
+msgid "View template"
+msgstr "نمایش الگو"
+
+#: tpl/admin/config/version.php:18 tpl/admin/config/version.php:75
+msgid "Install manually"
+msgstr "نصب دستی"
+
+#: tpl/admin/config/version.php:14
+msgid "A newer version of Loco Translate is available for download"
+msgstr "نسخه جدیدتر Loco Translate برای دانلود در دسترس است"
+
+#: tpl/admin/help/side-bar.php:9
+msgid "Official plugin page"
+msgstr "صفحه‌ی رسمی افزونه"
+
+#: tpl/admin/common/inc-fsconn.php:28
+msgid "File is protected by the bundle configuration"
+msgstr "پرونده توسط پیکربندی بسته محافظت می‌شود"
+
+#: tpl/admin/common/inc-fsconn.php:27
+msgid "Read only"
+msgstr "فقط خواندنی"
+
+#: tpl/admin/config/settings.php:43
+msgid "Scan JavaScript files with extensions:"
+msgstr "پرونده‌های جاوا اسکریپت را با این پسوندها اسکن کنید:"
+
+#: src/admin/init/InitPoController.php:293
+msgid "Assign template"
+msgstr "اختصاص الگو"
+
+#: src/js/Strings.php:165
+msgctxt "Editor"
+msgid "Translated"
+msgstr "ترجمه‌شده"
+
+#: src/js/Strings.php:162
+msgctxt "Editor"
+msgid "Untranslated"
+msgstr "ترجمه‌نشده"
+
+#. translators: %s will be replaced with a URL which may change without
+#. affecting the translation.
+#: src/hooks/AdminHooks.php:92
+msgid "Administrators and auditors may wish to review Loco's <a href=\"%s\">plugin privacy notice</a>."
+msgstr "مدیران و ممیزها ممکن است بخواهند <a href=\"%s\">اعلامیه‌ی حریم خصوصی افزونه</a> را بررسی کنند."
+
+#: src/hooks/AdminHooks.php:89
+msgid "This plugin doesn't collect any data from public website visitors."
+msgstr "این افزونه هیچ اطلاعاتی را از بازدیدکنندگان وب‌سایت عمومی جمع‌آوری نمی‌کند."
+
+#: tpl/admin/bundle/inc-po-table.php:54 tpl/admin/bundle/locale.php:66
+msgid "View"
+msgstr "نمایش"
+
+#. translators: %s will be replaced with the full name of the user profile's
+#. admin language
+#: tpl/admin/root.php:17
+msgid "Your admin language is %s."
+msgstr "زبان مدیریت شما %s است."
+
+#. translators: %s will be replaced with the full name of the site language
+#: tpl/admin/root.php:14
+msgid "The language of this site is %s."
+msgstr "زبان این سایت %s است."
+
+#: tpl/admin/list/locales.php:25
+msgid "Site language"
+msgstr "زبان سایت"
+
+#: tpl/admin/list/locales.php:22
+msgid "Files found"
+msgstr "پرونده‌ها یافت شدند"
+
+#: tpl/admin/list/locales.php:16
+msgid "Locale code"
+msgstr "کد محلی"
+
+#: tpl/admin/list/locales.php:13
+msgid "Locale name"
+msgstr "نام محل"
+
+#: tpl/admin/file/info.php:110
+msgid "Files in this location can be modified or deleted by WordPress automatic updates"
+msgstr "پرونده‌های موجود در این مکان با بروزرسانی خودکار وردپرس قابل اصلاح یا حذف هستند"
+
+#: tpl/admin/file/info.php:107
+msgid "WordPress updates"
+msgstr "بروزرسانی‌های وردپرس"
+
+#: tpl/admin/file/info-mo.php:18 tpl/admin/file/info-po.php:24
+#: tpl/admin/file/info-pot.php:21
+msgid "File size"
+msgstr "اندازه‌ی پرونده"
+
+#: tpl/admin/file/diff.php:17
+msgctxt "Button label for a next revision"
+msgid "Next"
+msgstr "بعدی"
+
+#: tpl/admin/file/diff.php:14
+msgctxt "Button label for a previous revision"
+msgid "Previous"
+msgstr "قبلی"
+
+#: tpl/admin/file/diff.php:6
+msgctxt "revision date short format"
+msgid "j M @ H:i"
+msgstr "j M @ H:i"
+
+#: tpl/admin/errors/no-locale.php:11
+msgid "No files found for this language"
+msgstr "هیچ پرونده‌ای برای این زبان یافت نشد"
+
+#: tpl/admin/errors/no-backups.php:18
+msgid "File backups are disabled in your plugin settings"
+msgstr "تهیه‌ی پشتیبان از پرونده در تنظیمات افزونه‌ی شما غیرفعال است"
+
+#: tpl/admin/errors/no-backups.php:16
+msgid "Backup files will be written when you save translations from Loco Translate editor"
+msgstr "هنگام ذخیره‌ی ترجمه‌ها از ویرایش‌گر ترجمه‌ی لوکو، پرونده‌‌های پشتیبان تهیه می‌شوند"
+
+#: tpl/admin/errors/no-backups.php:12
+msgid "No previous file revisions"
+msgstr "هیچ تغییری در پرونده‌ی قبلی وجود ندارد"
+
+#: src/admin/config/SettingsController.php:68
+msgid "Disallow"
+msgstr "غیرمجاز"
+
+#: src/admin/config/SettingsController.php:67
+msgid "Allow (with warning)"
+msgstr "مجاز (با هشدار)"
+
+#: src/admin/config/SettingsController.php:66
+msgid "Allow"
+msgstr "اجازه"
+
+#: tpl/admin/config/settings.php:187
+msgid "Modification of installed files"
+msgstr "اصلاح پرونده‌های نصب شده"
+
+#: tpl/admin/config/settings.php:181
+msgid "Save credentials in session"
+msgstr "اطلاعات کاربری را در جلسه ذخیره کنید"
+
+#: tpl/admin/config/settings.php:170 tpl/admin/config/settings.php:176
+msgid "File system access"
+msgstr "دسترسی به سیستم پرونده"
+
+#: tpl/admin/common/inc-fsconn.php:56
+msgid "Click \"Connect\" to authenticate with the server"
+msgstr "برای تأیید اعتبار با سرور، ((اتصال)) را کلیک کنید"
+
+#. translators: Page title for installed languages page
+#: src/mvc/AdminRouter.php:61
+msgid "Languages &lsaquo; Loco"
+msgstr "زبان‌ها &lsaquo; لوکو"
+
+#: src/mvc/AdminRouter.php:59
+msgid "Languages"
+msgstr "زبان‌ها"
+
+#: src/fs/FileWriter.php:313
+msgid "Modification of installed files is disallowed by the plugin settings"
+msgstr "طبق تنظیمات افزونه، تغییر پرونده‌های نصب شده مجاز نیست"
+
+#. translators: Where %s is a file name
+#: src/ajax/DiffController.php:47
+msgid "Revisions are identical, you can delete %s"
+msgstr "ویرایش‌ها یکسان هستند، می‌توانید %s را حذف کنید"
+
+#. translators: Where %s is the name of the invalid POT file
+#: src/admin/file/EditController.php:138 src/ajax/SyncController.php:72
+msgid "Translation template is invalid (%s)"
+msgstr "الگوی ترجمه نامعتبر است (%s)"
+
+#. translators: %s is a file name to be rolled back to a previous version.
+#. translators: Page title where %s refers to a file name
+#: src/admin/file/DiffController.php:59 src/admin/file/DiffController.php:78
+msgid "Restore %s"
+msgstr "بازیابی %s"
+
+#: src/admin/file/DiffController.php:35
+msgid "File restored"
+msgstr "پرونده بازیابی شد"
+
+#: src/admin/file/BaseController.php:120 tpl/admin/file/diff.php:31
+msgid "Restore"
+msgstr "بازیابی"
+
+#: src/admin/bundle/LocaleController.php:145
+msgid "See all core translations"
+msgstr "دیدن همه‌ی ترجمه‌های هسته"
+
+#: src/admin/bundle/LocaleController.php:138
+#: src/admin/file/EditController.php:132 src/admin/file/EditController.php:183
+#: tpl/admin/common/inc-fsconn.php:16 tpl/admin/common/inc-fsconn.php:41
+#: tpl/admin/config/apis.php:167 tpl/admin/config/prefs.php:45
+#: tpl/admin/config/settings.php:234 tpl/admin/errors/no-backups.php:22
+msgid "Documentation"
+msgstr "مستندات"
+
+#: src/admin/bundle/LocaleController.php:137
+msgid "No core translation files are installed for this language"
+msgstr "هیچ پرونده‌ی ترجمه‌ی هسته برای این زبان نصب نشده است"
+
+#: src/ajax/FsConnectController.php:130
+msgid "Changes to this file may be overwritten or deleted when you update WordPress"
+msgstr "هنگام بروزرسانی وردپرس، ممکن است تغییرات در این پرونده بازنویسی یا حذف شود"
+
+#: src/ajax/FsConnectController.php:124
+msgid "This directory is managed by WordPress, be careful what you delete"
+msgstr "این دایرکتوری توسط وردپرس مدیریت می‌شود، مراقب باشید چه چیزی را حذف می‌کنید"
+
+#: src/ajax/FsConnectController.php:121
+msgid "This file may be overwritten or deleted when you update WordPress"
+msgstr "هنگام بروزرسانی وردپرس، ممکن است این پرونده رونویسی یا حذف شود"
+
+#: src/ajax/FsConnectController.php:163
+msgid "Saving this file requires permission"
+msgstr "ذخیره‌ی این پرونده نیاز به اجازه دارد"
+
+#: src/ajax/FsConnectController.php:157
+msgid "Deleting this file requires permission"
+msgstr "حذف این پرونده نیاز به اجازه دارد"
+
+#: src/ajax/FsConnectController.php:154
+msgid "Creating this file requires permission"
+msgstr "ایجاد این پرونده نیاز به اجازه دارد"
+
+#. Translators: Plural category for zero quantity
+#: src/Locale.php:383
+msgctxt "Plural category"
+msgid "Zero"
+msgstr "صفر"
+
+#: src/admin/init/InitPoController.php:377 tpl/admin/file/info.php:113
+msgid "What's this?"
+msgstr "این چیه؟"
+
+#. Translators: Where %s is the size of a file
+#: tpl/admin/init/init-pot.php:18
+msgid "largest is %s"
+msgstr "بزرگترین %s است"
+
+#: tpl/admin/config/settings.php:68
+msgid "Maximum line length (zero disables wrapping)"
+msgstr "حداکثر طول خط (صفر، محصورسازی را غیرفعال می‌کند)"
+
+#. Translators: (1) Number of files (2) Maximum size of file that will be
+#. included (3) Size of the largest encountered
+#: src/ajax/SyncController.php:99
+msgid "%1$s file has been skipped because it's %3$s. (Max is %2$s). Check all strings are present before saving."
+msgid_plural "%1$s files over %2$s have been skipped. (Largest is %3$s). Check all strings are present before saving."
+msgstr[0] "%1$s پرونده بیش از %2$s رد شدند. (بزرگ‌ترین %3$s می‌باشد). قبل از ذخیره، همه‌ی رشته‌ها را بررسی کنید."
+
+#: src/admin/bundle/ConfController.php:92
+msgid "Child theme declares the same Text Domain as the parent theme"
+msgstr "پوسته‌ی کودک همان دامنه متن را به عنوان پوسته‌ی والد اعلام می‌کند"
+
+#. Translators: General plural category not covered by other forms
+#: src/Locale.php:393
+msgctxt "Plural category"
+msgid "Other"
+msgstr "دیگر"
+
+#. Translators: Plural category used in some multi-plural languages
+#: src/Locale.php:391
+msgctxt "Plural category"
+msgid "Many"
+msgstr "زیاد"
+
+#. Translators: Plural category used in some multi-plural languages
+#: src/Locale.php:389
+msgctxt "Plural category"
+msgid "Few"
+msgstr "کم"
+
+#. Translators: Plural category used in some multi-plural languages
+#: src/Locale.php:387
+msgctxt "Plural category"
+msgid "Two"
+msgstr "دو"
+
+#. Translators: Plural category for singular quantity
+#: src/Locale.php:385
+msgctxt "Plural category"
+msgid "One"
+msgstr "مفرد"
+
+#: tpl/admin/config/version.php:28
+msgid "You're running a development snapshot of Loco Translate"
+msgstr "شما در حال اجرای یک اسنپ‌شات توسعه از ترجمه‌ی لوکو هستید"
+
+#. Author URI of the plugin
+#: loco.php
+msgid "https://localise.biz/wordpress/plugin"
+msgstr "https://localise.biz/wordpress/plugin"
+
+#. Description of the plugin
+#: loco.php
+msgid "Translate themes and plugins directly in WordPress"
+msgstr "ترجمه‌ی پوسته‌ها و افزونه‌ها مستقیما در وردپرس"
+
+#: src/admin/bundle/LocaleController.php:155 tpl/admin/root.php:58
+msgid "See all plugins"
+msgstr "دیدن همه‌ی افزونه‌ها"
+
+#: tpl/admin/root.php:54
+msgid "These plugins have recently loaded translation files into the admin area"
+msgstr "این افزونه‌ها اخیرا پرونده‌های ترجمه را در قسمت مدیریت بارگذاری کرده‌اند"
+
+#: tpl/admin/root.php:51
+msgid "Running plugins:"
+msgstr "افزونه‌های در حال اجرا:"
+
+#: src/admin/bundle/LocaleController.php:150 tpl/admin/root.php:43
+msgid "See all themes"
+msgstr "دیدن همه‌ی پوسته‌ها"
+
+#: tpl/admin/root.php:39
+msgid "Active theme:"
+msgstr "پوسته‌ی فعال:"
+
+#: tpl/admin/root.php:30
+msgid "Translations have been recently modified in the following bundles"
+msgstr "ترجمه‌ها اخیرا در بسته‌های زیر اصلاح شده‌اند"
+
+#: tpl/admin/root.php:27
+msgid "Recently updated:"
+msgstr "اخیرا بروزشده:"
+
+#: src/admin/RootController.php:84
+msgid "Welcome to Loco Translate"
+msgstr "به ترجمه‌ی لوکو خوش آمدید"
+
+#: tpl/admin/list/inc-table.php:20
+msgid "Sets"
+msgstr "مجموعه‌ها"
+
+#: tpl/admin/bundle/locale.php:32 tpl/admin/list/inc-table.php:11
+msgid "Bundle name"
+msgstr "نام بسته"
+
+#: tpl/admin/init/init-pot.php:42 tpl/admin/init/init-prompt.php:31
+msgid "About templates"
+msgstr "درباره‌ی الگوها"
+
+#: tpl/admin/init/init-prompt.php:23
+msgid "This bundle doesn't define a translations template file"
+msgstr "این بسته، پرونده‌ی الگوی ترجمه را تعریف نمی‌کند"
+
+#: tpl/admin/init/init-prompt.php:19
+msgid "This bundle's template file doesn't exist yet. We recommend you create it before adding languages"
+msgstr "پرونده‌ی الگوی این بسته هنوز وجود ندارد. توصیه می‌کنیم قبل از افزودن زبان، آن را ایجاد کنید"
+
+#: tpl/admin/init/init-copy.php:15 tpl/admin/init/init-prompt.php:15
+msgid "Template missing"
+msgstr "الگو ناموجود"
+
+#: tpl/admin/init/init-pot.php:30
+msgid "Strings will be extracted to:"
+msgstr "رشته‌ها در زیر استخراج می‌شوند:"
+
+#. Translators: (1) Number of files excluded (2) the maximum size of file that
+#. was included
+#: tpl/admin/init/init-pot.php:24
+msgid "Excludes %1$s file over %2$s"
+msgid_plural "Excludes %1$s files over %2$s"
+msgstr[0] "%1$s پرونده از %2$s مستثنی شد"
+
+#. Translators: Where %s is the size of a file
+#: tpl/admin/init/init-pot.php:16
+msgid "%s on disk"
+msgstr "%s روی دیسک"
+
+#: tpl/admin/init/init-pot.php:12
+msgid "Source files to scan:"
+msgstr "پرونده‌های منبع برای اسکن:"
+
+#: tpl/admin/init/init-po.php:169
+msgid "Start translating"
+msgstr "شروع به ترجمه کنید"
+
+#: tpl/admin/init/init-po.php:159
+msgid "Use this file as template when running Sync"
+msgstr "هنگام اجرای همگام‌سازی از این پرونده به عنوان الگو استفاده کنید"
+
+#: tpl/admin/file/conf.php:38 tpl/admin/init/init-po.php:139
+msgid "Just copy English source strings"
+msgstr "فقط رشته‌های منبع انگلیسی را کپی کنید"
+
+#: tpl/admin/file/conf.php:32 tpl/admin/init/init-po.php:133
+msgid "Copy target translations from \"%s\""
+msgstr "کپی ترجمه‌های هدف از ((%s))"
+
+#: tpl/admin/file/conf.php:12 tpl/admin/init/init-po.php:122
+msgid "Template options"
+msgstr "گزینه‌های الگو"
+
+#: tpl/admin/init/init-po.php:77 tpl/admin/init/upload.php:15
+msgid "Choose a location"
+msgstr "یک مکان انتخاب کنید"
+
+#: tpl/admin/init/init-po.php:63
+msgid "Custom language"
+msgstr "زبان سفارشی"
+
+#: tpl/admin/init/init-po.php:51
+msgid "Available languages"
+msgstr "زبان‌های موجود"
+
+#: src/admin/bundle/LocaleController.php:124
+#: src/admin/list/LocalesController.php:35 tpl/admin/init/init-po.php:45
+msgid "Installed languages"
+msgstr "زبان‌های نصب شده"
+
+#: tpl/admin/init/init-po.php:44
+msgid "No language selected"
+msgstr "هیچ زبانی انتخاب نشده"
+
+#: tpl/admin/init/init-po.php:39
+msgid "WordPress language"
+msgstr "زبان وردپرس"
+
+#: tpl/admin/init/init-po.php:32
+msgid "Choose a language"
+msgstr "یک زبان را انتخاب کنید"
+
+#: src/admin/init/InitPoController.php:389
+msgid "Create template instead"
+msgstr "ساخت الگوی جایگزین"
+
+#: src/admin/init/InitPoController.php:392
+msgid "You're creating translations directly from source code"
+msgstr "شما در حال ایجاد ترجمه‌ها به طور مستقیم از کد منبع هستید"
+
+#: tpl/admin/help/tab-support.php:6
+msgid "Getting help with Loco Translate"
+msgstr "کمک گرفتن از ترجمه‌ی لوکو"
+
+#: tpl/admin/help/tab-config-apis.php:9 tpl/admin/help/tab-config.php:9
+msgid "Full documentation"
+msgstr "مستندات کامل"
+
+#: tpl/admin/help/tab-config.php:6
+msgid "User options apply to your WordPress login, across all sites"
+msgstr "گزینه‌های کاربر برای ورود به وردپرس شما، در همه سایت‌ها اعمال می‌شود"
+
+#: tpl/admin/help/tab-config.php:5
+msgid "Site options apply to all users of Loco Translate across the current site"
+msgstr "گزینه‌های سایت برای همه‌ی کاربران ترجمه‌ی لوکو در سایت فعلی اعمال می‌شود"
+
+#: tpl/admin/help/side-bar.php:12
+msgid "Support forum"
+msgstr "انجمن پشتیبانی"
+
+#: tpl/admin/file/view-mo.php:14
+msgid "File is in binary MO format"
+msgstr "پرونده در قالب باینری MO است"
+
+#. Translators: Where %s is the name (or number) of an operating system user
+#: tpl/admin/file/info.php:96
+msgid "To create new files here you'll have to connect to the remote file system, or make the directory writeable by %s"
+msgstr "برای ایجاد پرونده‌های جدید در اینجا باید به سیستم پرونده‌ی از راه دور متصل شوید، یا دایرکتوری را با %s قابل نوشتن کنید"
+
+#: tpl/admin/file/info.php:92
+msgid "This directory can't be written to directly by the web server"
+msgstr "این دایرکتوری را نمی‌توان مستقیما توسط وب سرور نوشت"
+
+#: tpl/admin/file/info.php:81
+msgid "Note that the file may not be deletable due to additional ownership permissions"
+msgstr "توجه داشته باشید که به دلیل مجوزهای اضافی مالکیت، پرونده قابل حذف نیست"
+
+#. Translators: Where %s is the name (or number) of an operating system user
+#: tpl/admin/file/info.php:73
+msgid "The containing directory is writeable by %s, so you can add new files in the same location"
+msgstr "دایرکتوری دربرگیرنده قابل نوشتن است %s، بنابراین می‌توانید پرونده‌های جدید را در همان مکان اضافه کنید"
+
+#: tpl/admin/file/info.php:69
+msgid "Directory is writeable"
+msgstr "دایرکتوری پرونده قابل نوشتن است"
+
+#. Translators: "either" meaning that the file itself can't exist without a
+#. containing directory
+#: tpl/admin/file/info.php:59
+msgid "The containing directory for this file doesn't exist either"
+msgstr "دایرکتوری حاوی این پرونده نیز وجود ندارد"
+
+#: tpl/admin/file/info.php:55
+msgid "Directory doesn't exist"
+msgstr "دایرکتوری وجود ندارد"
+
+#. Translators: Where %s is the name (or number) of an operating system user
+#: tpl/admin/file/info.php:43
+msgid "To make changes you'll have to connect to the remote file system, or make the file writeable by %s"
+msgstr "برای ایجاد تغییرات باید به سیستم پرونده‌ی از راه دور متصل شوید، یا پرونده را توسط %s قابل نوشتن کنید"
+
+#: tpl/admin/file/info.php:39
+msgid "This file can't be updated directly by the web server"
+msgstr "این پرونده به طور مستقیم توسط سرور وب بروز نمی‌شود"
+
+#: tpl/admin/file/info.php:27
+msgid "You can update these translations directly from the editor to the file system"
+msgstr "می‌توانید این ترجمه‌ها را مستقیما از ویرایش‌گر به سیستم پرونده بروز کنید"
+
+#. Translators: Where %s is the type of file, e.g. "po"
+#: tpl/admin/file/info.php:24
+msgid "%s file is writeable"
+msgstr "پرونده‌ی %s قابل نوشتن است"
+
+#: tpl/admin/file/info.php:14
+msgid "File doesn't exist"
+msgstr "پرونده موجود نیست"
+
+#: tpl/admin/file/info-pot.php:27
+msgid "Last extracted"
+msgstr "آخرین استخراج شده"
+
+#: tpl/admin/file/info-po.php:88
+msgid "These translations are not linked to a POT file. Sync operations will extract strings directly from source code."
+msgstr "این ترجمه‌ها به یک پرونده‌ی POT پیوند ندارند. عملیات همگام‌سازی رشته‌ها را مستقیما از کد منبع استخراج می‌کند."
+
+#: tpl/admin/file/info-po.php:84
+msgid "Missing template"
+msgstr "الگوی ناموجود"
+
+#. Translators: Where %s is the name of a template file
+#: tpl/admin/file/info-po.php:75
+msgid "PO file has different source strings to \"%s\". Try running Sync before making any changes."
+msgstr "پرونده‌ی PO رشته‌های منبع مختلفی با ((%s)) دارد. قبل از انجام هرگونه تغییر، همگام‌سازی را امتحان کنید."
+
+#: tpl/admin/file/info-po.php:71
+msgid "Out of sync with template"
+msgstr "عدم همگامی با الگو"
+
+#. Translators: Where %s is the name of a template file
+#: tpl/admin/file/info-po.php:64
+msgid "PO file has the same source strings as \"%s\""
+msgstr "پرونده‌ی PO همان رشته‌های منبع ((%s)) را دارد"
+
+#: tpl/admin/file/info-po.php:60
+msgid "In sync with template"
+msgstr "همگام با الگو"
+
+#: tpl/admin/file/info-po.php:50
+msgid "We can't find the binary MO file that belongs with these translations"
+msgstr "ما نمی‌توانیم پرونده‌ی باینری MO را پیدا کنیم که متعلق به این ترجمه‌ها باشد"
+
+#: tpl/admin/file/info-po.php:47
+msgid "Binary file missing"
+msgstr "پرونده‌ی باینری موجود نیست"
+
+#: tpl/admin/file/info-other.php:11
+msgid "Unexpected file type"
+msgstr "نوع پرونده‌ی غیرمنتظره"
+
+#: tpl/admin/file/info-mo.php:41
+msgid "We can't find the original PO file from which this was compiled"
+msgstr "ما نمی‌توانیم پرونده‌ی PO اصلی را که این پرونده از آن تدوین شده است پیدا کنیم"
+
+#: tpl/admin/file/info-mo.php:38
+msgid "PO file missing"
+msgstr "پرونده‌ی PO موجود نیست"
+
+#: tpl/admin/file/info-mo.php:27
+msgid "Compiled translations"
+msgstr "ترجمه‌های تدوین شده"
+
+#: tpl/admin/file/info-mo.php:24 tpl/admin/file/info-po.php:30
+msgid "Last translation"
+msgstr "آخرین ترجمه"
+
+#: tpl/admin/file/info-mo.php:21 tpl/admin/file/info-po.php:27
+#: tpl/admin/file/info-pot.php:24
+msgid "File modified"
+msgstr "پرونده اصلاح شد"
+
+#: tpl/admin/file/info-mo.php:15
+msgid "compiled"
+msgstr "تدوین‌شده"
+
+#: tpl/admin/file/delete.php:30
+msgid "Delete Permanently"
+msgstr "حذف دائمی"
+
+#: tpl/admin/file/delete.php:16
+msgid "Are you sure you want to <strong>permanently</strong> delete the following file?"
+msgstr "آیا مطمئن هستید که می‌خواهید پرونده‌ی زیر را به صورت <strong>دائمی</strong> حذف کنید؟"
+
+#: tpl/admin/file/delete.php:12
+msgid "Confirm delete"
+msgstr "تایید حذف"
+
+#. Translators: %s is a URL. Keep the <a> tag intact
+#: tpl/admin/errors/no-tokenizer.php:25
+msgid "You can still translate any bundle that has a <a href=\"%s\" target=\"_blank\">template</a>"
+msgstr "همچنان می‌توانید هر بسته‌ی نرم‌افزاری را که دارای <a href=\"%s\" target=\"_blank\">الگو</a> ترجمه کنید"
+
+#. Translators: change "en" in the URL to your language if it's available at
+#. https://www.php.net/docs.php
+#: tpl/admin/errors/no-tokenizer.php:17
+msgid "Loco requires the <a href=\"http://php.net/manual/en/book.tokenizer.php\" target=\"_blank\">Tokenizer extension</a> to scan PHP source code for translatable strings"
+msgstr "لوکو برای اسکن کد منبع PHP برای رشته‌های قابل ترجمه به <a href=\"http://php.net/manual/en/book.tokenizer.php\" target=\"_blank\">افزونه‌ی Tokenizer</a> نیاز دارد"
+
+#: tpl/admin/errors/no-tokenizer.php:11
+msgid "About the Tokenizer"
+msgstr "درباره‌ی Tokenizer"
+
+#: tpl/admin/errors/file-missing.php:14
+msgid "Either this file is missing or the server doesn't have permission to access it"
+msgstr "یا این پرونده وجود ندارد یا سرور اجازه دسترسی به آن را ندارد"
+
+#: tpl/admin/errors/file-missing.php:11
+msgid "File not found"
+msgstr "پرونده یافت نشد"
+
+#: tpl/admin/errors/file-isdir.php:14
+msgid "This page was expecting a file, but the path is actually a directory"
+msgstr "این برگه منتظر یک پرونده بود، اما مسیر در واقع یک دایرکتوری است"
+
+#: tpl/admin/errors/file-isdir.php:11
+msgid "File is a directory"
+msgstr "پرونده یک دایرکتوری است"
+
+#: tpl/admin/config/version.php:38
+msgid "You're running the latest version of Loco Translate"
+msgstr "شما آخرین نسخه‌ی ترجمه‌ی لوکو را اجرا می‌کنید"
+
+#: tpl/admin/config/version.php:17
+msgid "Upgrade to %s"
+msgstr "ارتقا به %s"
+
+#: tpl/admin/config/version.php:11 tpl/admin/config/version.php:25
+#: tpl/admin/config/version.php:35
+msgid "Version %s"
+msgstr "نسخه %s"
+
+#: tpl/admin/config/settings.php:216
+msgid "Allow full access to these roles"
+msgstr "دسترسی کامل به این نقش‌ها را مجاز کنید"
+
+#: tpl/admin/config/settings.php:210
+msgid "Grant access to roles"
+msgstr "اجازه‌ی دسترسی به نقش‌ها"
+
+#: tpl/admin/config/settings.php:75 tpl/admin/config/settings.php:182
+msgid "Not recommended"
+msgstr "توصیه نمی‌شود"
+
+#: tpl/admin/config/settings.php:75
+msgid "Add UTF-8 byte order mark"
+msgstr "افزودن علامت سفارش بایت UTF-8"
+
+#: tpl/admin/config/settings.php:52 tpl/admin/config/settings.php:58
+msgid "Saving PO/POT files"
+msgstr "ذخیره‌سازی پرونده‌های PO/POT"
+
+#: tpl/admin/config/settings.php:37
+msgid "Scan PHP files with extensions:"
+msgstr "پرونده‌های PHP را با این پسوندها اسکن کنید:"
+
+#: tpl/admin/config/settings.php:31
+msgid "Skip PHP files larger than:"
+msgstr "بیخیال پرونده‌های PHP بزرگ‌تر از:"
+
+#: tpl/admin/config/settings.php:21 tpl/admin/config/settings.php:27
+msgid "Extracting strings"
+msgstr "استخراج رشته‌ها"
+
+#: tpl/admin/config/prefs.php:16 tpl/admin/config/prefs.php:20
+msgid "Translator credit"
+msgstr "اعتبار مترجم"
+
+#. translators: text field placeholder
+#: tpl/admin/common/inc-table-filter.php:6
+msgid "Filter..."
+msgstr "فیلتر..."
+
+#: tpl/admin/common/inc-fsconn.php:60
+msgid "Connect"
+msgstr "اتصال"
+
+#. Translators: When a file or folder cannot be modified due to filesystem
+#. permissions
+#: tpl/admin/common/inc-fsconn.php:50 tpl/admin/file/info.php:36
+#: tpl/admin/file/info.php:89
+msgid "Write protected"
+msgstr "نوشتن محافظت شده"
+
+#: tpl/admin/bundle/view.php:55
+msgid "This bundle isn't automatically compatible and requires configuring before you can use all the functions of Loco Translate"
+msgstr "این بسته به طور خودکار سازگار نیست و قبل از استفاده از تمام توابع ترجمه‌ب لوکو به پیکربندی نیاز دارد"
+
+#: tpl/admin/bundle/view.php:52
+msgid "unconfigured"
+msgstr "بدون پیکربندی"
+
+#: tpl/admin/bundle/view.php:35 tpl/admin/bundle/view.php:57
+msgid "Click the <a href=\"%s\">setup</a> tab to complete the bundle configuration"
+msgstr "برای تکمیل پیکربندی بسته، روی برگه‌ی <a href=\"%s\">نصب</a> کلیک کنید"
+
+#: tpl/admin/bundle/view.php:32
+msgid "This bundle isn't fully configured, so we don't know what the following files are for"
+msgstr "این بسته به طور کامل پیکربندی نشده است، بنابراین نمی‌دانیم که پرونده‌های زیر برای چه کاری استفاده می‌شوند"
+
+#: tpl/admin/bundle/view.php:29
+msgid "Additional files found"
+msgstr "پرونده‌های اضافی یافت شد"
+
+#: tpl/admin/bundle/setup.php:39
+msgid "If you have trouble translating this bundle, consider asking the author for help"
+msgstr "اگر در ترجمه این بسته مشکل دارید، از نویسنده کمک بخواهید"
+
+#: tpl/admin/bundle/setup.php:36
+msgid "Author details"
+msgstr "جزئیات نویسنده"
+
+#: tpl/admin/bundle/setup/saved.php:19
+msgid "Edit config"
+msgstr "ویرایش پیکربندی"
+
+#: tpl/admin/bundle/setup/saved.php:14
+msgid "This bundle's configuration is saved in the WordPress database"
+msgstr "پیکربندی این بسته در پایگاه داده وردپرس ذخیره می‌شود"
+
+#: tpl/admin/bundle/setup/saved.php:11
+msgid "Bundle configuration saved"
+msgstr "پیکربندی بسته ذخیره شد"
+
+#: tpl/admin/bundle/setup/partial.php:14
+msgid "This bundle's configuration has been automatically detected, but isn't fully complete"
+msgstr "پیکربندی این بسته به طور خودکار شناسایی شده است، اما کامل نیست"
+
+#: tpl/admin/bundle/setup/partial.php:11
+msgid "Partially configured bundle"
+msgstr "بسته پیکربندی جزئی"
+
+#: tpl/admin/bundle/setup/none.php:15
+msgid "It needs configuring before you can do any translations"
+msgstr "قبل از این‌که بتوانید ترجمه‌ای انجام دهید، به پیکربندی نیاز دارد"
+
+#: tpl/admin/bundle/setup/none.php:14
+msgid "This bundle isn't set up for translation in a way we understand"
+msgstr "این بسته به روشی که ما درک می‌کنیم برای ترجمه تنظیم نشده است"
+
+#: tpl/admin/bundle/setup/none.php:11
+msgid "Unconfigured bundle"
+msgstr "بسته‌ی پیکربندی نشده"
+
+#: tpl/admin/bundle/setup/meta.php:14
+msgid "This bundle's configuration has been automatically detected and seems to be fully compatible"
+msgstr "پیکربندی این بسته به طور خودکار شناسایی شده است و به نظر می‌رسد کاملا سازگار باشد"
+
+#: tpl/admin/bundle/setup/inc-nav.php:25
+msgid "Get help with this"
+msgstr "در این مورد کمک بگیرید"
+
+#: tpl/admin/bundle/setup/inc-nav.php:22
+msgid "Import config from XML"
+msgstr "درون‌ریزی پیکربندی از XML"
+
+#: tpl/admin/bundle/setup/core.php:13
+msgid "This bundle's configuration is built into Loco Translate"
+msgstr "پیکربندی این بسته در ترجمه‌ی لوکو تعبیه شده است"
+
+#: tpl/admin/bundle/setup/core.php:10 tpl/admin/bundle/setup/meta.php:11
+msgid "Bundle auto-configured"
+msgstr "بسته‌ی خودکار پیکربندی شده"
+
+#: tpl/admin/bundle/setup/conf.php:55
+msgid "Load config"
+msgstr "بارگیری پیکربندی"
+
+#: tpl/admin/bundle/setup/conf.php:49
+msgid "If you've been given a configuration file by a developer, paste the XML code here"
+msgstr "اگر یک توسعه دهنده به شما یک پرونده‌ی پیکربندی داده است، کد XML را در اینجا جای‌گذاری کنید"
+
+#: tpl/admin/bundle/setup/conf.php:46
+msgid "XML setup"
+msgstr "نصب XML"
+
+#: tpl/admin/bundle/setup/conf.php:56
+msgid "Cancel"
+msgstr "انصراف"
+
+#: tpl/admin/bundle/setup/author.php:15 tpl/admin/bundle/setup/core.php:14
+#: tpl/admin/bundle/setup/meta.php:15
+msgid "You can make changes in the Advanced tab if you need to override the current settings"
+msgstr "اگر لازم است تنظیمات فعلی را نادیده بگیرید، می توانید در سربرگ پیشرفته تغییراتی ایجاد کنید"
+
+#: tpl/admin/bundle/setup/author.php:14
+msgid "This bundle's configuration is provided by the author"
+msgstr "پیکربندی این بسته توسط نویسنده ارائه شده است"
+
+#: tpl/admin/bundle/setup/author.php:11
+msgid "Official configuration"
+msgstr "پیکربندی رسمی"
+
+#: tpl/admin/bundle/inc-po-table.php:124
+msgid "No translations found for \"%s\""
+msgstr "هیچ ترجمه‌ای برای ((%s)) یافت نشد"
+
+#: tpl/admin/bundle/inc-po-table.php:57 tpl/admin/bundle/locale.php:69
+msgid "Info"
+msgstr "اطلاعات"
+
+#: tpl/admin/bundle/inc-po-table.php:60 tpl/admin/bundle/locale.php:72
+msgid "Copy"
+msgstr "رونوشت"
+
+#: tpl/admin/bundle/inc-po-table.php:51 tpl/admin/bundle/locale.php:63
+msgid "Edit"
+msgstr "ویرایش"
+
+#: tpl/admin/bundle/inc-po-table.php:31 tpl/admin/bundle/locale.php:49
+msgid "Folder"
+msgstr "پوشه"
+
+#: tpl/admin/bundle/inc-po-table.php:28 tpl/admin/bundle/locale.php:46
+#: tpl/admin/list/inc-table.php:17 tpl/admin/list/locales.php:19
+msgid "Last modified"
+msgstr "آخرین اصلاح"
+
+#: tpl/admin/bundle/inc-po-table.php:22 tpl/admin/bundle/locale.php:39
+msgid "Pending"
+msgstr "در انتظار"
+
+#: tpl/admin/bundle/inc-po-table.php:16 tpl/admin/bundle/locale.php:36
+#: tpl/admin/file/info-po.php:33
+msgid "Translation progress"
+msgstr "پیشرفت ترجمه"
+
+#: tpl/admin/bundle/inc-po-table.php:13
+msgid "Language"
+msgstr "زبان"
+
+#: tpl/admin/bundle/conf.php:159 tpl/admin/bundle/setup/saved.php:18
+msgid "Reset config"
+msgstr "بازنشانی پیکربندی"
+
+#: tpl/admin/bundle/conf.php:146
+msgid "XML"
+msgstr "XML"
+
+#: tpl/admin/bundle/conf.php:144
+msgid "Parent theme"
+msgstr "پوسته‌ی والد"
+
+#: tpl/admin/bundle/conf.php:142
+msgid "Add set"
+msgstr "افزودن مجموعه"
+
+#: tpl/admin/bundle/conf.php:141
+msgid "Save config"
+msgstr "ذخیره‌ی پیکربندی"
+
+#. Translators: Help tip for "Blocked paths" field in advanced bundle config
+#: tpl/admin/bundle/conf.php:134
+msgid "Folders within the bundle that will never be searched for files"
+msgstr "پوشه‌های موجود در این بسته که هرگز برای پرونده جستجو نمی‌شوند"
+
+#: tpl/admin/bundle/conf.php:128
+msgid "Blocked paths"
+msgstr "مسیرهای مسدود شده"
+
+#. Translators: Help tip for "Source file paths" field in advanced bundle
+#. config
+#: tpl/admin/bundle/conf.php:113
+msgid "Files and folders within the bundle that contain localized PHP code"
+msgstr "پرونده‌ها و پوشه‌های موجود در بسته که حاوی کد PHP بومی‌سازی شده هستند"
+
+#: tpl/admin/bundle/conf.php:100
+msgid "Source file paths"
+msgstr "مسیرهای پرونده‌ی منبع"
+
+#. Translators: Help tip for "Domain path" field in advanced bundle config
+#. Translators: Help tip for "Source file paths" field in advanced bundle
+#. config
+#. Translators: Help tip for "Blocked paths" field in advanced bundle config
+#: tpl/admin/bundle/conf.php:94 tpl/admin/bundle/conf.php:113
+#: tpl/admin/bundle/conf.php:134
+msgid "no wildcards"
+msgstr "بدون نویسه‌ی عام"
+
+#. Translators: Help tip for "Domain path" field in advanced bundle config
+#: tpl/admin/bundle/conf.php:94
+msgid "Folders within the bundle that contain author-supplied translations"
+msgstr "پوشه‌های این بسته که حاوی ترجمه‌های ارائه شده توسط نویسنده هستند"
+
+#: tpl/admin/bundle/conf.php:89 tpl/admin/bundle/conf.php:108
+msgid "Exclude"
+msgstr "مستثنی"
+
+#: tpl/admin/bundle/conf.php:85 tpl/admin/bundle/conf.php:104
+msgid "Include"
+msgstr "شامل"
+
+#: tpl/admin/bundle/conf.php:81
+msgid "Domain path"
+msgstr "مسیر دامنه"
+
+#. Translators: Help tip for "Template file" field in advanced bundle config
+#: tpl/admin/bundle/conf.php:75
+msgid "Relative path from bundle root to the official POT file"
+msgstr "مسیر نسبی از ریشه‌ی بسته به پرونده‌ی POT رسمی"
+
+#: tpl/admin/bundle/conf.php:71 tpl/admin/common/inc-fsconn.php:12
+msgid "Locked"
+msgstr "قفل"
+
+#. Translators: Help tip for "File prefix" field in advanced bundle config
+#: tpl/admin/bundle/conf.php:59
+msgid "Usually the same as the text domain, but don't leave blank unless you mean to"
+msgstr "معمولا همان دامنه‌ی متن است، اما تا زمانی که قصد آن را ندارید، خالی نگذارید"
+
+#: tpl/admin/bundle/conf.php:53
+msgid "File prefix"
+msgstr "پیشوند پرونده"
+
+#. Translators: Help tip for "Text domain" field in advanced bundle config
+#: tpl/admin/bundle/conf.php:47
+msgid "The namespace into which WordPress will load translated strings"
+msgstr "فضای نامی که وردپرس رشته‌های ترجمه‌شده را از آن بارگیری می‌کند"
+
+#: tpl/admin/bundle/conf.php:41 tpl/admin/list/inc-table.php:14
+msgid "Text domain"
+msgstr "دامنه‌ی متن"
+
+#. Translators: Help tip for "Project name" field in advanced bundle config
+#: tpl/admin/bundle/conf.php:35
+msgid "Descriptive name for this set of translatable strings"
+msgstr "نام توصیفی برای این مجموعه از رشته‌های قابل ترجمه"
+
+#: tpl/admin/bundle/conf.php:29
+msgid "Project name"
+msgstr "نام پروژه"
+
+#: tpl/admin/bundle/alias.php:17
+msgid "Go to WordPress Core"
+msgstr "به هسته‌ی وردپرس بروید"
+
+#: tpl/admin/bundle/alias.php:11
+msgid "\"Hello Dolly\" is part of the WordPress core"
+msgstr "((سلام دالی)) بخشی از هسته‌ی وردپرس است"
+
+#. translators: %s refers to the handle of a plugin, e.g.
+#. "loco-translate/loco.php"
+#: src/package/Plugin.php:225
+msgid "Plugin not found: %s"
+msgstr "افزونه یافت نشد: %s"
+
+#: src/package/Header.php:93
+msgid "Visit official site"
+msgstr "مراجعه به سایت رسمی"
+
+#: src/admin/bundle/LocaleController.php:144 src/package/Core.php:85
+msgid "WordPress Core"
+msgstr "هسته‌ی وردپرس"
+
+#: src/package/Core.php:29
+msgid "https://wordpress.org/"
+msgstr "https://wordpress.org/"
+
+#: src/package/Core.php:28
+msgid "The WordPress Team"
+msgstr "تیم وردپرس"
+
+#: src/package/Core.php:26
+msgid "WordPress core"
+msgstr "هسته‌ی وردپرس"
+
+#. translators: (1) is the name of a PHP script, (2) is a line number in the
+#. file
+#: src/output/Buffer.php:130
+msgid "Loco was interrupted by output from %1$s:%2$u"
+msgstr "لوکو توسط خروجی %1$s:%2$u قطع شد"
+
+#. translators: %s: Human-readable time difference.
+#: src/mvc/FileParams.php:152
+msgid "%s ago"
+msgstr "%s قبل"
+
+#. translators: relative time when something happened in the last 30 seconds
+#: src/mvc/FileParams.php:149
+msgid "Just now"
+msgstr "همین الان"
+
+#: src/mvc/FileParams.php:145
+msgid "Y/m/d"
+msgstr "Y/m/d"
+
+#: src/mvc/Controller.php:49
+msgid "You do not have sufficient permissions to access this page."
+msgstr "شما مجوزهای لازم برای دسترسی به این صفحه را ندارید."
+
+#: src/mvc/AjaxRouter.php:203
+msgid "Download controller returned empty output"
+msgstr "کنترل‌کننده‌ی بارگیری، خروجی خالی را برگرداند"
+
+#: src/mvc/AjaxRouter.php:198
+msgid "Download action not found"
+msgstr "اقدام بارگیری یافت نشد"
+
+#: src/mvc/AjaxRouter.php:175
+msgid "Ajax controller returned empty JSON"
+msgstr "کنترل‌کننده‌ی آژاکس JSON خالی را برگرداند"
+
+#. translators: Fatal error where %s represents an unexpected value
+#: src/mvc/AjaxRouter.php:170
+msgid "Ajax route not found: \"%s\""
+msgstr "مسیر آژاکس پیدا نشد: ((%s))"
+
+#: src/mvc/AdminRouter.php:243
+msgid "Page not found"
+msgstr "برگه یافت نشد"
+
+#. translators: Page title for core WordPress translations
+#: src/mvc/AdminRouter.php:56
+msgid "Core translations &lsaquo; Loco"
+msgstr "ترجمه‌های هسته &lsaquo; لوکو"
+
+#: src/mvc/AdminRouter.php:54
+msgid "WordPress"
+msgstr "وردپرس"
+
+#. translators: Page title for plugin translations
+#: src/mvc/AdminRouter.php:51
+msgid "Plugin translations &lsaquo; Loco"
+msgstr "ترجمه‌های افزونه &lsaquo; لوکو"
+
+#. translators: Page title for theme translations
+#: src/mvc/AdminRouter.php:46
+msgid "Theme translations &lsaquo; Loco"
+msgstr "ترجمه‌های پوسته &lsaquo; لوکو"
+
+#: src/mvc/AdminRouter.php:42
+msgid "Home"
+msgstr "خانه"
+
+#: src/mvc/AdminController.php:114
+msgid "Loco Translate is powered by"
+msgstr "ترجمه‌ی لوکو قدرت گرفته از"
+
+#: src/mvc/AdminController.php:51
+msgid "Help & support"
+msgstr "راهنما و پشتیبانی"
+
+#. translators: List heading showing preview of translated text for each item
+#: src/js/Strings.php:183
+msgctxt "Editor"
+msgid "Translation"
+msgstr "ترجمه"
+
+#. translators: Label for the translation editing window when no translation
+#. selected
+#: src/js/Strings.php:180
+msgctxt "Editor"
+msgid "Translation not loaded"
+msgstr "ترجمه بارگیری نشد"
+
+#. translators: Label for the context window when no translation selected
+#: src/js/Strings.php:177
+msgctxt "Editor"
+msgid "Context not loaded"
+msgstr "محتوا بارگیری نشد"
+
+#. translators: Label for the source text window when no translation selected
+#: src/js/Strings.php:174
+msgctxt "Editor"
+msgid "Source text not loaded"
+msgstr "متن منبع بارگیری نشد"
+
+#. translators: Label for the plural form of the original English text
+#: src/js/Strings.php:93 src/Locale.php:375 pub/js/min/editor.js:291
+msgctxt "Editor"
+msgid "Plural"
+msgstr "جمع"
+
+#. translators: Label for the singular form of the original English text
+#: src/js/Strings.php:96 src/Locale.php:374 pub/js/min/editor.js:291
+msgctxt "Editor"
+msgid "Single"
+msgstr "مفرد"
+
+#. translators: Label for the window pane for entering translator comments
+#: src/js/Strings.php:159
+msgctxt "Editor"
+msgid "Comments"
+msgstr "دیدگاه‌ها"
+
+#. translators: Label for the window pane holding message context
+#: src/js/Strings.php:156
+msgctxt "Editor"
+msgid "Context"
+msgstr "محتوا"
+
+#. translators: Where %s is the name of the language, e.g. "French translation"
+#. xgettext: javascript-format
+#: src/js/Strings.php:153
+msgctxt "Editor"
+msgid "%s translation"
+msgstr "ترجمه‌ی %s"
+
+#. translators: Label for the window pane holding the original English text
+#. translators: List heading showing preview of English text for each item
+#: src/js/Strings.php:149 tpl/admin/file/info-pot.php:30
+msgctxt "Editor"
+msgid "Source text"
+msgstr "متن منبع"
+
+#. translators: Generic error when external process broke an Ajax request
+#: src/js/Strings.php:136
+msgid "Server returned invalid data"
+msgstr "سرور داده‌های نامعتبر را بازگرداند"
+
+#: src/js/Strings.php:139
+msgid "Check console output for debugging information"
+msgstr "خروجی کنسول را برای اشکال‌زدایی اطلاعات بررسی کنید"
+
+#: src/js/Strings.php:142
+msgid "Provide the following text when reporting a problem"
+msgstr "هنگام گزارش یک مشکل، متن زیر را ارائه دهید"
+
+#. translators: When text filtering reduces to an empty view
+#: src/js/Strings.php:14
+msgid "Nothing matches the text filter"
+msgstr "هیچ چیزی با فیلتر متن مطابقت ندارد"
+
+#: src/hooks/AdminHooks.php:129 tpl/ajax/modal-apis-batch.php:37
+msgid "Translate"
+msgstr "ترجمه"
+
+#. translators: Error thrown when attempting to parse a file that is not a
+#. supported translation file format
+#: src/gettext/Data.php:25
+msgid "%s is not a Gettext file"
+msgstr "%s یک پرونده Gettext نیست"
+
+#. Translators: Refers to translation files in an alternative location that
+#. isn't Author, System or Custom.
+#: src/fs/LocaleDirectory.php:72
+msgctxt "File location"
+msgid "Other"
+msgstr "دیگر"
+
+#. Translators: Refers to translation files in Loco's custom/protected
+#. directory
+#: src/fs/LocaleDirectory.php:69
+msgctxt "File location"
+msgid "Custom"
+msgstr "سفارشی"
+
+#. Translators: Refers to system-installed translation files - i.e. those under
+#. WP_LANG_DIR
+#: src/fs/LocaleDirectory.php:66
+msgctxt "File location"
+msgid "System"
+msgstr "سیستم"
+
+#. Translators: Refers to bundled plugin or theme translation files - i.e.
+#. those supplied by the author
+#: src/fs/LocaleDirectory.php:63
+msgctxt "File location"
+msgid "Author"
+msgstr "نویسنده"
+
+#: src/fs/FileWriter.php:308
+msgid "File modification is disallowed by your WordPress config"
+msgstr "اصلاح پرونده طبق پیکربندی وردپرس شما مجاز نیست"
+
+#: src/fs/FileWriter.php:297
+msgid "Failed to build directory path"
+msgstr "مسیر دایرکتوری ایجاد نشد"
+
+#: src/fs/FileWriter.php:289
+msgid "Failed to create directory"
+msgstr "دایرکتوری ایجاد نشد"
+
+#: src/fs/FileWriter.php:253
+msgid "Failed to save file"
+msgstr "پرونده ذخیره نشد"
+
+#: src/fs/FileWriter.php:243
+msgid "Permission denied to update file"
+msgstr "اجازه‌ی بروزرسانی پرونده رد شد"
+
+#. translators: %s refers to a directory name which was expected to be an
+#. ordinary file
+#: src/fs/FileWriter.php:218
+msgid "\"%s\" is a directory, not a file"
+msgstr "((%s)) یک دایرکتوری است، نه یک پرونده"
+
+#. translators: %s refers to a file name, for which a delete operation failed.
+#: src/fs/FileWriter.php:201
+msgid "Failed to delete %s"
+msgstr "عدم موفقیت در حذف %s"
+
+#. translators: (1) Source file name (2) Target file name
+#: src/fs/FileWriter.php:162
+msgid "Failed to copy %1$s to %2$s"
+msgstr "%1$s در %2$s کپی نشد"
+
+#: src/fs/FileWriter.php:151
+msgid "Refusing to copy over an existing file"
+msgstr "امتناع از کپی کردن روی پرونده‌ی موجود"
+
+#. translators: %s refers to a file name, for which the chmod operation failed.
+#: src/fs/FileWriter.php:133
+msgid "Failed to chmod %s"
+msgstr "عدم موفقیت در chmod %s"
+
+#: src/fs/FileWriter.php:52
+msgid "Failed to connect to remote server"
+msgstr "اتصال به سرور از راه دور انجام نشد"
+
+#: src/error/XmlParseException.php:8
+msgid "XML parse error"
+msgstr "خطا در تجزیه‌ی XML"
+
+#: src/error/Warning.php:19 src/js/Strings.php:127
+msgid "Warning"
+msgstr "هشدار"
+
+#: src/error/Success.php:19 src/js/Strings.php:133
+msgid "OK"
+msgstr "خوب"
+
+#: src/error/Notice.php:20 src/js/Strings.php:130
+#: tpl/admin/common/inc-fsconn.php:37
+msgid "Notice"
+msgstr "توجه"
+
+#: src/error/Exception.php:163 src/js/Strings.php:124
+msgid "Error"
+msgstr "خطا"
+
+#: src/data/Permissions.php:155
+msgctxt "User role"
+msgid "Translator"
+msgstr "مترجم"
+
+#: src/config/XMLModel.php:54
+msgid "XML supplied is empty"
+msgstr "XML ارائه شده خالی است"
+
+#: src/config/FormModel.php:147
+msgid "Text Domain cannot be empty"
+msgstr "دامنه‌ی متن نمی‌تواند خالی باشد"
+
+#. translators: used when username of web server process is unknown
+#: src/compat/PosixExtension.php:115
+msgid "the web server"
+msgstr "وب سرور"
+
+#. translators: %s refers to the name of a new file to be created, but which
+#. already existed
+#: src/api/WordPressFileSystem.php:87
+msgid "%s already exists in this folder"
+msgstr "%s از قبل در این پوشه وجود دارد"
+
+#: src/ajax/XgettextController.php:67
+msgid "Template file created"
+msgstr "پرونده‌ی الگو ساخته شد"
+
+#: src/gettext/Compiler.php:94
+msgid "PO file saved, but MO file compilation failed"
+msgstr "پرونده‌ی PO ذخیره شد، اما تدوین پرونده‌ی MO ناموفق بود"
+
+#: src/gettext/Compiler.php:283
+msgid "PO file saved and MO file compiled"
+msgstr "پرونده‌ی PO ذخیره و پرونده‌ی MO تدوین شد"
+
+#. translators: %s refers to a directory where a backup file could not be
+#. created due to file permissions
+#: src/fs/Revisions.php:222
+msgid "Failed to create backup file in \"%s\". Check file permissions or disable backups"
+msgstr "پرونده‌ی پشتیبان در ((%s)) ایجاد نشد. مجوزهای پرونده‌ی را بررسی کنید یا پشتیبان‌گیری را غیرفعال کنید"
+
+#: src/ajax/MsginitController.php:63
+msgid "MO file exists for this language already. Delete it first"
+msgstr "پرونده‌ی MO از قبل برای این زبان وجود دارد. ابتدا آن را حذف کنید"
+
+#: src/ajax/FsConnectController.php:117
+msgid "Connected to remote file system"
+msgstr "به سیستم پرونده‌ی از راه دور متصل شد"
+
+#: src/admin/list/ThemesController.php:14
+msgid "Translate themes"
+msgstr "ترجمه‌ی پوسته‌ها"
+
+#: src/admin/list/PluginsController.php:12
+msgid "Translate plugins"
+msgstr "ترجمه‌ی افزونه‌ها"
+
+#. translators: %s refers to the name of a translation set (theme, plugin or
+#. core component)
+#: src/admin/init/InitPotController.php:106
+msgid "New translations template for \"%s\""
+msgstr "الگوی ترجمه جدید برای ((%s))"
+
+#: src/admin/init/InitPotController.php:104
+msgid "New template file"
+msgstr "پرونده‌ی الگوی جدید"
+
+#: src/admin/init/InitPotController.php:56
+msgid "Template file already exists"
+msgstr "پرونده‌ی الگو از قبل موجود است"
+
+#: src/admin/init/InitPotController.php:16
+msgid "New template"
+msgstr "الگوی جدید"
+
+#: src/admin/init/InitPoController.php:223
+msgid "Skip template"
+msgstr "رد کردن الگو"
+
+#. translators: Were %s is number of source files that will be scanned
+#: src/admin/init/InitPoController.php:280
+msgid "%s source file will be scanned for translatable strings"
+msgid_plural "%s source files will be scanned for translatable strings"
+msgstr[0] "%s پرونده‌ی منبع برای رشته‌های قابل ترجمه اسکن می‌شود"
+
+#. translators: 1: Number of strings; 2: Name of POT file; e.g. "100 strings
+#. found in file.pot"
+#: src/admin/init/InitPoController.php:249
+msgid "%1$s string found in %2$s"
+msgid_plural "%1$s strings found in %2$s"
+msgstr[0] "%1$s رشته در %2$s یافت شد"
+
+#: src/admin/init/InitPoController.php:119
+msgid "Initializing new translations in unknown set"
+msgstr "شروع ترجمه‌های جدید در مجموعه‌ای ناشناخته"
+
+#. translators: %s refers to the slug/handle of a theme or plugin
+#: src/admin/init/InitPoController.php:115
+msgid "Initializing new translations in \"%s\""
+msgstr "شروع ترجمه‌های جدید در ((%s))"
+
+#. translators: Warning that the language in the file header (1) does not match
+#. the file name (2)
+#: src/admin/file/InfoController.php:177
+msgid "Language header is \"%1$s\" but file name contains \"%2$s\""
+msgstr "سربرگ زبان ((%1$s)) است اما نام فایل حاوی ((%2$s)) می‌باشد"
+
+#: src/admin/file/InfoController.php:169
+msgid "File does not have a valid header"
+msgstr "پرونده، سربرگ معتبری ندارد"
+
+#: src/admin/file/InfoController.php:137 src/package/Header.php:86
+msgid "Unknown author"
+msgstr "نویسنده‌ی ناشناخته"
+
+#. Translators: Button that toggles between "code" and regular text editing
+#. modes
+#: src/admin/file/EditController.php:232
+msgctxt "Editor"
+msgid "Toggle code view"
+msgstr "تغییر نمای کد"
+
+#. Translators: Button that toggles invisible characters
+#: src/admin/file/EditController.php:230
+msgctxt "Editor"
+msgid "Toggle invisibles"
+msgstr "تغییر موارد نامرئی"
+
+#. Translators: Button for downloading a PO, MO or POT file
+#: src/admin/file/EditController.php:226
+msgctxt "Editor"
+msgid "Download"
+msgstr "دانلود"
+
+#. Translators: Button that reloads current screen
+#: src/admin/file/EditController.php:220
+msgctxt "Editor"
+msgid "Revert"
+msgstr "بازگردانی"
+
+#. Translators: Button that runs in-editor sync/operation
+#: src/admin/file/EditController.php:218
+msgctxt "Editor"
+msgid "Sync"
+msgstr "همگام‌سازی"
+
+#. Translators: Button that saves translations to disk
+#: src/admin/file/EditController.php:216
+msgctxt "Editor"
+msgid "Save"
+msgstr "ذخیره"
+
+#: src/admin/file/EditController.php:214 src/ajax/ApisController.php:26
+msgid "Help"
+msgstr "کمک"
+
+#. Translators: button for removing a string when manually editing a POT file
+#: src/admin/file/EditController.php:213
+msgctxt "Editor"
+msgid "Remove"
+msgstr "حذف"
+
+#. Translators: button for adding a new string when manually editing a POT file
+#: src/admin/file/EditController.php:211
+msgctxt "Editor"
+msgid "Add"
+msgstr "افزودن"
+
+#. translators: %s refers to the name of a POT file
+#: src/admin/file/EditController.php:131
+msgid "Translations don't match template. Run sync to update from %s"
+msgstr "ترجمه‌ها با الگو مطابقت ندارند. همگام‌سازی را برای بروزرسانی از %s اجرا کنید"
+
+#. translators: %1$s is the file name, %2$s is the bundle name
+#: src/admin/file/EditController.php:18
+msgid "Editing %1$s in %2$s"
+msgstr "ویرایش %1$s در %2$s"
+
+#. translators: Warning that deleting a file will also delete others. %s
+#. indicates that quantity.
+#: src/admin/file/DeleteController.php:104
+msgid "%s dependent file will also be deleted"
+msgid_plural "%s dependent files will also be deleted"
+msgstr[0] "%s پرونده‌ی وابسته نیز حذف خواهد شد"
+
+#. translators: Page title where %s is the name of a file to be deleted
+#: src/admin/file/DeleteController.php:79
+#: src/admin/file/DeleteController.php:98
+msgid "Delete %s"
+msgstr "حذف  %s"
+
+#: src/admin/file/DiffController.php:45
+msgid "File deleted"
+msgstr "%u فایل حذف شد"
+
+#: src/admin/file/BaseController.php:122 tpl/admin/bundle/inc-po-table.php:66
+#: tpl/admin/bundle/locale.php:75 tpl/admin/file/diff.php:32
+msgid "Delete"
+msgstr "حذف"
+
+#: src/admin/file/BaseController.php:119 tpl/admin/bundle/inc-po-table.php:25
+#: tpl/admin/bundle/locale.php:43
+msgid "File info"
+msgstr "اطلاعات پرونده"
+
+#: src/admin/file/BaseController.php:118
+msgid "Source"
+msgstr "منبع"
+
+#: src/admin/file/BaseController.php:117
+msgid "Editor"
+msgstr "ویرایش‌گر"
+
+#: src/admin/config/SettingsController.php:51
+msgid "Super Admin"
+msgstr "مدیر کل"
+
+#: src/admin/config/ApisController.php:69
+#: src/admin/config/PrefsController.php:42
+#: src/admin/config/SettingsController.php:79
+#: src/admin/config/VersionController.php:22 src/mvc/AdminRouter.php:66
+#: tpl/admin/help/tab-config.php:2
+msgid "Plugin settings"
+msgstr "تنظیمات افزونه‌ها"
+
+#: src/admin/config/DebugController.php:55
+msgid "System diagnostics"
+msgstr "عیب‌یابی سیستم"
+
+#: src/admin/config/BaseController.php:21
+#: src/admin/config/VersionController.php:13
+msgid "Version"
+msgstr "نسخه"
+
+#: src/admin/config/BaseController.php:19
+#: src/admin/config/PrefsController.php:13 src/mvc/AdminRouter.php:71
+msgid "User options"
+msgstr "گزینه‌های کاربر"
+
+#: src/admin/config/BaseController.php:18
+msgid "Site options"
+msgstr "گزینه‌های سایت"
+
+#: src/admin/bundle/ViewController.php:133
+#: src/admin/init/InitPoController.php:218 tpl/admin/init/init-pot.php:40
+msgid "Create template"
+msgstr "ساخت الگو"
+
+#: src/admin/bundle/ViewController.php:124
+msgid "Edit template"
+msgstr "ویرایش الگو"
+
+#: src/admin/bundle/ViewController.php:99 src/admin/file/BaseController.php:141
+#: src/admin/init/InitPoController.php:16
+#: src/admin/init/InitPoController.php:122
+msgid "New language"
+msgstr "زبان جدید"
+
+#. translators: %s is a quantity of files which were found, but whose context
+#. is unknown
+#: src/admin/bundle/SetupController.php:115
+msgid "%s file can't be matched to a known set of strings"
+msgid_plural "%s files can't be matched to a known set of strings"
+msgstr[0] "%s پرونده را نمی‌توان با مجموعه‌ای شناخته شده از رشته‌ها مطابقت داد"
+
+#: src/admin/bundle/SetupController.php:35
+msgid "Bundle setup"
+msgstr "نصب بسته"
+
+#: src/admin/bundle/SetupController.php:25
+msgid "Setup tab"
+msgstr "سربرگ نصب"
+
+#. translators: where %s is a plugin or theme
+#: src/admin/bundle/SetupController.php:15
+msgid "Set up %s"
+msgstr "نصب %s"
+
+#: src/admin/bundle/ConfController.php:137 tpl/admin/bundle/setup/core.php:17
+#: tpl/admin/bundle/setup/inc-nav.php:19
+msgid "Advanced configuration"
+msgstr "پیکربندی پیشرفته"
+
+#: src/admin/bundle/ConfController.php:52
+msgid "Advanced tab"
+msgstr "سربرگ پیشرفته"
+
+#. translators: where %s is a plugin or theme
+#: src/admin/bundle/ConfController.php:16
+msgid "Configure %s"
+msgstr "پیکربندی %s"
+
+#: src/admin/bundle/BaseController.php:107
+#: src/admin/config/DebugController.php:12 src/error/Debug.php:19
+#: src/mvc/AdminRouter.php:77
+msgid "Debug"
+msgstr "اشکال‌زدایی"
+
+#: src/admin/bundle/BaseController.php:102 tpl/admin/file/conf.php:58
+#: tpl/admin/file/move.php:26
+msgid "Advanced"
+msgstr "پیشرفته"
+
+#: src/admin/bundle/BaseController.php:101
+msgid "Setup"
+msgstr "نصب"
+
+#: src/admin/bundle/BaseController.php:54
+msgid "Configuration reset"
+msgstr "پیکربندی بازنشانی شد"
+
+#: src/admin/bundle/BaseController.php:40
+msgid "Configuration saved"
+msgstr "پیکربندی ذخیره شد"
+
+#. translators: home screen title where %s is the version number
+#: src/admin/RootController.php:23
+msgid "Loco Translate %s"
+msgstr "ترجمه‌ی لوکو %s"
+
+#: src/admin/bundle/BaseController.php:100
+#: src/admin/bundle/LocaleController.php:34
+#: src/admin/bundle/ViewController.php:25
+#: src/admin/config/BaseController.php:39 src/admin/file/EditController.php:27
+#: src/admin/file/InfoController.php:26 src/admin/file/ViewController.php:26
+#: src/admin/init/InitPoController.php:25
+#: src/admin/init/InitPotController.php:25 src/admin/list/BaseController.php:45
+#: src/admin/list/LocalesController.php:24 src/admin/RootController.php:12
+msgid "Overview"
+msgstr "بررسی اجمالی"
+
+#: src/admin/bundle/LocaleController.php:154 src/admin/Navigation.php:30
+#: src/mvc/AdminRouter.php:49
+msgid "Plugins"
+msgstr "افزونه‌ها"
+
+#: src/admin/bundle/LocaleController.php:149 src/admin/Navigation.php:27
+#: src/mvc/AdminRouter.php:44
+msgid "Themes"
+msgstr "پوسته‌ها"
+
+#: src/Locale.php:306
+msgid "Invalid locale"
+msgstr "محل نامعتبر"
+
+#. translators: %s refers to the name of a missing PHP extension, for example
+#. "mbstring".
+#: loco.php:131
+msgid "Loco Translate requires the \"%s\" PHP extension. Ask your hosting provider to install it"
+msgstr "لوکو به افزونه‌ی PHP ((%s)) نیاز دارد. از ارائه دهنده‌ی میزبانی خود بخواهید آن را نصب کند"
+
+#. Author of the plugin
+#: loco.php
+msgid "Tim Whitlock"
+msgstr "تیم ویتلاک"
+
+#. Plugin URI of the plugin
+#: loco.php
+msgid "https://wordpress.org/plugins/loco-translate/"
+msgstr "https://wordpress.org/plugins/loco-translate/"
+
+#. Translators: Placeholder text for text filter above editor
+#: src/admin/file/EditController.php:228
+msgid "Filter translations"
+msgstr "فیلتر ترجمه‌ها"
+
+#: tpl/admin/bundle/conf.php:65 tpl/admin/bundle/inc-po-table.php:45
+#: tpl/admin/file/edit-pot.php:20 tpl/admin/file/info-pot.php:18
+#: tpl/admin/file/view-pot.php:9
+msgid "Template file"
+msgstr "پرونده‌ی الگو"
+
+#: tpl/admin/config/apis.php:166 tpl/admin/config/prefs.php:44
+#: tpl/admin/config/settings.php:233
+msgid "Save settings"
+msgstr "ذخیره‌ی تنظیمات"
+
+#: tpl/admin/config/settings.php:62
+msgid "Number of backups to keep of each file:"
+msgstr "تعداد پشتیبان برای نگهداری از هر پرونده:"
+
+#: tpl/admin/config/settings.php:137
+msgid "Include Fuzzy strings"
+msgstr "شامل رشته‌های فازی"
+
+#: tpl/admin/config/settings.php:131
+msgid "Generate hash tables"
+msgstr "ایجاد جداول هش"
+
+#: tpl/admin/config/settings.php:120 tpl/admin/config/settings.php:126
+msgid "Compiling MO files"
+msgstr "شروع تدوین پرونده‌‌های MO"
+
+#: tpl/admin/bundle/locale.php:14 tpl/admin/common/inc-po-header.php:8
+#: tpl/admin/file/edit-pot.php:22 tpl/admin/file/view-pot.php:11
+msgctxt "Modified time"
+msgid "Updated"
+msgstr "بروزشده"
+
+#. translators: Warning appears when user tries to refresh or navigate away
+#. when editor work is unsaved
+#: src/js/Strings.php:105
+msgid "Your changes will be lost if you continue without saving"
+msgstr "اگر بدون ذخیره‌سازی ادامه دهید، تغییرات شما از بین خواهد رفت"
+
+#. translators: Summary of existing strings that no longer exist after running
+#. in-editor Sync xgettext: javascript-format
+#: src/js/Strings.php:32
+msgid "%s obsolete string removed"
+msgid_plural "%s obsolete strings removed"
+msgstr[0] "%s رشته‌ی منسوخ حذف شد"
+
+#. translators: Summary of new strings after running in-editor Sync xgettext:
+#. javascript-format
+#: src/js/Strings.php:28
+msgid "%s new string added"
+msgid_plural "%s new strings added"
+msgstr[0] "%s رشته‌ی جدید اضافه شد"
+
+#. translators: Message appears after sync operation.
+#: src/js/Strings.php:47
+msgid "Strings up to date with source code"
+msgstr "ترجمه‌ها با کد منبع یکسان هستند"
+
+#. translators: Message appears after sync operation
+#: src/js/Strings.php:24
+msgid "Merged from source code"
+msgstr "ادغام شده از کد منبع"
+
+#. translators: Where %s is the name of the POT template file. Message appears
+#. after sync xgettext: javascript-format
+#: src/js/Strings.php:21
+msgid "Merged from %s"
+msgstr "با %s ادغام شد"
+
+#. translators: Success notice where %s is a file extension, e.g. "PO"
+#: src/admin/file/HeadController.php:81 src/gettext/Compiler.php:287
+msgid "%s file saved"
+msgstr "پرونده‌ی %s ذخیره شد"
+
+#: src/js/Strings.php:145
+msgid "Unknown error"
+msgstr "خطای ناشناخته"
+
+#: src/admin/file/EditController.php:182 src/mvc/AdminRouter.php:67
+#: src/mvc/AdminRouter.php:72 tpl/admin/common/inc-fsconn.php:18
+#: tpl/admin/common/inc-fsconn.php:43 tpl/admin/errors/no-backups.php:24
+#: tpl/ajax/modal-apis-empty.php:15
+msgid "Settings"
+msgstr "تنظیمات"
+
+#. Plugin Name of the plugin
+#: loco.php src/hooks/AdminHooks.php:88 src/mvc/AdminRouter.php:37
+msgid "Loco Translate"
+msgstr "ترجمه‌ی لوکو"
+
+#. translators: Page title for plugin home screen
+#: src/mvc/AdminRouter.php:39
+msgid "Loco, Translation Management"
+msgstr "لوکو، مدیریت ترجمه"
+
+#. translators: Shows number of untranslated strings at top of editor
+#. translators: Shows number of untranslated strings at top of editor xgettext:
+#. javascript-format
+#: src/gettext/Metadata.php:209 src/js/Strings.php:121
+msgid "%s untranslated"
+msgstr "%s ترجمه‌نشده"
+
+#. translators: Shows number of fuzzy strings at top of editor
+#. translators: Shows number of fuzzy strings at top of editor xgettext:
+#. javascript-format
+#: src/gettext/Metadata.php:205 src/js/Strings.php:117
+msgid "%s fuzzy"
+msgstr "%s فازی"
+
+#. translators: Shows percentage translated at top of editor
+#. translators: Shows percentage translated at top of editor xgettext:
+#. javascript-format
+#: src/gettext/Metadata.php:202 src/js/Strings.php:113
+msgid "%s%% translated"
+msgstr "%s%% ترجمه‌شده"
+
+#: src/admin/config/ApisController.php:53
+#: src/admin/config/PrefsController.php:26
+#: src/admin/config/SettingsController.php:31
+msgid "Settings saved"
+msgstr "تنظیمات ذخیره شد"
+
+#: src/error/WriteException.php:13
+msgid "Permission denied"
+msgstr "اجازه رد شد"

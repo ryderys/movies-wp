@@ -1,0 +1,356 @@
+
+.css_prefix-slick-general:not(:has(> .slick-list)) {
+    &.st-skeleton {   
+        .css_prefix-card,
+        .top-ten-card,
+        .continue-watching-card,
+        .person-card .cast-images,
+        .person-card .person-detail .person-title,
+        .person-card .person-detail ul li,
+        .genres-slider,
+        .tag-card,
+        .css_prefix-categories .css_prefix-category-inner,
+        .css_prefix-sub-product,
+        .episode-card {        
+            &::before {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: -1px;
+                left: -1px;
+                right: -1px;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-gray-900) 25%, var(--bs-gray-700) 50%, var(--bs-gray-900) 75%);
+                background-size: 200% 100%;
+                z-index: 999;
+                animation: shimmer 1.5s infinite linear;
+            }
+        }
+    }
+}
+
+// banner
+.css_prefix-main-banner:not(:has(> .slick-list)) {
+    &.st-skeleton {
+        .banner-bg {
+            &::before {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-gray-900) 25%, var(--bs-gray-700) 50%, var(--bs-gray-900) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite linear;
+            }
+            .slider-text,
+            .horizontal-thumb-description,
+            p,
+            .tag,
+            .genres,
+            .starring,
+            .btn {
+                &::before {
+                    position: absolute;
+                    content: "";
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    border-radius: var(--bs-border-radius);
+                    background: linear-gradient(90deg, var(--bs-body-bg) 25%, var(--bs-gray-900) 50%, var(--bs-body-bg) 75%);
+                    background-size: 200% 100%;
+                    z-index: 999;
+                    animation: shimmer 1.5s infinite linear;
+                }
+            }
+            .tag,
+            .genres,
+            .starring{
+                width: 75%;
+            }
+        }
+    }
+}
+
+.banner-thumb-slider-nav:not(:has(> .slick-list)) {
+    &.st-skeleton {
+        .block-images {
+            &::before {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 9;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-gray-900) 25%, var(--bs-gray-700) 50%, var(--bs-gray-900) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite linear;
+            }
+        }
+    }   
+}
+
+.vertical-banner-content:not(:has(> .slick-list)) {
+    &.st-skeleton {
+        .vertical-banner-info {
+            &::before {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-gray-900) 25%, var(--bs-gray-700) 50%, var(--bs-gray-900) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite linear;
+            }
+            .vertical-banner-info-desc {
+                ul li,
+                .title,
+                .horizontal-thumb-description .slider-ratting,
+                .horizontal-thumb-description .imdb-ratting,
+                .horizontal-thumb-description .font-normal,
+                .description,
+                .btn {
+                        &::before {
+                            position: absolute;
+                            content: "";
+                            top: 0;
+                            bottom: 0;
+                            left: 0;
+                            right: 0;
+                            border-radius: var(--bs-border-radius);
+                            background: linear-gradient(90deg, var(--bs-body-bg) 25%, var(--bs-gray-900) 50%, var(--bs-body-bg) 75%);
+                            background-size: 200% 100%;
+                            animation: shimmer 1.5s infinite linear;
+                            z-index: 9;
+                        }
+                }
+            }
+        }
+    }
+}
+
+.vertical-banner-thumb:not(:has(> .slick-list)) {
+    &.st-skeleton {
+        .vertical-thumb-card {
+            &::after {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-body-bg) 25%, var(--bs-gray-900) 50%, var(--bs-body-bg) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite linear;
+                z-index: 999;
+            }
+        }
+    }
+}
+
+.css_prefix-tvshow-season:not(:has(> .slick-list)) {
+    &.st-skeleton {
+        .css_prefix-thumb-items {
+            &::before {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-gray-900) 25%, var(--bs-gray-700) 50%, var(--bs-gray-900) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite linear;
+                border-color: var(--bs-gray-900);
+            }
+            .css_prefix-tvshow-details {
+                .text-gold,
+                .slider-text,
+                .season-excerpt,
+                .css_prefix-tvshow-detail-meta .trending-year,
+                .css_prefix-tvshow-detail-meta .season_date,
+                .btn {
+                    &::before {
+                        position: absolute;
+                        content: "";
+                        top: 0;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        border-radius: var(--bs-border-radius);
+                        background: linear-gradient(90deg, var(--bs-body-bg) 25%, var(--bs-gray-900) 50%, var(--bs-body-bg) 75%);
+                        background-size: 200% 100%;
+                        animation: shimmer 1.5s infinite linear;
+                    }
+                }
+            }
+        }
+        + .css_prefix-wrap-details {
+            .all-episodes,
+            .nav-tabs .nav-item,
+            .episodes-info .episode-img,
+            .episodes-info .episodes-meta .episode-name,
+            .episodes-info .episodes-meta .episode-time {
+                position: relative;
+                &::before {
+                    position: absolute;
+                    content: "";
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    border-radius: var(--bs-border-radius);
+                    background: linear-gradient(90deg, var(--bs-body-bg) 25%, var(--bs-gray-900) 50%, var(--bs-body-bg) 75%);
+                    background-size: 200% 100%;
+                    animation: shimmer 1.5s infinite linear;
+                    border-color: var(--bs-body-bg);
+                } 
+            }
+        }
+    }
+}
+
+.css_prefix-simple-banner:not(:has(> .slick-list)) {
+    &.st-skeleton {
+        .slick-item {
+            &::after {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-gray-900) 25%, var(--bs-gray-700) 50%, var(--bs-gray-900) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite linear;
+                border-color: var(--bs-gray-900);
+            }
+            .css_prefix-simple-banner-content {
+                .slider-text, 
+                .slider-ratting,
+                .imdb-ratting,
+                .badge,
+                p,
+                .btn,
+                .trailor-video {
+                    &::before {
+                        position: absolute;
+                        content: "";
+                        top: 0;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        border-radius: var(--bs-border-radius);
+                        background: linear-gradient(90deg, var(--bs-body-bg) 25%, var(--bs-gray-900) 50%, var(--bs-body-bg) 75%);
+                        background-size: 200% 100%;
+                        animation: shimmer 1.5s infinite linear;
+                        border-color: var(--bs-gray-900);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.css_prefix-product-banner:not(:has(> .slick-list)),
+.trending-slider-tab:not(:has(> .slick-list)) {
+    &.st-skeleton {
+        .slick-item {
+            &::after {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-gray-900) 25%, var(--bs-gray-700) 50%, var(--bs-gray-900) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite linear;
+                border-color: var(--bs-gray-900);
+            }
+            .trending-pills {
+                li {
+                    position: relative;
+                    &::after {
+                        position: absolute;
+                        content: "";
+                        top: 0;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        border-radius: var(--bs-border-radius);
+                        background: linear-gradient(90deg, var(--bs-gray-800) 25%, var(--bs-gray-700) 50%, var(--bs-gray-800) 75%);
+                        background-size: 200% 100%;
+                        animation: shimmer 1.5s infinite linear;
+                        border-color: var(--bs-gray-900);
+                    }
+                }
+            }
+            .trending-content {
+                .trending-info {
+                    .slider-text,
+                    div {
+                        position: relative;
+                        &::after {
+                            position: absolute;
+                            content: "";
+                            top: 0;
+                            bottom: 0;
+                            left: 0;
+                            right: 0;
+                            border-radius: var(--bs-border-radius);
+                            background: linear-gradient(90deg, var(--bs-gray-800) 25%, var(--bs-gray-700) 50%, var(--bs-gray-800) 75%);
+                            background-size: 200% 100%;
+                            animation: shimmer 1.5s infinite linear;
+                            border-color: var(--bs-gray-900);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.trending-slider-tab-nav:not(:has(> .slick-list)) {
+    &.st-skeleton {
+        .slick-item {
+            padding: 0 .875em;
+            position: relative;
+            &::after {
+                position: absolute;
+                content: "";
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                border-radius: var(--bs-border-radius);
+                background: linear-gradient(90deg, var(--bs-gray-900) 25%, var(--bs-gray-700) 50%, var(--bs-gray-900) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite linear;
+                border-color: var(--bs-gray-900);
+            }
+        }
+    }
+}
+
+
+@keyframes shimmer {
+    0% {
+        background-position: 100%;
+    }
+    100% {
+        background-position: -100%;
+    }
+}

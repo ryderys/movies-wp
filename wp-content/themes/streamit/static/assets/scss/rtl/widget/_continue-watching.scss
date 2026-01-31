@@ -1,0 +1,19 @@
+.continue-watching-card {
+    .trash-continue-watching {
+        right: auto;
+        left: 0.375em;
+    }
+
+    .continue-watching-details {
+        .continue-watching-desc {
+            ul {
+                li {
+                    &::after {
+                        right: auto;
+                        left: -0.7em;
+                    }
+                }
+            }
+        }
+    }
+}

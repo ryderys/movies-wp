@@ -1,0 +1,114 @@
+.genres-slider {    
+    .slick-list {
+        margin: -.75em -.625em;
+    }
+
+    .slick-slide {
+        padding: .75em .438em;
+    }
+}
+
+.genres-card {
+    transition: all 0.6s ease 0s;
+    border-radius: var(--bs-border-radius);
+    &::before {
+        position: absolute;
+        content: "";
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-bottom: .25em solid var(--bs-primary);
+        background: rgba(var(--bs-dark-rgb),0.8);
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 9;
+        transition: all .5s ease-in-out;
+        border-radius: var(--bs-border-radius);
+    }
+    .image-box {
+        position: relative;
+        transition: all .6s ease 0s;
+
+        &::before {
+            content: "";
+            background: linear-gradient(90deg, rgba(var(--bs-dark-rgb), 0.8), rgba(var(--bs-dark-rgb), 0.4) 50%, rgba(var(--bs-dark-rgb), 0));
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        img {            
+            height: 100%;
+            width: 100%;
+            aspect-ratio: 5 / 3;
+            object-position: top;        
+            object-fit: cover;
+            border-radius: var(--bs-border-radius);
+        }
+        .genres-title {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 10;
+            margin: auto;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            a {
+                font-size: 1.125em;
+                text-transform: capitalize;
+                white-space: normal;
+                transform: translate3d(0, 0, 0);
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+    }
+    &:hover {
+        z-index: 99;
+        transform: scale3d(1.1, 1.1, 1) translate3d(0, 0, 0) perspective(31.25em);
+        transform-origin: 50% 50%;
+        transition: all .6s ease 0s;
+        &::before {
+            opacity: 1;
+        }
+    }
+}
+
+.genres-slider {
+    .slick-item {
+        &.first {
+            .genres-card {
+                &:hover {
+                    transform: scale3d(1.1, 1.1, 1) translate3d(5%, 0, 0) perspective(31.25em);
+                }
+            }
+        }
+
+        &.last {
+            .genres-card {
+                &:hover {
+                    transform: scale3d(1.1, 1.1, 1) translate3d(-5%, 0, 0) perspective(31.25em);
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 767.98px) {
+    .genres-card {
+        .image-box {
+            .genres-title {
+                a {
+                    font-size: .875em;
+                }
+            }
+        }
+    } 
+}

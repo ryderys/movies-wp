@@ -1,0 +1,37 @@
+.detail-page {
+    .video-section {
+        .detail-part {
+            .movie-geners, .video-geners, .tvshow-geners {
+                li {
+                    padding-right: 0;
+                    padding-left: 1.725em;
+
+                    &::before {
+                        right: auto;
+                        left: 0.5625em;
+                    }
+
+                    &:last-child {
+                        padding-left: 0;
+                    }
+                }
+            }
+        }
+        &::before {
+            background: linear-gradient(-177.7deg, rgba(var(--bs-black-rgb), 0) 59.45%, var(--bs-black) 99.15%), linear-gradient(-262.75deg, rgba(var(--bs-black-rgb), 0) 47.55%, rgba(var(--bs-black-rgb), 0.95) 89.36%), linear-gradient(-1.68deg, rgba(var(--bs-black-rgb), 0) 54.79%, var(--bs-black) 98.09%);
+        }
+    }
+}
+
+.star-rating {
+    direction: ltr;
+}
+
+.item-list-tabs {
+    .left,
+    .right {
+        i {
+            transform: scaleX(-1);
+        }
+    }
+}

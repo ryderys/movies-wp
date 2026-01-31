@@ -1,0 +1,31 @@
+.css_prefix-breadcrumb {
+	display: block;
+	position: relative;
+	padding: 1.5em 0;
+	background: var(--bs-gray-700);
+	z-index: 9;
+	.css_prefix-breadcrumb-nav {
+		.title {
+			word-wrap: break-word;
+			margin: 0;
+		}
+		.breadcrumb {
+			margin-top: 0;
+			margin-bottom: 0;
+			.breadcrumb-item {
+				word-break: break-all;
+				color: var(--bs-heading-color);
+				font-weight: 500;
+				font-size: $font-size-sm;
+				text-transform: capitalize;
+				a {
+					font-weight: 400;
+					color: var(--bs-body-color);
+					&:hover {
+						color: var(--bs-primary);
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,51 @@
+.widget {
+    ul.css_prefix-post {
+        &> li {
+            .post-blog {
+                .blog-box {
+                    ul {
+                        li {
+                            padding: 0 0 0 .5em;
+                            margin-right: 0;
+                            margin-left: .5em;
+
+                            &:last-child {
+                                padding: 0;
+                                margin-left: 0;
+                            }
+
+                            &::before {
+                                right: auto;
+                                left: -0.7em;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .post-img {
+                .post-img-holder {
+                    margin-right: 0;
+                    margin-left: 1.25em;
+                }
+            }
+        }
+    }
+    &.widget_search {
+        .wp-block-search {
+            input {
+                border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0;
+            }
+        }
+        .wp-block-search__button-inside {
+            .wp-block-search__inside-wrapper {
+        
+                .wp-block-search__button {
+                    margin-right: 0;
+                    margin-left: auto;
+                    border-radius: var(--bs-border-radius) 0 0 var(--bs-border-radius);
+                }
+            }
+        }
+    }
+}

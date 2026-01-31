@@ -1,0 +1,11 @@
+.list-inline {
+    padding-right: 0;
+}
+
+.list-inline-item {
+  
+    &:not(:last-child) {
+      margin-left: $list-inline-padding;
+      margin-right: 0;
+    }
+  }

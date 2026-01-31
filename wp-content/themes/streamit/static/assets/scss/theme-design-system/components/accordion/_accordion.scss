@@ -1,0 +1,95 @@
+.css-prefix-accordion {
+    .accordion-item {
+        background: var(--bs-gray-900);
+        border: 0.063em solid var(--bs-border-color);
+        margin-bottom: .5em;
+        padding: 0;
+        border-radius: 0.3125em;
+        overflow: hidden;
+
+        .accordion-header {
+            .accordion-button {
+                font-size: inherit;
+                background-color: var(--bs-gray-900);
+                border-radius: 0.25em;
+
+                &.collapsed {
+                    .accordion-title {
+                        color: var(--bs-heading-color);
+                    }
+                }
+
+                .accordion-title {
+                    font-size: 1.125em;
+                    color: var(--bs-heading-color);
+                }
+
+                &::after {
+                    content: none;
+                }
+
+                .st-icon-right {
+                    background-color: var(--bs-body-bg);
+                    margin-left: auto;
+                    height: 2.1875em;
+                    min-width: 2.1875em;
+                    line-height: 2.1875em;
+                    text-align: center;
+                    border-radius: 0.25em;
+                    i {
+                        color: var(--bs-white);
+                        line-height: inherit;
+                        font-size: 1.5em;
+                    }
+
+                    svg{
+                        height: .875em;
+                        width: .875em;
+                        path{
+                            fill: var(--bs-white);
+                        }
+                    }
+                }
+
+                &.collapsed {
+                    .st-icon-right {
+
+                        .inactive_icon,
+                        .inactive {
+                            display: block;
+                        }
+
+                        .active_icon,
+                        .active {
+                            display: none;
+                        }
+                    }
+                }
+
+                .st-icon-right {
+
+                    .inactive_icon,
+                    .inactive {
+                        display: none;
+                    }
+
+                    .active_icon,
+                    .active {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .accordion-collapse {
+            border-top: 0.063em solid var(--bs-border-color);
+            .accordion-body {
+                padding: 1.875em;
+                background: var(--bs-gray-700);
+                .st-content-text {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}

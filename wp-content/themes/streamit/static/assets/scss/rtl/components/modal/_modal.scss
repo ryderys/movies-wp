@@ -1,0 +1,40 @@
+.modal-header {
+    .btn-close {
+        margin: calc(-0.5 * var(--bs-modal-header-padding-y)) auto calc(-0.5 * var(--bs-modal-header-padding-y)) calc(-0.5 * var(--bs-modal-header-padding-x));
+    }
+}
+
+// viewMoreDataModal
+.view-more-data-modal {
+    .movie-geners, .video-geners, .tvshow-geners {
+        li {
+            padding-right: 0;
+            padding-left: 1.725em;
+
+            &::before {
+                right: auto;
+                left: 0.65em;
+            }
+
+            &:last-child {
+                padding-left: 0;
+            }
+        }
+    }
+}
+
+// trailerModal
+.trailerModal {
+    .btn-close {
+        right: auto;
+        left: 2em;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .trailerModal {
+        .btn-close {
+            left: 1em;
+        }
+    }
+}

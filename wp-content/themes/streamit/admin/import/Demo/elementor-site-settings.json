@@ -1,0 +1,99 @@
+{
+    "template": "default",
+    "system_colors": [
+        {
+            "_id": "primary",
+            "title": "Primary",
+            "color": "#E50914"
+        },
+        {
+            "_id": "secondary",
+            "title": "Secondary",
+            "color": "#54595F"
+        },
+        {
+            "_id": "text",
+            "title": "body-Text",
+            "color": "#D1D0CF"
+        },
+        {
+            "_id": "accent",
+            "title": "Accent",
+            "color": "#61CE70"
+        }
+    ],
+    "custom_colors": [
+        {
+            "_id": "e505aad",
+            "title": "gray-900",
+            "color": "#141314"
+        },
+        {
+            "_id": "a099ca6",
+            "title": "body-bg",
+            "color": "#000000"
+        },
+        {
+            "_id": "e6b5c6f",
+            "title": "title-color",
+            "color": "#FFFFFF"
+        },
+        {
+            "_id": "3ad3aa6",
+            "title": "border-color",
+            "color": "#262525"
+        },
+        {
+            "_id": "5700216",
+            "title": "gray-800",
+            "color": "#121212"
+        }
+    ],
+    "system_typography": [
+        {
+            "_id": "primary",
+            "title": "Primary",
+            "typography_typography": "custom",
+            "typography_font_family": "Roboto",
+            "typography_font_weight": "600"
+        },
+        {
+            "_id": "secondary",
+            "title": "Secondary",
+            "typography_typography": "custom",
+            "typography_font_family": "Roboto Slab",
+            "typography_font_weight": "400"
+        },
+        {
+            "_id": "text",
+            "title": "Text",
+            "typography_typography": "custom",
+            "typography_font_family": "Roboto",
+            "typography_font_weight": "400"
+        },
+        {
+            "_id": "accent",
+            "title": "Accent",
+            "typography_typography": "custom",
+            "typography_font_family": "Roboto",
+            "typography_font_weight": "500"
+        }
+    ],
+    "custom_typography": [],
+    "default_generic_fonts": "Sans-serif",
+    "page_title_selector": "h1.entry-title",
+    "active_breakpoints": [
+        "viewport_mobile",
+        "viewport_tablet",
+        "viewport_laptop"
+    ],
+    "viewport_md": 768,
+    "viewport_lg": 1025,
+    "colors_enable_styleguide_preview": "yes",
+    "activeItemIndex": 1,
+    "container_width": {
+        "unit": "em",
+        "size": 87.5,
+        "sizes": []
+    }
+}

@@ -1,0 +1,21 @@
+.css_prefix-blog-box {
+    .css_prefix-blog-meta {
+        ul {
+            li {
+                &.posted-by {
+                    padding-right: 0;
+                    padding-left: 1em;
+                }
+                &.posted-on {
+                    padding-right: 0;
+                    padding-left: 0.7em;
+                }
+                &.css_prefix-blog-category {
+                    padding-left: 0;
+                    padding-right: 0.3em;
+                }
+            }
+
+        }
+    }
+}

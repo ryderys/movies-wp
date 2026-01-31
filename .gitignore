@@ -1,0 +1,91 @@
+# WordPress core files
+/wp-admin/
+/wp-includes/
+/index.php
+/wp-activate.php
+/wp-blog-header.php
+/wp-comments-post.php
+/wp-config.php
+/wp-cron.php
+/wp-links-opml.php
+/wp-load.php
+/wp-login.php
+/wp-mail.php
+/wp-settings.php
+/wp-signup.php
+/wp-trackback.php
+/xmlrpc.php
+/wp-config-sample.php
+/license.txt
+/readme.html
+
+# Sensitive configuration
+.env
+.env.local
+.env.*.local
+
+# User uploads
+/wp-content/uploads/
+
+# Third-party plugins (document in composer.json or package.json instead)
+/wp-content/plugins/*
+!/wp-content/plugins/custom-plugins/
+!/wp-content/plugins/.gitkeep
+
+# Default themes
+/wp-content/themes/twenty*/
+
+# Dependencies
+/vendor/
+/node_modules/
+composer.phar
+
+# Cache and temporary files
+/wp-content/cache/
+/wp-content/backup-*
+*.log
+.cache
+
+# Database
+*.sql
+*.sqlite
+db.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.history/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.iml
+
+# Git
+.git/
+.gitkeep
+
+# Build and dist
+/dist/
+/build/
+
+# Environment-specific
+/wp-content/advanced-cache.php
+/wp-content/object-cache.php
+
+# WordPress-CLI
+/.wp-cli/
+
+# Other
+bash.exe.stackdump
+cloudflare-worker-updated.js

@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * The template for displaying release date
+ *
+ * @link https://codex.wordpress.org/Template_Hierarchy
+ *
+ * @package streamit
+ */
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
+$st_release_date    = date('Y', strtotime($st_data->get_post_date()));
+
+if(!empty($st_release_date)) :
+?>
+<li>
+    <span class="d-flex align-items-center gap-1">
+        <span class="fw-medium">
+            <?php
+            echo wp_date('Y', strtotime($st_release_date));
+            ?>
+        </span>
+    </span>
+</li>
+<?php endif; ?>

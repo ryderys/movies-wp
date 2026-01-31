@@ -1,0 +1,38 @@
+.offcanvas{
+    &.offcanvas-end {
+        right: auto;
+        left: 0;
+        transform: translateX(-100%);
+
+        &.show {
+            transform: none;
+        }
+    }
+
+    &.offcanvas-start {
+        left: auto;
+        right: 0;
+        transform: translateX(100%);
+
+        &.show {
+            transform: none;
+        }
+    }
+
+    .offcanvas-header {
+        .btn-close {
+            margin-right: 0;
+            margin-left: calc(-0.5 * var(--bs-offcanvas-padding-x));
+        }
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .offcanvas {
+        &.filter-offcanvas {
+            &.offcanvas-start {
+                transform: none;
+            }
+        }
+    }
+}

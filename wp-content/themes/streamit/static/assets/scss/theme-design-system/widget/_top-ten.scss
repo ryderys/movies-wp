@@ -1,0 +1,95 @@
+.top-ten-card {
+    .top-ten-iner {
+        position: relative;
+        border-radius: var(--bs-border-radius);
+        background: linear-gradient(0deg, rgba(var(--bs-black-rgb), 0.9), rgba(var(--bs-black-rgb), 0) 41.03%);
+        a {
+            display: block;
+        }
+        img {
+            mix-blend-mode: overlay;
+            aspect-ratio: 2 / 2.8;
+            object-fit: cover;
+            border-radius: var(--bs-border-radius);
+            width: 100%;
+            height: fit-content !important;
+        }
+        .top_ten_numbers {
+            position: absolute;
+            bottom: -0.2em;
+            right: 10px;
+            font-weight: 800;
+            transition: all .4s ease-out;
+            z-index: 2;
+        }
+    
+        &:hover {
+            .top_ten_numbers {
+                bottom: 0;
+            }
+        }
+    } 
+    .product-premium {
+        position: absolute;
+        top: 0.875em;
+        left: auto;
+        right: 1em;
+        background: var(--bs-warning);
+        color: var(--bs-white);
+        border-radius: 100%;
+        height: 2em;
+        width: 2em;
+        line-height: 2em;
+        text-align: center;
+        z-index: 100;
+        padding: 0;
+        i {
+            font-size: 1em;
+        }
+
+        +.product-ppv {
+            top: 3.5em;
+        }
+        +.product-ppv-rented {
+            top: 3.5em;
+        }
+    }
+
+    .product-ppv {
+        position: absolute;
+        top: 0.875em;
+        left: auto;
+        right: 1em;
+        background: var(--bs-info);
+        color: var(--bs-white);
+        border-radius: 100%;
+        height: 2em;
+        width: 2em;
+        line-height: 2em;
+        text-align: center;
+        z-index: 100;
+        padding: 0;
+
+        i {
+            font-size: 1em;
+        }
+    }
+    .product-ppv-rented {
+        position: absolute;
+        top: 0.875em;
+        left: auto;
+        right: 1em;
+        background: var(--bs-success);
+        color: var(--bs-white);
+        border-radius: 100%;
+        height: 2em;
+        width: 2em;
+        line-height: 2em;
+        text-align: center;
+        z-index: 100;
+        padding: 0;
+        i {
+            font-size: 1em;
+        }
+    }
+}

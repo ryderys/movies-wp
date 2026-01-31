@@ -1,0 +1,455 @@
+[
+    {
+        "term_id": 2,
+        "term_name": "Sport",
+        "term_slug": "sport",
+        "taxonomy": "channel_category",
+        "parent_term": "0",
+        "description": "A competitive event where players or teams compete in video or board games to win prizes or titles.",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2025\/06\/cat-3.png",
+        "term_relation": [
+            {
+                "term_id": "2",
+                "post_id": "4",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "11",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "8",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "6",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "1",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "13",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "12",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "10",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "7",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "2",
+                "post_id": "3",
+                "taxonomy": "channel_category"
+            }
+        ]
+    },
+    {
+        "term_id": 4,
+        "term_name": "Kids",
+        "term_slug": "kids",
+        "taxonomy": "channel_category",
+        "parent_term": "0",
+        "description": "A fun and educational television program designed to entertain and engage children.",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2025\/06\/cat-5.png",
+        "term_relation": [
+            {
+                "term_id": "4",
+                "post_id": "6",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "11",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "10",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "7",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "4",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "2",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "1",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "13",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "12",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "9",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "8",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "4",
+                "post_id": "5",
+                "taxonomy": "channel_category"
+            }
+        ]
+    },
+    {
+        "term_id": 5,
+        "term_name": "News",
+        "term_slug": "news",
+        "taxonomy": "channel_category",
+        "parent_term": "0",
+        "description": "A program that delivers current events, headlines, and in-depth news coverage to inform viewers.",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2025\/06\/cat-1.png",
+        "term_relation": [
+            {
+                "term_id": "5",
+                "post_id": "10",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "13",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "9",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "8",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "7",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "6",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "5",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "4",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "2",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "12",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "5",
+                "post_id": "11",
+                "taxonomy": "channel_category"
+            }
+        ]
+    },
+    {
+        "term_id": 9,
+        "term_name": "Music",
+        "term_slug": "music",
+        "taxonomy": "channel_category",
+        "parent_term": "0",
+        "description": "A live performance where musicians or bands play music for an audience.",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2025\/06\/cat-4.png",
+        "term_relation": [
+            {
+                "term_id": "9",
+                "post_id": "3",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "7",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "13",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "11",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "9",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "6",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "5",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "4",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "2",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "9",
+                "post_id": "1",
+                "taxonomy": "channel_category"
+            }
+        ]
+    },
+    {
+        "term_id": 10,
+        "term_name": "Event & shows",
+        "term_slug": "event-shows",
+        "taxonomy": "channel_category",
+        "parent_term": "0",
+        "description": "A program or live performance designed to entertain and make people laugh through jokes, sketches, or stand-up comedy.",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2025\/06\/cat-6.png",
+        "term_relation": [
+            {
+                "term_id": "10",
+                "post_id": "5",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "12",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "10",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "9",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "8",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "7",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "3",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "2",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "13",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "6",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "10",
+                "post_id": "4",
+                "taxonomy": "channel_category"
+            }
+        ]
+    },
+    {
+        "term_id": 11,
+        "term_name": "Movies & Shows",
+        "term_slug": "movies-shows",
+        "taxonomy": "channel_category",
+        "parent_term": "0",
+        "description": "A film designed to scare and thrill viewers with suspense, supernatural elements, or frightening scenes.",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2025\/06\/cat-2.png",
+        "term_relation": [
+            {
+                "term_id": "11",
+                "post_id": "2",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "1",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "8",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "12",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "11",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "10",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "9",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "5",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "3",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "11",
+                "post_id": "7",
+                "taxonomy": "channel_category"
+            }
+        ]
+    },
+    {
+        "term_id": 12,
+        "term_name": "Education",
+        "term_slug": "education",
+        "taxonomy": "channel_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2025\/06\/Education-1.png",
+        "term_relation": [
+            {
+                "term_id": "12",
+                "post_id": "12",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "12",
+                "post_id": "9",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "12",
+                "post_id": "4",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "12",
+                "post_id": "2",
+                "taxonomy": "channel_category"
+            }
+        ]
+    },
+    {
+        "term_id": 13,
+        "term_name": "Information",
+        "term_slug": "information",
+        "taxonomy": "channel_category",
+        "parent_term": "0",
+        "description": "",
+        "thumbnail": "https:\/\/streamit-wordpress.iqonic.design\/wp-content\/uploads\/2025\/06\/Infotainment.png",
+        "term_relation": [
+            {
+                "term_id": "13",
+                "post_id": "9",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "13",
+                "post_id": "8",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "13",
+                "post_id": "10",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "13",
+                "post_id": "4",
+                "taxonomy": "channel_category"
+            },
+            {
+                "term_id": "13",
+                "post_id": "2",
+                "taxonomy": "channel_category"
+            }
+        ]
+    }
+]

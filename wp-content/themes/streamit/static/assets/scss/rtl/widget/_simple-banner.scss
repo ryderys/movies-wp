@@ -1,0 +1,43 @@
+.home-slider {
+    .banner-bg::before {
+        left: auto;
+        right: 0;
+    }
+}
+
+.trailor-video {
+    .w-trailor {
+        margin-left: 0;
+        margin-right: .9375em;
+    }
+}
+
+.css_prefix-main-slider{
+    &.css_prefix-banner-slider-center {
+        .slick-arrow {
+            &.PreArrow-two {
+                left: auto;
+                right: .5em;
+            }
+
+            &.NextArrow-two {
+                right: auto;
+                left: .5em;
+            }
+        }
+    }
+
+    &.css_prefix-banner-slider {
+        .slick-arrow {
+            &.PreArrow-two {
+                left: auto;
+                right: 1em;
+            }
+
+            &.NextArrow-two {
+                right: auto;
+                left: 1em;
+            }
+        }
+    }
+}

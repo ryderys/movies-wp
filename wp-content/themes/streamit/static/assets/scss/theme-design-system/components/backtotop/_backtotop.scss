@@ -1,0 +1,31 @@
+.css-prefix-top {
+    transition: all .3s ease-in-out;
+    .top {
+        position: fixed;
+        margin: 0;
+        color: var(--bs-white);
+        background: var(--bs-primary);
+        bottom: 1em;
+        right: 1em;
+        z-index: 9999;
+        font-size: 1.2em;
+        width: 2.5em;
+        height: 2.5em;
+        text-align: center;
+        line-height: 2.5em;
+        border-radius: 0;
+        border-radius: 100%;
+        transition: all .3s ease-in-out;
+        &:hover {
+            background: var(--bs-primary-hover-bg);
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .css-prefix-top {
+        .top {
+            bottom: 4em;
+        }
+    }
+}

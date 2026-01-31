@@ -1,0 +1,87 @@
+.css_prefix-woo-sidebar {
+    .woof_text_search_container {
+        .woof_text_search_go {
+            margin-left: 0;
+            margin-right: .1875em;
+            right: auto;
+            left: .3125em;
+        }
+    }
+
+    .woof_price_search_container {
+        .price_slider_amount {
+            .price_label {
+                float: right !important;
+                text-align: right !important;
+            }
+        }
+    }
+
+    .woof_container_inner_productcategories {
+        .woof_list.woof_list_checkbox {
+            li {
+                .woof_checkbox_label {
+                    margin-left: 0 !important;
+                    margin-right: 0.438em !important;
+                }
+            }
+        }
+    }
+}
+
+.woof_products_top_panel, 
+.woof_products_top_panel2 {
+    li {
+        float: right;
+        margin: 0 0 0 1em !important;
+
+        span {
+            background-position: left;
+            padding-right: 0;
+            padding-left: 1em;
+        }
+    }
+}
+
+.woof_husky_txt-container {
+    .woof_husky_txt-option {
+        padding: .5625em .5625em .5625em 1.25em;
+
+        img.woof_husky_txt-option-thumbnail {
+            margin-right: 0;
+            margin-left: .3125em;
+        }
+    }
+}
+
+.woof_husky_txt {
+    .woof_husky_txt-cross {
+        right: auto !important;
+        left: 1.25em !important;
+    }
+} 
+
+.woof_text_search_container {
+    .woof_container_inner {
+        input {
+            padding: 0 1em 0 3.5em;
+        }
+    }
+}
+
+.woof_container_product_cat {
+    .woof_list {
+        li {
+            .woof_childs_list_opener {
+                right: auto;
+                left: 0;
+                margin-left: 0 !important;
+                margin-right: 7px !important;
+            }
+        }
+
+        .woof_childs_list {
+            padding: 0 17px 0 0 !important;
+        }
+    }
+}

@@ -1,0 +1,182 @@
+.comments-area {
+    margin-top: 1.875em;
+
+    .comments-title {
+        position: relative;
+        padding: 0;
+    }
+
+    .commentlist {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        .comment {
+            margin-top: 1.812em;
+            margin-bottom: 0;
+            vertical-align: top;
+            padding: 0;
+            list-style: none;
+
+            .css_prefix-comments-media {
+                padding: 1.875em 0;
+                border-bottom: .063em solid var(--bs-border-color);
+                position: relative;
+                .css_prefix-comment-wrap {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 1em;
+
+                    .css_prefix-comments-photo {
+                        img {
+                            width: 5em;
+                            height: auto;
+                            border-radius: 5.625em;
+                        }
+                    }
+
+                    .css_prefix-comments-info {
+                        position: relative;
+                        display: inline-block;
+                        width: 100%;
+
+                        .title {
+                            margin: 0;
+                        }
+
+                        .css_prefix-comment-metadata {
+                            text-transform: uppercase;
+                            margin: 0;
+                            font-size: var(--bs-font-size-base);
+                            padding: 0;
+                            position: relative;
+                            overflow: hidden;
+                            display: inline-block;
+
+                            a {
+                                font-size: var(--bs-font-size-base);
+                                color: var(--bs-body-color);
+                                text-transform: capitalize;
+                                margin: .313em 0;
+                            }
+
+                            .edit-link {
+                                margin-left: 1em;
+
+                                a {
+                                    color: var(--bs-primary);
+                                    text-decoration-line: underline;
+
+                                    &:hover {
+                                        text-decoration-line: none;
+                                    }
+                                }
+                            }
+                        }
+
+                        .title {
+                            a {
+                                color: var(--bs-heading-color);
+
+                                &:hover {
+                                    color: var(--bs-primary);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        li {
+            ul {
+                &.children {
+                    list-style: none;
+                }
+            }
+        }
+
+        .css_prefix-comments-item {
+            margin-bottom: 1.875em;
+            color: var(--bs-heading-color);
+
+            .css_prefix-type-date {
+                span {
+                    color: var(--bs-heading-color);
+                }
+
+                a {
+                    color: var(--bs-secondary);
+
+                    &:hover {
+                        color: var(--bs-primary);
+                        text-decoration-line: underline;
+                    }
+                }
+            }
+
+            .edit-link {
+                a {
+                    color: var(--bs-primary);
+
+                    // text-decoration-line: underline;
+                    &:hover {
+                        text-decoration-line: underline;
+                    }
+                }
+            }
+        }
+    }
+
+    .comment-respond {
+        margin-top: 1.875em;
+        clear: both;
+
+        .comment-reply-title {
+            position: relative;
+            padding-bottom: 0;
+            margin-top: .68em;
+            margin-bottom: .625em;
+        }
+
+        .comment-form-comment {
+            margin: 1.875em 0;
+            display: inline-block;
+            width: 100%;
+        }
+
+        #cancel-comment-reply-link {
+            border: none;
+            color: var(--bs-primary);
+            position: relative;
+            z-index: 9;
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            padding: 0;
+            font-size: .875em;
+            line-height: 1.5;
+            text-transform: uppercase;
+            letter-spacing: .031em;
+            margin-left: 1.25em;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .comments-area {
+        .commentlist {
+            .comment {
+                .css_prefix-comments-media {
+                    .css_prefix-comment-wrap {
+                        flex-direction: column;
+                    }
+                }
+            }
+        }
+    }
+}

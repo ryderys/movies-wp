@@ -1,0 +1,58 @@
+.pmpro {
+    #pmpro_order_single {
+        .pmpro_table {
+            thead th:not(th:first-of-type),
+            tbody td,
+            tfoot td {
+                text-align: left;
+            }
+        }
+    }
+    .pmpro_form_field.pmpro_form_field-password {
+        .pmpro_form_input-password {
+            padding-right: 1em;
+            padding-left: 3em;
+        }
+        .password_toggle {
+            left: 1em;
+            right: auto;
+        }
+    }
+}
+
+.pmpro_actions_nav-left {
+    text-align: right;
+}
+
+.pmpro_actions_nav-right {
+    text-align: left;
+}
+
+@include media-breakpoint-down(md) {
+    .pmpro_actions_nav-left {
+        text-align: center;
+    }
+    
+    .pmpro_actions_nav-right {
+        text-align: center;
+    }
+
+    #pmpro_order_single-items{
+        .pmpro_table{
+            tbody{
+                td{
+                    &[data-title="Amount"]{
+                        text-align: left;
+                    }
+                }
+            }
+            tfoot {
+                td{
+                    &[data-title="Total"]{
+                        text-align: left;
+                     }
+                }
+            }
+        }
+    }
+}
