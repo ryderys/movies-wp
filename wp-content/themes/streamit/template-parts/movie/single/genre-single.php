@@ -17,7 +17,7 @@ $movie_genre_slug = isset($wp_query->query_vars['movie_genre']) ? sanitize_title
 $st_data = streamit_get_term((string)$movie_genre_slug, 'movie_genre');
 $term_id = $st_data->get_term_id();
 
-$load_more_text = streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', esc_html__('Load More', 'streamit'));
+$load_more_text = streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', 'بارگذاری بیشتر');
 $loading_text = streamit_get_button_text('streamit_genere_tag_category_loadmore_text_2', esc_html__('Loading...', 'streamit'));
 
 ?>

@@ -35,7 +35,7 @@ if (isset($streamit_options['header_display_user_act']) && $streamit_options['he
             if (isset($streamit_options['streamit_headre_button']) && $streamit_options['streamit_headre_button'] == 'yes'): ?>
                 <a class="btn btn-primary py-2 px-3" href="<?php echo esc_url($iqonic_signin_link); ?>">
                     <span class="d-flex align-items-center justify-content-center gap-2">
-                        <span><?php echo esc_html__('Login', 'streamit'); ?></span>
+                        <span>ورود</span>
                     </span>
                 </a>
             <?php endif; ?>

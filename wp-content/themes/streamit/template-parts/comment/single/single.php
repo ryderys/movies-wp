@@ -162,7 +162,7 @@ $badge = $enable_premium_badges ? streamit_get_access_badge_for_user($content_da
                                 st_comment_html_details($comment);
                             endforeach;
                             if ($comments->maxnumpages > 1):
-                                echo st_get_load_more_button($comments->maxnumpages, esc_html('comment'), 1, esc_html__('Load More', 'streamit'), esc_html__('Loding', 'streamit'), '', '', ['post_type' => $content_data->get_post_type(), 'comment_post_ID' => $content_data->get_id()]);
+                                echo st_get_load_more_button($comments->maxnumpages, esc_html('comment'), 1, 'بارگذاری بیشتر', 'در حال بارگذاری...', '', '', ['post_type' => $content_data->get_post_type(), 'comment_post_ID' => $content_data->get_id()]);
                             endif;
                         else: ?>
                             <?php esc_html_e('Not Rated Yet', 'streamit'); ?>

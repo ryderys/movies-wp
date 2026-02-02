@@ -16,7 +16,7 @@ $user_id = get_current_user_id();
 $watchlist_data = function_exists('streamit_user_watchlist') ? streamit_user_watchlist($user_id) : [];
 
 
-$load_more_text = streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', esc_html__('Load More', 'streamit'));
+$load_more_text = streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', 'بارگذاری بیشتر');
 $loading_text = streamit_get_button_text('streamit_genere_tag_category_loadmore_text_2', esc_html__('Loading...', 'streamit'));
 
 

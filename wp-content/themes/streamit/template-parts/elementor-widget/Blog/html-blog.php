@@ -44,7 +44,7 @@ if ($custom_query->have_posts()) : ?>
     if( $numpages > 1) :
         if( $settings['iq_pagination'] === 'loadmore') : ?>
             <div class="blog-widgetloadmore d-flex justify-content-center w-100 mt-5">
-                <?php echo st_get_load_more_button( $numpages, 'widget_post', 1, esc_html__('Load More', 'streamit'), esc_html__('Loading...', 'streamit'), $post_per_page, '', $extra_settings ) ?>
+                <?php echo st_get_load_more_button( $numpages, 'widget_post', 1, 'بارگذاری بیشتر', 'در حال بارگذاری...', $post_per_page, '', $extra_settings ) ?>
             </div>
         <?php elseif ($settings['iq_pagination'] === 'infinite') : ?>
             <?php echo st_get_loader_wheel_container( $numpages, 'widget_post', 1, $post_per_page, '', $extra_settings ) ?>

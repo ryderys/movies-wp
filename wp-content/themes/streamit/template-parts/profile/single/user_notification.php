@@ -80,8 +80,8 @@ $read_notifications = streamit_get_notifications($args_read);
 
         <?php
         if (!empty($unread_notifications->results) && ($unread_notifications->maxnumpages > 1)) :
-            $load_more_text = streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', esc_html__('Load More', 'streamit'));
-            $loading_text = streamit_get_button_text('streamit_genere_tag_category_loadmore_text_2', esc_html__('Loading...', 'streamit'));
+            $load_more_text = streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', 'بارگذاری بیشتر');
+            $loading_text = streamit_get_button_text('streamit_genere_tag_category_loadmore_text_2', 'در حال بارگذاری...');
 
             echo st_get_load_more_button($unread_notifications->maxnumpages, 'unread_notification', 1, esc_html($load_more_text), esc_html($loading_text));
         endif;
@@ -105,8 +105,8 @@ $read_notifications = streamit_get_notifications($args_read);
             </ul>
             <?php
             if (!empty($read_notifications->results)  && ($read_notifications->maxnumpages > 1)):
-                $load_more_text = esc_html(streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', 'Load More'));
-                $loading_text = esc_html(streamit_get_button_text('streamit_genere_tag_category_loadmore_text_2', 'Loading...'));
+                $load_more_text = esc_html(streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', 'بارگذاری بیشتر'));
+                $loading_text = esc_html(streamit_get_button_text('streamit_genere_tag_category_loadmore_text_2', 'در حال بارگذاری...'));
                 echo st_get_load_more_button($read_notifications->maxnumpages, 'read_notification', 1, esc_html($load_more_text), esc_html($loading_text));
             endif
             ?>

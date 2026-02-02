@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 global $streamit_options;
 
-$load_more_text = streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', esc_html__('Load More', 'streamit'));
+$load_more_text = streamit_get_button_text('streamit_genere_tag_category_display_loadmore_text', 'بارگذاری بیشتر');
 $loading_text = streamit_get_button_text('streamit_genere_tag_category_loadmore_text_2', esc_html__('Loading...', 'streamit'));
 
 $genere_tag_option = isset($streamit_options['streamit_genere_tag_category_item']) ? $streamit_options['streamit_genere_tag_category_item'] : 'load_more';

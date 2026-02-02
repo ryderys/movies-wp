@@ -37,7 +37,7 @@ Redux::set_section($this->opt_name, array(
             'title'     => esc_html__('Genres, Tags , Categories Page Setting', 'streamit'),
             'subtitle'  => esc_html__('Turn on to display the Post ', 'streamit'),
             'options'   => array(
-                'load_more'         => esc_html__('Load More', 'streamit'),
+                'load_more'         => 'بارگذاری بیشتر',
                 'infinite_scroll'   => esc_html__('Infinite Scroll', 'streamit')
             ),
             'default' => esc_html__('load_more', 'streamit'),
@@ -46,14 +46,14 @@ Redux::set_section($this->opt_name, array(
             'id'        => 'streamit_genere_tag_category_display_loadmore_text',
             'type'      => 'text',
             'title'     => esc_html__('Load More button text', 'streamit'),
-            'default'   => esc_html__('Load More', 'streamit'),
+            'default'   => 'بارگذاری بیشتر',
             'required'  => array('streamit_genere_tag_category_item', '=', 'load_more'),
         ),
         array(
             'id'        => 'streamit_genere_tag_category_loadmore_text_2',
             'type'      => 'text',
             'title'     => esc_html__('Load More button text', 'streamit'),
-            'default'   => esc_html__('Loading...', 'streamit'),
+            'default'   => 'در حال بارگذاری...',
             'required'  => array('streamit_genere_tag_category_item', '=', 'load_more'),
         ),
         array(

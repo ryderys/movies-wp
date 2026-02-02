@@ -91,8 +91,8 @@ $tabs = [
                             $data->maxnumpages,
                             $key . '_unlockedcontent',
                             1,
-                            esc_html__('Load More', 'streamit'),
-                            esc_html__('Loading...', 'streamit')
+                            'بارگذاری بیشتر',
+                            'در حال بارگذاری...'
                         );
                     endif; ?>
                 <?php else: ?>
