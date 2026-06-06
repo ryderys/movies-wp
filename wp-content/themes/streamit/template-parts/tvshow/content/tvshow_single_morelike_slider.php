@@ -75,7 +75,7 @@ $settings = [
     'view_all_switch'   =>  'no',
     'nav-arrow' =>  'true',
     'enable_premium_badges' =>  'yes',
-    'play_now_text' =>  'Play Now'
+    'play_now_text' =>  'تماشا'
 ];
 $title_tag = 'h5';
 $slider_title = isset($streamit_core_options['streamit_recommended_title']) && !empty($streamit_core_options['streamit_recommended_title'])

@@ -5,17 +5,17 @@ msgstr ""
 "Project-Id-Version: Streamit 4.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/streamit-revamp\n"
 "Last-Translator: \n"
-"Language-Team: فارسی\n"
+"Language-Team: Persian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2025-11-20T06:49:13+00:00\n"
-"PO-Revision-Date: 2025-11-30 09:37+0000\n"
+"PO-Revision-Date: 2026-05-28 13:32+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: streamit\n"
 "Language: fa_IR\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Loco-Version: 2.8.0; wp-6.8.3; php-8.2.12"
+"X-Loco-Version: 2.8.4; wp-7.0; php-8.2.31"
 
 #: template-parts/shortcode/login.php:111
 msgid "  OR  "
@@ -379,7 +379,7 @@ msgstr "تنظیمات حساب کاربری"
 
 #: inc/Elementor-widget/Elements/Button/widget.php:104
 msgid "Action"
-msgstr ""
+msgstr "اکشن"
 
 #: admin/class-tgm-plugin-activation.php:2828
 #: admin/Theme-Setup/class-streamit-theme-setup.php:76
@@ -2012,7 +2012,7 @@ msgstr ""
 #: template-parts/episode/content/episode_single_get_seasons.php:70
 #: template-parts/tvshow/content/tvshow_single_get_season.php:53
 msgid "Episodes"
-msgstr ""
+msgstr "قسمت ها"
 
 #: admin/Merlin/class-merlin.php:2382
 msgid "Error"
@@ -4388,7 +4388,7 @@ msgstr "تماشا"
 #: inc/Elementor-widget/Elements/Tv-Show-Season/widget.php:115
 #: inc/Elementor-widget/Elements/Vertical-Thumbnail-Banner/widget.php:69
 msgid "Play Now Text"
-msgstr ""
+msgstr "تماشا"
 
 #: template-parts/episode/content/episode_next_overlay.php:34
 msgid "Playing in"
@@ -5765,7 +5765,7 @@ msgstr ""
 
 #: inc/Elementor-widget/Elements/Simple-Banner/widget.php:121
 msgid "Show Play Now Button"
-msgstr ""
+msgstr "تماشا"
 
 #: admin/Redux_Framework/Options/Page/playlist.php:18
 msgid "Show Playlist"
@@ -7617,7 +7617,7 @@ msgstr "لیست تماشا"
 
 #: admin/Redux_Framework/Options/user.php:175
 msgid "Watchlist button title"
-msgstr ""
+msgstr "لیست تماشا"
 
 #: inc/theme-helper/streamit-general-helper-function.php:546
 msgid "wb"

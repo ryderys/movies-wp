@@ -23,7 +23,7 @@ if (empty($comments) || !array($comments)) {
                 <?php esc_html_e('Review', 'streamit'); ?>
             </h5>
             <a class="btn btn-link" data-bs-toggle="offcanvas" href="#offcanvasReview" role="button" aria-controls="offcanvasReview">
-                <?php esc_html_e( 'Add Review', 'streamit' ) ?>
+                افزودن نظر
             </a>            
         </div>
         <div class="d-flex align-items-center gap-3 my-2 justify-content-between">

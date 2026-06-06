@@ -169,7 +169,7 @@ if (! class_exists('streamit_shortcode_Helper')) {
             ob_start();
 
             if ($has_access || empty($access_type) || $access_type == 'free') {
-                echo $this->streamit_generate_button($media_player_url, 'play', esc_html__('Start Watching', 'streamit'));
+                echo $this->streamit_generate_button($media_player_url, 'play', esc_html__('شروع تماشا', 'streamit'));
             } else {
                 if ($access_type === 'plan') {
                     echo $this->streamit_generate_button($pricing_page, $subscribe_icon, $subscribe_label);

@@ -92,7 +92,7 @@ $episode_release_date = $episode->get_meta('_episode_release_date');
                     <a href="<?php echo esc_url($episode_link); ?>"
                         class="btn btn-primary"
                         tabindex="0">
-                        <?php esc_html_e('Watch Now', 'streamit'); ?>
+                        <?php esc_html_e('تماشا', 'streamit'); ?>
                     </a>
                 </div>
             </div>

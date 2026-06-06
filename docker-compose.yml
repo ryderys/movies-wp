@@ -1,0 +1,60 @@
+
+
+services:
+  wordpress:
+    build:
+      context: .
+      args:
+        PHP_IMAGE: ${PHP_IMAGE:-php:8.2-apache-bookworm}
+        APT_MIRROR: ${APT_MIRROR:-mirror.iranserver.com}
+    ports:
+      - "80:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME:-local_wp}
+      DB_USER: ${DB_USER:-wp_user}
+      DB_PASSWORD: ${DB_PASSWORD:-wp_pass}
+      WP_DEBUG: ${WP_DEBUG:-1}
+      WP_DEBUG_LOG: ${WP_DEBUG_LOG:-1}
+      WP_DEBUG_DISPLAY: ${WP_DEBUG_DISPLAY:-0}
+    # Mount only wp-content from the host. WordPress core + PHP run from the image
+    # (fast on Windows). Rebuild after editing files outside wp-content:
+    #   docker compose build wordpress && docker compose up -d
+    volumes:
+      - ./wp-content:/var/www/html/wp-content
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+    depends_on:
+      db:
+        condition: service_healthy
+
+  phpmyadmin:
+    image: ${PHPMYADMIN_IMAGE:-docker.arvancloud.ir/library/phpmyadmin:5.2-apache}
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: ${DB_USER:-wp_user}
+      PMA_PASSWORD: ${DB_PASSWORD:-wp_pass}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: ${MYSQL_IMAGE:-docker.arvancloud.ir/library/mysql:8.0}
+    command: --default-authentication-plugin=mysql_native_password --sql-mode=""
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-local_wp}
+      MYSQL_USER: ${DB_USER:-wp_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-wp_pass}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-wp_root_pass}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  db_data:

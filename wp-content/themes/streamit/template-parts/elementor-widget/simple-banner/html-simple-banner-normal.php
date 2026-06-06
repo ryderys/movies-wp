@@ -189,7 +189,7 @@ $content = '';
                                             <a href="<?php echo esc_url(streamit_get_permalink($post_type, $result->get_post_name())); ?>" class="btn btn-primary">
                                                 <span class="d-flex align-items-center gap-2">
                                                     <span>
-                                                        <?php echo !empty($args['settings']['play_now_text']) ? esc_html($args['settings']['play_now_text']) : esc_html__('Play Now', 'streamit'); ?>
+                                                        <?php echo !empty($args['settings']['play_now_text']) ? esc_html($args['settings']['play_now_text']) : esc_html__('تماشا', 'streamit'); ?>
                                                     </span>
                                                     <?php echo st_get_icon('play', ['aria-hidden' => 'true']); ?>
                                                 </span>

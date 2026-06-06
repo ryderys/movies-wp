@@ -23,6 +23,7 @@
 .env
 .env.local
 .env.*.local
+wp-content/.docker-salts.php
 
 # User uploads
 /wp-content/uploads/
@@ -73,7 +74,6 @@ Desktop.ini
 
 # Git
 .git/
-.gitkeep
 
 # Build and dist
 /dist/
@@ -82,6 +82,15 @@ Desktop.ini
 # Environment-specific
 /wp-content/advanced-cache.php
 /wp-content/object-cache.php
+/wp-content/wp-rocket-config/
+/wp-content/db.php
+/wp-content/upgrade/
+/wp-content/upgrade-temp-backup/
+
+# ionCube — only the loader needed for Docker is tracked
+/ioncube/*
+!/ioncube/ioncube_loader_lin_8.2.so
+/ioncube_loader_lin_8.2.so
 
 # WordPress-CLI
 /.wp-cli/

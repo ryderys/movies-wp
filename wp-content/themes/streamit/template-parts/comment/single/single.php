@@ -165,7 +165,7 @@ $badge = $enable_premium_badges ? streamit_get_access_badge_for_user($content_da
                                 echo st_get_load_more_button($comments->maxnumpages, esc_html('comment'), 1, 'بارگذاری بیشتر', 'در حال بارگذاری...', '', '', ['post_type' => $content_data->get_post_type(), 'comment_post_ID' => $content_data->get_id()]);
                             endif;
                         else: ?>
-                            <?php esc_html_e('Not Rated Yet', 'streamit'); ?>
+                            هنوز امتیازی ثبت نشده
                         <?php endif; ?>
                     </div>
                 </div>

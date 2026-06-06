@@ -4610,7 +4610,7 @@ msgstr ""
 #: inc/Elementor-widget/Elements/Tv-Show-Season/widget.php:115
 #: inc/Elementor-widget/Elements/Vertical-Thumbnail-Banner/widget.php:69
 msgid "Play Now Text"
-msgstr ""
+msgstr "تماشا"
 
 #: inc/Elementor-widget/Elements/Main-Banner/widget.php:52
 #: inc/Elementor-widget/Elements/Main-Card-Slider/widget.php:429
@@ -4630,7 +4630,7 @@ msgstr ""
 #: template-parts/video/content/video_single_morelike_slider.php:73
 #: template-parts/video/content/video_single_upcoming_video.php:71
 msgid "Play Now"
-msgstr ""
+msgstr "تماشا"
 
 #: inc/Elementor-widget/Elements/Main-Banner/widget.php:66
 #: template-parts/movie/archive/archive.php:301
@@ -5502,7 +5502,7 @@ msgstr ""
 #: inc/theme-helper/classes/class-streamit-shortcode-helper.php:172
 #: template-parts/tvshow/content/tvshow_single_play_btn.php:41
 msgid "Start Watching"
-msgstr ""
+msgstr "تماشا کردن"
 
 #: inc/theme-helper/classes/class-streamit-shortcode-helper.php:238
 #: inc/theme-helper/classes/class-streamit-shortcode-helper.php:266
@@ -6666,7 +6666,7 @@ msgstr ""
 #: template-parts/common/html-ppv-subscription-details-model.php:131
 #: template-parts/episode/content/episode_single_slider.php:95
 msgid "Watch Now"
-msgstr ""
+msgstr "تماشا"
 
 #: template-parts/common/html-trailer.php:15
 msgid "Video player"
@@ -7181,7 +7181,7 @@ msgstr ""
 #: template-parts/tvshow/content/tvshow_watch_now.php:17
 #: template-parts/video/content/video_watch_now.php:17
 msgid "Watch now"
-msgstr ""
+msgstr "تماشا"
 
 #: template-parts/movie/single/genre-single.php:39
 #: template-parts/movie/single/tag-single.php:39

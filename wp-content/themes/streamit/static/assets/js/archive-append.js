@@ -309,7 +309,7 @@ export default class ArchiveAppend {
   
     const currentPage = parseInt(button.attr('data-page')) || 1;
     const taxonomy = button.attr('data-taxonomy') || 'movie_tag';
-    const loadingText = button.data('loading-text') || 'Loading...';
+    const loadingText = button.data('loading-text') || 'در حال بارگذاری...';
     const originalHtml = button.data('original-html') || button.html();
     const perPage = parseInt(button.data('per-page')) || 6;
   
@@ -610,7 +610,7 @@ export default class ArchiveAppend {
     const endResult = currentDisplayedItems;
 
     resultsCountElement
-      .text(`Showing ${startResult}-${endResult} of ${totalResults} results`)
+      .text(`نمایش ${startResult}-${endResult} از ${totalResults} نتیجه`)
       .attr("data-total-results", totalResults)
       .attr("data-per-page", perPage);
   }
@@ -743,7 +743,7 @@ export default class ArchiveAppend {
             this.updatePaginationState(currentElement, res.current_page, res.total_pages);
           } else {
             if (data.current_page === 1) { 
-              currentListingElement.empty().append(`<div class="no-results">No data found.</div>`); 
+              currentListingElement.empty().append(`<div class="no-results">هیچ داده‌ای پیدا نشد.</div>`); 
               this.updateResultsCount(0, 0, 0); 
               // Show results count even when no results
               jQuery('.streamit-results-count').show();
@@ -752,7 +752,7 @@ export default class ArchiveAppend {
           }
         } else {
           if (data.current_page === 1) {
-            currentListingElement.empty().append(`<div class="no-results">No data found.</div>`);
+            currentListingElement.empty().append(`<div class="no-results">هیچ داده‌ای پیدا نشد.</div>`);
             this.updateResultsCount(0, 0, 0);
             // Show results count even when no results
             jQuery('.streamit-results-count').show();
@@ -789,7 +789,7 @@ export default class ArchiveAppend {
           currentElement.text(currentElement.data("original-text"));
           currentElement.prop('disabled', false);
         } 
-        currentListingElement.empty().append(`<div class="no-results">Failed to load content. Please try again.</div>`);
+        currentListingElement.empty().append(`<div class="no-results">خرابی در بارگذاری محتوا. لطفاً دوباره سعی کنید.</div>`);
         this.updateResultsCount(0, 0, 0);
         // Show results count even when there's an error
         jQuery('.streamit-results-count').show();

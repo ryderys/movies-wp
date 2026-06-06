@@ -426,7 +426,7 @@ class ST_Slider extends Widget_Base
 			[
 				'label' 		=> __('Play Now Text', 'streamit'),
 				'type' 			=> Controls_Manager::TEXT,
-				'default' 		=> __('Play Now', 'streamit'),
+				'default' 		=> __('تماشا', 'streamit'),
 				'label_block' 	=> true,
 			]
 		);

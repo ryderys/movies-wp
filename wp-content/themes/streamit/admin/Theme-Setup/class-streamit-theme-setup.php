@@ -129,5 +129,11 @@ class Theme_Setup
 	}
 }
 
-
-new Theme_Setup();
+// Run after load_theme_textdomain on init (see inc/init.php) to avoid WP 6.7+ notices.
+add_action(
+	'init',
+	static function () {
+		new Theme_Setup();
+	},
+	20
+);

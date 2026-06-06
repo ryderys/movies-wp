@@ -1,0 +1,19 @@
+.git
+.env
+.env.*
+node_modules
+vendor
+# Mounted at runtime (./wp-content:/var/www/html/wp-content). Excludes broken
+# Windows symlinks (e.g. db.php) and keeps the build context small.
+wp-content/
+wp-config.php
+*.sql
+*.tar.gz
+wordpress_files_backup_*
+ioncube/
+!ioncube/ioncube_loader_lin_8.2.so
+.DS_Store
+README.md
+Dockerfile
+docker-compose.yml
+docker-compose.prod.yml

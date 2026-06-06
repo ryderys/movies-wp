@@ -11,617 +11,575 @@ msgstr ""
 "Language: fa\n"
 "Project-Id-Version: Plugins - WPC Smart Quick View for WooCommerce - Stable (latest release)\n"
 
-#: wpc-smart-quick-view.php:816
-msgid "Close the popup when pressing on the browser's back button."
-msgstr "هنگام فشردن دکمۀ بازگشت مرورگر، پنجرۀ بازشو را ببندید."
-
-#: wpc-smart-quick-view.php:810
-msgid "Back to close"
-msgstr "بازگشت به بستن"
-
-#: wpc-smart-quick-view.php:1549
+#: wpc-smart-quick-view.php:1582
 msgid "label"
 msgstr "برچسب"
 
-#: wpc-smart-quick-view.php:1546
+#: wpc-smart-quick-view.php:1579
 msgid "name"
 msgstr "نام"
 
-#: wpc-smart-quick-view.php:1532
+#: wpc-smart-quick-view.php:1565
 msgid "move"
 msgstr "انتقال"
 
-#: wpc-smart-quick-view.php:1048
-msgid "+ Add"
-msgstr "+ افزودن"
-
-#: wpc-smart-quick-view.php:1038
-msgid "Custom"
-msgstr "سفارشی"
-
-#: wpc-smart-quick-view.php:1028
-msgid "Attributes"
-msgstr "ویژگی‌ها"
-
-#: wpc-smart-quick-view.php:1017
-msgid "Default"
-msgstr "پیش‌فرض"
-
-#: wpc-smart-quick-view.php:1003 wpc-smart-quick-view.php:1044
-#: wpc-smart-quick-view.php:1518
-msgid "Custom text/shortcode"
-msgstr "متن/کدکوتاه سفارشی"
-
-#: wpc-smart-quick-view.php:999 wpc-smart-quick-view.php:1040
-#: wpc-smart-quick-view.php:1514
-msgid "Custom field"
-msgstr "زمینۀ سفارشی"
-
-#: wpc-smart-quick-view.php:995 wpc-smart-quick-view.php:1042
-#: wpc-smart-quick-view.php:1510
-msgid "Custom attribute"
-msgstr "ویژگی سفارشی"
-
-#: wpc-smart-quick-view.php:958
-msgid "Choose fields that you want to show on the quick view popup. You also can drag/drop to rearrange these fields."
-msgstr "زمینه‌هایی را انتخاب نمایید که می‌خواهید در پنجرۀ بازشو نمایش سریع، نشان داده شوند. همچنین می‌توانید برای تنظیم مجدد این زمینه‌ها بکشید/رها کنید."
-
-#: wpc-smart-quick-view.php:145
-msgid "Additional information"
-msgstr "اطلاعات اضافی"
-
-#: wpc-smart-quick-view.php:144
-msgid "Dimensions"
-msgstr "اندازه"
-
-#: wpc-smart-quick-view.php:143
-msgid "Weight"
-msgstr "وزن"
-
-#: wpc-smart-quick-view.php:871
-msgid "Enable quick view for products on shop/archive page."
-msgstr "نمایش سریع محصولات را در برگۀ فروشگاه/بایگانی فعال نمایید."
-
-#: wpc-smart-quick-view.php:865
-msgid "Enable for archive"
-msgstr "فعال‌سازی برای بایگانی"
-
-#: wpc-smart-quick-view.php:788
-msgid "Enable the next/previous button to navigate to other products."
-msgstr "دکمۀ بعدی/قبلی را برای راهبری‌کردن محصولات دیگر فعال نمایید."
-
-#: wpc-smart-quick-view.php:782
-msgid "Enable next/previous"
-msgstr "فعال‌سازی بعدی/قبلی"
-
-#: wpc-smart-quick-view.php:1093
-msgid "Compare"
-msgstr "مقایسه"
-
-#: wpc-smart-quick-view.php:1085
-msgid "Wishlist"
-msgstr "لیست علاقه‌مندی‌ها"
-
-#: wpc-smart-quick-view.php:596
-msgid "Premium"
-msgstr "ویژه"
-
-#: wpc-smart-quick-view.php:891
-msgid "Enable quick view for products on the cart page."
-msgstr "نمایش سریع محصولات را در برگه سبد خرید فعال نمایید."
-
-#: wpc-smart-quick-view.php:885
-msgid "Enable for cart page"
-msgstr "فعال‌سازی برای برگۀ سبد خرید"
-
-#: wpc-smart-quick-view.php:881
-msgid "Enable quick view for products on mini-cart."
-msgstr "نمایش سریع محصولات را در سبد خرید کوچک فعال نمایید."
-
-#: wpc-smart-quick-view.php:875
-msgid "Enable for mini-cart"
-msgstr "فعال‌سازی برای سبد خرید کوچک"
-
-#: wpc-smart-quick-view.php:1450
+#: wpc-smart-quick-view.php:1483
 msgid "After suggested products"
 msgstr "بعد از محصولات پیشنهادشده"
 
-#: wpc-smart-quick-view.php:1449
+#: wpc-smart-quick-view.php:1482
 msgid "Before suggested products"
 msgstr "قبل از محصولات پیشنهادشده"
 
-#: wpc-smart-quick-view.php:1448
+#: wpc-smart-quick-view.php:1481
 msgid "After meta"
 msgstr "بعد از متا"
 
-#: wpc-smart-quick-view.php:1447
+#: wpc-smart-quick-view.php:1480
 msgid "Before meta"
 msgstr "قبل از متا"
 
-#: wpc-smart-quick-view.php:1446
+#: wpc-smart-quick-view.php:1479
 msgid "After excerpt"
 msgstr "بعد از چکیده"
 
-#: wpc-smart-quick-view.php:1445
+#: wpc-smart-quick-view.php:1478
 msgid "Before excerpt"
 msgstr "قبل از چکیده"
 
-#: wpc-smart-quick-view.php:1444
+#: wpc-smart-quick-view.php:1477
 msgid "After price"
 msgstr "بعد از قیمت"
 
-#: wpc-smart-quick-view.php:1443
+#: wpc-smart-quick-view.php:1476
 msgid "Before price"
 msgstr "قبل از قیمت"
 
-#: wpc-smart-quick-view.php:1442
+#: wpc-smart-quick-view.php:1475
 msgid "After rating"
 msgstr "بعد از امتیاز"
 
-#: wpc-smart-quick-view.php:1441
+#: wpc-smart-quick-view.php:1474
 msgid "Before rating"
 msgstr "قبل از امتیاز"
 
-#: wpc-smart-quick-view.php:1440
+#: wpc-smart-quick-view.php:1473
 msgid "After title"
 msgstr "بعد از عنوان"
 
-#: wpc-smart-quick-view.php:1439
+#: wpc-smart-quick-view.php:1472
 msgid "Before title"
 msgstr "قبل از عنوان"
 
-#: wpc-smart-quick-view.php:1438
+#: wpc-smart-quick-view.php:1471
 msgid "After summary"
 msgstr "بعد از خلاصه"
 
-#: wpc-smart-quick-view.php:1437
+#: wpc-smart-quick-view.php:1470
 msgid "Before summary"
 msgstr "قبل از خلاصه"
 
-#: wpc-smart-quick-view.php:1436
+#: wpc-smart-quick-view.php:1469
 msgid "After thumbnails"
 msgstr "بعد از بندانگشتی"
 
-#: wpc-smart-quick-view.php:1435
+#: wpc-smart-quick-view.php:1468
 msgid "Before thumbnails"
 msgstr "قبل از بندانگشتی"
 
-#: wpc-smart-quick-view.php:1080
-msgid "Cross-sells products"
-msgstr "محصولات مشابه"
-
-#: wpc-smart-quick-view.php:1075
-msgid "Upsells products"
-msgstr "محصولات بیش‌فروشی"
-
-#: wpc-smart-quick-view.php:1064 wpc-smart-quick-view.php:1182
-msgid "Suggested products"
-msgstr "محصولات پیشنهادشده"
-
-#: wpc-smart-quick-view.php:826
-msgid "Auto close the popup after adding a product to the cart."
-msgstr "بعد از افزودن محصول به سبد خرید، پنجرۀ بازشو را به‌صورت خودکار ببندید."
-
-#: wpc-smart-quick-view.php:820
-msgid "Auto close"
-msgstr "بستن خودکار"
-
-#: wpc-smart-quick-view.php:701
-msgid "Icon"
-msgstr "آیکون"
-
-#: wpc-smart-quick-view.php:695
-msgid "Icon only"
-msgstr "فقط آیکون"
-
-#: wpc-smart-quick-view.php:694
-msgid "Icon on the right"
-msgstr "‫آیکون در سمت راست"
-
-#: wpc-smart-quick-view.php:693
-msgid "Icon on the left"
-msgstr "‫آیکون در سمت چپ"
-
-#: wpc-smart-quick-view.php:688
-msgid "Use icon"
-msgstr "‫از آیکون استفاده نمایید"
-
-#: wpc-smart-quick-view.php:616
-msgid "Settings updated."
-msgstr "تنظیمات به‌روزرسانی شد."
-
-#: wpc-smart-quick-view.php:951
-msgid "Zoom"
-msgstr "بزرگ‌نمایی"
-
-#: wpc-smart-quick-view.php:949
-msgid "None"
-msgstr "هیچ‌کدام"
-
-#: wpc-smart-quick-view.php:946
-msgid "Product images effect"
-msgstr "جلوۀ تصاویر محصول"
-
-#: wpc-smart-quick-view.php:801
-msgid "Sidebar heading"
-msgstr "تیتر نوار کناری"
-
-#: wpc-smart-quick-view.php:796
-msgid "Left"
-msgstr "چپ"
-
-#: wpc-smart-quick-view.php:795
-msgid "Right"
-msgstr "راست"
-
-#: wpc-smart-quick-view.php:792
-msgid "Sidebar position"
-msgstr "موقعیت نوار کناری"
-
-#: wpc-smart-quick-view.php:762
-msgid "Sidebar"
-msgstr "نوار کناری"
-
-#: wpc-smart-quick-view.php:761
-msgid "Popup"
-msgstr "پنجرۀ بازشو"
-
-#: wpc-smart-quick-view.php:758
-msgid "View type"
-msgstr "نوع نمایش"
-
-#: wpc-smart-quick-view.php:679
-msgid "Button type"
-msgstr "‫نوع دکمه"
-
-#: wpc-smart-quick-view.php:1390
+#: wpc-smart-quick-view.php:1423
 msgid "Community support"
 msgstr "انجمن پشتیبانی"
 
-#: wpc-smart-quick-view.php:1188
-msgid "You may also like&hellip;"
-msgstr "همچنین ممکن است دوست داشته باشید&hellip;"
-
-#: wpc-smart-quick-view.php:1177 wpc-smart-quick-view.php:1331
-msgid "Previous (Left arrow key)"
-msgstr "قبلی (کلید فلش چپ)"
-
-#: wpc-smart-quick-view.php:1171
-msgid "Previous"
-msgstr "قبلی"
-
-#: wpc-smart-quick-view.php:1166 wpc-smart-quick-view.php:1330
-msgid "Next (Right arrow key)"
-msgstr "بعدی (کلید فلش راست)"
-
-#: wpc-smart-quick-view.php:1160
-msgid "Next"
-msgstr "بعدی"
-
-#: wpc-smart-quick-view.php:1155 wpc-smart-quick-view.php:1328
-msgid "Close (Esc)"
-msgstr "بستن (Esc)"
-
-#: wpc-smart-quick-view.php:1149
-msgid "Close"
-msgstr "بستن"
-
-#: wpc-smart-quick-view.php:1138
-msgid "Button text"
-msgstr "متن دکمه"
-
-#: wpc-smart-quick-view.php:627 wpc-smart-quick-view.php:1132
-msgid "Localization"
-msgstr "بومی‌سازی"
-
-#: wpc-smart-quick-view.php:1134
-msgid "Leave blank to use the default text and its equivalent translation in multiple languages."
-msgstr "برای استفاده از متن پیش‌فرض و ترجمۀ معادل آن در زبان‌های مختلف خالی بگذارید."
-
-#: wpc-smart-quick-view.php:488 wpc-smart-quick-view.php:1199
-msgid "View product details"
-msgstr "نمایش جزئیات محصول"
-
-#: wpc-smart-quick-view.php:1193
+#: wpc-smart-quick-view.php:1226
 msgid "View details text"
 msgstr "نمایش متن جزئیات"
 
-#: wpc-smart-quick-view.php:1109
+#: wpc-smart-quick-view.php:1221
+msgid "You may also like&hellip;"
+msgstr "همچنین ممکن است دوست داشته باشید&hellip;"
+
+#: wpc-smart-quick-view.php:1210 wpc-smart-quick-view.php:1364
+msgid "Previous (Left arrow key)"
+msgstr "قبلی (کلید فلش چپ)"
+
+#: wpc-smart-quick-view.php:1204
+msgid "Previous"
+msgstr "قبلی"
+
+#: wpc-smart-quick-view.php:1199 wpc-smart-quick-view.php:1363
+msgid "Next (Right arrow key)"
+msgstr "بعدی (کلید فلش راست)"
+
+#: wpc-smart-quick-view.php:1193
+msgid "Next"
+msgstr "بعدی"
+
+#: wpc-smart-quick-view.php:1188 wpc-smart-quick-view.php:1361
+msgid "Close (Esc)"
+msgstr "بستن (Esc)"
+
+#: wpc-smart-quick-view.php:1182
+msgid "Close"
+msgstr "بستن"
+
+#: wpc-smart-quick-view.php:1171
+msgid "Button text"
+msgstr "متن دکمه"
+
+#: wpc-smart-quick-view.php:1167
+msgid "Leave blank to use the default text and its equivalent translation in multiple languages."
+msgstr "برای استفاده از متن پیش‌فرض و ترجمۀ معادل آن در زبان‌های مختلف خالی بگذارید."
+
+#: wpc-smart-quick-view.php:1133
 msgid "View details button"
 msgstr "نمایش دکمۀ جزئیات"
 
-#: wpc-smart-quick-view.php:1070
+#: wpc-smart-quick-view.php:1117
+msgid "Compare"
+msgstr "مقایسه"
+
+#: wpc-smart-quick-view.php:1109
+msgid "Wishlist"
+msgstr "لیست علاقه‌مندی‌ها"
+
+#: wpc-smart-quick-view.php:1104
+msgid "Cross-sells products"
+msgstr "محصولات مشابه"
+
+#: wpc-smart-quick-view.php:1099
+msgid "Upsells products"
+msgstr "محصولات بیش‌فروشی"
+
+#: wpc-smart-quick-view.php:1094
 msgid "Related products"
 msgstr "محصولات مرتبط"
 
-#: wpc-smart-quick-view.php:1060
+#: wpc-smart-quick-view.php:1088 wpc-smart-quick-view.php:1215
+msgid "Suggested products"
+msgstr "محصولات پیشنهادشده"
+
+#: wpc-smart-quick-view.php:1084
 msgid "Choose the functionally for the add to cart button."
 msgstr "از نظر عملکرد دکمۀ افزودن به سبد خرید را انتخاب نمایید."
 
-#: wpc-smart-quick-view.php:1058
+#: wpc-smart-quick-view.php:1082
 msgid "Like single page"
 msgstr "مانند برگۀ تنها"
 
-#: wpc-smart-quick-view.php:1057
+#: wpc-smart-quick-view.php:1081
 msgid "Like archive page"
 msgstr "مانند برگۀ بایگانی"
 
-#: wpc-smart-quick-view.php:1054
+#: wpc-smart-quick-view.php:1078
 msgid "Add to cart button"
 msgstr "دکمۀ افزودن به سبد خرید"
 
-#: wpc-smart-quick-view.php:142
-msgid "Description"
-msgstr "توضیحات"
+#: wpc-smart-quick-view.php:1072
+msgid "+ Add"
+msgstr "+ افزودن"
 
-#: wpc-smart-quick-view.php:141
-msgid "Meta"
-msgstr "متا"
+#: wpc-smart-quick-view.php:1062
+msgid "Custom"
+msgstr "سفارشی"
 
-#: wpc-smart-quick-view.php:140
-msgid "Add to cart"
-msgstr "افزودن به سبد خرید"
+#: wpc-smart-quick-view.php:1052
+msgid "Attributes"
+msgstr "ویژگی‌ها"
 
-#: wpc-smart-quick-view.php:139
-msgid "Short description"
-msgstr "توضیح کوتاه"
+#: wpc-smart-quick-view.php:1041
+msgid "Default"
+msgstr "پیش‌فرض"
 
-#: wpc-smart-quick-view.php:137
-msgid "Price"
-msgstr "قيمت"
+#: wpc-smart-quick-view.php:1027 wpc-smart-quick-view.php:1068
+#: wpc-smart-quick-view.php:1551
+msgid "Custom text/shortcode"
+msgstr "متن/کدکوتاه سفارشی"
 
-#: wpc-smart-quick-view.php:136
-msgid "Rating"
-msgstr "امتیاز"
+#: wpc-smart-quick-view.php:1023 wpc-smart-quick-view.php:1064
+#: wpc-smart-quick-view.php:1547
+msgid "Custom field"
+msgstr "زمینۀ سفارشی"
 
-#: wpc-smart-quick-view.php:135
-msgid "Title"
-msgstr "عنوان"
+#: wpc-smart-quick-view.php:1019 wpc-smart-quick-view.php:1066
+#: wpc-smart-quick-view.php:1543
+msgid "Custom attribute"
+msgstr "ویژگی سفارشی"
 
-#: wpc-smart-quick-view.php:956
+#: wpc-smart-quick-view.php:982
+msgid "Choose fields that you want to show on the quick view popup. You also can drag/drop to rearrange these fields."
+msgstr "زمینه‌هایی را انتخاب نمایید که می‌خواهید در پنجرۀ بازشو نمایش سریع، نشان داده شوند. همچنین می‌توانید برای تنظیم مجدد این زمینه‌ها بکشید/رها کنید."
+
+#: wpc-smart-quick-view.php:980
 msgid "Product summary"
 msgstr "خلاصۀ محصول"
 
-#: wpc-smart-quick-view.php:915
+#: wpc-smart-quick-view.php:975
+msgid "Zoom"
+msgstr "بزرگ‌نمایی"
+
+#: wpc-smart-quick-view.php:973
+msgid "None"
+msgstr "هیچ‌کدام"
+
+#: wpc-smart-quick-view.php:970
+msgid "Product images effect"
+msgstr "جلوۀ تصاویر محصول"
+
+#: wpc-smart-quick-view.php:939
 msgid "Image size"
 msgstr "اندازهٔ تصویر"
 
-#: wpc-smart-quick-view.php:910
+#: wpc-smart-quick-view.php:934
 msgid "Product gallery images"
 msgstr "تصاویر گالری محصول"
 
-#: wpc-smart-quick-view.php:909
+#: wpc-smart-quick-view.php:933
 msgid "Product image"
 msgstr "تصویر محصول"
 
-#: wpc-smart-quick-view.php:908
+#: wpc-smart-quick-view.php:932
 msgid "Product image & Product gallery images"
 msgstr "تصویر محصول و تصاویر گالری محصول"
 
-#: wpc-smart-quick-view.php:905
+#: wpc-smart-quick-view.php:929
 msgid "Images"
 msgstr "تصاویر"
 
-#: wpc-smart-quick-view.php:896
+#: wpc-smart-quick-view.php:920
 msgid "Content"
 msgstr "محتوا"
 
-#: wpc-smart-quick-view.php:861
+#: wpc-smart-quick-view.php:915
+msgid "Enable quick view for products on the cart page."
+msgstr "نمایش سریع محصولات را در برگه سبد خرید فعال نمایید."
+
+#: wpc-smart-quick-view.php:909
+msgid "Enable for cart page"
+msgstr "فعال‌سازی برای برگۀ سبد خرید"
+
+#: wpc-smart-quick-view.php:905
+msgid "Enable quick view for products on mini-cart."
+msgstr "نمایش سریع محصولات را در سبد خرید کوچک فعال نمایید."
+
+#: wpc-smart-quick-view.php:899
+msgid "Enable for mini-cart"
+msgstr "فعال‌سازی برای سبد خرید کوچک"
+
+#: wpc-smart-quick-view.php:895
+msgid "Enable quick view for products on shop/archive page."
+msgstr "نمایش سریع محصولات را در برگۀ فروشگاه/بایگانی فعال نمایید."
+
+#: wpc-smart-quick-view.php:889
+msgid "Enable for archive"
+msgstr "فعال‌سازی برای بایگانی"
+
+#: wpc-smart-quick-view.php:885
 msgid "Only show the Quick View button for products in selected categories."
 msgstr "فقط دکمۀ نمایش سریع را برای محصولات در دسته‌بندی‌های انتخاب شده نمایش دهید."
 
-#: wpc-smart-quick-view.php:856
+#: wpc-smart-quick-view.php:880
 msgid "All categories"
 msgstr "همهٔ دسته‌بندی‌ها"
 
-#: wpc-smart-quick-view.php:840
+#: wpc-smart-quick-view.php:864
 msgid "Categories"
 msgstr "دسته‌بندی‌ها"
 
 #. translators: link
-#: wpc-smart-quick-view.php:836
+#: wpc-smart-quick-view.php:860
 msgid "Read more about %s."
 msgstr "دربارۀ %s بیشتر بخوانید."
 
-#: wpc-smart-quick-view.php:696 wpc-smart-quick-view.php:786
-#: wpc-smart-quick-view.php:805 wpc-smart-quick-view.php:814
-#: wpc-smart-quick-view.php:824 wpc-smart-quick-view.php:834
-#: wpc-smart-quick-view.php:869 wpc-smart-quick-view.php:879
-#: wpc-smart-quick-view.php:889 wpc-smart-quick-view.php:1112
-msgid "No"
-msgstr "خیر"
-
-#: wpc-smart-quick-view.php:785 wpc-smart-quick-view.php:804
-#: wpc-smart-quick-view.php:813 wpc-smart-quick-view.php:823
-#: wpc-smart-quick-view.php:833 wpc-smart-quick-view.php:868
-#: wpc-smart-quick-view.php:878 wpc-smart-quick-view.php:888
-#: wpc-smart-quick-view.php:1113
-msgid "Yes"
-msgstr "بله"
-
-#: wpc-smart-quick-view.php:830
+#: wpc-smart-quick-view.php:854
 msgid "Use perfect-scrollbar"
 msgstr "استفاده از نوار پیمایش کامل"
 
-#: wpc-smart-quick-view.php:777
+#: wpc-smart-quick-view.php:850
+msgid "Auto close the popup after adding a product to the cart."
+msgstr "بعد از افزودن محصول به سبد خرید، پنجرۀ بازشو را به‌صورت خودکار ببندید."
+
+#: wpc-smart-quick-view.php:844
+msgid "Auto close"
+msgstr "بستن خودکار"
+
+#: wpc-smart-quick-view.php:840
+msgid "Close the popup when pressing on the browser's back button."
+msgstr "هنگام فشردن دکمۀ بازگشت مرورگر، پنجرۀ بازشو را ببندید."
+
+#: wpc-smart-quick-view.php:834
+msgid "Back to close"
+msgstr "بازگشت به بستن"
+
+#: wpc-smart-quick-view.php:825
+msgid "Sidebar heading"
+msgstr "تیتر نوار کناری"
+
+#: wpc-smart-quick-view.php:820
+msgid "Left"
+msgstr "چپ"
+
+#: wpc-smart-quick-view.php:819
+msgid "Right"
+msgstr "راست"
+
+#: wpc-smart-quick-view.php:816
+msgid "Sidebar position"
+msgstr "موقعیت نوار کناری"
+
+#: wpc-smart-quick-view.php:812
+msgid "Enable the next/previous button to navigate to other products."
+msgstr "دکمۀ بعدی/قبلی را برای راهبری‌کردن محصولات دیگر فعال نمایید."
+
+#: wpc-smart-quick-view.php:809 wpc-smart-quick-view.php:828
+#: wpc-smart-quick-view.php:837 wpc-smart-quick-view.php:847
+#: wpc-smart-quick-view.php:857 wpc-smart-quick-view.php:892
+#: wpc-smart-quick-view.php:902 wpc-smart-quick-view.php:912
+#: wpc-smart-quick-view.php:1137
+msgid "Yes"
+msgstr "بله"
+
+#: wpc-smart-quick-view.php:806
+msgid "Enable next/previous"
+msgstr "فعال‌سازی بعدی/قبلی"
+
+#: wpc-smart-quick-view.php:801
 msgid "Slide bottom"
 msgstr "اسلاید پایین"
 
-#: wpc-smart-quick-view.php:776
+#: wpc-smart-quick-view.php:800
 msgid "3d unfold"
 msgstr "باز شدن سه‌بعدی"
 
-#: wpc-smart-quick-view.php:775
+#: wpc-smart-quick-view.php:799
 msgid "Move from top"
 msgstr "حرکت از بالا"
 
-#: wpc-smart-quick-view.php:774
+#: wpc-smart-quick-view.php:798
 msgid "Move horizontal"
 msgstr "حرکت افقی"
 
-#: wpc-smart-quick-view.php:773
+#: wpc-smart-quick-view.php:797
 msgid "Newspaper"
 msgstr "روزنامه‌ای"
 
-#: wpc-smart-quick-view.php:772
+#: wpc-smart-quick-view.php:796
 msgid "Zoom out"
 msgstr "کوچک‌نمایی"
 
-#: wpc-smart-quick-view.php:771
+#: wpc-smart-quick-view.php:795
 msgid "Zoom in"
 msgstr "بزرگ‌نمایی"
 
-#: wpc-smart-quick-view.php:770
+#: wpc-smart-quick-view.php:794
 msgid "Fade"
 msgstr "محو شدن"
 
-#: wpc-smart-quick-view.php:767
+#: wpc-smart-quick-view.php:791
 msgid "Popup effect"
 msgstr "جلوۀ پنجرۀ بازشو"
 
+#: wpc-smart-quick-view.php:786
+msgid "Sidebar"
+msgstr "نوار کناری"
+
+#: wpc-smart-quick-view.php:785
+msgid "Popup"
+msgstr "پنجرۀ بازشو"
+
+#: wpc-smart-quick-view.php:782
+msgid "View type"
+msgstr "نوع نمایش"
+
 #. translators: shortcode
-#: wpc-smart-quick-view.php:754
+#: wpc-smart-quick-view.php:778
 msgid "You can add the button by manually by using the shortcode %1$s, e.g. %2$s for the product with ID is 99."
 msgstr "می‌توانید با استفاده از کدکوتاه %s به‌صورت دستی دکمه را استفاده نمایید، به‌عنوان مثال %s برای محصول با شناسۀ 99 است."
 
-#: wpc-smart-quick-view.php:752
+#: wpc-smart-quick-view.php:776
 msgid "Shortcode"
 msgstr "کدکوتاه"
 
-#: wpc-smart-quick-view.php:734
+#: wpc-smart-quick-view.php:758
 msgid "None (hide it)"
 msgstr "هیچ‌کدام (آن را مخفی کن)"
 
-#: wpc-smart-quick-view.php:733
+#: wpc-smart-quick-view.php:757
 msgid "Under add to cart"
 msgstr "زیر افزودن به سبد خرید"
 
-#: wpc-smart-quick-view.php:732
+#: wpc-smart-quick-view.php:756
 msgid "Above add to cart"
 msgstr "بالای افزودن به سبد خرید"
 
-#: wpc-smart-quick-view.php:731
+#: wpc-smart-quick-view.php:755
 msgid "Under price"
 msgstr "زیر قیمت"
 
-#: wpc-smart-quick-view.php:730
+#: wpc-smart-quick-view.php:754
 msgid "Under rating"
 msgstr "زیر امتیاز"
 
-#: wpc-smart-quick-view.php:729
+#: wpc-smart-quick-view.php:753
 msgid "Under title"
 msgstr "زیر عنوان"
 
-#: wpc-smart-quick-view.php:728
+#: wpc-smart-quick-view.php:752
 msgid "Above title"
 msgstr "بالای عنوان"
 
-#: wpc-smart-quick-view.php:723
+#: wpc-smart-quick-view.php:747
 msgid "Position"
 msgstr "موقعیت"
 
-#: wpc-smart-quick-view.php:719
+#: wpc-smart-quick-view.php:743
 msgid "Add extra CSS class for action button/link, split by one space."
 msgstr "کلاس اضافی CSS را برای دکمۀ اقدام/پیوند اضافه نمایید، با یک فاصله ازهم جدا می‌شوند."
 
-#: wpc-smart-quick-view.php:713
+#: wpc-smart-quick-view.php:737
 msgid "Extra CSS class (optional)"
 msgstr "کلاس اضافی CSS (اختیاری)"
 
-#: wpc-smart-quick-view.php:683
+#: wpc-smart-quick-view.php:725
+msgid "Icon"
+msgstr "آیکون"
+
+#: wpc-smart-quick-view.php:720 wpc-smart-quick-view.php:810
+#: wpc-smart-quick-view.php:829 wpc-smart-quick-view.php:838
+#: wpc-smart-quick-view.php:848 wpc-smart-quick-view.php:858
+#: wpc-smart-quick-view.php:893 wpc-smart-quick-view.php:903
+#: wpc-smart-quick-view.php:913 wpc-smart-quick-view.php:1136
+msgid "No"
+msgstr "خیر"
+
+#: wpc-smart-quick-view.php:719
+msgid "Icon only"
+msgstr "فقط آیکون"
+
+#: wpc-smart-quick-view.php:718
+msgid "Icon on the right"
+msgstr "‫آیکون در سمت راست"
+
+#: wpc-smart-quick-view.php:717
+msgid "Icon on the left"
+msgstr "‫آیکون در سمت چپ"
+
+#: wpc-smart-quick-view.php:712
+msgid "Use icon"
+msgstr "‫از آیکون استفاده نمایید"
+
+#: wpc-smart-quick-view.php:707
 msgid "Link"
 msgstr "پیوند"
 
-#: wpc-smart-quick-view.php:682
+#: wpc-smart-quick-view.php:706
 msgid "Button"
 msgstr "دکمه"
 
-#: wpc-smart-quick-view.php:675
+#: wpc-smart-quick-view.php:703
+msgid "Button type"
+msgstr "‫نوع دکمه"
+
+#: wpc-smart-quick-view.php:699
 msgid "General"
 msgstr "عمومی"
 
-#: wpc-smart-quick-view.php:632 wpc-smart-quick-view.php:1374
+#: wpc-smart-quick-view.php:656 wpc-smart-quick-view.php:1407
 msgid "Premium Version"
 msgstr "نگارش ویژه"
 
-#: wpc-smart-quick-view.php:623 wpc-smart-quick-view.php:1373
+#: wpc-smart-quick-view.php:651 wpc-smart-quick-view.php:1165
+msgid "Localization"
+msgstr "بومی‌سازی"
+
+#: wpc-smart-quick-view.php:647 wpc-smart-quick-view.php:1406
 msgid "Settings"
 msgstr "تنظیمات"
 
-#: wpc-smart-quick-view.php:608
+#: wpc-smart-quick-view.php:640
+msgid "Settings updated."
+msgstr "تنظیمات به‌روزرسانی شد."
+
+#: wpc-smart-quick-view.php:632
 msgid "Discussion"
 msgstr "گفتگو"
 
-#: wpc-smart-quick-view.php:605
+#: wpc-smart-quick-view.php:629
 msgid "Changelog"
 msgstr "فهرست تغییرات"
 
-#: wpc-smart-quick-view.php:602
+#: wpc-smart-quick-view.php:626
 msgid "Reviews"
 msgstr "بررسی‌ها"
 
 #. translators: stars
-#: wpc-smart-quick-view.php:599
+#: wpc-smart-quick-view.php:623
 msgid "Thank you for using our plugin! If you are satisfied, please reward it a full five-star %s rating."
 msgstr "از اینکه از افزونه‌ما استفاده کردید متشکریم! اگر راضی هستید، لطفاً به آن امتیاز کامل پنج ستاره %s بدهید."
 
-#: wpc-smart-quick-view.php:582
+#: wpc-smart-quick-view.php:620
+msgid "Premium"
+msgstr "ویژه"
+
+#: wpc-smart-quick-view.php:606
 msgid "Smart Quick View"
 msgstr "نمایش سریع هوشمند"
 
-#: wpc-smart-quick-view.php:582 wpc-smart-quick-view.php:596
+#: wpc-smart-quick-view.php:606 wpc-smart-quick-view.php:620
 msgid "WPC Smart Quick View"
 msgstr "نمایش سریع هوشمند WPC"
 
-#: wpc-smart-quick-view.php:539 wpc-smart-quick-view.php:1144
+#: wpc-smart-quick-view.php:548 wpc-smart-quick-view.php:1177
 msgid "Quick view"
 msgstr "نمایش سریع"
 
-#. translators: updated time
-#: includes/kit/wpc-kit.php:226
-msgid "%s ago"
-msgstr "%s قبل"
+#: wpc-smart-quick-view.php:497 wpc-smart-quick-view.php:1232
+msgid "View product details"
+msgstr "نمایش جزئیات محصول"
 
-#: includes/kit/wpc-kit.php:225
-msgid "Last Updated:"
-msgstr "آخرین به‌روزرسانی:"
+#: wpc-smart-quick-view.php:154
+msgid "Additional information"
+msgstr "اطلاعات اضافی"
 
-#: includes/kit/wpc-kit.php:219
-msgid "+ Active Installations"
-msgstr "+ نصب فعال"
+#: wpc-smart-quick-view.php:153
+msgid "Dimensions"
+msgstr "اندازه"
 
-#: includes/kit/wpc-kit.php:212
-msgid "Version:"
-msgstr "نگارش"
+#: wpc-smart-quick-view.php:152
+msgid "Weight"
+msgstr "وزن"
 
-#: includes/kit/wpc-kit.php:183
-msgid "More Details"
-msgstr "جزئیات بیشتر"
+#: wpc-smart-quick-view.php:151
+msgid "Description"
+msgstr "توضیحات"
 
-#. translators: plugin name
-#: includes/kit/wpc-kit.php:181
-msgid "More information about %s"
-msgstr "اطلاعات بیشتر دربارهٔ %s"
+#: wpc-smart-quick-view.php:150
+msgid "Meta"
+msgstr "متا"
 
-#: includes/kit/wpc-kit.php:174
-msgid "Install Now"
-msgstr "هم‌اکنون نصب نمایید"
+#: wpc-smart-quick-view.php:149
+msgid "Add to cart"
+msgstr "افزودن به سبد خرید"
 
-#: includes/kit/wpc-kit.php:167 includes/kit/wpc-kit.php:251
-msgid "Activate"
-msgstr "فعال‌کردن"
+#: wpc-smart-quick-view.php:148
+msgid "Short description"
+msgstr "توضیح کوتاه"
 
-#: includes/kit/wpc-kit.php:160 includes/kit/wpc-kit.php:244
-msgid "Deactivate"
-msgstr "غیرفعال‌کردن"
+#: wpc-smart-quick-view.php:146
+msgid "Price"
+msgstr "قيمت"
 
-#: includes/kit/wpc-kit.php:37 wpc-smart-quick-view.php:636
+#: wpc-smart-quick-view.php:145
+msgid "Rating"
+msgstr "امتیاز"
+
+#: wpc-smart-quick-view.php:144
+msgid "Title"
+msgstr "عنوان"
+
+#: wpc-smart-quick-view.php:660
 msgid "Essential Kit"
 msgstr "جعبۀ ضروری"
-
-#: includes/kit/wpc-kit.php:37
-msgid "WPC Essential Kit"
-msgstr "جعبۀ ضروری WPC"
 
 #. Author URI of the plugin
 #: wpc-smart-quick-view.php

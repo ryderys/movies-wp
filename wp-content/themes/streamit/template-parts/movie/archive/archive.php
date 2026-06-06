@@ -29,7 +29,7 @@ $loader_gif_url  = isset($streamit_options['streamit_loader_gif']['url']) ? esc_
                 <div class="offcanvas-header gap-3">
                     <h5 class="m-0 filter-offcanvas-title">
                         <span class="d-flex align-items-center gap-1">
-                            <?php echo esc_html__('Filters', 'streamit'); ?>
+                            <?php echo esc_html__('فیلترها', 'streamit'); ?>
                             <span class="count filter-count"><?php echo esc_html__('0', 'streamit'); ?></span>
                         </span>
                     </h5>
@@ -93,14 +93,14 @@ $loader_gif_url  = isset($streamit_options['streamit_loader_gif']['url']) ? esc_
                             </div>
                         <?php endif; ?>
                         <div class="filter-widget filter-widget-access">
-                            <h5 class="filter-wiget-title"><?php echo esc_html__('By Access', 'streamit'); ?></h5>
+                            <h5 class="filter-wiget-title"><?php echo esc_html__('بر اساس دسترسی', 'streamit'); ?></h5>
                             <div class="filter-widget-inner">
                                 <div class="filter-list">
                                     <div class="form-check">
                                         <input class="form-check-input streamit-filter" type="radio" name="access_type" id="free" value="free">
                                         <label class="form-check-label" for="free">
                                             <span class="d-flex align-items-center gap-2">
-                                                <span><?php echo esc_html__('Free', 'streamit'); ?></span>
+                                                <span><?php echo esc_html__('رایگان', 'streamit'); ?></span>
                                             </span>
                                         </label>
                                     </div>
@@ -109,7 +109,7 @@ $loader_gif_url  = isset($streamit_options['streamit_loader_gif']['url']) ? esc_
                                         <label class="form-check-label premium-filter-label" for="premium">
                                             <span class="d-flex align-items-center gap-2">
                                                 <i class="icon-premium"></i>
-                                                <span><?php echo esc_html__('Premium', 'streamit'); ?></span>
+                                                <span><?php echo esc_html__('پیشرفته', 'streamit'); ?></span>
                                             </span>
                                         </label>
                                     </div>
@@ -117,7 +117,7 @@ $loader_gif_url  = isset($streamit_options['streamit_loader_gif']['url']) ? esc_
                                         <input class="form-check-input streamit-filter" type="radio" name="access_type" id="rent" value="ppv">
                                         <label class="form-check-label" for="rent">
                                             <span class="d-flex align-items-center gap-2">
-                                                <span><?php echo esc_html__('Rent', 'streamit'); ?></span>
+                                                <span><?php echo esc_html__('اجاره', 'streamit'); ?></span>
                                             </span>
                                         </label>
                                     </div>
@@ -125,7 +125,7 @@ $loader_gif_url  = isset($streamit_options['streamit_loader_gif']['url']) ? esc_
                                         <input class="form-check-input streamit-filter" type="radio" name="access_type" id="premium_or_rent" value="anyone">
                                         <label class="form-check-label" for="premium_or_rent">
                                             <span class="d-flex align-items-center gap-2">
-                                                <span><?php echo esc_html__('Premium or Rent', 'streamit'); ?></span>
+                                                <span><?php echo esc_html__('پیشرفته یا اجاره', 'streamit'); ?></span>
                                             </span>
                                         </label>
                                     </div>

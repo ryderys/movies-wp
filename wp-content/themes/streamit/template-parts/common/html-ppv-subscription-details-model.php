@@ -128,7 +128,7 @@ if (!defined('ABSPATH')) {
                             <a class="btn btn-primary" href="<?php echo esc_url(streamit_get_permalink($post_type, $st_data->get_post_name())); ?>">
                                 <span class="d-flex align-items-center justify-content-center gap-2">
                                     <span><?php echo st_get_icon('play'); ?></span>
-                                    <span><?php esc_html_e('Watch Now', 'streamit'); ?></span>
+                                    <span><?php esc_html_e('تماشا', 'streamit'); ?></span>
                                 </span>
                             </a>
                         <?php endif; ?>

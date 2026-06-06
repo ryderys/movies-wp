@@ -38,7 +38,7 @@ if ($access_type === 'free' || $has_access) {
         if (!empty($episode)) {
             $redirect_link = function_exists('streamit_get_permalink') ? streamit_get_permalink($episode->get_post_type(), $episode->get_post_name()) : '#';
             $icon_class = 'play';
-            $button_text = esc_html__('Start Watching', 'streamit');
+            $button_text = esc_html__('شروع تماشا', 'streamit');
         } else {
             $redirect_link = home_url();
             $icon_class = 'error';

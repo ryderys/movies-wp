@@ -114,7 +114,7 @@ if (!defined('ABSPATH')) exit;
 
 										<a href="<?php echo esc_url(streamit_get_permalink($post->get_post_type(), $post->get_post_name())); ?>"
 											class="btn btn-primary">
-											<?php esc_html_e('Play Now', 'streamit'); ?>
+											<?php esc_html_e('تماشا', 'streamit'); ?>
 											<?php echo st_get_icon('play', ['class' => 'ms-2', 'aria-hidden' => 'true']); ?>
 										</a>
 									</div>

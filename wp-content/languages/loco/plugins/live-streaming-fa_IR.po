@@ -1685,7 +1685,7 @@ msgstr ""
 
 #: public/elementor-widget/elements/streaming-banner/widget.php:58
 msgid "Play Now Text"
-msgstr ""
+msgstr "تماشا"
 
 #: public/elementor-widget/elements/streaming-banner/widget.php:60
 #: public/elementor-widget/elements/streaming-banner/widget.php:227

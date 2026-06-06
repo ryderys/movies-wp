@@ -76,7 +76,7 @@ $settings = [
     'view_all_switch'   =>  'no',
     'nav-arrow'         =>  'true',
     'enable_premium_badges' =>  'yes',
-    'play_now_text'     =>  esc_html__('Play Now', 'streamit')
+    'play_now_text'     =>  esc_html__('تماشا', 'streamit')
 ];
 $title_tag = 'h5';
 

@@ -35,7 +35,7 @@ if ($show_comments) : ?>
                 <?php if ($user_comment == null && function_exists('streamit_user_has_stream_access') && streamit_user_has_stream_access($data_id, $st_data->get_post_type(), get_current_user_id())) : ?>
                     <div class="d-flex align-items-center gap-3">
                         <a id="openReviewButton" class="btn btn-link" data-bs-toggle="offcanvas" href="#offcanvasReview" role="button" aria-controls="offcanvasReview">
-                            <?php esc_html_e('Add Review', 'streamit'); ?>
+                            افزودن نظر
                         </a>
                     </div>
                 <?php endif; ?>
@@ -63,7 +63,7 @@ if ($show_comments) : ?>
             if (($user_comment == null) && empty($comments->results)) :
                 echo '<div class="card">';
                 echo '<div class="card-body">';
-                echo '<h5 class="m-0 text-center"> ' . esc_html__("Not Rated Yet", "streamit") . '</h5>';
+                echo '<h5 class="m-0 text-center"> هنوز امتیازی ثبت نشده </h5>';
                 echo '</div></div>';
             endif;
             ?>
@@ -75,7 +75,7 @@ if ($show_comments) : ?>
     <div class="offcanvas-header border-bottom">
 
         <h5 class="offcanvas-title" id="offcanvasReviewLabel">
-            <?php echo $user_comment !== null ? esc_html__('Edit Review', 'streamit') : esc_html__('Add Review', 'streamit'); ?>
+            <?php echo $user_comment !== null ? 'ویرایش نظر' : 'افزودن نظر'; ?>
         </h5>
 
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>

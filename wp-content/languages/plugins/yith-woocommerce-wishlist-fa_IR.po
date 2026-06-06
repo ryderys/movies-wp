@@ -289,12 +289,12 @@ msgctxt "Tab title in plugin settings panel"
 msgid "Customization"
 msgstr "سفارشی‌سازی"
 
-#: includes/rest-api/controllers/v1/class-yith-wcwl-rest-v1-products-controller.php:58
+#: includes/rest-api/controllers/v1/class-yith-wcwl-rest-v1-products-controller.php:62
 msgctxt "[REST-API] The schema field description"
 msgid "The unique identifier for the product."
 msgstr "شناسه یکتای محصول."
 
-#: includes/rest-api/controllers/v1/class-yith-wcwl-rest-v1-products-controller.php:43
+#: includes/rest-api/controllers/v1/class-yith-wcwl-rest-v1-products-controller.php:46
 msgctxt "[REST-API] The schema field description"
 msgid "The list of product ids for which data is being requested."
 msgstr "فهرست شناسه‌های محصولات برای درخواست داده."

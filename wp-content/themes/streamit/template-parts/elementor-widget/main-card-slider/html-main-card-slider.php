@@ -208,7 +208,7 @@ $enable_upcoming_badges = ($streamit_options['streamit_recommended_enable_upcomi
 
                                         <div class="">
                                             <a href="<?php echo esc_url($play_link); ?>" class="hover-card-action-btn btn btn-primary w-100">
-                                                <?php echo isset($settings['play_now_text']) && !empty($settings['play_now_text']) ? $settings['play_now_text'] :  esc_html__('Play Now', 'streamit'); ?>
+                                                <?php echo isset($settings['play_now_text']) && !empty($settings['play_now_text']) ? $settings['play_now_text'] :  esc_html__('تماشا', 'streamit'); ?>
                                             </a>
                                         </div>
                                     </div>
