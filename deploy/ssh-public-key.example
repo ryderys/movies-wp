@@ -1,6 +1,0 @@
-# Paste your SSH *public* key here (one line). This file is gitignored.
-# Example:
-# ssh-ed25519 AAAA... comment
-#
-# Install on server:
-#   sudo bash scripts/harden-ssh.sh deploy

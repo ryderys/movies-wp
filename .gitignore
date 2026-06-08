@@ -24,8 +24,6 @@
 .env.local
 .env.*.local
 wp-content/.docker-salts.php
-deploy/ssh-public-key
-deploy/Caddyfile
 
 # User uploads
 /wp-content/uploads/
@@ -46,7 +44,6 @@ composer.phar
 # Cache and temporary files
 /wp-content/cache/
 /wp-content/backup-*
-/backups/
 *.log
 .cache
 

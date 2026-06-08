@@ -56,33 +56,9 @@ define( 'WP_DEBUG', $wp_debug !== false ? filter_var( $wp_debug, FILTER_VALIDATE
 define( 'WP_DEBUG_LOG', $wp_debug_log !== false ? filter_var( $wp_debug_log, FILTER_VALIDATE_BOOLEAN ) : false );
 define( 'WP_DEBUG_DISPLAY', $wp_debug_display !== false ? filter_var( $wp_debug_display, FILTER_VALIDATE_BOOLEAN ) : false );
 
-/** Environment */
-$wp_env        = getenv( 'WP_ENV' ) ?: 'development';
-$is_production = ( 'production' === $wp_env );
-
-/** Site URLs (optional — override after domain migration) */
-$wp_home    = getenv( 'WP_HOME' );
-$wp_siteurl = getenv( 'WP_SITEURL' );
-if ( $wp_home ) {
-	define( 'WP_HOME', $wp_home );
-}
-if ( $wp_siteurl ) {
-	define( 'WP_SITEURL', $wp_siteurl );
-}
-
 /* Add any custom values between this line and the "stop editing" line. */
 
 define( 'WP_CACHE', true ); // WP-Optimize Cache
-
-if ( $is_production ) {
-	define( 'DISALLOW_FILE_EDIT', true );
-	define( 'DISALLOW_FILE_MODS', true );
-}
-
-$force_ssl_admin = getenv( 'FORCE_SSL_ADMIN' );
-if ( false !== $force_ssl_admin && '' !== $force_ssl_admin ) {
-	define( 'FORCE_SSL_ADMIN', filter_var( $force_ssl_admin, FILTER_VALIDATE_BOOLEAN ) );
-}
 
 /* That's all, stop editing! Happy publishing. */
 
