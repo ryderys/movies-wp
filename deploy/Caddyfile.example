@@ -1,0 +1,37 @@
+# Copy to Caddyfile and edit your domain:
+#   cp deploy/Caddyfile.example deploy/Caddyfile
+#
+# Caddy automatically obtains and renews Let's Encrypt certificates.
+
+(common_security) {
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "geolocation=(), microphone=(), camera=()"
+		-Server
+	}
+	encode gzip
+}
+
+# --- Option A: Production domain (recommended) ---
+# Replace moviestart.ir with your real domain:
+# moviestart.ir, www.moviestart.ir {
+#     import common_security
+#     header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+#     reverse_proxy localhost:8080
+# }
+
+# --- Option B: Temporary HTTP-only access by server IP (before domain is ready) ---
+# Remove or comment out when Option A is active.
+:80 {
+	import common_security
+	reverse_proxy localhost:8080
+}
+
+# Block direct access to sensitive paths (defense in depth; WordPress is behind proxy).
+@blocked {
+	path /.env* /wp-config.php /readme.html /license.txt
+	path /xmlrpc.php
+}
+respond @blocked 404

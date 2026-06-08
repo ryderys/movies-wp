@@ -1,0 +1,10 @@
+# Use with external/private-network database (e.g. DB_HOST=moviestart on IranServer).
+# Host network lets the container resolve the provider's private DB hostname.
+#
+#   docker compose -f docker-compose.prod.yml -f docker-compose.prod.external-db.yml up -d
+
+services:
+  wordpress:
+    network_mode: host
+    ports: []
+    depends_on: {}
