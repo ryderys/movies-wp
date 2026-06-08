@@ -1,6 +1,7 @@
-# Defaults use Arvan (Docker) + IranServer (apt) for Iran. Override outside Iran:
-#   docker compose build --build-arg PHP_IMAGE=php:8.2-apache-bookworm --build-arg APT_MIRROR=deb.debian.org
-ARG PHP_IMAGE=docker.arvancloud.ir/library/php:8.2-apache-bookworm
+# Docker Hub images — configure Liara registry mirror on the host (daemon.json):
+#   "registry-mirrors": ["https://docker-mirror.liara.ir"]
+# Outside Iran, set APT_MIRROR=deb.debian.org for apt during build.
+ARG PHP_IMAGE=php:8.2-apache-bookworm
 FROM ${PHP_IMAGE}
 
 ARG APT_MIRROR=mirror.iranserver.com

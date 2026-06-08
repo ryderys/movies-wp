@@ -28,7 +28,7 @@ services:
         condition: service_healthy
 
   phpmyadmin:
-    image: ${PHPMYADMIN_IMAGE:-docker.arvancloud.ir/library/phpmyadmin:5.2-apache}
+    image: ${PHPMYADMIN_IMAGE:-phpmyadmin:5.2-apache}
     ports:
       - "8081:80"
     environment:
@@ -40,7 +40,7 @@ services:
         condition: service_healthy
 
   db:
-    image: ${MYSQL_IMAGE:-docker.arvancloud.ir/library/mysql:8.0}
+    image: ${MYSQL_IMAGE:-mysql:8.0}
     command: --default-authentication-plugin=mysql_native_password --sql-mode=""
     environment:
       MYSQL_DATABASE: ${DB_NAME:-local_wp}
