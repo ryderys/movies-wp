@@ -60,10 +60,27 @@ define( 'WP_DEBUG_DISPLAY', $wp_debug_display !== false ? filter_var( $wp_debug_
 
 define( 'WP_CACHE', true ); // WP-Optimize Cache
 
+define( 'WP_REDIS_HOST', getenv( 'REDIS_HOST' ) ?: 'redis' );
+define( 'WP_REDIS_PORT', (int) ( getenv( 'REDIS_PORT' ) ?: 6379 ) );
+define( 'WP_REDIS_DATABASE', (int) ( getenv( 'REDIS_DATABASE' ) ?: 0 ) );
+define( 'WP_REDIS_PREFIX', getenv( 'REDIS_PREFIX' ) ?: 'movies_' );
+define( 'WP_REDIS_TIMEOUT', 1 );
+define( 'WP_REDIS_READ_TIMEOUT', 1 );
+define( 'WP_REDIS_MAXTTL', 86400 );
+
+$redis_password = getenv( 'REDIS_PASSWORD' );
+if ( $redis_password !== false && $redis_password !== '' ) {
+	define( 'WP_REDIS_PASSWORD', $redis_password );
+}
 /* That's all, stop editing! Happy publishing. */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
+}
+
+// Trust HTTPS when behind Nginx/reverse proxy (Docker prod).
+if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+	$_SERVER['HTTPS'] = 'on';
 }
 
 require_once ABSPATH . 'wp-settings.php';

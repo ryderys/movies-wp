@@ -2,11 +2,11 @@
 
 services:
   wordpress:
+    image: movies-wordpress:latest
     build:
       context: .
       args:
         PHP_IMAGE: ${PHP_IMAGE:-php:8.2-apache-bookworm}
-        APT_MIRROR: ${APT_MIRROR:-mirror.iranserver.com}
     ports:
       - "80:80"
     environment:
