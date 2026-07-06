@@ -98,3 +98,6 @@ Desktop.ini
 # Other
 bash.exe.stackdump
 cloudflare-worker-updated.js
+
+.cursor/
+graphify-out
