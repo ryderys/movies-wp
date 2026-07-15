@@ -16,6 +16,8 @@ services:
       WP_DEBUG: ${WP_DEBUG:-0}
       WP_DEBUG_LOG: ${WP_DEBUG_LOG:-0}
       WP_DEBUG_DISPLAY: ${WP_DEBUG_DISPLAY:-0}
+      WP_HOME: ${WP_HOME:-}
+      WP_SITEURL: ${WP_SITEURL:-}
     volumes:
       - wp_content:/var/www/html/wp-content
     restart: unless-stopped

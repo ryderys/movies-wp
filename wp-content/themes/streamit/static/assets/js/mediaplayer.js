@@ -69,9 +69,19 @@ export default class MediaPlayer {
 
     getPlayerConfig() {
         const playerData = this.playerContainer?.dataset || {};
+        if (!playerData.playerControls) {
+            return {};
+        }
+
+        const config = JSON.parse(playerData.playerControls);
+
         return {
-            controls: playerData.playerControls ? JSON.parse(playerData.playerControls) : {},
-            i18n: this.getLocalizedText()
+            ...config,
+            controls: config.controls ?? [],
+            i18n: {
+                ...(config.i18n ?? {}),
+                ...(playerData.i18n ? JSON.parse(playerData.i18n) : {}),
+            },
         };
     }
 

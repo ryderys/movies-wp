@@ -127,6 +127,10 @@ function streamit_tmdb_rewrite_urls_for_browser( $data ) {
 add_filter(
 	'pre_http_request',
 	function ( $pre, $args, $url ) {
+		if ( ! empty( $GLOBALS['streamit_child_tmdb_direct_image_fetch'] ) ) {
+			return $pre;
+		}
+
 		// download_url() must not hit the logged-in admin proxy endpoint.
 		if ( strpos( $url, 'admin-ajax.php' ) !== false && strpos( $url, 'streamit_tmdb_image' ) !== false ) {
 			$query = array();
@@ -635,13 +639,6 @@ add_action(
 			file_exists( $css_path ) ? (string) filemtime( $css_path ) : '1.0'
 		);
 
-		wp_enqueue_style(
-			'streamit-child-admin-vazirmatn',
-			'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap',
-			array(),
-			null
-		);
-
 		wp_enqueue_script(
 			'streamit-child-import-fix',
 			get_stylesheet_directory_uri() . '/assets/js/import-fix.js',
@@ -691,10 +688,24 @@ function streamit_tmdb_serve_image() {
 		exit;
 	}
 
-	$response = wp_remote_get(
-		'https://image.tmdb.org' . $path,
-		array( 'timeout' => 40 )
+	// Server fetches via worker (same path as TMDB API search); browser only hits this admin-ajax URL.
+	$image_url = 'https://' . STREAMIT_TMDB_PROXY_HOST . $path;
+	$response  = wp_remote_get(
+		$image_url,
+		array(
+			'timeout'   => 40,
+			'sslverify' => true,
+		)
 	);
+
+	if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+		$GLOBALS['streamit_child_tmdb_direct_image_fetch'] = true;
+		$response = wp_remote_get(
+			'https://image.tmdb.org' . $path,
+			array( 'timeout' => 40 )
+		);
+		unset( $GLOBALS['streamit_child_tmdb_direct_image_fetch'] );
+	}
 
 	if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
 		status_header( 502 );
@@ -778,6 +789,17 @@ add_filter(
  * Multi-quality sources, download modal fallbacks, and admin guide.
  */
 require_once get_stylesheet_directory() . '/inc/sources-download.php';
+require_once get_stylesheet_directory() . '/inc/subtitles.php';
+require_once get_stylesheet_directory() . '/inc/tvshow-episodes-guide.php';
+require_once get_stylesheet_directory() . '/inc/admin-persian-labels.php';
+require_once get_stylesheet_directory() . '/inc/frontend-persian-labels.php';
+require_once get_stylesheet_directory() . '/inc/admin-streamit-edit-fix.php';
+require_once get_stylesheet_directory() . '/inc/countries-pages.php';
+require_once get_stylesheet_directory() . '/inc/tmdb-genres.php';
+require_once get_stylesheet_directory() . '/inc/image-sizes.php';
+require_once get_stylesheet_directory() . '/inc/player-fix.php';
+require_once get_stylesheet_directory() . '/inc/search-modal.php';
+require_once get_stylesheet_directory() . '/inc/rtl-default.php';
 
 /**
  * Set up My Child Theme's textdomain.
@@ -794,11 +816,6 @@ function remove_default_post_type() {
 	remove_menu_page( 'edit.php' );
 }
 add_action( 'admin_menu', 'remove_default_post_type' );
-
-function streamit_enqueue_custom_font() {
-	wp_enqueue_style( 'vazirmatn-font', 'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap', array(), null );
-}
-add_action( 'wp_enqueue_scripts', 'streamit_enqueue_custom_font' );
 
 function streamit_enqueue_fontawesome() {
 	wp_enqueue_style( 'fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css', array(), '6.5.2' );

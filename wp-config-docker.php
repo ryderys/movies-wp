@@ -2,7 +2,7 @@
 /**
  * WordPress configuration for Docker (no secrets committed).
  *
- * Used when wp-config.php is missing: docker-entrypoint.sh copies this file.
+ * Synced to wp-config.php on every container start by docker-entrypoint.sh.
  * Salts are stored in wp-content/.docker-salts.php (generated on first run).
  * Override any value via environment variables.
  *
@@ -33,6 +33,9 @@ if ( is_readable( $salts_file ) ) {
 		'NONCE_SALT',
 	);
 	foreach ( $salt_env_keys as $salt_key ) {
+		if ( defined( $salt_key ) ) {
+			continue;
+		}
 		$salt_value = getenv( $salt_key );
 		if ( $salt_value === false || $salt_value === '' ) {
 			die(
@@ -72,6 +75,17 @@ $redis_password = getenv( 'REDIS_PASSWORD' );
 if ( $redis_password !== false && $redis_password !== '' ) {
 	define( 'WP_REDIS_PASSWORD', $redis_password );
 }
+
+$wp_home = getenv( 'WP_HOME' );
+if ( $wp_home ) {
+	define( 'WP_HOME', $wp_home );
+}
+
+$wp_siteurl = getenv( 'WP_SITEURL' );
+if ( $wp_siteurl ) {
+	define( 'WP_SITEURL', $wp_siteurl );
+}
+
 /* That's all, stop editing! Happy publishing. */
 
 if ( ! defined( 'ABSPATH' ) ) {

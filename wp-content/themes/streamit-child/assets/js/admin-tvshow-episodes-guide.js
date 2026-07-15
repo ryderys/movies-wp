@@ -1,11 +1,11 @@
 /**
- * Admin panel guide: multi-quality Sources tab workflow.
+ * Admin panel guide: TV show seasons & episodes workflow shortcuts.
  */
 ( function ( $ ) {
 	'use strict';
 
-	var cfg = window.streamitChildSourcesGuide || {};
-	var storageKey = 'streamit_child_sources_guide_dismissed_' + ( cfg.isEpisode ? 'episode' : 'movie' );
+	var cfg = window.streamitChildTvshowGuide || {};
+	var storageKey = 'streamit_child_tvshow_episodes_guide_dismissed';
 
 	function isDismissed() {
 		try {
@@ -24,7 +24,7 @@
 		}
 	}
 
-	function openSourcesTab() {
+	function openSeasonsTab() {
 		var $tabLink = $( cfg.tabsList + ' a[href="' + cfg.tabSelector + '"]' );
 		if ( $tabLink.length ) {
 			$tabLink.trigger( 'click' );
@@ -37,55 +37,28 @@
 		}
 	}
 
-	function highlightSourcesTab() {
+	function highlightSeasonsTab() {
 		var $tab = $( cfg.tabsList + ' li' ).has( 'a[href="' + cfg.tabSelector + '"]' );
 		$tab.addClass( 'streamit-child-sources-tab-hint' );
 	}
 
-	function renderSourcesTabNote() {
-		var $panel = $( cfg.tabSelector );
-		if ( ! $panel.length || $panel.find( '.streamit-child-sources-url-note' ).length ) {
-			return;
-		}
-
-		var html =
-			'<div class="streamit-child-sources-url-note" role="note">' +
-			'<strong>' +
-			( cfg.urlNoteTitle || '' ) +
-			'</strong>' +
-			'<ul>' +
-			'<li>' +
-			( cfg.urlNotePlayback || '' ) +
-			'</li>' +
-			'<li>' +
-			( cfg.urlNoteDownload || '' ) +
-			'</li>' +
-			'<li>' +
-			( cfg.urlNoteOptional || '' ) +
-			'</li>' +
-			'</ul>' +
-			'</div>';
-
-		$panel.prepend( html );
-	}
-
 	function renderGuide() {
 		if ( isDismissed() ) {
-			highlightSourcesTab();
+			highlightSeasonsTab();
 			return;
 		}
 
 		var $tabs = $( cfg.tabsList ).first();
 		var $anchor = $tabs.length
 			? $tabs
-			: $( '#streamit_data_section .streamit-movie-heading, #streamit_data_section .streamit-heading-wraper' ).first();
+			: $( '#streamit_data_section .streamit-tvshow-heading, #streamit_data_section .streamit-heading-wraper' ).first();
 
 		if ( ! $anchor.length ) {
 			$anchor = $( '#streamit_data_section > .wrap' ).first();
 		}
 
 		var html =
-			'<div class="streamit-child-sources-guide" role="note">' +
+			'<div class="streamit-child-sources-guide streamit-child-tvshow-guide" role="note">' +
 			'<p class="streamit-child-sources-guide__title">' +
 			( cfg.title || '' ) +
 			'</p>' +
@@ -106,17 +79,22 @@
 			( cfg.step4 || '' ) +
 			'</li>' +
 			'</ol>' +
-			( cfg.urlNoteShort
-				? '<p class="streamit-child-sources-guide__intro streamit-child-sources-guide__url-hint">' +
-				  cfg.urlNoteShort +
-				  '</p>'
-				: '' ) +
 			'<div class="streamit-child-sources-guide__actions">' +
-			'<button type="button" class="button button-primary streamit-child-sources-guide__open-tab">' +
-			( cfg.goToTab || 'Open Sources tab' ) +
+			'<button type="button" class="button button-primary streamit-child-tvshow-guide__open-seasons">' +
+			( cfg.goToSeasonsTab || '' ) +
 			'</button>' +
+			'<a class="button streamit-child-tvshow-guide__episodes-list" href="' +
+			( cfg.episodesListUrl || '#' ) +
+			'">' +
+			( cfg.manageEpisodes || '' ) +
+			'</a>' +
+			'<a class="button streamit-child-tvshow-guide__add-episode" href="' +
+			( cfg.addEpisodeUrl || '#' ) +
+			'" target="_blank" rel="noopener noreferrer">' +
+			( cfg.addEpisode || '' ) +
+			'</a>' +
 			'<button type="button" class="button button-link streamit-child-sources-guide__dismiss">' +
-			( cfg.dismiss || 'Dismiss' ) +
+			( cfg.dismiss || '' ) +
 			'</button>' +
 			'</div>' +
 			'</div>';
@@ -128,28 +106,22 @@
 			$anchor.after( $panel );
 		}
 
-		$panel.on( 'click', '.streamit-child-sources-guide__open-tab', function () {
-			openSourcesTab();
-			renderSourcesTabNote();
+		$panel.on( 'click', '.streamit-child-tvshow-guide__open-seasons', function () {
+			openSeasonsTab();
 		} );
 
 		$panel.on( 'click', '.streamit-child-sources-guide__dismiss', function () {
 			dismissGuide( $panel );
-			highlightSourcesTab();
+			highlightSeasonsTab();
 		} );
 
-		highlightSourcesTab();
-		renderSourcesTabNote();
+		highlightSeasonsTab();
 	}
 
 	$( function () {
-		if ( ! $( '#insert_movie, #insert_episode' ).length ) {
+		if ( ! $( '#insert_tvshow' ).length ) {
 			return;
 		}
 		renderGuide();
-
-		$( cfg.tabsList + ' a[href="' + cfg.tabSelector + '"]' ).on( 'click', function () {
-			setTimeout( renderSourcesTabNote, 50 );
-		} );
 	} );
 }( jQuery ) );

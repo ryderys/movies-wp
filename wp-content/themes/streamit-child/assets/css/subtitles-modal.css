@@ -1,0 +1,59 @@
+/**
+ * Subtitle download section inside the Streamit download modal (RTL).
+ *
+ * @package streamit-child
+ */
+
+.st-download-modal .stc-subtitle-section {
+	margin-top: 18px;
+	padding-top: 14px;
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.st-download-modal .stc-subtitle-title {
+	margin: 0 0 10px;
+	font-size: 14px;
+	font-weight: 600;
+	text-align: right;
+	direction: rtl;
+}
+
+.st-download-modal .stc-subtitle-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	direction: rtl;
+}
+
+.st-download-modal .stc-subtitle-list li + li {
+	margin-top: 8px;
+}
+
+.st-download-modal .stc-subtitle-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.st-download-modal .stc-subtitle-meta {
+	flex: 1 1 auto;
+	text-align: right;
+}
+
+.st-download-modal .stc-subtitle-label {
+	display: block;
+	font-size: 14px;
+	margin: 0;
+}
+
+.st-download-modal .stc-subtitle-lang {
+	display: block;
+	font-size: 12px;
+	opacity: 0.7;
+	margin: 0;
+}
+
+.st-download-modal .stc-subtitle-download {
+	flex-shrink: 0;
+}

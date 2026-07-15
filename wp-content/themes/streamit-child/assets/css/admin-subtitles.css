@@ -1,0 +1,115 @@
+/**
+ * Subtitle repeater styling for the Streamit Sources tab (RTL admin).
+ *
+ * @package streamit-child
+ */
+
+.streamit-child-subtitles {
+	margin-top: 24px;
+	padding-top: 20px;
+	border-top: 1px solid #e2e4e7;
+	direction: rtl;
+	text-align: right;
+}
+
+.streamit-child-subtitles .stc-sub-head h3 {
+	margin: 0 0 4px;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.streamit-child-subtitles .stc-sub-intro {
+	margin: 0 0 16px;
+	color: #646970;
+	font-size: 13px;
+}
+
+.streamit-child-subtitles .stc-sub-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: flex-end;
+	padding: 14px;
+	margin-bottom: 12px;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+}
+
+.streamit-child-subtitles .stc-sub-field {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 180px;
+	min-width: 140px;
+}
+
+.streamit-child-subtitles .stc-sub-lang {
+	flex: 0 0 110px;
+	min-width: 90px;
+}
+
+.streamit-child-subtitles .stc-sub-url-field {
+	flex: 2 1 280px;
+}
+
+.streamit-child-subtitles .stc-sub-default-field {
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: flex-start;
+}
+
+.streamit-child-subtitles .stc-sub-field label {
+	margin-bottom: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	color: #3c434a;
+}
+
+.streamit-child-subtitles .stc-sub-field input[type="text"],
+.streamit-child-subtitles .stc-sub-field input[type="url"] {
+	width: 100%;
+	direction: ltr;
+	text-align: left;
+}
+
+.streamit-child-subtitles .stc-sub-label {
+	direction: rtl !important;
+	text-align: right !important;
+}
+
+.streamit-child-subtitles .stc-sub-url-wrap {
+	display: flex;
+	gap: 6px;
+}
+
+.streamit-child-subtitles .stc-sub-url-wrap .stc-sub-url {
+	flex: 1 1 auto;
+}
+
+.streamit-child-subtitles .stc-sub-default-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.streamit-child-subtitles .stc-sub-remove {
+	background: none;
+	border: none;
+	color: #b32d2e;
+	cursor: pointer;
+	padding: 0;
+	font-size: 13px;
+}
+
+.streamit-child-subtitles .stc-sub-remove:hover {
+	color: #8a1f20;
+	text-decoration: underline;
+}
+
+.streamit-child-subtitles .stc-sub-add {
+	margin-top: 4px;
+}

@@ -115,13 +115,6 @@ function streamit_child_enqueue_sources_admin_guide( $hook ) {
 		return;
 	}
 
-	wp_enqueue_style(
-		'streamit-child-admin-vazirmatn',
-		'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&display=swap',
-		array(),
-		null
-	);
-
 	$css_path = get_stylesheet_directory() . '/assets/css/admin-sources-guide.css';
 	$js_path  = get_stylesheet_directory() . '/assets/js/admin-sources-guide.js';
 
@@ -131,6 +124,16 @@ function streamit_child_enqueue_sources_admin_guide( $hook ) {
 		array(),
 		file_exists( $css_path ) ? (string) filemtime( $css_path ) : '1.0'
 	);
+
+	$url_note_css = get_stylesheet_directory() . '/assets/css/admin-sources-url-note.css';
+	if ( file_exists( $url_note_css ) ) {
+		wp_enqueue_style(
+			'streamit-child-sources-url-note',
+			get_stylesheet_directory_uri() . '/assets/css/admin-sources-url-note.css',
+			array( 'streamit-child-admin-sources-guide' ),
+			(string) filemtime( $url_note_css )
+		);
+	}
 
 	$is_episode = false !== strpos( $hook, 'episode' );
 
@@ -159,6 +162,11 @@ function streamit_child_enqueue_sources_admin_guide( $hook ) {
 				: 'روی «به‌روزرسانی فیلم» کلیک کنید. بازدیدکنندگان منوی کیفیت در پخش‌کننده و مودال دانلود می‌بینند.',
 			'goToTab'     => 'رفتن به تب منابع',
 			'dismiss'     => 'بستن',
+			'urlNoteShort'  => 'آدرس فیلم = پخش در پخش‌کننده · آدرس دانلود = فایل قابل ذخیره (اختیاری؛ اگر خالی باشد همان آدرس پخش استفاده می‌شود).',
+			'urlNoteTitle'  => 'تفاوت دو فیلد آدرس',
+			'urlNotePlayback' => 'آدرس فیلم: لینک پخش آن کیفیت (مثلاً m3u8 یا mp4) — در منوی کیفیت پخش‌کننده استفاده می‌شود.',
+			'urlNoteDownload' => 'آدرس دانلود: لینک مستقیم فایل برای دکمه دانلود — می‌تواند با لینک پخش متفاوت باشد.',
+			'urlNoteOptional' => 'اگر آدرس دانلود خالی بماند، همان آدرس فیلم برای دانلود هم استفاده می‌شود.',
 		)
 	);
 }

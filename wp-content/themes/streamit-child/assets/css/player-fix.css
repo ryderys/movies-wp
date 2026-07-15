@@ -1,0 +1,22 @@
+/**
+ * Allow scrolling on the dedicated watch page and cap player height.
+ */
+
+body.st-media-player-single {
+	overflow-y: auto;
+}
+
+body.st-media-player-single .site {
+	min-height: auto;
+}
+
+.css_prefix-video-player .plyr,
+.css_prefix-video-player video,
+.css_prefix-video-player iframe {
+	height: 70vh !important;
+	max-height: 70vh;
+}
+
+.css_prefix-video-player .back-btn {
+	opacity: 1;
+}

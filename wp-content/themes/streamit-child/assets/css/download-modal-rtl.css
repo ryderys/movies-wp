@@ -1,7 +1,21 @@
+.st-download-modal.modal {
+	text-align: center;
+}
+
+.st-download-modal.modal.show {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	padding: 0 16px;
+}
+
+.st-download-modal .modal-dialog {
+	margin: 0 auto;
+}
+
 .st-download-modal .modal-content {
 	direction: rtl;
 	text-align: right;
-	font-family: Vazirmatn, Tahoma, sans-serif;
 }
 
 .st-download-modal .modal-header {

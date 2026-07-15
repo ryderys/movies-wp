@@ -1502,6 +1502,9 @@ function streamit_render_image($args = [])
         'show_fallback'   => true,
     ]);
 
+    /** @var array $args Filtered by streamit-child for contextual image sizes. */
+    $args = apply_filters('streamit_render_image_args', $args);
+
     $attachment_id = absint($args['attachment_id']);
 
     // --- Performance Logic ---
