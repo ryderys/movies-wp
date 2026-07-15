@@ -1,0 +1,61 @@
+/**
+ * Front-end RTL defaults for the Persian site.
+ */
+
+html[dir="rtl"] body {
+	direction: rtl;
+	text-align: right;
+}
+
+html[dir="rtl"] .css_prefix,
+html[dir="rtl"] .site-main,
+html[dir="rtl"] .detail-page {
+	direction: rtl;
+}
+
+/* Keep numerals / URLs readable inside RTL blocks. */
+html[dir="rtl"] .imdb-ratting,
+html[dir="rtl"] .slider-ratting,
+html[dir="rtl"] .movie-time-text,
+html[dir="rtl"] .plyr__time,
+html[dir="rtl"] input[type="url"],
+html[dir="rtl"] input[type="email"],
+html[dir="rtl"] input[type="number"],
+html[dir="rtl"] input[type="tel"] {
+	direction: ltr;
+	unicode-bidi: embed;
+}
+
+/* Slick arrows: theme icons assume RTL when dir=rtl on html. */
+html[dir="rtl"] .slick-slider .PreArrow-two,
+html[dir="rtl"] .slick-slider .NextArrow-two {
+	direction: ltr;
+}
+
+/* Archive filter bar and action rows. */
+html[dir="rtl"] .archive-page-filters-action {
+	direction: rtl;
+}
+
+html[dir="rtl"] .archive-page-filters-action .select2-container--default .select2-selection__rendered {
+	text-align: right;
+}
+
+/* Detail page metadata tables. */
+html[dir="rtl"] .movie-detail-table th,
+html[dir="rtl"] .movie-detail-table td {
+	text-align: right;
+}
+
+/* Modal / offcanvas close buttons. */
+html[dir="rtl"] .modal-header .btn-close,
+html[dir="rtl"] .offcanvas .btn-close {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+/* Player back button on watch page. */
+html[dir="rtl"] .css_prefix-video-player .back-btn {
+	left: auto;
+	right: 1em;
+}

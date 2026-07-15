@@ -228,23 +228,6 @@ class ST_VTBenner extends Widget_Base
 		$this->add_control(
 			'st_selected_tvshow_genre',
 			[
-				'label'			=> __('Display Tv Show From Specific Genre', 'streamit'),
-				'type'			=> Controls_Manager::SELECT2,
-				'label_block'	=> true,
-				'multiple' 		=> true,
-				'options' 		=> streamit_get_all_genres('tvshow'),
-				'default'		=> array(),
-				'condition' 	=> [
-					'st_select_content_type' 	=>	'tvshow',
-					'st_post_filter'			=>	'genre'
-				],
-			]
-		);
-
-
-		$this->add_control(
-			'st_selected_tvshow_genre',
-			[
 				'label'             => __('Display Tv Show From Specific Genre', 'streamit'),
 				'type'              => 'st_ajax_select',
 				'ajax_action'       => 'streamit_elementor_select_ajax',

@@ -1,0 +1,39 @@
+/* RTL readability for Streamit movie / TV show / episode edit screens. */
+body.streamit-admin,
+body[class*="streamit"],
+#streamit_data_section,
+#streamit_data_section .form-table,
+#streamit_data_section label,
+#streamit_data_section .streamit_option_pannel,
+#streamit_data_section .movie_meta_tabs,
+#streamit_data_section .tvshow_meta_tabs,
+#streamit_data_section .episode_meta_tabs {
+	direction: rtl;
+	text-align: right;
+}
+
+#streamit_data_section .streamit-heading-wraper,
+#streamit_data_section .title-button-wrap,
+#streamit_data_section .streamit-row {
+	direction: rtl;
+}
+
+#streamit_data_section .movie_meta_tabs,
+#streamit_data_section .tvshow_meta_tabs,
+#streamit_data_section .episode_meta_tabs {
+	direction: rtl;
+}
+
+#streamit_data_section input[type="text"],
+#streamit_data_section input[type="url"],
+#streamit_data_section input[type="number"],
+#streamit_data_section textarea,
+#streamit_data_section select {
+	direction: rtl;
+	text-align: right;
+}
+
+#streamit_data_section .select2-container .select2-selection__rendered {
+	direction: rtl;
+	text-align: right;
+}

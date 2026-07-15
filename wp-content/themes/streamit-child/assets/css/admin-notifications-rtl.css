@@ -1,0 +1,55 @@
+/* Streamit admin toast notifications — centered, RTL, Persian-friendly */
+body.wp-admin .notification-toast {
+	left: 50% !important;
+	right: auto !important;
+	transform: translateX(-50%);
+	top: 40px !important;
+	bottom: auto !important;
+	direction: rtl;
+	text-align: right;
+	max-width: min(420px, calc(100vw - 32px));
+	border-left: none !important;
+}
+
+body.wp-admin .notification-toast.success {
+	border-right: 2px solid #27ae60 !important;
+}
+
+body.wp-admin .notification-toast.danger {
+	border-right: 2px solid #c0392b !important;
+}
+
+body.wp-admin .notification-toast.info {
+	border-right: 2px solid #08b1ba !important;
+}
+
+body.wp-admin .notification-toast.warning {
+	border-right: 2px solid var(--bs-warning, #dba617) !important;
+}
+
+body.wp-admin .notification-toast .toast-content {
+	padding-right: 0;
+	padding-left: 20px;
+}
+
+body.wp-admin .notification-toast .toast-content .icon-close {
+	right: auto;
+	left: 0;
+}
+
+body.wp-admin .notification-toast .message-container {
+	flex-direction: row-reverse;
+}
+
+body.wp-admin .notification-toast .message .text-1,
+body.wp-admin .notification-toast .message .text-2 {
+	direction: rtl;
+	text-align: right;
+}
+
+/* jQuery Validate inline errors */
+body.wp-admin label.error,
+body.wp-admin .streamit_option_pannel label.error {
+	direction: rtl;
+	text-align: right;
+}

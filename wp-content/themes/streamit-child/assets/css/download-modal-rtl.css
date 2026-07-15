@@ -1,0 +1,36 @@
+.st-download-modal.modal {
+	text-align: center;
+}
+
+.st-download-modal.modal.show {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	padding: 0 16px;
+}
+
+.st-download-modal .modal-dialog {
+	margin: 0 auto;
+}
+
+.st-download-modal .modal-content {
+	direction: rtl;
+	text-align: right;
+}
+
+.st-download-modal .modal-header {
+	flex-direction: row-reverse;
+}
+
+.st-download-modal .modal-header .btn-close {
+	margin: 0 auto 0 0;
+}
+
+.st-download-modal .downloadModal-list li {
+	text-align: right;
+}
+
+.st-download-modal .downloadModal-list .d-flex {
+	flex-direction: row-reverse;
+	gap: 12px;
+}

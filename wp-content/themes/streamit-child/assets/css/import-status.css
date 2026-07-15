@@ -1,0 +1,96 @@
+.streamit-child-import-status {
+	display: block;
+	clear: both;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	margin: 16px 0;
+	padding: 14px 16px;
+	border-radius: 6px;
+	border-right: 4px solid #2271b1;
+	border-left: none;
+	background: #f0f6fc;
+	color: #1d2327;
+	direction: rtl;
+	text-align: right;
+}
+
+.streamit-child-import-status.is-loading {
+	border-right-color: #2271b1;
+	background: #f0f6fc;
+}
+
+.streamit-child-import-status.is-success {
+	border-right-color: #00a32a;
+	background: #edfaef;
+}
+
+.streamit-child-import-status.is-error {
+	border-right-color: #d63638;
+	background: #fcf0f1;
+}
+
+.streamit-child-import-status.is-warn {
+	border-right-color: #dba617;
+	background: #fcf9e8;
+}
+
+.streamit-child-import-status__title {
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	margin: 0 0 4px;
+}
+
+.streamit-child-import-status__message {
+	margin: 0 0 4px;
+	font-size: 13px;
+	line-height: 1.7;
+}
+
+.streamit-child-import-status__elapsed {
+	margin: 0;
+	font-size: 12px;
+	color: #50575e;
+}
+
+.streamit-child-import-status__spinner {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-left: 8px;
+	margin-right: 0;
+	vertical-align: -3px;
+	border: 2px solid #c3c4c7;
+	border-top-color: #2271b1;
+	border-radius: 50%;
+	animation: streamit-child-spin 0.8s linear infinite;
+}
+
+.streamit-child-import-overlay {
+	position: relative;
+}
+
+.streamit-child-import-overlay.is-busy::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.65);
+	z-index: 10;
+	pointer-events: none;
+}
+
+#streamit_content_import_button.is-importing {
+	pointer-events: none;
+	opacity: 0.7;
+}
+
+.streamit-child-import-status__dismiss {
+	margin-top: 8px;
+}
+
+@keyframes streamit-child-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}

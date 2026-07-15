@@ -1,0 +1,67 @@
+.streamit-child-sources-guide {
+	margin: 0 0 16px;
+	padding: 14px 16px;
+	border-right: 4px solid #2271b1;
+	border-left: none;
+	background: #f0f6fc;
+	color: #1d2327;
+	max-width: 100%;
+	width: 100%;
+	box-sizing: border-box;
+	clear: both;
+	direction: rtl;
+	text-align: right;
+}
+
+.streamit-child-sources-guide.is-dismissed {
+	display: none;
+}
+
+.streamit-child-sources-guide__title {
+	margin: 0 0 8px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.streamit-child-sources-guide__intro {
+	margin: 0 0 10px;
+	font-size: 13px;
+	line-height: 1.7;
+}
+
+.streamit-child-sources-guide__steps {
+	margin: 0 24px 12px 0;
+	padding: 0;
+	font-size: 13px;
+	line-height: 1.7;
+}
+
+.streamit-child-sources-guide__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	justify-content: flex-start;
+}
+
+.streamit-child-sources-guide__actions .button-link {
+	padding-right: 0;
+	padding-left: 0;
+}
+
+.movie_meta_tabs li.streamit-child-sources-tab-hint a,
+.episode_meta_tabs li.streamit-child-sources-tab-hint a,
+.tvshow_meta_tabs li.streamit-child-sources-tab-hint a {
+	box-shadow: inset 0 -2px 0 #2271b1;
+	font-weight: 600;
+}
+
+.streamit-child-sources-guide__url-hint {
+	margin-top: 0;
+	padding: 10px 12px;
+	background: #fff8e5;
+	border-radius: 4px;
+}
+
+.streamit-child-tvshow-guide .streamit-child-sources-guide__actions .button {
+	text-decoration: none;
+}

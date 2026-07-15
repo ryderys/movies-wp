@@ -1,0 +1,115 @@
+/**
+ * Fullscreen search modal.
+ */
+
+/* Hide the cramped header dropdown; modal replaces it. */
+header .dropdown-search-wrapper .css_prefix-search-bar,
+header .dropdown-search-wrapper .search_result_section {
+	display: none !important;
+}
+
+/* Parent theme hides search on mobile — keep icon visible for modal. */
+@media (max-width: 767.98px) {
+	header .css_prefix-header-right .dropdown-search-wrapper {
+		display: list-item !important;
+	}
+}
+
+.streamit-search-modal {
+	background: rgba(8, 8, 12, 0.98);
+	color: var(--bs-body-color, #fff);
+}
+
+.streamit-search-modal .modal-header {
+	align-items: center;
+	gap: 1rem;
+	padding: 1.25rem 1.5rem 0.75rem;
+}
+
+.streamit-search-modal__input-wrap {
+	flex: 1;
+	background: rgba(255, 255, 255, 0.08);
+	border-radius: 0.75rem;
+	padding: 0.25rem 0.5rem;
+}
+
+.streamit-search-modal__input-wrap .form-control {
+	background: transparent;
+	color: #fff;
+	font-size: 1.25rem;
+}
+
+.streamit-search-modal__input-wrap .form-control::placeholder {
+	color: rgba(255, 255, 255, 0.55);
+}
+
+.streamit-search-modal__body {
+	padding: 0 1.5rem 1.5rem;
+}
+
+.streamit-search-modal__results {
+	min-height: 50vh;
+	max-height: calc(100vh - 7rem);
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.streamit-search-modal__hint,
+.streamit-search-modal__empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 40vh;
+	text-align: center;
+	color: rgba(255, 255, 255, 0.65);
+	font-size: 1.1rem;
+	padding: 2rem;
+}
+
+.streamit-search-modal__loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 40vh;
+}
+
+/* Results from ajax_search.php inside modal */
+.streamit-search-modal__results .data-search-tab {
+	margin-top: 0 !important;
+	margin-bottom: 1.5rem !important;
+}
+
+.streamit-search-modal__results .tab-content .row {
+	--bs-gutter-x: 1rem;
+}
+
+.streamit-search-modal__results .search_output {
+	position: static;
+	min-width: 0;
+	border: none;
+	background: transparent;
+}
+
+.streamit-search-modal__results .search_output .item-body {
+	max-height: none;
+	padding: 0;
+}
+
+html[dir="rtl"] .streamit-search-modal .btn-close {
+	margin-left: 0;
+	margin-right: 1rem;
+}
+
+@media (max-width: 767.98px) {
+	.streamit-search-modal .modal-header {
+		padding: 1rem;
+	}
+
+	.streamit-search-modal__body {
+		padding: 0 1rem 1rem;
+	}
+
+	.streamit-search-modal__input-wrap .form-control {
+		font-size: 1rem;
+	}
+}
