@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * Normalize raw `_subtitles` meta into a clean list for output.
  *
  * @param mixed $raw Meta value (array or serialized).
- * @return array<int, array{label: string, srclang: string, url: string, default: bool}>
+ * @return array<int, array{label: string, srclang: string, url: string, default: bool, format: string}>
  */
 function streamit_child_normalize_subtitles( $raw ) {
 	if ( is_string( $raw ) ) {
@@ -45,6 +45,7 @@ function streamit_child_normalize_subtitles( $raw ) {
 
 		$srclang = isset( $row['srclang'] ) ? strtolower( trim( (string) $row['srclang'] ) ) : '';
 		$label   = isset( $row['label'] ) ? trim( (string) $row['label'] ) : '';
+		$format  = isset( $row['format'] ) ? trim( (string) $row['format'] ) : '';
 
 		if ( '' === $label ) {
 			$label = '' !== $srclang ? strtoupper( $srclang ) : __( 'زیرنویس', 'streamit' );
@@ -63,6 +64,7 @@ function streamit_child_normalize_subtitles( $raw ) {
 			'srclang' => $srclang,
 			'url'     => $url,
 			'default' => $is_default,
+			'format'  => $format,
 		);
 	}
 
@@ -73,7 +75,7 @@ function streamit_child_normalize_subtitles( $raw ) {
  * Sanitize a raw subtitles payload received on save.
  *
  * @param mixed $raw Payload from the save request.
- * @return array<int, array{label: string, srclang: string, url: string, default: int}>
+ * @return array<int, array{label: string, srclang: string, url: string, default: int, format: string}>
  */
 function streamit_child_sanitize_subtitles( $raw ) {
 	if ( ! is_array( $raw ) ) {
@@ -96,12 +98,14 @@ function streamit_child_sanitize_subtitles( $raw ) {
 		$srclang = strtolower( substr( (string) $srclang, 0, 10 ) );
 
 		$default = ( ! empty( $row['default'] ) && 'false' !== $row['default'] ) ? 1 : 0;
+		$format  = isset( $row['format'] ) ? sanitize_text_field( trim( (string) $row['format'] ) ) : '';
 
 		$out[] = array(
 			'label'   => isset( $row['label'] ) ? sanitize_text_field( (string) $row['label'] ) : '',
 			'srclang' => $srclang,
 			'url'     => $url,
 			'default' => $default,
+			'format'  => $format,
 		);
 	}
 
@@ -253,6 +257,10 @@ function streamit_child_render_subtitles_admin( $post_type ) {
 						<label><?php esc_html_e( 'کد زبان', 'streamit' ); ?></label>
 						<input type="text" class="stc-sub-srclang" value="<?php echo esc_attr( $row['srclang'] ); ?>" placeholder="fa" maxlength="10" />
 					</div>
+					<div class="stc-sub-field stc-sub-format">
+						<label><?php esc_html_e( 'نوع زیرنویس', 'streamit' ); ?></label>
+						<input type="text" class="stc-sub-format-input" value="<?php echo esc_attr( isset( $row['format'] ) ? $row['format'] : '' ); ?>" placeholder="<?php esc_attr_e( 'مثلاً SRT یا VTT', 'streamit' ); ?>" />
+					</div>
 					<div class="stc-sub-field stc-sub-url-field">
 						<label><?php esc_html_e( 'آدرس فایل زیرنویس (VTT/SRT)', 'streamit' ); ?></label>
 						<div class="stc-sub-url-wrap">
@@ -282,6 +290,10 @@ function streamit_child_render_subtitles_admin( $post_type ) {
 				<div class="stc-sub-field stc-sub-lang">
 					<label><?php esc_html_e( 'کد زبان', 'streamit' ); ?></label>
 					<input type="text" class="stc-sub-srclang" placeholder="fa" maxlength="10" />
+				</div>
+				<div class="stc-sub-field stc-sub-format">
+					<label><?php esc_html_e( 'نوع زیرنویس', 'streamit' ); ?></label>
+					<input type="text" class="stc-sub-format-input" placeholder="<?php esc_attr_e( 'مثلاً SRT یا VTT', 'streamit' ); ?>" />
 				</div>
 				<div class="stc-sub-field stc-sub-url-field">
 					<label><?php esc_html_e( 'آدرس فایل زیرنویس (VTT/SRT)', 'streamit' ); ?></label>
@@ -427,6 +439,12 @@ function streamit_child_render_subtitle_download_section( $subs ) {
 							<span class="stc-subtitle-label"><?php echo esc_html( $sub['label'] ); ?></span>
 							<?php if ( ! empty( $sub['srclang'] ) ) : ?>
 								<span class="stc-subtitle-lang"><?php echo esc_html( strtoupper( $sub['srclang'] ) ); ?></span>
+							<?php endif; ?>
+							<?php if ( ! empty( $sub['format'] ) ) : ?>
+								<span class="stc-subtitle-format">
+									<span class="stc-download-meta__label"><?php esc_html_e( 'نوع زیرنویس', 'streamit' ); ?></span>
+									<span class="stc-download-meta__value"><?php echo esc_html( $sub['format'] ); ?></span>
+								</span>
 							<?php endif; ?>
 						</div>
 						<div class="stc-subtitle-download stc-download-action">

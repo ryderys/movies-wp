@@ -67,3 +67,33 @@
 	text-decoration: none;
 	opacity: 0.9;
 }
+
+.st-download-modal .stc-download-meta {
+	margin-top: 8px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 12px;
+	direction: rtl;
+	text-align: right;
+}
+
+.st-download-modal .stc-download-meta li {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 4px;
+	font-size: 12px;
+	line-height: 1.4;
+	opacity: 0.9;
+}
+
+.st-download-modal .stc-download-meta__label {
+	font-weight: 600;
+}
+
+.st-download-modal .stc-download-meta__label::after {
+	content: ':';
+}
+
+.st-download-modal .stc-download-meta__value {
+	opacity: 0.95;
+}

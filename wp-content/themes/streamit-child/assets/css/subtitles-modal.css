@@ -54,6 +54,21 @@
 	margin: 0;
 }
 
+.st-download-modal .stc-subtitle-format {
+	display: block;
+	font-size: 12px;
+	margin-top: 4px;
+	opacity: 0.9;
+}
+
+.st-download-modal .stc-subtitle-format .stc-download-meta__label {
+	font-weight: 600;
+}
+
+.st-download-modal .stc-subtitle-format .stc-download-meta__label::after {
+	content: ':';
+}
+
 .st-download-modal .stc-subtitle-download {
 	flex-shrink: 0;
 }

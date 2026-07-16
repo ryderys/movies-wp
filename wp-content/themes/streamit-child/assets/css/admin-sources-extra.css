@@ -1,0 +1,23 @@
+/**
+ * Optional source file_size («حجم») field in the Sources tab.
+ *
+ * @package streamit-child
+ */
+
+.stc-source-filesize {
+	direction: rtl;
+	text-align: right;
+}
+
+.stc-source-filesize__field label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+.stc-source-filesize .stc-source-file-size {
+	width: 100%;
+	max-width: 100%;
+	direction: ltr;
+	text-align: left;
+}

@@ -11,9 +11,10 @@ defined( 'ABSPATH' ) || exit;
  * Normalize a sources array for the download modal.
  *
  * Falls back to the playback URL (link) when download_content is empty.
+ * Optional UX fields: file_size (حجم), name used as Encoder.
  *
  * @param mixed $sources Raw _source / _sources meta.
- * @return array<int, array{quality: string, language: string, download_content: string, name: string}>
+ * @return array<int, array{quality: string, language: string, download_content: string, name: string, file_size: string, encoder: string}>
  */
 function streamit_child_get_downloadable_sources( $sources ) {
 	if ( ! is_array( $sources ) || empty( $sources ) ) {
@@ -27,11 +28,12 @@ function streamit_child_get_downloadable_sources( $sources ) {
 			continue;
 		}
 
-		$quality  = isset( $source['quality'] ) ? trim( (string) $source['quality'] ) : '';
-		$language = isset( $source['language'] ) ? trim( (string) $source['language'] ) : '';
-		$download = isset( $source['download_content'] ) ? trim( (string) $source['download_content'] ) : '';
-		$link     = isset( $source['link'] ) ? trim( (string) $source['link'] ) : '';
-		$name     = isset( $source['name'] ) ? trim( (string) $source['name'] ) : '';
+		$quality   = isset( $source['quality'] ) ? trim( (string) $source['quality'] ) : '';
+		$language  = isset( $source['language'] ) ? trim( (string) $source['language'] ) : '';
+		$download  = isset( $source['download_content'] ) ? trim( (string) $source['download_content'] ) : '';
+		$link      = isset( $source['link'] ) ? trim( (string) $source['link'] ) : '';
+		$name      = isset( $source['name'] ) ? trim( (string) $source['name'] ) : '';
+		$file_size = isset( $source['file_size'] ) ? trim( (string) $source['file_size'] ) : '';
 
 		if ( '' === $download && '' !== $link ) {
 			$download = $link;
@@ -46,10 +48,42 @@ function streamit_child_get_downloadable_sources( $sources ) {
 			'language'         => $language,
 			'download_content' => $download,
 			'name'             => $name,
+			'file_size'        => $file_size,
+			'encoder'          => $name, // Admin "Name" field doubles as Encoder.
 		);
 	}
 
 	return $normalized;
+}
+
+/**
+ * Render optional download-row meta (size + encoder) for the modal.
+ *
+ * @param array<string, string> $source Normalized downloadable source.
+ */
+function streamit_child_render_download_source_meta( $source ) {
+	$file_size = isset( $source['file_size'] ) ? trim( (string) $source['file_size'] ) : '';
+	$encoder   = isset( $source['encoder'] ) ? trim( (string) $source['encoder'] ) : '';
+
+	if ( '' === $file_size && '' === $encoder ) {
+		return;
+	}
+	?>
+	<ul class="stc-download-meta list-unstyled m-0 p-0">
+		<?php if ( '' !== $file_size ) : ?>
+			<li>
+				<span class="stc-download-meta__label"><?php esc_html_e( 'حجم', 'streamit' ); ?></span>
+				<span class="stc-download-meta__value"><?php echo esc_html( $file_size ); ?></span>
+			</li>
+		<?php endif; ?>
+		<?php if ( '' !== $encoder ) : ?>
+			<li>
+				<span class="stc-download-meta__label"><?php esc_html_e( 'Encoder', 'streamit' ); ?></span>
+				<span class="stc-download-meta__value"><?php echo esc_html( $encoder ); ?></span>
+			</li>
+		<?php endif; ?>
+	</ul>
+	<?php
 }
 
 /**
@@ -67,7 +101,7 @@ function streamit_child_has_downloadable_sources( $st_data, $meta_key = '_source
 }
 
 /**
- * On save: copy playback link into download_content when download URL is omitted.
+ * On save: autofill download URL + sanitize optional file_size.
  *
  * @param array<string, mixed> $meta_data Meta payload.
  * @return array<string, mixed>
@@ -89,6 +123,9 @@ function streamit_child_autofill_source_download_urls( $meta_data ) {
 			if ( '' === $download && '' !== $link ) {
 				$meta_data[ $meta_key ][ $index ]['download_content'] = $link;
 			}
+
+			$file_size = isset( $source['file_size'] ) ? sanitize_text_field( trim( (string) $source['file_size'] ) ) : '';
+			$meta_data[ $meta_key ][ $index ]['file_size'] = $file_size;
 		}
 	}
 
@@ -155,7 +192,7 @@ function streamit_child_enqueue_sources_admin_guide( $hook ) {
 			'title'       => 'پخش و دانلود چند کیفیت',
 			'intro'       => 'برای هر کیفیت (۱۰۸۰p، ۷۲۰p و …) یک ردیف در تب «منابع» اضافه کنید. فیلد آدرس در تب «عمومی» فقط لینک پخش اصلی است.',
 			'step1'       => 'تب «منابع» را باز کنید و روی «افزودن منبع» کلیک کنید.',
-			'step2'       => 'آدرس ویدیو (پخش)، کیفیت (مثلاً ۱۰۸۰p) و زبان (مثلاً فارسی) را وارد کنید.',
+			'step2'       => 'آدرس ویدیو، کیفیت (مثلاً BluRay 1080p)، زبان، نام/انکودر (مثلاً YIFY) و در صورت نیاز حجم را وارد کنید.',
 			'step3'       => 'لینک دانلود اختیاری است — اگر خالی بماند، همان آدرس پخش استفاده می‌شود.',
 			'step4'       => $is_episode
 				? 'روی «به‌روزرسانی قسمت» کلیک کنید. بازدیدکنندگان منوی کیفیت در پخش‌کننده و مودال دانلود می‌بینند.'
@@ -167,6 +204,70 @@ function streamit_child_enqueue_sources_admin_guide( $hook ) {
 			'urlNotePlayback' => 'آدرس فیلم: لینک پخش آن کیفیت (مثلاً m3u8 یا mp4) — در منوی کیفیت پخش‌کننده استفاده می‌شود.',
 			'urlNoteDownload' => 'آدرس دانلود: لینک مستقیم فایل برای دکمه دانلود — می‌تواند با لینک پخش متفاوت باشد.',
 			'urlNoteOptional' => 'اگر آدرس دانلود خالی بماند، همان آدرس فیلم برای دانلود هم استفاده می‌شود.',
+		)
+	);
+
+	streamit_child_enqueue_sources_extra_fields( $hook, $is_episode );
+}
+
+/**
+ * Inject optional «حجم» field into each Sources row and persist via form_data filter.
+ *
+ * @param string $hook       Admin page hook.
+ * @param bool   $is_episode Whether this is an episode screen.
+ */
+function streamit_child_enqueue_sources_extra_fields( $hook, $is_episode ) {
+	$js_path  = get_stylesheet_directory() . '/assets/js/admin-sources-extra.js';
+	$css_path = get_stylesheet_directory() . '/assets/css/admin-sources-extra.css';
+
+	if ( ! file_exists( $js_path ) ) {
+		return;
+	}
+
+	if ( file_exists( $css_path ) ) {
+		wp_enqueue_style(
+			'streamit-child-admin-sources-extra',
+			get_stylesheet_directory_uri() . '/assets/css/admin-sources-extra.css',
+			array(),
+			(string) filemtime( $css_path )
+		);
+	}
+
+	wp_enqueue_script(
+		'streamit-child-admin-sources-extra',
+		get_stylesheet_directory_uri() . '/assets/js/admin-sources-extra.js',
+		array( 'jquery', 'wp-hooks' ),
+		(string) filemtime( $js_path ),
+		true
+	);
+
+	$post_id   = isset( $_GET['id'] ) ? absint( wp_unslash( $_GET['id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$file_sizes = array();
+
+	if ( $post_id ) {
+		$meta_type = $is_episode ? 'streamit_episode' : 'streamit_movie';
+		$meta_key  = $is_episode ? '_sources' : '_source';
+		$raw       = get_metadata( $meta_type, $post_id, $meta_key, true );
+
+		if ( is_array( $raw ) ) {
+			foreach ( $raw as $source ) {
+				$file_sizes[] = ( is_array( $source ) && isset( $source['file_size'] ) )
+					? (string) $source['file_size']
+					: '';
+			}
+		}
+	}
+
+	wp_localize_script(
+		'streamit-child-admin-sources-extra',
+		'streamitChildSourcesExtra',
+		array(
+			'isEpisode'   => $is_episode,
+			'formFilter'  => $is_episode ? 'episode_form_data' : 'movie_form_data',
+			'sourcesKey'  => $is_episode ? '_sources' : '_source',
+			'fileSizes'   => $file_sizes,
+			'label'       => 'حجم',
+			'placeholder' => 'مثلاً 2.1 GB',
 		)
 	);
 }

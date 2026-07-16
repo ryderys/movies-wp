@@ -48,6 +48,11 @@
 	min-width: 90px;
 }
 
+.streamit-child-subtitles .stc-sub-format {
+	flex: 0 0 140px;
+	min-width: 120px;
+}
+
 .streamit-child-subtitles .stc-sub-url-field {
 	flex: 2 1 280px;
 }

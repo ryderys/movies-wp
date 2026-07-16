@@ -47,6 +47,7 @@ $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 									<div class="flex-grow-1">
 										<h6 class="mt-0 mb-1"><?php echo esc_html( $source['quality'] ); ?></h6>
 										<p class="m-0 small"><?php echo esc_html( $source['language'] ); ?></p>
+										<?php streamit_child_render_download_source_meta( $source ); ?>
 									</div>
 									<div class="flex-shrink-0 stc-download-action">
 										<span class="stc-download-icon" aria-hidden="true">
