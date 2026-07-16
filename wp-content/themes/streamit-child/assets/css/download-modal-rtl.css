@@ -6,24 +6,23 @@
 	display: flex !important;
 	align-items: center;
 	justify-content: center;
-	padding: 0 16px;
+	padding: 0 12px;
 }
 
 .st-download-modal .modal-dialog,
 .st-download-modal .modal-dialog.modal-xl,
 .st-download-modal .stc-download-dialog {
-	margin: 1.75rem auto;
-	width: min(1100px, 96vw) !important;
-	max-width: 1100px !important;
+	margin: 1rem auto;
+	width: min(960px, 100%) !important;
+	max-width: 960px !important;
 }
 
-/* Beat Bootstrap .modal-dialog breakpoints */
 @media (min-width: 576px) {
 	.st-download-modal .modal-dialog,
 	.st-download-modal .modal-dialog.modal-xl,
 	.st-download-modal .stc-download-dialog {
-		width: min(1100px, 96vw) !important;
-		max-width: 1100px !important;
+		width: min(960px, 96vw) !important;
+		max-width: 960px !important;
 	}
 }
 
@@ -41,53 +40,62 @@
 }
 
 .st-download-modal .modal-body {
-	padding: 8px 28px 24px;
+	padding: 4px 20px 20px;
+}
+
+.st-download-modal .downloadModal-list {
+	margin: 0;
+	padding: 0;
 }
 
 .st-download-modal .downloadModal-list li {
 	text-align: right;
 	padding: 12px 0;
+	list-style: none;
 }
 
 .st-download-modal .downloadModal-list li + li {
 	border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.st-download-modal .downloadModal-list .d-flex {
-	flex-direction: row-reverse;
-	flex-wrap: nowrap;
-	gap: 20px;
-	align-items: center;
-}
-
-.st-download-modal .downloadModal-list .flex-grow-1 {
+.st-download-modal .stc-download-row {
 	display: flex;
-	flex-wrap: nowrap;
+	flex-direction: row-reverse;
 	align-items: center;
-	gap: 10px 18px;
+	justify-content: space-between;
+	gap: 12px 16px;
+	flex-wrap: wrap;
+}
+
+.st-download-modal .stc-download-info {
+	display: flex;
+	flex: 1 1 auto;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 14px;
 	min-width: 0;
-	overflow: hidden;
+	direction: rtl;
+	text-align: right;
 }
 
-.st-download-modal .downloadModal-list h6 {
-	margin: 0 !important;
+.st-download-modal .stc-download-quality {
 	font-size: 15px;
-	white-space: nowrap;
-	flex-shrink: 0;
+	font-weight: 600;
+	line-height: 1.3;
 }
 
-.st-download-modal .downloadModal-list p.small {
-	margin: 0 !important;
-	white-space: nowrap;
+.st-download-modal .stc-download-lang {
+	font-size: 13px;
 	opacity: 0.8;
-	flex-shrink: 0;
+	line-height: 1.3;
 }
 
 .st-download-modal .stc-download-action {
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	flex-shrink: 0;
+	flex: 0 0 auto;
+	margin-inline-start: auto;
 }
 
 .st-download-modal .stc-download-icon {
@@ -101,7 +109,7 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	padding: 8px 18px;
+	padding: 8px 16px;
 	font-size: 14px;
 	font-weight: 600;
 	line-height: 1.2;
@@ -119,13 +127,14 @@
 
 .st-download-modal .stc-download-meta {
 	margin: 0;
+	padding: 0;
 	display: inline-flex;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	align-items: center;
-	gap: 10px 16px;
+	gap: 6px 14px;
 	direction: rtl;
 	text-align: right;
-	min-width: 0;
+	list-style: none;
 }
 
 .st-download-modal .stc-download-meta li {
@@ -136,7 +145,6 @@
 	font-size: 13px;
 	line-height: 1.3;
 	opacity: 0.9;
-	white-space: nowrap;
 	border: 0;
 }
 
@@ -152,18 +160,31 @@
 	opacity: 0.95;
 }
 
-@media (max-width: 767.98px) {
-	.st-download-modal .modal-dialog {
-		width: 100%;
-		max-width: 100%;
+@media (max-width: 575.98px) {
+	.st-download-modal .modal-dialog,
+	.st-download-modal .modal-dialog.modal-xl,
+	.st-download-modal .stc-download-dialog {
+		width: 100% !important;
+		max-width: 100% !important;
+		margin: 0.5rem auto;
 	}
 
 	.st-download-modal .modal-body {
-		padding: 4px 16px 20px;
+		padding: 4px 14px 16px;
 	}
 
-	.st-download-modal .downloadModal-list .flex-grow-1,
-	.st-download-modal .stc-download-meta {
-		flex-wrap: wrap;
+	.st-download-modal .stc-download-row {
+		align-items: stretch;
+	}
+
+	.st-download-modal .stc-download-action {
+		width: 100%;
+		justify-content: flex-end;
+		margin-inline-start: 0;
+	}
+
+	.st-download-modal .stc-download-btn {
+		flex: 1 1 auto;
+		max-width: 160px;
 	}
 }
