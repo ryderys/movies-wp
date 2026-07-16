@@ -11,11 +11,14 @@
 
 .st-download-modal .modal-dialog {
 	margin: 0 auto;
+	width: min(920px, 100%);
+	max-width: 920px;
 }
 
 .st-download-modal .modal-content {
 	direction: rtl;
 	text-align: right;
+	min-height: 280px;
 }
 
 .st-download-modal .modal-header {
@@ -26,19 +29,34 @@
 	margin: 0 auto 0 0;
 }
 
+.st-download-modal .modal-body {
+	padding: 8px 28px 28px;
+}
+
 .st-download-modal .downloadModal-list li {
 	text-align: right;
+	padding: 14px 0;
+}
+
+.st-download-modal .downloadModal-list li + li {
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .st-download-modal .downloadModal-list .d-flex {
 	flex-direction: row-reverse;
-	gap: 12px;
+	gap: 16px;
+	align-items: flex-start;
+}
+
+.st-download-modal .downloadModal-list h6 {
+	font-size: 16px;
 }
 
 .st-download-modal .stc-download-action {
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
+	margin-top: 2px;
 }
 
 .st-download-modal .stc-download-icon {
@@ -52,8 +70,8 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	padding: 6px 14px;
-	font-size: 13px;
+	padding: 8px 18px;
+	font-size: 14px;
 	font-weight: 600;
 	line-height: 1.2;
 	text-decoration: none;
@@ -69,10 +87,10 @@
 }
 
 .st-download-modal .stc-download-meta {
-	margin-top: 8px;
+	margin-top: 10px;
 	display: flex;
 	flex-wrap: wrap;
-	gap: 6px 12px;
+	gap: 8px 16px;
 	direction: rtl;
 	text-align: right;
 }
@@ -81,8 +99,8 @@
 	display: inline-flex;
 	align-items: baseline;
 	gap: 4px;
-	font-size: 12px;
-	line-height: 1.4;
+	font-size: 13px;
+	line-height: 1.45;
 	opacity: 0.9;
 }
 
@@ -96,4 +114,15 @@
 
 .st-download-modal .stc-download-meta__value {
 	opacity: 0.95;
+}
+
+@media (max-width: 575.98px) {
+	.st-download-modal .modal-dialog {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.st-download-modal .modal-body {
+		padding: 4px 16px 20px;
+	}
 }
