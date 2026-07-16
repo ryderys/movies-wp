@@ -10,9 +10,17 @@
 }
 
 .st-download-modal .modal-dialog {
-	margin: 0 auto;
-	width: min(1100px, 96vw);
-	max-width: 1100px;
+	margin: 1.75rem auto;
+	width: min(1100px, 96vw) !important;
+	max-width: 1100px !important;
+}
+
+/* Beat Bootstrap .modal-dialog breakpoints */
+@media (min-width: 576px) {
+	.st-download-modal .modal-dialog {
+		width: min(1100px, 96vw) !important;
+		max-width: 1100px !important;
+	}
 }
 
 .st-download-modal .modal-content {
