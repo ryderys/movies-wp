@@ -11,14 +11,13 @@
 
 .st-download-modal .modal-dialog {
 	margin: 0 auto;
-	width: min(920px, 100%);
-	max-width: 920px;
+	width: min(1100px, 96vw);
+	max-width: 1100px;
 }
 
 .st-download-modal .modal-content {
 	direction: rtl;
 	text-align: right;
-	min-height: 280px;
 }
 
 .st-download-modal .modal-header {
@@ -30,12 +29,12 @@
 }
 
 .st-download-modal .modal-body {
-	padding: 8px 28px 28px;
+	padding: 8px 28px 24px;
 }
 
 .st-download-modal .downloadModal-list li {
 	text-align: right;
-	padding: 14px 0;
+	padding: 12px 0;
 }
 
 .st-download-modal .downloadModal-list li + li {
@@ -44,19 +43,39 @@
 
 .st-download-modal .downloadModal-list .d-flex {
 	flex-direction: row-reverse;
-	gap: 16px;
-	align-items: flex-start;
+	flex-wrap: nowrap;
+	gap: 20px;
+	align-items: center;
+}
+
+.st-download-modal .downloadModal-list .flex-grow-1 {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	gap: 10px 18px;
+	min-width: 0;
+	overflow: hidden;
 }
 
 .st-download-modal .downloadModal-list h6 {
-	font-size: 16px;
+	margin: 0 !important;
+	font-size: 15px;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.st-download-modal .downloadModal-list p.small {
+	margin: 0 !important;
+	white-space: nowrap;
+	opacity: 0.8;
+	flex-shrink: 0;
 }
 
 .st-download-modal .stc-download-action {
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	margin-top: 2px;
+	flex-shrink: 0;
 }
 
 .st-download-modal .stc-download-icon {
@@ -87,21 +106,26 @@
 }
 
 .st-download-modal .stc-download-meta {
-	margin-top: 10px;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 8px 16px;
+	margin: 0;
+	display: inline-flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	gap: 10px 16px;
 	direction: rtl;
 	text-align: right;
+	min-width: 0;
 }
 
 .st-download-modal .stc-download-meta li {
 	display: inline-flex;
 	align-items: baseline;
 	gap: 4px;
+	padding: 0;
 	font-size: 13px;
-	line-height: 1.45;
+	line-height: 1.3;
 	opacity: 0.9;
+	white-space: nowrap;
+	border: 0;
 }
 
 .st-download-modal .stc-download-meta__label {
@@ -116,7 +140,7 @@
 	opacity: 0.95;
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
 	.st-download-modal .modal-dialog {
 		width: 100%;
 		max-width: 100%;
@@ -124,5 +148,10 @@
 
 	.st-download-modal .modal-body {
 		padding: 4px 16px 20px;
+	}
+
+	.st-download-modal .downloadModal-list .flex-grow-1,
+	.st-download-modal .stc-download-meta {
+		flex-wrap: wrap;
 	}
 }
