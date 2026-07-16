@@ -48,9 +48,12 @@ $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 										<h6 class="mt-0 mb-1"><?php echo esc_html( $source['quality'] ); ?></h6>
 										<p class="m-0 small"><?php echo esc_html( $source['language'] ); ?></p>
 									</div>
-									<div class="flex-shrink-0">
-										<a href="<?php echo esc_url( $source['download_content'] ); ?>" class="link-primary" download>
+									<div class="flex-shrink-0 stc-download-action">
+										<span class="stc-download-icon" aria-hidden="true">
 											<?php echo st_get_icon( 'download-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+										</span>
+										<a href="<?php echo esc_url( $source['download_content'] ); ?>" class="stc-download-btn link-primary" download>
+											<?php esc_html_e( 'دانلود', 'streamit' ); ?>
 										</a>
 									</div>
 								</div>

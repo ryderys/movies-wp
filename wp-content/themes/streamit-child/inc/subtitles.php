@@ -429,9 +429,12 @@ function streamit_child_render_subtitle_download_section( $subs ) {
 								<span class="stc-subtitle-lang"><?php echo esc_html( strtoupper( $sub['srclang'] ) ); ?></span>
 							<?php endif; ?>
 						</div>
-						<div class="stc-subtitle-download">
-							<a href="<?php echo esc_url( $sub['url'] ); ?>" class="link-primary" download>
+						<div class="stc-subtitle-download stc-download-action">
+							<span class="stc-download-icon" aria-hidden="true">
 								<?php echo st_get_icon( 'download-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							</span>
+							<a href="<?php echo esc_url( $sub['url'] ); ?>" class="stc-download-btn link-primary" download>
+								<?php esc_html_e( 'دانلود', 'streamit' ); ?>
 							</a>
 						</div>
 					</div>

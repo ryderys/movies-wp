@@ -34,3 +34,36 @@
 	flex-direction: row-reverse;
 	gap: 12px;
 }
+
+.st-download-modal .stc-download-action {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.st-download-modal .stc-download-icon {
+	display: inline-flex;
+	align-items: center;
+	pointer-events: none;
+	opacity: 0.85;
+}
+
+.st-download-modal .stc-download-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 14px;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	border: 1px solid currentColor;
+	border-radius: 4px;
+	white-space: nowrap;
+}
+
+.st-download-modal .stc-download-btn:hover,
+.st-download-modal .stc-download-btn:focus {
+	text-decoration: none;
+	opacity: 0.9;
+}
