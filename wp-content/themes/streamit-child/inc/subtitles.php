@@ -383,9 +383,11 @@ add_action( 'admin_enqueue_scripts', 'streamit_child_enqueue_subtitles_admin' );
 
 /**
  * Frontend styling for the subtitle section of the download modal.
+ *
+ * Streamit singles are not WP post types — do not gate with is_singular().
  */
 function streamit_child_enqueue_subtitles_modal_css() {
-	if ( ! is_singular( array( 'movie', 'episode' ) ) ) {
+	if ( is_admin() ) {
 		return;
 	}
 
@@ -397,7 +399,7 @@ function streamit_child_enqueue_subtitles_modal_css() {
 	wp_enqueue_style(
 		'streamit-child-subtitles-modal',
 		get_stylesheet_directory_uri() . '/assets/css/subtitles-modal.css',
-		array(),
+		array( 'streamit-child-download-modal-rtl' ),
 		(string) filemtime( $css_path )
 	);
 }

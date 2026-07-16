@@ -9,7 +9,9 @@
 	padding: 0 16px;
 }
 
-.st-download-modal .modal-dialog {
+.st-download-modal .modal-dialog,
+.st-download-modal .modal-dialog.modal-xl,
+.st-download-modal .stc-download-dialog {
 	margin: 1.75rem auto;
 	width: min(1100px, 96vw) !important;
 	max-width: 1100px !important;
@@ -17,7 +19,9 @@
 
 /* Beat Bootstrap .modal-dialog breakpoints */
 @media (min-width: 576px) {
-	.st-download-modal .modal-dialog {
+	.st-download-modal .modal-dialog,
+	.st-download-modal .modal-dialog.modal-xl,
+	.st-download-modal .stc-download-dialog {
 		width: min(1100px, 96vw) !important;
 		max-width: 1100px !important;
 	}

@@ -274,10 +274,13 @@ function streamit_child_enqueue_sources_extra_fields( $hook, $is_episode ) {
 add_action( 'admin_enqueue_scripts', 'streamit_child_enqueue_sources_admin_guide' );
 
 /**
- * RTL styling for frontend download quality modal (child theme override only).
+ * RTL + layout styling for the download modal.
+ *
+ * Loaded on all frontend pages (same pattern as search-modal.css). Streamit
+ * movie/episode singles are not WP post types, so is_singular() cannot gate this.
  */
 function streamit_child_enqueue_download_modal_rtl() {
-	if ( ! is_singular( array( 'movie', 'episode' ) ) ) {
+	if ( is_admin() ) {
 		return;
 	}
 

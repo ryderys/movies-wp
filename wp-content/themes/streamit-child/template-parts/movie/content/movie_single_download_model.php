@@ -28,7 +28,7 @@ $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 ?>
 
 <div class="modal downloadModal fade st-download-modal" id="downloadModal" tabindex="-1" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered playlist-modal">
+	<div class="modal-dialog modal-dialog-centered modal-xl playlist-modal stc-download-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title m-0" id="downloadModalLabel">
