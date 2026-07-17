@@ -144,10 +144,10 @@ body.streamit-digits-login-page .digits_ui .digits-form_input {
 	background: transparent !important;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input input,
-body.streamit-digits-login-page .streamit-digits-login .digits2_box .digits-form_input input,
-body.streamit-digits-login-page .digits_ui .digits-form_input input,
-body.streamit-digits-login-page .digits_ui .digits2_box .digits-form_input input,
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input:not([type="checkbox"]),
+body.streamit-digits-login-page .streamit-digits-login .digits2_box .digits-form_input input:not([type="checkbox"]),
+body.streamit-digits-login-page .digits_ui .digits-form_input input:not([type="checkbox"]),
+body.streamit-digits-login-page .digits_ui .digits2_box .digits-form_input input:not([type="checkbox"]),
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="tel"],
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="email"],
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="text"],
@@ -201,7 +201,88 @@ body.streamit-digits-login-page .digits_ui .digits-form_countrycode img {
 	object-fit: contain !important;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .submit,
+/* Tab label spacing — match Streamit .streamit-login label → field gap */
+body.streamit-digits-login-page .streamit-digits-login .digits-form_tab-bar,
+body.streamit-digits-login-page .digits_ui .digits-form_tab-bar {
+	margin: 0 0 1.125em !important;
+	padding: 0 !important;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_tab-item,
+body.streamit-digits-login-page .digits_ui .digits-form_tab-item {
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-size: 0.875em;
+	font-weight: 500;
+	line-height: 1.5;
+	color: var(--bs-white);
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_tab_body,
+body.streamit-digits-login-page .digits_ui .digits-form_tab_body {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+/* Remember me — align like Streamit .form-check */
+body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme,
+body.streamit-digits-login-page .digits_ui .digits-form_rememberme {
+	margin: 0 0 1.125em !important;
+	padding: 0 !important;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme .digits-form_input,
+body.streamit-digits-login-page .digits_ui .digits-form_rememberme .digits-form_input {
+	width: 100% !important;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme label,
+body.streamit-digits-login-page .digits_ui .digits-form_rememberme label {
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-size: 0.875em;
+	font-weight: 400;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme .dig_input_wrapper,
+body.streamit-digits-login-page .digits_ui .digits-form_rememberme .dig_input_wrapper {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme .dig_input_wrapper > div,
+body.streamit-digits-login-page .digits_ui .digits-form_rememberme .dig_input_wrapper > div {
+	margin: 0;
+	line-height: 1.5;
+	color: var(--bs-white);
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme input[type="checkbox"],
+body.streamit-digits-login-page .digits_ui .digits-form_rememberme input[type="checkbox"] {
+	flex: none;
+	width: 1.2em !important;
+	height: 1.2em !important;
+	min-height: 1.2em !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0.125em solid var(--bs-white) !important;
+	border-radius: 0.3em !important;
+	background: transparent !important;
+	appearance: none;
+	-webkit-appearance: none;
+	cursor: pointer;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme input[type="checkbox"]:checked,
+body.streamit-digits-login-page .digits_ui .digits-form_rememberme input[type="checkbox"]:checked {
+	border-color: var(--bs-primary) !important;
+	background-color: transparent !important;
+}
+
+body.streamit-digits-login-page .submit,
 body.streamit-digits-login-page .digits_ui .submit {
 	margin: 0;
 }
@@ -319,6 +400,12 @@ html[dir="rtl"] body.streamit-digits-login-page .digits_ui .mobile_field,
 html[dir="rtl"] body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode {
 	direction: ltr;
 	text-align: left;
+}
+
+html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme .dig_input_wrapper,
+html[dir="rtl"] body.streamit-digits-login-page .digits_ui .digits-form_rememberme .dig_input_wrapper {
+	flex-direction: row-reverse;
+	justify-content: flex-end;
 }
 
 html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::before,
