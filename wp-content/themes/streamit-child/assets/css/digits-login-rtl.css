@@ -1,19 +1,31 @@
 /**
- * Digits phone-login — match Streamit .streamit-login card on .streamit-digits-login only.
- * Native sign-in page (.streamit-login without .streamit-digits-login) is never targeted.
+ * Digits phone-login — mirror Streamit .streamit-login / #streamit-login-form.
+ * Scoped to .streamit-digits-login only; native sign-in page is untouched.
  */
 
 body.streamit-digits-login-page .streamit-digits-login {
+	--dprimary: var(--bs-primary);
+	--daccent: var(--bs-primary);
+	--dform_bg: transparent;
+	--dfield_bg: var(--bs-gray-900);
+	--dtitle: var(--bs-white);
+	--dbutton_text: var(--bs-white);
+
 	width: min(38em, 100%);
+	margin-inline: auto;
 	box-sizing: border-box;
 }
 
 body.streamit-digits-login-page .streamit-digits-login label,
 body.streamit-digits-login-page .streamit-digits-login .digits-streamit-label {
+	display: block;
+	font-size: 0.875em;
+	font-weight: 500;
+	margin: 0 0 0.5em;
 	color: var(--bs-white);
 }
 
-/* Strip Digits page chrome — Streamit login has none of this */
+/* Hide Digits chrome the Streamit login page does not show */
 body.streamit-digits-login-page .streamit-digits-login .digits-form_heading,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_tab-bar,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_button_ic,
@@ -22,11 +34,12 @@ body.streamit-digits-login-page .streamit-digits-login .protected_by_digits,
 body.streamit-digits-login-page .streamit-digits-login .digits_site_footer_box,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_logo,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_forgot_password {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_forgot_password,
+body.streamit-digits-login-page .streamit-digits-login .digits-form_field_label {
 	display: none !important;
 }
 
-/* Flatten Digits wrappers to transparent shells */
+/* Flatten Digits wrappers */
 body.streamit-digits-login-page .streamit-digits-login .digits_ui,
 body.streamit-digits-login-page .streamit-digits-login .digits_embed-form,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_page,
@@ -49,7 +62,7 @@ body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row {
 	border: 0 !important;
 }
 
-/* Phone field — one Streamit .form-control row */
+/* Phone field — Streamit .form-control */
 body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper,
 body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper.digits-form_border {
 	display: flex !important;
@@ -97,7 +110,6 @@ body.streamit-digits-login-page .streamit-digits-login .digits-form_input {
 	background: transparent !important;
 }
 
-/* Inputs — match .form-control from Streamit theme */
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input,
 body.streamit-digits-login-page .streamit-digits-login .digits2_box .digits-form_input input,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="tel"],
@@ -145,16 +157,22 @@ body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode 
 	object-fit: contain !important;
 }
 
-/* Submit — match .btn.btn-primary.w-100 inside .submit */
+/* Submit — same slot as .submit .btn.btn-primary.w-100 */
+body.streamit-digits-login-page .streamit-digits-login .submit {
+	margin: 0;
+}
+
 body.streamit-digits-login-page .streamit-digits-login .digits-form_button_row,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_submit_row {
 	margin: 0 !important;
 	padding: 0 !important;
+	width: 100%;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_button,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_button[type="submit"],
-body.streamit-digits-login-page .streamit-digits-login button.digits-form_button {
+body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button,
+body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button[type="submit"],
+body.streamit-digits-login-page .streamit-digits-login .submit button.digits-form_button,
+body.streamit-digits-login-page .streamit-digits-login .submit .btn.btn-primary {
 	display: flex !important;
 	align-items: center !important;
 	justify-content: center !important;
@@ -175,9 +193,9 @@ body.streamit-digits-login-page .streamit-digits-login button.digits-form_button
 	cursor: pointer;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_button:hover,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_button:focus,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_button:active {
+body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button:hover,
+body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button:focus,
+body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button:active {
 	color: var(--bs-white) !important;
 	background-color: var(--bs-primary-hover-bg, var(--bs-primary)) !important;
 	border-color: var(--bs-primary-hover-border, var(--bs-primary)) !important;
@@ -189,7 +207,15 @@ body.streamit-digits-login-page .streamit-digits-login .digits-form_button-text 
 	font-weight: 400 !important;
 }
 
-/* Streamit footer (separator / signup / social) */
+/* Digits error messages */
+body.streamit-digits-login-page .streamit-digits-login .digits-form_error,
+body.streamit-digits-login-page .streamit-digits-login .dig_error_message {
+	color: var(--bs-danger) !important;
+	font-size: 0.875rem;
+	margin-top: 0.25rem;
+}
+
+/* Footer — separator / signup / social (matches login.php) */
 body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator {
 	position: relative;
 	text-align: center;
@@ -264,6 +290,7 @@ html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .css_pref
 @media (max-width: 767px) {
 	body.streamit-digits-login-page .streamit-digits-login {
 		width: 100%;
+		padding: 1.25em;
 	}
 }
 
@@ -272,4 +299,3 @@ html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .css_pref
 		width: 30em;
 	}
 }
-
