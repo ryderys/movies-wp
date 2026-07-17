@@ -3,7 +3,7 @@
  * Digits phone-login integration for Streamit child theme.
  *
  * - Enforces Streamit device limits on Digits login (not registration).
- * - Renders phone-login with the same structure/classes as streamit-login.
+ * - Renders phone-login with Streamit login layout/styling only (fields stay Digits-controlled).
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -50,24 +50,14 @@ function streamit_child_get_page_source_content( $post = null ) {
 }
 
 /**
- * Whether the current page is Streamit's configured native sign-in page.
+ * Whether the current page is Streamit's native username/password sign-in page.
  *
  * @param WP_Post|null $post Optional page object.
  * @return bool
  */
 function streamit_child_is_streamit_signin_page( $post = null ) {
-	global $streamit_options;
-
 	if ( null === $post ) {
 		$post = get_queried_object();
-	}
-
-	if ( ! empty( $streamit_options['streamit_signin_link'] ) && is_page( (int) $streamit_options['streamit_signin_link'] ) ) {
-		return true;
-	}
-
-	if ( ! $post instanceof WP_Post || 'page' !== $post->post_type ) {
-		return false;
 	}
 
 	return streamit_child_page_uses_streamit_login( $post );
@@ -150,7 +140,8 @@ function streamit_child_content_is_digits_login_form( $content ) {
 
 	return false !== strpos( $content, 'digits_ui' )
 		|| false !== strpos( $content, 'digits-form_container' )
-		|| false !== strpos( $content, 'digits_embed-form' );
+		|| false !== strpos( $content, 'digits_embed-form' )
+		|| false !== strpos( $content, 'digits-form_login' );
 }
 
 /**
@@ -205,27 +196,6 @@ function streamit_child_digits_login_device_limit( $validation_error, $user ) {
 	return $validation_error;
 }
 add_filter( 'digits_check_user_login', 'streamit_child_digits_login_device_limit', 20, 2 );
-
-/**
- * Match Streamit login button copy on the phone-login page.
- *
- * @param string $translated Translated text.
- * @param string $text       Original text.
- * @param string $domain     Text domain.
- * @return string
- */
-function streamit_child_digits_login_strings( $translated, $text, $domain ) {
-	if ( ! streamit_child_is_digits_login_page() || 'digits' !== $domain ) {
-		return $translated;
-	}
-
-	if ( 'Continue' === $text ) {
-		return esc_html__( 'Login', 'streamit' );
-	}
-
-	return $translated;
-}
-add_filter( 'gettext', 'streamit_child_digits_login_strings', 20, 3 );
 
 /**
  * Streamit-style footer links below the Digits form.
@@ -301,22 +271,21 @@ function streamit_child_split_digits_login_output( $output ) {
 }
 
 /**
- * Wrap only the Digits shortcode output — never the full page content.
+ * Build Streamit login shell around Digits markup.
  *
- * @param string $output Shortcode HTML.
- * @param string $tag    Shortcode tag.
+ * @param string $inner_html   Digits HTML to place inside the shell.
+ * @param bool   $split_submit Whether to pull the submit button into .submit.
  * @return string
  */
-function streamit_child_wrap_digits_login_shortcode( $output, $tag ) {
-	if ( 'df-form-login' !== $tag || streamit_child_is_streamit_signin_page() ) {
-		return $output;
-	}
+function streamit_child_build_digits_login_shell( $inner_html, $split_submit = true ) {
+	$parts = $split_submit ? streamit_child_split_digits_login_output( $inner_html ) : array(
+		'fields' => $inner_html,
+		'submit' => '',
+	);
 
-	if ( empty( $output ) || ! streamit_child_content_is_digits_login_form( $output ) ) {
-		return $output;
+	if ( $split_submit && '' === $parts['submit'] ) {
+		$parts['fields'] = $inner_html;
 	}
-
-	$parts = streamit_child_split_digits_login_output( $output );
 
 	global $streamit_options;
 
@@ -334,10 +303,7 @@ function streamit_child_wrap_digits_login_shortcode( $output, $tag ) {
 
 		<div id="streamit-digits-login-form" class="digits-streamit-form">
 			<div class="login-fields row">
-				<div class="mb-3 position-relative col-md-12 digits-phone-field">
-					<label class="digits-streamit-label" for="digits_phone">
-						<?php esc_html_e( 'Phone Number', 'digits' ); ?>
-					</label>
+				<div class="mb-3 position-relative col-md-12 digits-form-field">
 					<?php echo $parts['fields']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</div>
 			</div>
@@ -350,7 +316,51 @@ function streamit_child_wrap_digits_login_shortcode( $output, $tag ) {
 	<?php
 	return ob_get_clean();
 }
+
+/**
+ * Wrap rendered page content that contains a Digits login form.
+ *
+ * @param string $content Rendered content.
+ * @return string
+ */
+function streamit_child_wrap_digits_login_content( $content ) {
+	if ( ! streamit_child_is_digits_login_page() || streamit_child_is_streamit_signin_page() ) {
+		return $content;
+	}
+
+	if ( false !== strpos( $content, 'streamit-digits-login' ) || false !== strpos( $content, 'streamit-login-form' ) ) {
+		return $content;
+	}
+
+	if ( ! streamit_child_content_is_digits_login_form( $content ) ) {
+		return $content;
+	}
+
+	return streamit_child_build_digits_login_shell( $content );
+}
+
+/**
+ * Wrap Digits shortcode output.
+ *
+ * @param string $output Shortcode HTML.
+ * @param string $tag    Shortcode tag.
+ * @return string
+ */
+function streamit_child_wrap_digits_login_shortcode( $output, $tag ) {
+	if ( ! in_array( $tag, array( 'df-form-login', 'df-form' ), true ) || streamit_child_is_streamit_signin_page() ) {
+		return $output;
+	}
+
+	if ( empty( $output ) || ! streamit_child_content_is_digits_login_form( $output ) ) {
+		return $output;
+	}
+
+	return streamit_child_build_digits_login_shell( $output );
+}
 add_filter( 'do_shortcode_tag', 'streamit_child_wrap_digits_login_shortcode', 20, 2 );
+add_filter( 'the_content', 'streamit_child_wrap_digits_login_content', 999 );
+add_filter( 'elementor/frontend/the_content', 'streamit_child_wrap_digits_login_content', 999 );
+add_filter( 'elementor/widget/render_content', 'streamit_child_wrap_digits_login_content', 999 );
 
 /**
  * Add a body class on the phone-login page.

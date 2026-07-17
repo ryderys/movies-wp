@@ -1,9 +1,10 @@
 /**
- * Digits phone-login — mirror Streamit .streamit-login / #streamit-login-form.
- * Scoped to .streamit-digits-login only; native sign-in page is untouched.
+ * Digits phone-login — mirror Streamit .streamit-login.
+ * Targets .streamit-digits-login (PHP shell) and bare .digits_ui (Elementor fallback).
  */
 
-body.streamit-digits-login-page .streamit-digits-login {
+body.streamit-digits-login-page .streamit-digits-login,
+body.streamit-digits-login-page:not(:has(.streamit-digits-login)) .digits_ui {
 	--dprimary: var(--bs-primary);
 	--daccent: var(--bs-primary);
 	--dform_bg: transparent;
@@ -16,30 +17,34 @@ body.streamit-digits-login-page .streamit-digits-login {
 	box-sizing: border-box;
 }
 
-body.streamit-digits-login-page .streamit-digits-login label,
-body.streamit-digits-login-page .streamit-digits-login .digits-streamit-label {
+body.streamit-digits-login-page:not(:has(.streamit-digits-login)) .digits_ui {
 	display: block;
-	font-size: 0.875em;
-	font-weight: 500;
-	margin: 0 0 0.5em;
+	padding: 3.125em;
+	background: rgba(var(--bs-black-rgb), 0.7) !important;
+	border-radius: var(--bs-border-radius);
+}
+
+body.streamit-digits-login-page .streamit-digits-login label,
+body.streamit-digits-login-page .digits_ui label {
 	color: var(--bs-white);
 }
 
-/* Hide Digits chrome the Streamit login page does not show */
+/* Hide Digits chrome the Streamit login card does not use */
 body.streamit-digits-login-page .streamit-digits-login .digits-form_heading,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_tab-bar,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_button_ic,
 body.streamit-digits-login-page .streamit-digits-login .dig_login_signup_bar,
 body.streamit-digits-login-page .streamit-digits-login .protected_by_digits,
 body.streamit-digits-login-page .streamit-digits-login .digits_site_footer_box,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_logo,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_forgot_password,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_field_label {
+body.streamit-digits-login-page .digits_ui .digits-form_heading,
+body.streamit-digits-login-page .digits_ui .digits-form_button_ic,
+body.streamit-digits-login-page .digits_ui .dig_login_signup_bar,
+body.streamit-digits-login-page .digits_ui .protected_by_digits,
+body.streamit-digits-login-page .digits_ui .digits_site_footer_box,
+body.streamit-digits-login-page .digits_ui .digits-form_logo {
 	display: none !important;
 }
 
-/* Flatten Digits wrappers */
 body.streamit-digits-login-page .streamit-digits-login .digits_ui,
 body.streamit-digits-login-page .streamit-digits-login .digits_embed-form,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_page,
@@ -51,7 +56,18 @@ body.streamit-digits-login-page .streamit-digits-login .digits2_box,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_body,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_body_wrapper,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_tab_body,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row,
+body.streamit-digits-login-page .digits_ui .digits_embed-form,
+body.streamit-digits-login-page .digits_ui .digits-form_page,
+body.streamit-digits-login-page .digits_ui .digits-form_container,
+body.streamit-digits-login-page .digits_ui .digits-form_wrapper,
+body.streamit-digits-login-page .digits_ui .digits-form_login,
+body.streamit-digits-login-page .digits_ui .digits_form_index_section,
+body.streamit-digits-login-page .digits_ui .digits2_box,
+body.streamit-digits-login-page .digits_ui .digits-form_body,
+body.streamit-digits-login-page .digits_ui .digits-form_body_wrapper,
+body.streamit-digits-login-page .digits_ui .digits-form_tab_body,
+body.streamit-digits-login-page .digits_ui .digits-form_input_row {
 	width: 100% !important;
 	max-width: 100% !important;
 	margin: 0 !important;
@@ -62,9 +78,24 @@ body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row {
 	border: 0 !important;
 }
 
-/* Phone field — Streamit .form-control */
+/* Email / text fields (non-phone rows) — Streamit .form-control */
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row:not(.digits-mobile_wrapper) .digits-form_input input,
+body.streamit-digits-login-page .digits_ui .digits-form_input_row:not(.digits-mobile_wrapper) .digits-form_input input {
+	border: var(--bs-border-width) solid var(--bs-border-color) !important;
+	border-radius: 0.25em !important;
+	background-color: var(--bs-gray-900) !important;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row:not(.digits-mobile_wrapper) .digits-form_input input:focus,
+body.streamit-digits-login-page .digits_ui .digits-form_input_row:not(.digits-mobile_wrapper) .digits-form_input input:focus {
+	border-color: var(--bs-primary) !important;
+	box-shadow: none !important;
+}
+
 body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper,
-body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper.digits-form_border {
+body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper.digits-form_border,
+body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper,
+body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper.digits-form_border {
 	display: flex !important;
 	align-items: stretch !important;
 	width: 100% !important;
@@ -78,12 +109,14 @@ body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper.di
 	overflow: hidden;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper:focus-within {
+body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper:focus-within,
+body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper:focus-within {
 	border-color: var(--bs-primary) !important;
 	box-shadow: none !important;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode,
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode {
 	position: relative !important;
 	left: auto !important;
 	top: auto !important;
@@ -98,7 +131,8 @@ body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode 
 	background: transparent !important;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input,
+body.streamit-digits-login-page .digits_ui .digits-form_input {
 	flex: 1 1 auto !important;
 	width: auto !important;
 	min-width: 0 !important;
@@ -112,11 +146,16 @@ body.streamit-digits-login-page .streamit-digits-login .digits-form_input {
 
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input,
 body.streamit-digits-login-page .streamit-digits-login .digits2_box .digits-form_input input,
+body.streamit-digits-login-page .digits_ui .digits-form_input input,
+body.streamit-digits-login-page .digits_ui .digits2_box .digits-form_input input,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="tel"],
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="email"],
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="text"],
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="password"],
-body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode {
+body.streamit-digits-login-page .digits_ui .digits-form_input input[type="tel"],
+body.streamit-digits-login-page .digits_ui .digits-form_input input[type="email"],
+body.streamit-digits-login-page .digits_ui .digits-form_input input[type="text"],
+body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode,
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode {
 	display: block !important;
 	width: 100% !important;
 	height: auto !important;
@@ -133,46 +172,46 @@ body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode 
 	outline: none !important;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input input::placeholder {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input::placeholder,
+body.streamit-digits-login-page .digits_ui .digits-form_input input::placeholder {
 	color: rgba(var(--bs-white-rgb), 0.55);
 	opacity: 1;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode,
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode {
 	width: 4.5rem !important;
 	padding-left: 0.5rem !important;
 	padding-right: 0.5rem !important;
 	text-align: center !important;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .mobile_field {
+body.streamit-digits-login-page .streamit-digits-login .mobile_field,
+body.streamit-digits-login-page .digits_ui .mobile_field {
 	padding-left: 1em !important;
 }
 
 body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .digits_countryflag,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode img {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode img,
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode .digits_countryflag,
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode img {
 	width: 1.25em !important;
 	height: auto !important;
 	max-height: 1em !important;
 	object-fit: contain !important;
 }
 
-/* Submit — same slot as .submit .btn.btn-primary.w-100 */
-body.streamit-digits-login-page .streamit-digits-login .submit {
+body.streamit-digits-login-page .streamit-digits-login .submit,
+body.streamit-digits-login-page .digits_ui .submit {
 	margin: 0;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_button_row,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_submit_row {
-	margin: 0 !important;
-	padding: 0 !important;
-	width: 100%;
-}
-
-body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button,
-body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button[type="submit"],
-body.streamit-digits-login-page .streamit-digits-login .submit button.digits-form_button,
-body.streamit-digits-login-page .streamit-digits-login .submit .btn.btn-primary {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_button,
+body.streamit-digits-login-page .streamit-digits-login .digits-form_button[type="submit"],
+body.streamit-digits-login-page .streamit-digits-login button.digits-form_button,
+body.streamit-digits-login-page .digits_ui .digits-form_button,
+body.streamit-digits-login-page .digits_ui .digits-form_button[type="submit"],
+body.streamit-digits-login-page .digits_ui button.digits-form_button {
 	display: flex !important;
 	align-items: center !important;
 	justify-content: center !important;
@@ -193,37 +232,33 @@ body.streamit-digits-login-page .streamit-digits-login .submit .btn.btn-primary 
 	cursor: pointer;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button:hover,
-body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button:focus,
-body.streamit-digits-login-page .streamit-digits-login .submit .digits-form_button:active {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_button:hover,
+body.streamit-digits-login-page .streamit-digits-login .digits-form_button:focus,
+body.streamit-digits-login-page .digits_ui .digits-form_button:hover,
+body.streamit-digits-login-page .digits_ui .digits-form_button:focus {
 	color: var(--bs-white) !important;
 	background-color: var(--bs-primary-hover-bg, var(--bs-primary)) !important;
 	border-color: var(--bs-primary-hover-border, var(--bs-primary)) !important;
 	box-shadow: none !important;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_button-text {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_button-text,
+body.streamit-digits-login-page .digits_ui .digits-form_button-text {
 	font-size: 1em !important;
 	font-weight: 400 !important;
 }
 
-/* Digits error messages */
-body.streamit-digits-login-page .streamit-digits-login .digits-form_error,
-body.streamit-digits-login-page .streamit-digits-login .dig_error_message {
-	color: var(--bs-danger) !important;
-	font-size: 0.875rem;
-	margin-top: 0.25rem;
-}
-
-/* Footer — separator / signup / social (matches login.php) */
-body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator {
+body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator,
+body.streamit-digits-login-page .digits_ui .css_prefix-separator {
 	position: relative;
 	text-align: center;
 	margin: 1.5em 0;
 }
 
 body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::before,
-body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::after {
+body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::after,
+body.streamit-digits-login-page .digits_ui .css_prefix-separator::before,
+body.streamit-digits-login-page .digits_ui .css_prefix-separator::after {
 	position: absolute;
 	content: "";
 	top: 50%;
@@ -233,17 +268,20 @@ body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::af
 	transform: translateY(-50%);
 }
 
-body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::before {
+body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::before,
+body.streamit-digits-login-page .digits_ui .css_prefix-separator::before {
 	left: 0;
 	right: auto;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::after {
+body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::after,
+body.streamit-digits-login-page .digits_ui .css_prefix-separator::after {
 	left: auto;
 	right: 0;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator .or-section {
+body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator .or-section,
+body.streamit-digits-login-page .digits_ui .css_prefix-separator .or-section {
 	padding: 0 1.5em;
 	position: relative;
 	z-index: 1;
@@ -251,51 +289,61 @@ body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator .or
 }
 
 body.streamit-digits-login-page .streamit-digits-login .login-form-bottom .text-primary,
-body.streamit-digits-login-page .streamit-digits-login .login-form-bottom h6 {
+body.streamit-digits-login-page .streamit-digits-login .login-form-bottom h6,
+body.streamit-digits-login-page .digits_ui .login-form-bottom .text-primary,
+body.streamit-digits-login-page .digits_ui .login-form-bottom h6 {
 	color: var(--bs-primary) !important;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .css_prefix-social-login-section .mo-openid-app-icons {
+body.streamit-digits-login-page .streamit-digits-login .css_prefix-social-login-section .mo-openid-app-icons,
+body.streamit-digits-login-page .digits_ui .css_prefix-social-login-section .mo-openid-app-icons {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .css_prefix-social-login-section .mo-openid-app-icons p {
+body.streamit-digits-login-page .streamit-digits-login .css_prefix-social-login-section .mo-openid-app-icons p,
+body.streamit-digits-login-page .digits_ui .css_prefix-social-login-section .mo-openid-app-icons p {
 	display: none;
 }
 
-/* RTL */
-html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode {
+html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode,
+html[dir="rtl"] body.streamit-digits-login-page .digits_ui .digits-form_countrycode {
 	border-right: 0 !important;
 	border-left: var(--bs-border-width) solid var(--bs-border-color) !important;
 }
 
 html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .mobile_field,
-html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode {
+html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode,
+html[dir="rtl"] body.streamit-digits-login-page .digits_ui .mobile_field,
+html[dir="rtl"] body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode {
 	direction: ltr;
 	text-align: left;
 }
 
-html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::before {
+html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::before,
+html[dir="rtl"] body.streamit-digits-login-page .digits_ui .css_prefix-separator::before {
 	left: auto;
 	right: 0;
 }
 
-html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::after {
+html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator::after,
+html[dir="rtl"] body.streamit-digits-login-page .digits_ui .css_prefix-separator::after {
 	left: 0;
 	right: auto;
 }
 
 @media (max-width: 767px) {
-	body.streamit-digits-login-page .streamit-digits-login {
+	body.streamit-digits-login-page .streamit-digits-login,
+	body.streamit-digits-login-page:not(:has(.streamit-digits-login)) .digits_ui {
 		width: 100%;
 		padding: 1.25em;
 	}
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
-	body.streamit-digits-login-page .streamit-digits-login {
+	body.streamit-digits-login-page .streamit-digits-login,
+	body.streamit-digits-login-page:not(:has(.streamit-digits-login)) .digits_ui {
 		width: 30em;
 	}
 }
