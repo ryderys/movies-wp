@@ -1,0 +1,182 @@
+/**
+ * Digits phone-login page — match Streamit auth UI.
+ */
+
+body.streamit-digits-login-page .content-area,
+body.streamit-digits-login-page .site-main {
+	display: flex;
+	justify-content: center;
+}
+
+body.streamit-digits-login-page .streamit-digits-login {
+	display: block;
+	position: relative;
+	width: min(38em, 100%);
+	margin: 0 auto;
+	padding: 3.125em;
+	background: rgba(var(--bs-black-rgb), 0.7);
+	border-radius: var(--bs-border-radius);
+	backdrop-filter: blur(1.5625em);
+}
+
+body.streamit-digits-login-page .streamit-digits-login > .logo {
+	display: block;
+	width: 11.25em;
+	max-width: 70%;
+	margin: 0 auto 2.5em;
+}
+
+body.streamit-digits-login-page .digits_ui,
+body.streamit-digits-login-page .digits_embed-form,
+body.streamit-digits-login-page .digits-form_container {
+	width: 100%;
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+body.streamit-digits-login-page .digits-form_container {
+	--dprimary: var(--bs-primary);
+	--daccent: var(--bs-primary);
+	--dform_bg: transparent;
+	--dfield_bg: rgba(var(--bs-black-rgb), 0.5);
+	--dtitle: var(--bs-white);
+	--dbutton_text: var(--bs-white);
+}
+
+body.streamit-digits-login-page .digits-form_heading {
+	color: var(--bs-white);
+	font-size: 1.75rem;
+	font-weight: 700;
+	margin-bottom: 1.5rem;
+	text-align: center;
+}
+
+body.streamit-digits-login-page .digits-form_tab-bar {
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 0.5rem;
+}
+
+body.streamit-digits-login-page .digits-form_tab-item {
+	color: var(--bs-white);
+	font-size: 0.95rem;
+	opacity: 0.55;
+}
+
+body.streamit-digits-login-page .digits-form_tab-item.digits-tab_active {
+	opacity: 1;
+	border-bottom-color: var(--bs-primary);
+}
+
+body.streamit-digits-login-page .digits2_box .digits-form_input input,
+body.streamit-digits-login-page .digits2_box .digits-form_input input[type="text"],
+body.streamit-digits-login-page .digits2_box .digits-form_input textarea,
+body.streamit-digits-login-page .digits-form_input_row .untselect-container--default .untselect-selection--single {
+	border: 1px solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius);
+	background-color: rgba(var(--bs-black-rgb), 0.5);
+	color: var(--bs-white);
+}
+
+body.streamit-digits-login-page .digits2_box .digits-form_input input::placeholder,
+body.streamit-digits-login-page .digits2_box .digits-form_input textarea::placeholder {
+	color: rgba(var(--bs-white-rgb), 0.55);
+}
+
+body.streamit-digits-login-page .digits-form_input label,
+body.streamit-digits-login-page .digits-form_hint,
+body.streamit-digits-login-page .dig_login_signup_bar,
+body.streamit-digits-login-page .digits-form_link {
+	color: var(--bs-white);
+}
+
+body.streamit-digits-login-page .digits-form_input label {
+	font-size: 0.875rem;
+	font-weight: 500;
+	margin-bottom: 0.5rem;
+}
+
+body.streamit-digits-login-page .digits-form_button,
+body.streamit-digits-login-page .digits-form_button[type="submit"] {
+	background-color: var(--bs-primary);
+	border: 1px solid var(--bs-primary);
+	border-radius: var(--bs-border-radius);
+	color: var(--bs-white);
+	font-weight: 600;
+	min-height: 3rem;
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+body.streamit-digits-login-page .digits-form_button:hover,
+body.streamit-digits-login-page .digits-form_button:focus {
+	background-color: var(--bs-primary-hover-bg, var(--bs-primary));
+	border-color: var(--bs-primary-hover-border, var(--bs-primary));
+	color: var(--bs-white);
+}
+
+body.streamit-digits-login-page .digits-form_border.digits-row_active,
+body.streamit-digits-login-page .digits-form_input input:focus,
+body.streamit-digits-login-page .digits-form_input textarea:focus {
+	border-color: var(--bs-primary) !important;
+}
+
+body.streamit-digits-login-page .digits-form_countrycode .countrycode {
+	color: var(--bs-white);
+}
+
+body.streamit-digits-login-page .digits_mobile_inp,
+body.streamit-digits-login-page .digits-form_input input[type="tel"] {
+	direction: ltr;
+	text-align: left;
+}
+
+body.streamit-digits-login-page .protected_by_digits,
+body.streamit-digits-login-page .digits_site_footer_box {
+	display: none !important;
+}
+
+body.streamit-digits-login-page .dig_login_signup_bar a {
+	color: var(--bs-primary);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+body.streamit-digits-login-page .dig_login_signup_bar a:hover {
+	color: var(--bs-primary-hover-bg, var(--bs-primary));
+}
+
+/* RTL */
+html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login {
+	text-align: right;
+}
+
+html[dir="rtl"] body.streamit-digits-login-page .digits-form_input label,
+html[dir="rtl"] body.streamit-digits-login-page .digits-form_hint,
+html[dir="rtl"] body.streamit-digits-login-page .dig_login_signup_bar {
+	text-align: right;
+}
+
+html[dir="rtl"] body.streamit-digits-login-page .digits_mobile_inp,
+html[dir="rtl"] body.streamit-digits-login-page .digits-form_input input[type="tel"],
+html[dir="rtl"] body.streamit-digits-login-page .digits-form_countrycode .countrycode {
+	direction: ltr;
+	text-align: left;
+}
+
+html[dir="rtl"] body.streamit-digits-login-page .digits-form_countrycode {
+	left: auto;
+	right: 0;
+}
+
+html[dir="rtl"] body.streamit-digits-login-page .digits-form_countrycode input[type="text"] {
+	padding-right: 2.75rem;
+	padding-left: 0.5rem;
+}
+
+@media (max-width: 767px) {
+	body.streamit-digits-login-page .streamit-digits-login {
+		padding: 2rem 1.25rem;
+	}
+}
