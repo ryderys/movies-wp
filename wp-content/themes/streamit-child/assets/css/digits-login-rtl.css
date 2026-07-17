@@ -1,6 +1,8 @@
 /**
- * Digits phone-login — mirror Streamit .streamit-login.
- * Targets .streamit-digits-login (PHP shell) and bare .digits_ui (Elementor fallback).
+ * Digits phone-login — Streamit look, Digits field layouts preserved.
+ *
+ * Digits dashboard controls which fields show (email / phone / OTP / password).
+ * This file only skins them; it must not fight Digits phone absolute country-code layout.
  */
 
 body.streamit-digits-login-page .streamit-digits-login,
@@ -45,6 +47,7 @@ body.streamit-digits-login-page .digits_ui .digits-form_logo {
 	display: none !important;
 }
 
+/* Flatten Digits outer shells only — keep field spacing */
 body.streamit-digits-login-page .streamit-digits-login .digits_ui,
 body.streamit-digits-login-page .streamit-digits-login .digits_embed-form,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_page,
@@ -56,7 +59,6 @@ body.streamit-digits-login-page .streamit-digits-login .digits2_box,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_body,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_body_wrapper,
 body.streamit-digits-login-page .streamit-digits-login .digits-form_tab_body,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row,
 body.streamit-digits-login-page .digits_ui .digits_embed-form,
 body.streamit-digits-login-page .digits_ui .digits-form_page,
 body.streamit-digits-login-page .digits_ui .digits-form_container,
@@ -66,8 +68,7 @@ body.streamit-digits-login-page .digits_ui .digits_form_index_section,
 body.streamit-digits-login-page .digits_ui .digits2_box,
 body.streamit-digits-login-page .digits_ui .digits-form_body,
 body.streamit-digits-login-page .digits_ui .digits-form_body_wrapper,
-body.streamit-digits-login-page .digits_ui .digits-form_tab_body,
-body.streamit-digits-login-page .digits_ui .digits-form_input_row {
+body.streamit-digits-login-page .digits_ui .digits-form_tab_body {
 	width: 100% !important;
 	max-width: 100% !important;
 	margin: 0 !important;
@@ -78,84 +79,41 @@ body.streamit-digits-login-page .digits_ui .digits-form_input_row {
 	border: 0 !important;
 }
 
-/* Email / text fields (non-phone rows) — Streamit .form-control */
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row:not(.digits-mobile_wrapper) .digits-form_input input,
-body.streamit-digits-login-page .digits_ui .digits-form_input_row:not(.digits-mobile_wrapper) .digits-form_input input {
-	border: var(--bs-border-width) solid var(--bs-border-color) !important;
-	border-radius: 0.25em !important;
-	background-color: var(--bs-gray-900) !important;
-}
-
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row:not(.digits-mobile_wrapper) .digits-form_input input:focus,
-body.streamit-digits-login-page .digits_ui .digits-form_input_row:not(.digits-mobile_wrapper) .digits-form_input input:focus {
-	border-color: var(--bs-primary) !important;
-	box-shadow: none !important;
-}
-
-body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper,
-body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper.digits-form_border,
-body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper,
-body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper.digits-form_border {
-	display: flex !important;
-	align-items: stretch !important;
+/* Field rows keep Digits vertical rhythm */
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input_row,
+body.streamit-digits-login-page .digits_ui .digits-form_input_row {
+	position: relative;
 	width: 100% !important;
-	height: auto !important;
-	min-height: 0 !important;
-	margin: 0 !important;
+	max-width: 100% !important;
+	margin: 0 0 1.125em !important;
 	padding: 0 !important;
-	border: var(--bs-border-width) solid var(--bs-border-color) !important;
-	border-radius: 0.25em !important;
-	background-color: var(--bs-gray-900) !important;
-	overflow: hidden;
-}
-
-body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper:focus-within,
-body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper:focus-within {
-	border-color: var(--bs-primary) !important;
-	box-shadow: none !important;
-}
-
-body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode,
-body.streamit-digits-login-page .digits_ui .digits-form_countrycode {
-	position: relative !important;
-	left: auto !important;
-	top: auto !important;
-	flex: 0 0 auto !important;
-	width: auto !important;
-	height: auto !important;
 	min-height: 0 !important;
-	margin: 0 !important;
-	padding: 0 !important;
-	border: 0 !important;
-	border-right: var(--bs-border-width) solid var(--bs-border-color) !important;
 	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
 }
 
+/* Generic text / email / password / OTP inputs */
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input,
 body.streamit-digits-login-page .digits_ui .digits-form_input {
-	flex: 1 1 auto !important;
-	width: auto !important;
-	min-width: 0 !important;
-	height: auto !important;
-	min-height: 0 !important;
-	margin: 0 !important;
-	padding: 0 !important;
-	border: 0 !important;
-	background: transparent !important;
+	width: 100%;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input input:not([type="checkbox"]),
-body.streamit-digits-login-page .streamit-digits-login .digits2_box .digits-form_input input:not([type="checkbox"]),
-body.streamit-digits-login-page .digits_ui .digits-form_input input:not([type="checkbox"]),
-body.streamit-digits-login-page .digits_ui .digits2_box .digits-form_input input:not([type="checkbox"]),
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="tel"],
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input:not([type="checkbox"]):not(.countrycode),
+body.streamit-digits-login-page .digits_ui .digits-form_input input:not([type="checkbox"]):not(.countrycode),
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="tel"]:not(.mobile_field),
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="email"],
-body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="text"],
-body.streamit-digits-login-page .digits_ui .digits-form_input input[type="tel"],
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="password"],
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="number"],
+body.streamit-digits-login-page .digits_ui .digits-form_input input[type="tel"]:not(.mobile_field),
 body.streamit-digits-login-page .digits_ui .digits-form_input input[type="email"],
-body.streamit-digits-login-page .digits_ui .digits-form_input input[type="text"],
-body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode,
-body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode {
+body.streamit-digits-login-page .digits_ui .digits-form_input input[type="password"],
+body.streamit-digits-login-page .digits_ui .digits-form_input input[type="number"] {
 	display: block !important;
 	width: 100% !important;
 	height: auto !important;
@@ -165,11 +123,17 @@ body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode
 	font-size: 1em !important;
 	font-weight: 400 !important;
 	color: var(--bs-body-color) !important;
-	background-color: transparent !important;
-	border: 0 !important;
-	border-radius: 0 !important;
+	background-color: var(--bs-gray-900) !important;
+	border: var(--bs-border-width) solid var(--bs-border-color) !important;
+	border-radius: 0.25em !important;
 	box-shadow: none !important;
 	outline: none !important;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input:not([type="checkbox"]):not(.countrycode):focus,
+body.streamit-digits-login-page .digits_ui .digits-form_input input:not([type="checkbox"]):not(.countrycode):focus {
+	border-color: var(--bs-primary) !important;
+	box-shadow: none !important;
 }
 
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input::placeholder,
@@ -178,30 +142,154 @@ body.streamit-digits-login-page .digits_ui .digits-form_input input::placeholder
 	opacity: 1;
 }
 
+/*
+ * Phone field — keep Digits absolute country-code layout.
+ * Digits JS sets inline padding-left on .mobile_field; do not override it.
+ */
+body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper,
+body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper.digits-form_border,
+body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper,
+body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper.digits-form_border {
+	display: block !important;
+	position: relative !important;
+	width: 100% !important;
+	height: auto !important;
+	min-height: 0 !important;
+	margin: 0 0 1.125em !important;
+	padding: 0 !important;
+	overflow: visible;
+	border: var(--bs-border-width) solid var(--bs-border-color) !important;
+	border-radius: 0.25em !important;
+	background-color: var(--bs-gray-900) !important;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper:focus-within,
+body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper:focus-within {
+	border-color: var(--bs-primary) !important;
+	box-shadow: none !important;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper .digits-form_input,
+body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper .digits-form_input {
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	background: transparent !important;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode,
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode {
+	position: absolute !important;
+	left: 0 !important;
+	right: auto !important;
+	top: 0 !important;
+	bottom: 0 !important;
+	z-index: 2 !important;
+	display: flex !important;
+	align-items: center !important;
+	width: auto !important;
+	height: 100% !important;
+	min-height: 0 !important;
+	margin: 0 !important;
+	padding: 0 0.25em 0 0.5em !important;
+	border: 0 !important;
+	background: transparent !important;
+	direction: ltr;
+}
+
 body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode,
-body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode {
-	width: 4.5rem !important;
-	padding-left: 0.5rem !important;
-	padding-right: 0.5rem !important;
-	text-align: center !important;
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode,
+body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode input[type="text"],
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode input[type="text"] {
+	display: inline-block !important;
+	width: auto !important;
+	min-width: 2.75rem !important;
+	max-width: 5rem !important;
+	height: auto !important;
+	min-height: 0 !important;
+	line-height: 1.5 !important;
+	padding: 0.782em 0.25em 0.782em 2rem !important;
+	font-size: 1em !important;
+	font-weight: 400 !important;
+	text-align: left !important;
+	color: var(--bs-body-color) !important;
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	outline: none !important;
+	direction: ltr;
 }
 
-body.streamit-digits-login-page .streamit-digits-login .mobile_field,
-body.streamit-digits-login-page .digits_ui .mobile_field {
-	padding-left: 1em !important;
-}
-
-body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .digits_countryflag,
-body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode img,
-body.streamit-digits-login-page .digits_ui .digits-form_countrycode .digits_countryflag,
-body.streamit-digits-login-page .digits_ui .digits-form_countrycode img {
+body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .digits-field-country_flag,
+body.streamit-digits-login-page .digits_ui .digits-form_countrycode .digits-field-country_flag {
+	position: absolute !important;
+	left: 0.5rem !important;
+	top: 50% !important;
+	transform: translateY(-50%);
 	width: 1.25em !important;
 	height: auto !important;
 	max-height: 1em !important;
 	object-fit: contain !important;
+	pointer-events: none;
 }
 
-/* Tab label spacing — match Streamit .streamit-login label → field gap */
+body.streamit-digits-login-page .streamit-digits-login .digits-mobile_wrapper .mobile_field,
+body.streamit-digits-login-page .digits_ui .digits-mobile_wrapper .mobile_field {
+	display: block !important;
+	width: 100% !important;
+	height: auto !important;
+	min-height: 0 !important;
+	line-height: 1.5 !important;
+	/* Digits JS sets padding-left inline for country code width — keep top/right/bottom only */
+	padding-top: 0.782em !important;
+	padding-right: 1em !important;
+	padding-bottom: 0.782em !important;
+	font-size: 1em !important;
+	font-weight: 400 !important;
+	color: var(--bs-body-color) !important;
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	outline: none !important;
+	direction: ltr;
+	text-align: left;
+}
+
+/* OTP / step fields */
+body.streamit-digits-login-page .streamit-digits-login .dig_verify_mobile_otp input,
+body.streamit-digits-login-page .streamit-digits-login .dig_verify_otp_input,
+body.streamit-digits-login-page .streamit-digits-login input.dig-login-otp,
+body.streamit-digits-login-page .digits_ui .dig_verify_mobile_otp input,
+body.streamit-digits-login-page .digits_ui .dig_verify_otp_input,
+body.streamit-digits-login-page .digits_ui input.dig-login-otp {
+	display: block !important;
+	width: 100% !important;
+	padding: 0.782em 1em !important;
+	font-size: 1em !important;
+	line-height: 1.5 !important;
+	color: var(--bs-body-color) !important;
+	background-color: var(--bs-gray-900) !important;
+	border: var(--bs-border-width) solid var(--bs-border-color) !important;
+	border-radius: 0.25em !important;
+	box-shadow: none !important;
+	letter-spacing: 0.15em;
+	text-align: center;
+}
+
+body.streamit-digits-login-page .streamit-digits-login .digits-form_resend_otp,
+body.streamit-digits-login-page .streamit-digits-login .dig_resendotp,
+body.streamit-digits-login-page .digits_ui .digits-form_resend_otp,
+body.streamit-digits-login-page .digits_ui .dig_resendotp {
+	display: block;
+	margin: 0.75em 0 0;
+	font-size: 0.875em;
+	color: var(--bs-primary);
+	text-align: center;
+}
+
+/* Tab label spacing */
 body.streamit-digits-login-page .streamit-digits-login .digits-form_tab-bar,
 body.streamit-digits-login-page .digits_ui .digits-form_tab-bar {
 	margin: 0 0 1.125em !important;
@@ -219,15 +307,10 @@ body.streamit-digits-login-page .digits_ui .digits-form_tab-item {
 	color: var(--bs-white);
 }
 
-body.streamit-digits-login-page .streamit-digits-login .digits-form_tab_body,
-body.streamit-digits-login-page .digits_ui .digits-form_tab_body {
-	margin: 0 !important;
-	padding: 0 !important;
-}
-
-/* Remember me — align like Streamit .form-check */
+/* Remember me */
 body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme,
 body.streamit-digits-login-page .digits_ui .digits-form_rememberme {
+	height: auto !important;
 	margin: 0 0 1.125em !important;
 	padding: 0 !important;
 }
@@ -256,6 +339,7 @@ body.streamit-digits-login-page .digits_ui .digits-form_rememberme .dig_input_wr
 body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme .dig_input_wrapper > div,
 body.streamit-digits-login-page .digits_ui .digits-form_rememberme .dig_input_wrapper > div {
 	margin: 0;
+	padding: 0 !important;
 	line-height: 1.5;
 	color: var(--bs-white);
 }
@@ -282,6 +366,7 @@ body.streamit-digits-login-page .digits_ui .digits-form_rememberme input[type="c
 	background-color: transparent !important;
 }
 
+/* Submit */
 body.streamit-digits-login-page .submit,
 body.streamit-digits-login-page .digits_ui .submit {
 	margin: 0;
@@ -329,6 +414,7 @@ body.streamit-digits-login-page .digits_ui .digits-form_button-text {
 	font-weight: 400 !important;
 }
 
+/* Footer */
 body.streamit-digits-login-page .streamit-digits-login .css_prefix-separator,
 body.streamit-digits-login-page .digits_ui .css_prefix-separator {
 	position: relative;
@@ -388,18 +474,12 @@ body.streamit-digits-login-page .digits_ui .css_prefix-social-login-section .mo-
 	display: none;
 }
 
+/* RTL page, but phone fields stay LTR (Digits convention) */
 html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode,
 html[dir="rtl"] body.streamit-digits-login-page .digits_ui .digits-form_countrycode {
-	border-right: 0 !important;
-	border-left: var(--bs-border-width) solid var(--bs-border-color) !important;
-}
-
-html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .mobile_field,
-html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .digits-form_countrycode .countrycode,
-html[dir="rtl"] body.streamit-digits-login-page .digits_ui .mobile_field,
-html[dir="rtl"] body.streamit-digits-login-page .digits_ui .digits-form_countrycode .countrycode {
-	direction: ltr;
-	text-align: left;
+	left: 0 !important;
+	right: auto !important;
+	border: 0 !important;
 }
 
 html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login .digits-form_rememberme .dig_input_wrapper,

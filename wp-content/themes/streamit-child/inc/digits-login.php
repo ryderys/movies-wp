@@ -198,10 +198,74 @@ function streamit_child_digits_login_device_limit( $validation_error, $user ) {
 add_filter( 'digits_check_user_login', 'streamit_child_digits_login_device_limit', 20, 2 );
 
 /**
- * Streamit-style footer links below the Digits form.
+ * Whether a URL points at the current Digits phone-login page.
+ *
+ * @param string $url Candidate URL.
+ * @return bool
+ */
+function streamit_child_is_digits_login_url( $url ) {
+	if ( empty( $url ) ) {
+		return false;
+	}
+
+	$current = trailingslashit( (string) get_permalink() );
+	$target  = trailingslashit( $url );
+
+	if ( $current && untrailingslashit( $current ) === untrailingslashit( $target ) ) {
+		return true;
+	}
+
+	$path = wp_parse_url( $target, PHP_URL_PATH );
+
+	return is_string( $path ) && false !== strpos( $path, '/phone-login' );
+}
+
+/**
+ * Streamit-style footer below the Digits form.
+ *
+ * Skips the Redux "signup" CTA when it points back at phone-login
+ * (e.g. title "ورود با شماره همراه"), so Digits settings stay the source of truth.
  */
 function streamit_child_digits_login_footer_markup() {
 	global $streamit_options;
+
+	$signup_html = '';
+	if ( ! empty( $streamit_options['streamit_signup_link'] ) ) {
+		$signup_link = streamit_signup_page_url();
+
+		if ( ! streamit_child_is_digits_login_url( $signup_link ) ) {
+			$signup_title = ( ! empty( $streamit_options['streamit_signup_title'] ) )
+				? $streamit_options['streamit_signup_title']
+				: esc_html__( 'Signup', 'streamit' );
+
+			ob_start();
+			?>
+			<div class="login-form-bottom">
+				<div class="d-flex justify-content-center align-items-center gap-2 links my-3">
+					<a href="<?php echo esc_url( $signup_link ); ?>" class="st-sub-card setting-dropdown">
+						<h6 class="m-0 text-primary"><?php echo esc_html( $signup_title ); ?></h6>
+					</a>
+				</div>
+			</div>
+			<?php
+			$signup_html = ob_get_clean();
+		}
+	}
+
+	$social_html = '';
+	if ( shortcode_exists( 'miniorange_social_login' ) ) {
+		ob_start();
+		?>
+		<div class="css_prefix-social-login-section">
+			<?php echo do_shortcode( '[miniorange_social_login]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<?php
+		$social_html = ob_get_clean();
+	}
+
+	if ( '' === $signup_html && '' === $social_html ) {
+		return '';
+	}
 
 	ob_start();
 	?>
@@ -209,29 +273,8 @@ function streamit_child_digits_login_footer_markup() {
 		<span class="or-section"><?php echo esc_html__( 'یا', 'streamit' ); ?></span>
 	</div>
 	<?php
-	if ( ! empty( $streamit_options['streamit_signup_link'] ) ) :
-		$signup_link  = streamit_signup_page_url();
-		$signup_title = ( ! empty( $streamit_options['streamit_signup_title'] ) )
-			? $streamit_options['streamit_signup_title']
-			: esc_html__( 'Signup', 'streamit' );
-		?>
-		<div class="login-form-bottom">
-			<div class="d-flex justify-content-center align-items-center gap-2 links my-3">
-				<a href="<?php echo esc_url( $signup_link ); ?>" class="st-sub-card setting-dropdown">
-					<h6 class="m-0 text-primary"><?php echo esc_html( $signup_title ); ?></h6>
-				</a>
-			</div>
-		</div>
-		<?php
-	endif;
-
-	if ( shortcode_exists( 'miniorange_social_login' ) ) :
-		?>
-		<div class="css_prefix-social-login-section">
-			<?php echo do_shortcode( '[miniorange_social_login]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		</div>
-		<?php
-	endif;
+	echo $signup_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $social_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	return ob_get_clean();
 }
