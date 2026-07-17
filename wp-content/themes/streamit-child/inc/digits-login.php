@@ -421,7 +421,7 @@ function streamit_child_digits_login_body_class( $classes ) {
 add_filter( 'body_class', 'streamit_child_digits_login_body_class' );
 
 /**
- * Enqueue phone-login styles on the Digits page only.
+ * Enqueue phone-login styles/scripts on the Digits page only.
  */
 function streamit_child_enqueue_digits_login_styles() {
 	if ( ! streamit_child_is_digits_login_page() ) {
@@ -429,6 +429,7 @@ function streamit_child_enqueue_digits_login_styles() {
 	}
 
 	$css_path = get_stylesheet_directory() . '/assets/css/digits-login-rtl.css';
+	$js_path  = get_stylesheet_directory() . '/assets/js/digits-login.js';
 	$deps     = array( 'child-style' );
 
 	foreach ( array( 'digits-login-style', 'digits-form', 'digits-form-style', 'digits-main' ) as $handle ) {
@@ -442,6 +443,14 @@ function streamit_child_enqueue_digits_login_styles() {
 		get_stylesheet_directory_uri() . '/assets/css/digits-login-rtl.css',
 		$deps,
 		file_exists( $css_path ) ? (string) filemtime( $css_path ) : '1.0'
+	);
+
+	wp_enqueue_script(
+		'streamit-child-digits-login',
+		get_stylesheet_directory_uri() . '/assets/js/digits-login.js',
+		array(),
+		file_exists( $js_path ) ? (string) filemtime( $js_path ) : '1.0',
+		true
 	);
 }
 add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_digits_login_styles', 999 );
