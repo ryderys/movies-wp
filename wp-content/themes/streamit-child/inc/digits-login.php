@@ -158,11 +158,16 @@ function streamit_child_enqueue_digits_login_styles() {
 
 	$css_path = get_stylesheet_directory() . '/assets/css/digits-login-rtl.css';
 
+	$deps = array( 'child-style' );
+	if ( wp_style_is( 'digits-login-style', 'registered' ) || wp_style_is( 'digits-login-style', 'enqueued' ) ) {
+		$deps[] = 'digits-login-style';
+	}
+
 	wp_enqueue_style(
 		'streamit-child-digits-login',
 		get_stylesheet_directory_uri() . '/assets/css/digits-login-rtl.css',
-		array( 'child-style' ),
+		$deps,
 		file_exists( $css_path ) ? (string) filemtime( $css_path ) : '1.0'
 	);
 }
-add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_digits_login_styles', 100 );
+add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_digits_login_styles', 120 );
