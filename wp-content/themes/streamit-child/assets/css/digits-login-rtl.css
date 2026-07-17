@@ -1,177 +1,286 @@
-/**
- * Digits phone-login — Streamit layout shell only.
- * Colors come from Digits settings (--dprimary, --daccent, etc.).
- */
-
-body.streamit-digits-login-page .content-area,
-body.streamit-digits-login-page .site-main,
-body.streamit-digits-login-page .entry-content {
-	display: flex;
-	justify-content: center;
-}
-
-body.streamit-digits-login-page .streamit-digits-login {
-	display: block;
-	position: relative;
-	width: min(38em, calc(100% - 2rem));
-	margin: 2rem auto;
-	padding: 3.125em;
-	background: rgba(var(--bs-black-rgb), 0.7);
-	border-radius: var(--bs-border-radius);
-	backdrop-filter: blur(1.5625em);
-	box-sizing: border-box;
-}
-
-body.streamit-digits-login-page .streamit-digits-login > .logo {
-	display: block;
-	width: 11.25em;
-	max-width: 70%;
-	margin: 0 auto 2.5em;
-}
-
-/* Let the form fill the Streamit card; do not override Digits color tokens. */
-body.streamit-digits-login-page .digits_ui,
-body.streamit-digits-login-page .digits_embed-form,
-body.streamit-digits-login-page .digits-form_page {
-	min-height: 0;
-	display: block;
-	width: 100%;
-	margin: 0;
-	padding: 0;
-	background: transparent;
-}
-
-body.streamit-digits-login-page .digits-form_container {
-	width: 100% !important;
-	max-width: 100% !important;
-	margin: 0;
-	padding: 0 !important;
-	box-sizing: border-box;
-}
-
-body.streamit-digits-login-page .digits-form_wrapper {
-	width: 100%;
-}
-
-/* Typography: align with Streamit login (smaller than Digits defaults). */
-body.streamit-digits-login-page .digits-form_heading {
-	font-size: 1.375rem;
-	line-height: 1.3;
-	font-weight: 700;
-	margin-bottom: 1.25rem;
-	text-align: center;
-	color: var(--dtitle);
-}
-
-body.streamit-digits-login-page .digits-form_tab-bar {
-	justify-content: center;
-	gap: 0.75rem;
-	margin-bottom: 0.25rem;
-}
-
-body.streamit-digits-login-page .digits-form_tab-item {
-	font-size: 0.875rem;
-	font-weight: 600;
-}
-
-body.streamit-digits-login-page .digits-form_input label,
-body.streamit-digits-login-page .digits-form_hint,
-body.streamit-digits-login-page .dig_login_signup_bar,
-body.streamit-digits-login-page .digits-form_link {
-	font-size: 0.875rem;
-	color: var(--dtitle);
-}
-
-body.streamit-digits-login-page .digits-form_input label {
-	font-weight: 500;
-	margin-bottom: 0.5rem;
-}
-
-body.streamit-digits-login-page .digits2_box .digits-form_input input,
-body.streamit-digits-login-page .digits2_box .digits-form_input input[type="text"],
-body.streamit-digits-login-page .digits2_box .digits-form_input textarea,
-body.streamit-digits-login-page .digits-form_input_row .untselect-container--default .untselect-selection--single {
-	height: 2.75rem;
-	line-height: 2.75rem;
-	font-size: 0.9375rem;
-	padding: 0 1rem;
-	border-radius: var(--bs-border-radius, 0.25rem);
-}
-
-body.streamit-digits-login-page .digits-form_input_row {
-	margin-bottom: 1rem;
-}
-
-body.streamit-digits-login-page .digits-form_button,
-body.streamit-digits-login-page .digits-form_button[type="submit"] {
-	min-height: 2.5rem;
-	height: auto;
-	line-height: 1.2;
-	padding: 0.65rem 1rem;
-	border-radius: var(--bs-border-radius, 0.25rem);
-}
-
-body.streamit-digits-login-page .digits-form_button-text {
-	font-size: 1rem;
-	font-weight: 600;
-}
-
-body.streamit-digits-login-page .dig_login_signup_bar {
-	margin-top: 1.25rem;
-	font-size: 0.875rem;
-}
-
-body.streamit-digits-login-page .dig_login_signup_bar a {
-	color: var(--dprimary);
-	font-weight: 600;
-	text-decoration: none;
-}
-
-body.streamit-digits-login-page .dig_login_signup_bar a:hover {
-	opacity: 0.85;
-}
-
-body.streamit-digits-login-page .digits_mobile_inp,
-body.streamit-digits-login-page .digits-form_input input[type="tel"],
-body.streamit-digits-login-page .digits-form_countrycode .countrycode {
-	direction: ltr;
-	text-align: left;
-}
-
-body.streamit-digits-login-page .protected_by_digits,
-body.streamit-digits-login-page .digits_site_footer_box {
-	display: none !important;
-}
-
-/* RTL */
-html[dir="rtl"] body.streamit-digits-login-page .streamit-digits-login {
-	text-align: right;
-}
-
-html[dir="rtl"] body.streamit-digits-login-page .digits-form_input label,
-html[dir="rtl"] body.streamit-digits-login-page .digits-form_hint,
-html[dir="rtl"] body.streamit-digits-login-page .dig_login_signup_bar {
-	text-align: right;
-}
-
-html[dir="rtl"] body.streamit-digits-login-page .digits-form_countrycode {
-	left: auto;
-	right: 0;
-}
-
-html[dir="rtl"] body.streamit-digits-login-page .digits-form_countrycode input[type="text"] {
-	padding-right: 2.75rem;
-	padding-left: 0.5rem;
-}
-
-@media (max-width: 767px) {
-	body.streamit-digits-login-page .streamit-digits-login {
-		width: calc(100% - 1.5rem);
-		margin: 1rem auto;
-		padding: 1.5rem 1.25rem;
-	}
-
-	body.streamit-digits-login-page .streamit-digits-login > .logo {
-		margin-bottom: 1.5rem;
-	}
-}
+/**
+ * Digits phone-login — match Streamit .streamit-login / #streamit-login-form.
+ * Theme card styles come from .streamit-login; this file only resets Digits UI.
+ */
+
+/* Center the card like the native sign-in page column */
+body.streamit-digits-login-page .content-area,
+body.streamit-digits-login-page .site-main,
+body.streamit-digits-login-page .entry-content,
+body.streamit-digits-login-page .elementor-widget-shortcode,
+body.streamit-digits-login-page .elementor-widget-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+body.streamit-digits-login-page .streamit-login {
+	width: min(38em, 100%);
+	box-sizing: border-box;
+}
+
+body.streamit-digits-login-page .streamit-login label,
+body.streamit-digits-login-page .streamit-login .digits-streamit-label {
+	color: var(--bs-white);
+}
+
+/* Strip Digits page chrome — Streamit login has none of this */
+body.streamit-digits-login-page .streamit-login .digits-form_heading,
+body.streamit-digits-login-page .streamit-login .digits-form_tab-bar,
+body.streamit-digits-login-page .streamit-login .digits-form_button_ic,
+body.streamit-digits-login-page .streamit-login .dig_login_signup_bar,
+body.streamit-digits-login-page .streamit-login .protected_by_digits,
+body.streamit-digits-login-page .streamit-login .digits_site_footer_box,
+body.streamit-digits-login-page .streamit-login .digits-form_logo,
+body.streamit-digits-login-page .streamit-login .digits-form_rememberme,
+body.streamit-digits-login-page .streamit-login .digits-form_forgot_password {
+	display: none !important;
+}
+
+/* Flatten Digits wrappers to transparent shells */
+body.streamit-digits-login-page .streamit-login .digits_ui,
+body.streamit-digits-login-page .streamit-login .digits_embed-form,
+body.streamit-digits-login-page .streamit-login .digits-form_page,
+body.streamit-digits-login-page .streamit-login .digits-form_container,
+body.streamit-digits-login-page .streamit-login .digits-form_wrapper,
+body.streamit-digits-login-page .streamit-login .digits-form_login,
+body.streamit-digits-login-page .streamit-login .digits_form_index_section,
+body.streamit-digits-login-page .streamit-login .digits2_box,
+body.streamit-digits-login-page .streamit-login .digits-form_body,
+body.streamit-digits-login-page .streamit-login .digits-form_body_wrapper,
+body.streamit-digits-login-page .streamit-login .digits-form_tab_body,
+body.streamit-digits-login-page .streamit-login .digits-form_input_row {
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	min-height: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	border: 0 !important;
+}
+
+/* Phone field — one Streamit .form-control row */
+body.streamit-digits-login-page .streamit-login .digits-mobile_wrapper,
+body.streamit-digits-login-page .streamit-login .digits-mobile_wrapper.digits-form_border {
+	display: flex !important;
+	align-items: stretch !important;
+	width: 100% !important;
+	height: auto !important;
+	min-height: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: var(--bs-border-width) solid var(--bs-border-color) !important;
+	border-radius: 0.25em !important;
+	background-color: var(--bs-gray-900) !important;
+	overflow: hidden;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-mobile_wrapper:focus-within {
+	border-color: var(--bs-primary) !important;
+	box-shadow: none !important;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-form_countrycode {
+	position: relative !important;
+	left: auto !important;
+	top: auto !important;
+	flex: 0 0 auto !important;
+	width: auto !important;
+	height: auto !important;
+	min-height: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-right: var(--bs-border-width) solid var(--bs-border-color) !important;
+	background: transparent !important;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-form_input {
+	flex: 1 1 auto !important;
+	width: auto !important;
+	min-width: 0 !important;
+	height: auto !important;
+	min-height: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+}
+
+/* Inputs — match .form-control from Streamit theme */
+body.streamit-digits-login-page .streamit-login .digits-form_input input,
+body.streamit-digits-login-page .streamit-login .digits2_box .digits-form_input input,
+body.streamit-digits-login-page .streamit-login .digits-form_input input[type="tel"],
+body.streamit-digits-login-page .streamit-login .digits-form_input input[type="email"],
+body.streamit-digits-login-page .streamit-login .digits-form_input input[type="text"],
+body.streamit-digits-login-page .streamit-login .digits-form_input input[type="password"],
+body.streamit-digits-login-page .streamit-login .digits-form_countrycode .countrycode {
+	display: block !important;
+	width: 100% !important;
+	height: auto !important;
+	min-height: 0 !important;
+	line-height: 1.5 !important;
+	padding: 0.782em 1em !important;
+	font-size: 1em !important;
+	font-weight: 400 !important;
+	color: var(--bs-body-color) !important;
+	background-color: transparent !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-form_input input::placeholder {
+	color: rgba(var(--bs-white-rgb), 0.55);
+	opacity: 1;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-form_countrycode .countrycode {
+	width: 4.5rem !important;
+	padding-left: 0.5rem !important;
+	padding-right: 0.5rem !important;
+	text-align: center !important;
+}
+
+body.streamit-digits-login-page .streamit-login .mobile_field {
+	padding-left: 1em !important;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-form_countrycode .digits_countryflag,
+body.streamit-digits-login-page .streamit-login .digits-form_countrycode img {
+	width: 1.25em !important;
+	height: auto !important;
+	max-height: 1em !important;
+	object-fit: contain !important;
+}
+
+/* Submit — match .btn.btn-primary.w-100 inside .submit */
+body.streamit-digits-login-page .streamit-login .digits-form_button_row,
+body.streamit-digits-login-page .streamit-login .digits-form_submit_row {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-form_button,
+body.streamit-digits-login-page .streamit-login .digits-form_button[type="submit"],
+body.streamit-digits-login-page .streamit-login button.digits-form_button {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	width: 100% !important;
+	margin: 1.125em 0 0 !important;
+	padding: 0.75em 1.125em !important;
+	min-height: 2.5em !important;
+	height: auto !important;
+	line-height: 1.5 !important;
+	font-size: 1em !important;
+	font-weight: 400 !important;
+	color: var(--bs-white) !important;
+	background-color: var(--bs-primary) !important;
+	background-image: none !important;
+	border: 1px solid var(--bs-primary) !important;
+	border-radius: var(--bs-border-radius) !important;
+	box-shadow: none !important;
+	cursor: pointer;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-form_button:hover,
+body.streamit-digits-login-page .streamit-login .digits-form_button:focus,
+body.streamit-digits-login-page .streamit-login .digits-form_button:active {
+	color: var(--bs-white) !important;
+	background-color: var(--bs-primary-hover-bg, var(--bs-primary)) !important;
+	border-color: var(--bs-primary-hover-border, var(--bs-primary)) !important;
+	box-shadow: none !important;
+}
+
+body.streamit-digits-login-page .streamit-login .digits-form_button-text {
+	font-size: 1em !important;
+	font-weight: 400 !important;
+}
+
+/* Streamit footer (separator / signup / social) */
+body.streamit-digits-login-page .streamit-login .css_prefix-separator {
+	position: relative;
+	text-align: center;
+	margin: 1.5em 0;
+}
+
+body.streamit-digits-login-page .streamit-login .css_prefix-separator::before,
+body.streamit-digits-login-page .streamit-login .css_prefix-separator::after {
+	position: absolute;
+	content: "";
+	top: 50%;
+	height: 1px;
+	width: 45%;
+	background: var(--bs-border-color);
+	transform: translateY(-50%);
+}
+
+body.streamit-digits-login-page .streamit-login .css_prefix-separator::before {
+	left: 0;
+	right: auto;
+}
+
+body.streamit-digits-login-page .streamit-login .css_prefix-separator::after {
+	left: auto;
+	right: 0;
+}
+
+body.streamit-digits-login-page .streamit-login .css_prefix-separator .or-section {
+	padding: 0 1.5em;
+	position: relative;
+	z-index: 1;
+	color: var(--bs-white);
+}
+
+body.streamit-digits-login-page .streamit-login .login-form-bottom .text-primary,
+body.streamit-digits-login-page .streamit-login .login-form-bottom h6 {
+	color: var(--bs-primary) !important;
+}
+
+body.streamit-digits-login-page .streamit-login .css_prefix-social-login-section .mo-openid-app-icons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+body.streamit-digits-login-page .streamit-login .css_prefix-social-login-section .mo-openid-app-icons p {
+	display: none;
+}
+
+/* RTL */
+html[dir="rtl"] body.streamit-digits-login-page .streamit-login .digits-form_countrycode {
+	border-right: 0 !important;
+	border-left: var(--bs-border-width) solid var(--bs-border-color) !important;
+}
+
+html[dir="rtl"] body.streamit-digits-login-page .streamit-login .mobile_field,
+html[dir="rtl"] body.streamit-digits-login-page .streamit-login .digits-form_countrycode .countrycode {
+	direction: ltr;
+	text-align: left;
+}
+
+html[dir="rtl"] body.streamit-digits-login-page .streamit-login .css_prefix-separator::before {
+	left: auto;
+	right: 0;
+}
+
+html[dir="rtl"] body.streamit-digits-login-page .streamit-login .css_prefix-separator::after {
+	left: 0;
+	right: auto;
+}
+
+@media (max-width: 767px) {
+	body.streamit-digits-login-page .streamit-login {
+		width: 100%;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+	body.streamit-digits-login-page .streamit-login {
+		width: 30em;
+	}
+}
+

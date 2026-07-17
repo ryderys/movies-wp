@@ -3,7 +3,7 @@
  * Digits phone-login integration for Streamit child theme.
  *
  * - Enforces Streamit device limits on Digits login (not registration).
- * - Styles the phone-login page to match Streamit auth UI.
+ * - Renders phone-login with the same structure/classes as streamit-login.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -99,6 +99,66 @@ function streamit_child_digits_login_device_limit( $validation_error, $user ) {
 add_filter( 'digits_check_user_login', 'streamit_child_digits_login_device_limit', 20, 2 );
 
 /**
+ * Match Streamit login button copy on the phone-login page.
+ *
+ * @param string $translated Translated text.
+ * @param string $text       Original text.
+ * @param string $domain     Text domain.
+ * @return string
+ */
+function streamit_child_digits_login_strings( $translated, $text, $domain ) {
+	if ( ! streamit_child_is_digits_login_page() || 'digits' !== $domain ) {
+		return $translated;
+	}
+
+	if ( 'Continue' === $text ) {
+		return esc_html__( 'Login', 'streamit' );
+	}
+
+	return $translated;
+}
+add_filter( 'gettext', 'streamit_child_digits_login_strings', 20, 3 );
+
+/**
+ * Streamit-style footer links below the Digits form.
+ */
+function streamit_child_digits_login_footer_markup() {
+	global $streamit_options;
+
+	ob_start();
+	?>
+	<div class="css_prefix-separator">
+		<span class="or-section"><?php echo esc_html__( 'یا', 'streamit' ); ?></span>
+	</div>
+	<?php
+	if ( ! empty( $streamit_options['streamit_signup_link'] ) ) :
+		$signup_link  = streamit_signup_page_url();
+		$signup_title = ( ! empty( $streamit_options['streamit_signup_title'] ) )
+			? $streamit_options['streamit_signup_title']
+			: esc_html__( 'Signup', 'streamit' );
+		?>
+		<div class="login-form-bottom">
+			<div class="d-flex justify-content-center align-items-center gap-2 links my-3">
+				<a href="<?php echo esc_url( $signup_link ); ?>" class="st-sub-card setting-dropdown">
+					<h6 class="m-0 text-primary"><?php echo esc_html( $signup_title ); ?></h6>
+				</a>
+			</div>
+		</div>
+		<?php
+	endif;
+
+	if ( shortcode_exists( 'miniorange_social_login' ) ) :
+		?>
+		<div class="css_prefix-social-login-section">
+			<?php echo do_shortcode( '[miniorange_social_login]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
+		<?php
+	endif;
+
+	return ob_get_clean();
+}
+
+/**
  * Add a body class on the phone-login page.
  *
  * @param string[] $classes Body classes.
@@ -114,7 +174,7 @@ function streamit_child_digits_login_body_class( $classes ) {
 add_filter( 'body_class', 'streamit_child_digits_login_body_class' );
 
 /**
- * Wrap Digits shortcode output in Streamit auth markup.
+ * Wrap Digits shortcode output in Streamit login markup.
  *
  * @param string $content Post content.
  * @return string
@@ -137,11 +197,23 @@ function streamit_child_wrap_digits_login_content( $content ) {
 
 	ob_start();
 	?>
-	<div class="streamit-login streamit-digits-login">
+	<div class="streamit-login">
 		<a href="<?php echo esc_url( home_url() ); ?>">
 			<img class="img-fluid logo" src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $site_name ); ?>">
 		</a>
-		<?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+
+		<div class="digits-streamit-form">
+			<div class="login-fields row">
+				<div class="mb-3 position-relative col-md-12 digits-phone-field">
+					<label class="digits-streamit-label" for="digits_phone">
+						<?php esc_html_e( 'Phone Number', 'digits' ); ?>
+					</label>
+					<?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
+			</div>
+
+			<?php echo streamit_child_digits_login_footer_markup(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</div>
 	</div>
 	<?php
 	return ob_get_clean();
@@ -157,10 +229,12 @@ function streamit_child_enqueue_digits_login_styles() {
 	}
 
 	$css_path = get_stylesheet_directory() . '/assets/css/digits-login-rtl.css';
+	$deps     = array( 'child-style' );
 
-	$deps = array( 'child-style' );
-	if ( wp_style_is( 'digits-login-style', 'registered' ) || wp_style_is( 'digits-login-style', 'enqueued' ) ) {
-		$deps[] = 'digits-login-style';
+	foreach ( array( 'digits-login-style', 'digits-form', 'digits-form-style', 'digits-main' ) as $handle ) {
+		if ( wp_style_is( $handle, 'registered' ) || wp_style_is( $handle, 'enqueued' ) ) {
+			$deps[] = $handle;
+		}
 	}
 
 	wp_enqueue_style(
@@ -170,4 +244,4 @@ function streamit_child_enqueue_digits_login_styles() {
 		file_exists( $css_path ) ? (string) filemtime( $css_path ) : '1.0'
 	);
 }
-add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_digits_login_styles', 120 );
+add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_digits_login_styles', 999 );
