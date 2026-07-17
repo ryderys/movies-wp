@@ -3,17 +3,6 @@
  * Native sign-in page (.streamit-login without .streamit-digits-login) is never targeted.
  */
 
-/* Center the card like the native sign-in page column */
-body.streamit-digits-login-page .content-area,
-body.streamit-digits-login-page .site-main,
-body.streamit-digits-login-page .entry-content,
-body.streamit-digits-login-page .elementor-widget-shortcode,
-body.streamit-digits-login-page .elementor-widget-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
 body.streamit-digits-login-page .streamit-digits-login {
 	width: min(38em, 100%);
 	box-sizing: border-box;
