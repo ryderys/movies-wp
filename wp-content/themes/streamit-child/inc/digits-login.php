@@ -25,7 +25,32 @@ function streamit_child_is_digits_login_request() {
 }
 
 /**
- * Whether the current front-end view is the configured sign-in page.
+ * Whether a page intentionally renders the Digits login shortcode.
+ *
+ * Do not key off streamit_signin_link — that option points at the native
+ * Streamit login page and must not receive Digits-only wrappers or CSS.
+ *
+ * @param WP_Post|null $post Optional page object.
+ * @return bool
+ */
+function streamit_child_page_has_digits_login_shortcode( $post = null ) {
+	if ( null === $post ) {
+		$post = get_queried_object();
+	}
+
+	if ( ! $post instanceof WP_Post || 'page' !== $post->post_type ) {
+		return false;
+	}
+
+	$content = $post->post_content;
+
+	return has_shortcode( $content, 'df-form-login' )
+		|| has_shortcode( $content, 'df-form' )
+		|| false !== strpos( $content, '[df-form-login' );
+}
+
+/**
+ * Whether the current front-end view is the Digits phone-login page only.
  */
 function streamit_child_is_digits_login_page() {
 	if ( is_admin() ) {
@@ -36,13 +61,28 @@ function streamit_child_is_digits_login_page() {
 		return true;
 	}
 
-	global $streamit_options;
+	return streamit_child_page_has_digits_login_shortcode();
+}
 
-	if ( ! empty( $streamit_options['streamit_signin_link'] ) ) {
-		return is_page( (int) $streamit_options['streamit_signin_link'] );
+/**
+ * Whether rendered content is a Digits login form (not Streamit login).
+ *
+ * @param string $content Rendered post content.
+ * @return bool
+ */
+function streamit_child_content_is_digits_login_form( $content ) {
+	if ( empty( $content ) ) {
+		return false;
 	}
 
-	return false;
+	if ( false !== strpos( $content, 'streamit-login-form' ) || false !== strpos( $content, 'id="streamit-login-form"' ) ) {
+		return false;
+	}
+
+	return false !== strpos( $content, 'digits_ui' )
+		|| false !== strpos( $content, 'digits-form_container' )
+		|| false !== strpos( $content, 'digits_embed-form' )
+		|| false !== strpos( $content, 'df-form' );
 }
 
 /**
@@ -184,7 +224,7 @@ function streamit_child_wrap_digits_login_content( $content ) {
 		return $content;
 	}
 
-	if ( false === strpos( $content, 'digits' ) && false === strpos( $content, 'df-form' ) ) {
+	if ( ! streamit_child_content_is_digits_login_form( $content ) ) {
 		return $content;
 	}
 
@@ -197,7 +237,7 @@ function streamit_child_wrap_digits_login_content( $content ) {
 
 	ob_start();
 	?>
-	<div class="streamit-login">
+	<div class="streamit-login streamit-digits-login">
 		<a href="<?php echo esc_url( home_url() ); ?>">
 			<img class="img-fluid logo" src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $site_name ); ?>">
 		</a>
