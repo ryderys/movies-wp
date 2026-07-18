@@ -20,6 +20,7 @@ services:
       WP_SITEURL: ${WP_SITEURL:-}
     volumes:
       - wp_content:/var/www/html/wp-content
+      - ./php.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
     restart: unless-stopped
     depends_on:
       - redis

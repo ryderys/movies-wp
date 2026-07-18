@@ -354,6 +354,72 @@ add_filter(
 );
 
 /**
+ * Purge Streamit object cache + WP Rocket page cache after content row updates.
+ *
+ * Admin reads with streamit_disable_cache=true, so the edit screen looks fresh
+ * while the frontend can keep serving a cached movie/tvshow object (post_content).
+ */
+function streamit_child_purge_after_content_update( $object_type, $object_id, $prepared_data = array() ) {
+	$object_type = sanitize_key( (string) $object_type );
+	$object_id   = absint( $object_id );
+	if ( ! $object_type || ! $object_id ) {
+		return;
+	}
+
+	if ( function_exists( 'streamit_child_invalidate_object_meta_cache' ) ) {
+		streamit_child_invalidate_object_meta_cache( $object_type, $object_id );
+	}
+
+	if ( function_exists( 'streamit_child_flush_streamit_cache' ) ) {
+		streamit_child_flush_streamit_cache();
+	}
+
+	if ( ! function_exists( 'streamit_get_permalink' ) ) {
+		return;
+	}
+
+	$slug = '';
+	if ( is_array( $prepared_data ) && ! empty( $prepared_data['post_name'] ) ) {
+		$slug = $prepared_data['post_name'];
+	} else {
+		$getter = 'streamit_get_' . $object_type;
+		if ( function_exists( $getter ) ) {
+			$obj = call_user_func( $getter, $object_id );
+			if ( is_object( $obj ) && method_exists( $obj, 'get_post_name' ) ) {
+				$slug = $obj->get_post_name();
+			}
+		}
+	}
+
+	if ( ! $slug ) {
+		return;
+	}
+
+	$url = streamit_get_permalink( $object_type, $slug );
+	if ( ! $url ) {
+		return;
+	}
+
+	if ( function_exists( 'rocket_clean_files' ) ) {
+		rocket_clean_files( $url );
+	} elseif ( function_exists( 'rocket_clean_domain' ) ) {
+		rocket_clean_domain();
+	}
+}
+
+foreach ( array( 'movie', 'tvshow', 'episode', 'video', 'person' ) as $streamit_type ) {
+	add_action(
+		"streamit_after_update_{$streamit_type}",
+		function ( $object_id, $prepared_data = array() ) use ( $streamit_type ) {
+			streamit_child_purge_after_content_update( $streamit_type, $object_id, $prepared_data );
+		},
+		10,
+		2
+	);
+}
+
+
+/**
  * Country labels from _country meta for frontend templates.
  *
  * @param object $st_data Movie or TV show object.
@@ -820,6 +886,7 @@ require_once get_stylesheet_directory() . '/inc/digits-login.php';
 require_once get_stylesheet_directory() . '/inc/person-archive-pagination.php';
 require_once get_stylesheet_directory() . '/inc/elementor-person-card-pagination.php';
 require_once get_stylesheet_directory() . '/inc/person-history.php';
+require_once get_stylesheet_directory() . '/inc/admin-ajax-payload.php';
 
 /**
  * Set up My Child Theme's textdomain.
