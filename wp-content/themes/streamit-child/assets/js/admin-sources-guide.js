@@ -7,6 +7,51 @@
 	var cfg = window.streamitChildSourcesGuide || {};
 	var storageKey = 'streamit_child_sources_guide_dismissed_' + ( cfg.isEpisode ? 'episode' : 'movie' );
 
+	var GUIDE_STYLE =
+		'background:#1e293b!important;background-color:#1e293b!important;color:#fff!important;' +
+		'-webkit-text-fill-color:#fff!important;opacity:1!important;direction:rtl;text-align:right;' +
+		'padding:14px 16px;margin:0 0 16px;border-right:4px solid #72aee6;border-radius:4px;' +
+		'box-sizing:border-box;position:relative;z-index:2;clear:both;max-width:100%;width:100%;';
+
+	var TEXT_STYLE = 'color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;';
+	var HINT_STYLE =
+		'background:#334155!important;background-color:#334155!important;color:#fef3c7!important;' +
+		'-webkit-text-fill-color:#fef3c7!important;opacity:1!important;padding:10px 12px;border-radius:4px;margin-top:0;';
+	var NOTE_STYLE =
+		'background:#334155!important;background-color:#334155!important;color:#fff!important;' +
+		'-webkit-text-fill-color:#fff!important;opacity:1!important;direction:rtl;text-align:right;' +
+		'padding:12px 14px;margin:0 0 14px;border-right:4px solid #eab308;border-radius:4px;clear:both;';
+
+	function ensureCriticalCss() {
+		if ( document.getElementById( 'streamit-child-sources-guide-critical' ) ) {
+			return;
+		}
+		var css =
+			'#streamit_data_section .streamit-child-sources-guide,' +
+			'#streamit_data_section .streamit-child-sources-guide p,' +
+			'#streamit_data_section .streamit-child-sources-guide li,' +
+			'#streamit_data_section .streamit-child-sources-guide ol,' +
+			'#streamit_data_section .streamit-child-sources-guide strong{' +
+			'color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;}' +
+			'#streamit_data_section .streamit-child-sources-guide{' +
+			'background:#1e293b!important;background-color:#1e293b!important;}' +
+			'#streamit_data_section .streamit-child-sources-guide__url-hint{' +
+			'background:#334155!important;color:#fef3c7!important;-webkit-text-fill-color:#fef3c7!important;}' +
+			'#streamit_data_section .streamit-child-sources-url-note,' +
+			'#streamit_data_section .streamit-child-sources-url-note li,' +
+			'#streamit_data_section .streamit-child-sources-url-note strong{' +
+			'color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;}' +
+			'#streamit_data_section .streamit-child-sources-url-note{' +
+			'background:#334155!important;}' +
+			'#streamit_data_section .streamit-child-sources-url-note strong{' +
+			'color:#fef3c7!important;-webkit-text-fill-color:#fef3c7!important;}' +
+			'#streamit_data_section .streamit-child-sources-guide__actions .button,' +
+			'#streamit_data_section .streamit-child-sources-guide__actions a.button{' +
+			'position:static!important;float:none!important;display:inline-flex!important;' +
+			'margin:0!important;flex:0 0 auto;}';
+		$( '<style id="streamit-child-sources-guide-critical">' ).text( css ).appendTo( 'head' );
+	}
+
 	function isDismissed() {
 		try {
 			return window.localStorage.getItem( storageKey ) === '1';
@@ -49,18 +94,28 @@
 		}
 
 		var html =
-			'<div class="streamit-child-sources-url-note" role="note">' +
-			'<strong>' +
+			'<div class="streamit-child-sources-url-note" role="note" style="' +
+			NOTE_STYLE +
+			'">' +
+			'<strong style="' +
+			TEXT_STYLE +
+			'color:#fef3c7!important;-webkit-text-fill-color:#fef3c7!important;">' +
 			( cfg.urlNoteTitle || '' ) +
 			'</strong>' +
 			'<ul>' +
-			'<li>' +
+			'<li style="' +
+			TEXT_STYLE +
+			'">' +
 			( cfg.urlNotePlayback || '' ) +
 			'</li>' +
-			'<li>' +
+			'<li style="' +
+			TEXT_STYLE +
+			'">' +
 			( cfg.urlNoteDownload || '' ) +
 			'</li>' +
-			'<li>' +
+			'<li style="' +
+			TEXT_STYLE +
+			'">' +
 			( cfg.urlNoteOptional || '' ) +
 			'</li>' +
 			'</ul>' +
@@ -85,33 +140,51 @@
 		}
 
 		var html =
-			'<div class="streamit-child-sources-guide" role="note">' +
-			'<p class="streamit-child-sources-guide__title">' +
+			'<div class="streamit-child-sources-guide" role="note" style="' +
+			GUIDE_STYLE +
+			'">' +
+			'<p class="streamit-child-sources-guide__title" style="' +
+			TEXT_STYLE +
+			'margin:0 0 8px;font-size:14px;font-weight:600;">' +
 			( cfg.title || '' ) +
 			'</p>' +
-			'<p class="streamit-child-sources-guide__intro">' +
+			'<p class="streamit-child-sources-guide__intro" style="' +
+			TEXT_STYLE +
+			'margin:0 0 10px;font-size:13px;line-height:1.7;">' +
 			( cfg.intro || '' ) +
 			'</p>' +
-			'<ol class="streamit-child-sources-guide__steps">' +
-			'<li>' +
+			'<ol class="streamit-child-sources-guide__steps" style="' +
+			TEXT_STYLE +
+			'margin:0 24px 12px 0;padding:0;font-size:13px;line-height:1.7;">' +
+			'<li style="' +
+			TEXT_STYLE +
+			'">' +
 			( cfg.step1 || '' ) +
 			'</li>' +
-			'<li>' +
+			'<li style="' +
+			TEXT_STYLE +
+			'">' +
 			( cfg.step2 || '' ) +
 			'</li>' +
-			'<li>' +
+			'<li style="' +
+			TEXT_STYLE +
+			'">' +
 			( cfg.step3 || '' ) +
 			'</li>' +
-			'<li>' +
+			'<li style="' +
+			TEXT_STYLE +
+			'">' +
 			( cfg.step4 || '' ) +
 			'</li>' +
 			'</ol>' +
 			( cfg.urlNoteShort
-				? '<p class="streamit-child-sources-guide__intro streamit-child-sources-guide__url-hint">' +
+				? '<p class="streamit-child-sources-guide__intro streamit-child-sources-guide__url-hint" style="' +
+				  HINT_STYLE +
+				  '">' +
 				  cfg.urlNoteShort +
 				  '</p>'
 				: '' ) +
-			'<div class="streamit-child-sources-guide__actions">' +
+			'<div class="streamit-child-sources-guide__actions" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">' +
 			'<button type="button" class="button button-primary streamit-child-sources-guide__open-tab">' +
 			( cfg.goToTab || 'Open Sources tab' ) +
 			'</button>' +
@@ -146,6 +219,7 @@
 		if ( ! $( '#insert_movie, #insert_episode' ).length ) {
 			return;
 		}
+		ensureCriticalCss();
 		renderGuide();
 
 		$( cfg.tabsList + ' a[href="' + cfg.tabSelector + '"]' ).on( 'click', function () {

@@ -1,11 +1,14 @@
-.streamit-child-sources-guide {
+/* Streamit admin uses --admin-background-color:#000; beat muted inherited grays. */
+body.wp-admin #streamit_data_section .streamit-child-sources-guide,
+body.wp-admin .streamit-child-sources-guide {
 	margin: 0 0 16px;
 	padding: 14px 16px;
 	border-right: 4px solid #72aee6;
 	border-left: none;
-	/* Self-contained surface: readable on dark WP / Streamit admin chrome */
 	background: #1e293b !important;
-	color: #f1f5f9 !important;
+	background-color: #1e293b !important;
+	color: #ffffff !important;
+	-webkit-text-fill-color: #ffffff !important;
 	max-width: 100%;
 	width: 100%;
 	box-sizing: border-box;
@@ -13,17 +16,24 @@
 	direction: rtl;
 	text-align: right;
 	position: relative;
-	z-index: 1;
+	z-index: 2;
 	overflow: hidden;
 	border-radius: 4px;
 }
 
-.streamit-child-sources-guide,
-.streamit-child-sources-guide p,
-.streamit-child-sources-guide li,
-.streamit-child-sources-guide strong,
-.streamit-child-sources-guide ol {
-	color: #f1f5f9 !important;
+body.wp-admin #streamit_data_section .streamit-child-sources-guide,
+body.wp-admin #streamit_data_section .streamit-child-sources-guide p,
+body.wp-admin #streamit_data_section .streamit-child-sources-guide li,
+body.wp-admin #streamit_data_section .streamit-child-sources-guide ol,
+body.wp-admin #streamit_data_section .streamit-child-sources-guide strong,
+body.wp-admin .streamit-child-sources-guide,
+body.wp-admin .streamit-child-sources-guide p,
+body.wp-admin .streamit-child-sources-guide li,
+body.wp-admin .streamit-child-sources-guide ol,
+body.wp-admin .streamit-child-sources-guide strong {
+	color: #ffffff !important;
+	-webkit-text-fill-color: #ffffff !important;
+	opacity: 1 !important;
 }
 
 .streamit-child-sources-guide.is-dismissed {
@@ -58,8 +68,10 @@
 	position: relative;
 }
 
-.streamit-child-sources-guide__actions .button,
-.streamit-child-sources-guide__actions a.button {
+body.wp-admin .streamit-child-sources-guide__actions .button,
+body.wp-admin .streamit-child-sources-guide__actions a.button,
+body.wp-admin #streamit_data_section .streamit-child-sources-guide__actions .button,
+body.wp-admin #streamit_data_section .streamit-child-sources-guide__actions a.button {
 	position: static !important;
 	float: none !important;
 	display: inline-flex !important;
@@ -82,12 +94,15 @@
 	font-weight: 600;
 }
 
-.streamit-child-sources-guide__url-hint {
+body.wp-admin #streamit_data_section .streamit-child-sources-guide__url-hint,
+body.wp-admin .streamit-child-sources-guide__url-hint {
 	margin-top: 0;
 	padding: 10px 12px;
 	background: #334155 !important;
+	background-color: #334155 !important;
 	border-radius: 4px;
 	color: #fef3c7 !important;
+	-webkit-text-fill-color: #fef3c7 !important;
 }
 
 .streamit-child-tvshow-guide .streamit-child-sources-guide__actions .button {
