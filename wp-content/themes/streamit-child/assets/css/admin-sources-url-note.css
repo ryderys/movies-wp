@@ -1,8 +1,8 @@
 .streamit-child-sources-url-note {
 	margin: 0 0 14px;
 	padding: 12px 14px;
-	background: #fff8e5;
-	border-right: 4px solid #dba617;
+	background: #334155 !important;
+	border-right: 4px solid #eab308;
 	border-left: none;
 	border-radius: 4px;
 	direction: rtl;
@@ -10,12 +10,22 @@
 	font-size: 13px;
 	line-height: 1.7;
 	clear: both;
+	color: #f1f5f9 !important;
+	position: relative;
+	z-index: 1;
+}
+
+.streamit-child-sources-url-note,
+.streamit-child-sources-url-note li,
+.streamit-child-sources-url-note strong {
+	color: #f1f5f9 !important;
 }
 
 .streamit-child-sources-url-note strong {
 	display: block;
 	margin-bottom: 6px;
 	font-size: 13px;
+	color: #fef3c7 !important;
 }
 
 .streamit-child-sources-url-note ul {

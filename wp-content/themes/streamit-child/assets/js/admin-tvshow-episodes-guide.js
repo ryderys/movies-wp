@@ -93,7 +93,7 @@
 			'" target="_blank" rel="noopener noreferrer">' +
 			( cfg.addEpisode || '' ) +
 			'</a>' +
-			'<button type="button" class="button button-link streamit-child-sources-guide__dismiss">' +
+			'<button type="button" class="button streamit-child-sources-guide__dismiss">' +
 			( cfg.dismiss || '' ) +
 			'</button>' +
 			'</div>' +

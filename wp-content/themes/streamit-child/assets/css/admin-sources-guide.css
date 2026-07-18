@@ -1,16 +1,29 @@
 .streamit-child-sources-guide {
 	margin: 0 0 16px;
 	padding: 14px 16px;
-	border-right: 4px solid #2271b1;
+	border-right: 4px solid #72aee6;
 	border-left: none;
-	background: #f0f6fc;
-	color: #1d2327;
+	/* Self-contained surface: readable on dark WP / Streamit admin chrome */
+	background: #1e293b !important;
+	color: #f1f5f9 !important;
 	max-width: 100%;
 	width: 100%;
 	box-sizing: border-box;
 	clear: both;
 	direction: rtl;
 	text-align: right;
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	border-radius: 4px;
+}
+
+.streamit-child-sources-guide,
+.streamit-child-sources-guide p,
+.streamit-child-sources-guide li,
+.streamit-child-sources-guide strong,
+.streamit-child-sources-guide ol {
+	color: #f1f5f9 !important;
 }
 
 .streamit-child-sources-guide.is-dismissed {
@@ -39,27 +52,42 @@
 .streamit-child-sources-guide__actions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px;
+	gap: 10px;
+	align-items: center;
 	justify-content: flex-start;
+	position: relative;
 }
 
-.streamit-child-sources-guide__actions .button-link {
-	padding-right: 0;
-	padding-left: 0;
+.streamit-child-sources-guide__actions .button,
+.streamit-child-sources-guide__actions a.button {
+	position: static !important;
+	float: none !important;
+	display: inline-flex !important;
+	align-items: center;
+	justify-content: center;
+	margin: 0 !important;
+	flex: 0 0 auto;
+	text-decoration: none;
+	line-height: 1.4;
+	height: auto;
+	min-height: 30px;
+	white-space: nowrap;
+	box-sizing: border-box;
 }
 
 .movie_meta_tabs li.streamit-child-sources-tab-hint a,
 .episode_meta_tabs li.streamit-child-sources-tab-hint a,
 .tvshow_meta_tabs li.streamit-child-sources-tab-hint a {
-	box-shadow: inset 0 -2px 0 #2271b1;
+	box-shadow: inset 0 -2px 0 #72aee6;
 	font-weight: 600;
 }
 
 .streamit-child-sources-guide__url-hint {
 	margin-top: 0;
 	padding: 10px 12px;
-	background: #fff8e5;
+	background: #334155 !important;
 	border-radius: 4px;
+	color: #fef3c7 !important;
 }
 
 .streamit-child-tvshow-guide .streamit-child-sources-guide__actions .button {
