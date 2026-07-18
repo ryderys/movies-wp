@@ -99,11 +99,7 @@ class ST_Person_Card_Paginated extends ST_Person {
 
 		$title_tag    = $settings['title_tag'] ?? 'h3';
 		$slider_title = esc_html( $settings['slider_title'] );
-		$maxnumpages  = isset( $persons_data->maxnumpages ) ? (int) $persons_data->maxnumpages : 0;
-
-		if ( $is_grid && $maxnumpages > 1 ) {
-			set_query_var( 'paged', $paged );
-		}
+		$maxnumpages = isset( $persons_data->maxnumpages ) ? (int) $persons_data->maxnumpages : 0;
 
 		streamit_get_template(
 			'elementor-widget/person-card/html-person-card-' . $template_type . '.php',

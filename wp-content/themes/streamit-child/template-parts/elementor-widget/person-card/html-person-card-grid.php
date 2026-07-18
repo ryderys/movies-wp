@@ -29,7 +29,14 @@ $current_page = isset( $current_page ) ? max( 1, (int) $current_page ) : 1;
 </div>
 
 <?php if ( ! empty( $results ) && is_array( $results ) ) : ?>
-	<div class="data-listing row gy-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-<?php echo esc_attr( $settings['iq_columns'] ); ?> row-cols-xl-<?php echo esc_attr( $settings['iq_columns'] ); ?>">
+	<?php
+	/*
+	 * Do NOT use class "data-listing" here. Theme ArchiveAppend auto-inits on
+	 * .data-listing and treats ?paged / query args as filters, which empties
+	 * the grid on page 2+.
+	 */
+	?>
+	<div class="streamit-casts-listing row gy-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-<?php echo esc_attr( $settings['iq_columns'] ); ?> row-cols-xl-<?php echo esc_attr( $settings['iq_columns'] ); ?>">
 		<?php
 		foreach ( $results as $details ) :
 			$person = $details['data'] ?? null;
@@ -100,12 +107,9 @@ $current_page = isset( $current_page ) ? max( 1, (int) $current_page ) : 1;
 		<?php endforeach; ?>
 	</div>
 
-	<?php if ( $maxnumpages > 1 && function_exists( 'st_pagination' ) ) : ?>
+	<?php if ( $maxnumpages > 1 && function_exists( 'streamit_child_casts_pagination' ) ) : ?>
 		<div class="row mt-4 streamit-person-card-pagination">
-			<?php
-			set_query_var( 'paged', $current_page );
-			st_pagination( $maxnumpages, 2, $current_page );
-			?>
+			<?php streamit_child_casts_pagination( $maxnumpages, $current_page ); ?>
 		</div>
 	<?php endif; ?>
 <?php endif; ?>
