@@ -33,7 +33,7 @@ function streamit_child_enqueue_tvshow_episodes_guide( $hook ) {
 		get_stylesheet_directory_uri() . '/assets/css/admin-sources-guide.css',
 		array(),
 		file_exists( $css_path ) ? (string) filemtime( $css_path ) : '1.0'
-	)
+	);
 
 	wp_enqueue_script(
 		'streamit-child-tvshow-episodes-guide',
