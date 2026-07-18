@@ -36,6 +36,11 @@ function streamit_child_get_frontend_persian_labels() {
 		'Video'                              => 'ویدیو',
 		'Person'                             => 'بازیگر',
 		'Episode'                            => 'قسمت',
+		'Person History'                     => 'آثار',
+		'Awards :'                           => 'جوایز:',
+		'TV Shows'                           => 'سریال‌ها',
+		'No TV shows or Movies found.'       => 'فیلم یا سریالی یافت نشد.',
+		'No movies or TV shows available in this category.' => 'در این دسته فیلم یا سریالی موجود نیست.',
 	);
 }
 
