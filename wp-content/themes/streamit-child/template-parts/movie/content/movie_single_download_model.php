@@ -7,6 +7,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if ( ! streamit_child_user_can_download( $st_data, 'movie' ) ) {
+	return;
+}
+
 $sources   = (array) $st_data->get_meta( '_source' );
 $subs      = streamit_child_get_subtitles( $st_data );
 $has_video = function_exists( 'streamit_child_get_downloadable_sources' )

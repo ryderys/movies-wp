@@ -101,6 +101,52 @@ function streamit_child_has_downloadable_sources( $st_data, $meta_key = '_source
 }
 
 /**
+ * Whether the current user may download this movie or episode.
+ *
+ * Movies use their own access meta. Episodes inherit the parent TV show's access
+ * (same rule as the episode player).
+ *
+ * @param object      $st_data  Streamit movie or episode object.
+ * @param string|null $post_type Optional. 'movie' or 'episode'. Inferred from $st_data when omitted.
+ * @param int|null    $user_id   Optional. Defaults to current user.
+ * @return bool
+ */
+function streamit_child_user_can_download( $st_data, $post_type = null, $user_id = null ) {
+	if ( ! $st_data || ! is_object( $st_data ) || ! method_exists( $st_data, 'get_id' ) ) {
+		return false;
+	}
+
+	if ( ! function_exists( 'streamit_user_has_stream_access' ) ) {
+		return true;
+	}
+
+	$user_id = null !== $user_id ? (int) $user_id : get_current_user_id();
+
+	if ( null === $post_type && method_exists( $st_data, 'get_post_type' ) ) {
+		$post_type = $st_data->get_post_type();
+	}
+
+	$post_type = sanitize_key( (string) $post_type );
+
+	if ( 'episode' === $post_type ) {
+		$tvshow_id = 0;
+		if ( method_exists( $st_data, 'get_meta' ) ) {
+			$tvshow_id = (int) $st_data->get_meta( 'tvshow_id' );
+		}
+
+		if ( $tvshow_id <= 0 ) {
+			return false;
+		}
+
+		return (bool) streamit_user_has_stream_access( $tvshow_id, 'tvshow', $user_id );
+	}
+
+	$check_type = in_array( $post_type, array( 'movie', 'video' ), true ) ? $post_type : 'movie';
+
+	return (bool) streamit_user_has_stream_access( (int) $st_data->get_id(), $check_type, $user_id );
+}
+
+/**
  * On save: autofill download URL + sanitize optional file_size.
  *
  * @param array<string, mixed> $meta_data Meta payload.

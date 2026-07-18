@@ -2,6 +2,8 @@
 /**
  * Movie download button (child override — visible when video sources or subtitles exist).
  *
+ * Locked plan content still shows the button and opens the subscribe modal.
+ *
  * @package streamit-child
  */
 
@@ -10,9 +12,16 @@ defined( 'ABSPATH' ) || exit;
 if ( ! streamit_child_has_download_modal_content( $st_data, '_source' ) ) {
 	return;
 }
+
+$can_download = streamit_child_user_can_download( $st_data, 'movie' );
+$modal_target = $can_download ? '#downloadModal' : '#subscribeRequiredModal';
+
+if ( ! $can_download ) {
+	streamit_child_render_subscribe_required_modal( $st_data, 'movie', 'download' );
+}
 ?>
 <li>
-	<button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal" data-bs-target="#downloadModal">
+	<button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal" data-bs-target="<?php echo esc_attr( $modal_target ); ?>">
 		<span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="<?php esc_attr_e( 'Download', 'streamit' ); ?>">
 			<?php echo st_get_icon( 'download-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</span>
