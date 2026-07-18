@@ -5,8 +5,23 @@
 add_action( 'wp_enqueue_scripts', 'streamit_enqueue_styles', 99 );
 
 function streamit_enqueue_styles() {
-	wp_enqueue_style( 'parent-style', get_stylesheet_directory_uri() . '/style.css' );
-	wp_enqueue_style( 'child-style', get_stylesheet_directory_uri() . '/style.css' );
+	$parent_style = get_template_directory() . '/style.css';
+	$child_style  = get_stylesheet_directory() . '/style.css';
+	$parent_ver   = file_exists( $parent_style ) ? (string) filemtime( $parent_style ) : '1.0';
+	$child_ver    = file_exists( $child_style ) ? (string) filemtime( $child_style ) : '1.0';
+
+	wp_enqueue_style(
+		'parent-style',
+		get_template_directory_uri() . '/style.css',
+		array(),
+		$parent_ver
+	);
+	wp_enqueue_style(
+		'child-style',
+		get_stylesheet_directory_uri() . '/style.css',
+		array( 'parent-style' ),
+		$child_ver
+	);
 }
 
 /**
