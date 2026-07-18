@@ -155,21 +155,24 @@ function streamit_child_enqueue_sources_admin_guide( $hook ) {
 	$css_path = get_stylesheet_directory() . '/assets/css/admin-sources-guide.css';
 	$js_path  = get_stylesheet_directory() . '/assets/js/admin-sources-guide.js';
 
-	wp_enqueue_style(
-		'streamit-child-admin-sources-guide',
-		get_stylesheet_directory_uri() . '/assets/css/admin-sources-guide.css',
-		array(),
-		file_exists( $css_path ) ? (string) filemtime( $css_path ) : '1.0'
-	);
-
-	$url_note_css = get_stylesheet_directory() . '/assets/css/admin-sources-url-note.css';
-	if ( file_exists( $url_note_css ) ) {
+	// Guide markup is Persian/RTL; skip layout CSS for English (LTR) admin users.
+	if ( is_rtl() ) {
 		wp_enqueue_style(
-			'streamit-child-sources-url-note',
-			get_stylesheet_directory_uri() . '/assets/css/admin-sources-url-note.css',
-			array( 'streamit-child-admin-sources-guide' ),
-			(string) filemtime( $url_note_css )
+			'streamit-child-admin-sources-guide',
+			get_stylesheet_directory_uri() . '/assets/css/admin-sources-guide.css',
+			array(),
+			file_exists( $css_path ) ? (string) filemtime( $css_path ) : '1.0'
 		);
+
+		$url_note_css = get_stylesheet_directory() . '/assets/css/admin-sources-url-note.css';
+		if ( file_exists( $url_note_css ) ) {
+			wp_enqueue_style(
+				'streamit-child-sources-url-note',
+				get_stylesheet_directory_uri() . '/assets/css/admin-sources-url-note.css',
+				array( 'streamit-child-admin-sources-guide' ),
+				(string) filemtime( $url_note_css )
+			);
+		}
 	}
 
 	$is_episode = false !== strpos( $hook, 'episode' );
@@ -224,7 +227,7 @@ function streamit_child_enqueue_sources_extra_fields( $hook, $is_episode ) {
 		return;
 	}
 
-	if ( file_exists( $css_path ) ) {
+	if ( file_exists( $css_path ) && is_rtl() ) {
 		wp_enqueue_style(
 			'streamit-child-admin-sources-extra',
 			get_stylesheet_directory_uri() . '/assets/css/admin-sources-extra.css',

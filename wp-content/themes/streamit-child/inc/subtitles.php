@@ -349,7 +349,7 @@ function streamit_child_enqueue_subtitles_admin( $hook ) {
 	$css_path = get_stylesheet_directory() . '/assets/css/admin-subtitles.css';
 	$js_path  = get_stylesheet_directory() . '/assets/js/admin-subtitles.js';
 
-	if ( file_exists( $css_path ) ) {
+	if ( file_exists( $css_path ) && is_rtl() ) {
 		wp_enqueue_style(
 			'streamit-child-admin-subtitles',
 			get_stylesheet_directory_uri() . '/assets/css/admin-subtitles.css',

@@ -337,7 +337,7 @@ function streamit_child_is_streamit_admin_screen() {
  * @return string
  */
 function streamit_child_translate_admin_labels( $translated, $text, $domain ) {
-	if ( 'streamit-core' !== $domain || ! is_admin() ) {
+	if ( 'streamit-core' !== $domain || ! is_admin() || ! is_rtl() ) {
 		return $translated;
 	}
 
@@ -351,11 +351,18 @@ function streamit_child_translate_admin_labels( $translated, $text, $domain ) {
 add_filter( 'gettext', 'streamit_child_translate_admin_labels', 20, 3 );
 
 /**
- * Inject RTL-friendly admin font on Streamit content edit screens.
+ * Inject RTL layout styles on Streamit content edit screens (Persian admin only).
+ *
+ * Skipped when the admin user locale is LTR (e.g. English profile) so WP chrome
+ * and Streamit panels do not fight direction and overlay each other.
  *
  * @param string $hook Current admin page hook.
  */
 function streamit_child_admin_persian_labels_styles( $hook ) {
+	if ( ! is_rtl() ) {
+		return;
+	}
+
 	$screens = array(
 		'admin_page_streamit-edit-movie',
 		'admin_page_streamit-add-movie',
@@ -387,9 +394,15 @@ add_action( 'admin_enqueue_scripts', 'streamit_child_admin_persian_labels_styles
 /**
  * Center admin toasts, RTL layout, and Persian toast titles on Streamit screens.
  *
+ * Only for RTL (Persian) admin locales — English admin keeps default LTR toasts.
+ *
  * @param string $hook Current admin page hook.
  */
 function streamit_child_enqueue_admin_notifications_fa( $hook ) {
+	if ( ! is_rtl() ) {
+		return;
+	}
+
 	if ( ! streamit_child_is_streamit_admin_screen() && false === strpos( $hook, 'streamit' ) ) {
 		return;
 	}

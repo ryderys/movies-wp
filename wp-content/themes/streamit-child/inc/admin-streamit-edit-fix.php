@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin edit UX fixes: Select2 RTL layout + relaxed validation on update.
+ * Admin edit UX fixes: Select2 RTL layout (RTL admin only) + relaxed validation on update.
  *
  * @package streamit-child
  */
@@ -28,7 +28,7 @@ function streamit_child_get_streamit_edit_admin_screens() {
 }
 
 /**
- * Enqueue Select2 RTL CSS and edit-form JS fixes.
+ * Enqueue Select2 RTL CSS (Persian admin) and edit-form JS fixes (all locales).
  *
  * @param string $hook Current admin page hook.
  */
@@ -37,14 +37,17 @@ function streamit_child_enqueue_streamit_edit_fixes( $hook ) {
 		return;
 	}
 
-	$css_file = get_stylesheet_directory() . '/assets/css/admin-select2-rtl-fix.css';
-	if ( file_exists( $css_file ) ) {
-		wp_enqueue_style(
-			'streamit-child-admin-select2-rtl-fix',
-			get_stylesheet_directory_uri() . '/assets/css/admin-select2-rtl-fix.css',
-			array(),
-			(string) filemtime( $css_file )
-		);
+	// RTL chip/search layout only when admin UI is RTL (e.g. fa_IR profile).
+	if ( is_rtl() ) {
+		$css_file = get_stylesheet_directory() . '/assets/css/admin-select2-rtl-fix.css';
+		if ( file_exists( $css_file ) ) {
+			wp_enqueue_style(
+				'streamit-child-admin-select2-rtl-fix',
+				get_stylesheet_directory_uri() . '/assets/css/admin-select2-rtl-fix.css',
+				array(),
+				(string) filemtime( $css_file )
+			);
+		}
 	}
 
 	$js_file = get_stylesheet_directory() . '/assets/js/admin-streamit-edit-fix.js';
