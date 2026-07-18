@@ -1,6 +1,6 @@
 <?php
 /**
- * Fullscreen search modal (downloadha-style prominent search).
+ * Centered search modal (downloadha-style prominent search).
  *
  * @package streamit-child
  */
@@ -16,7 +16,7 @@ function streamit_child_render_search_modal() {
 	}
 	?>
 	<div class="modal fade" id="streamit-search-modal" tabindex="-1" aria-labelledby="streamit-search-modal-label" aria-hidden="true">
-		<div class="modal-dialog modal-fullscreen">
+		<div class="modal-dialog modal-dialog-scrollable streamit-search-modal__dialog">
 			<div class="modal-content streamit-search-modal">
 				<div class="modal-header border-0 pb-0">
 					<div class="streamit-search-modal__input-wrap input-group">
