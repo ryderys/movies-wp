@@ -67,6 +67,8 @@ define( 'WP_REDIS_HOST', getenv( 'REDIS_HOST' ) ?: 'redis' );
 define( 'WP_REDIS_PORT', (int) ( getenv( 'REDIS_PORT' ) ?: 6379 ) );
 define( 'WP_REDIS_DATABASE', (int) ( getenv( 'REDIS_DATABASE' ) ?: 0 ) );
 define( 'WP_REDIS_PREFIX', getenv( 'REDIS_PREFIX' ) ?: 'movies_' );
+// Prod Redis renames FLUSHDB/FLUSHALL away; flush by key prefix instead.
+define( 'WP_REDIS_SELECTIVE_FLUSH', true );
 define( 'WP_REDIS_TIMEOUT', 1 );
 define( 'WP_REDIS_READ_TIMEOUT', 1 );
 define( 'WP_REDIS_MAXTTL', 86400 );
