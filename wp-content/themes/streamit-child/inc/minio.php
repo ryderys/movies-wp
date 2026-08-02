@@ -30,3 +30,28 @@ function streamit_child_minio_enabled() {
 if ( streamit_child_minio_enabled() ) {
 	Streamit_Child_Minio_Offload::init();
 }
+
+/**
+ * Smoke-test PutObject from WP (dev/ops only).
+ *
+ * Usage inside container:
+ *   php -r 'require "/var/www/html/wp-load.php"; var_export( streamit_child_minio_smoke_put() );'
+ *
+ * @return string|\WP_Error Public URL on success.
+ */
+function streamit_child_minio_smoke_put() {
+	if ( ! streamit_child_minio_enabled() ) {
+		return new WP_Error( 'minio_disabled', 'MinIO is not configured.' );
+	}
+
+	$client = new Streamit_Child_Minio_Client();
+	$key    = 'smoke/wp-put-' . gmdate( 'Ymd-His' ) . '.txt';
+	$body   = 'wp-put-ok ' . gmdate( 'c' );
+	$result = $client->put_object( $key, $body, 'text/plain' );
+
+	if ( is_wp_error( $result ) ) {
+		return $result;
+	}
+
+	return $client->public_url( $key );
+}
