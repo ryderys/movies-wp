@@ -887,6 +887,7 @@ require_once get_stylesheet_directory() . '/inc/person-archive-pagination.php';
 require_once get_stylesheet_directory() . '/inc/elementor-person-card-pagination.php';
 require_once get_stylesheet_directory() . '/inc/person-history.php';
 require_once get_stylesheet_directory() . '/inc/admin-ajax-payload.php';
+require_once get_stylesheet_directory() . '/inc/minio.php';
 
 /**
  * Set up My Child Theme's textdomain.
