@@ -7,10 +7,11 @@ RUN set -eux; \
         libpng-dev \
         libjpeg62-turbo-dev \
         libfreetype6-dev \
+        libwebp-dev \
         libzip-dev \
         unzip \
         curl; \
-    docker-php-ext-configure gd --with-freetype --with-jpeg; \
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
     docker-php-ext-install mysqli gd zip; \
     mkdir -p /usr/src/php/ext/redis; \
     curl -fsSL -o /tmp/redis.tar.gz \

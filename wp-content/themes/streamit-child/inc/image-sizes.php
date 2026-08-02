@@ -51,7 +51,30 @@ add_action(
 );
 
 /**
- * High-quality JPEG output for generated subsizes.
+ * Generate WebP for intermediate sizes (and editor output) when the
+ * PHP image library supports it. Originals may stay JPEG/PNG; cards/heroes
+ * use sized WebP URLs after offload to MinIO.
+ *
+ * @param array<string, string> $formats Input mime => output mime.
+ * @return array<string, string>
+ */
+add_filter(
+	'image_editor_output_format',
+	function ( $formats ) {
+		if ( ! function_exists( 'wp_image_editor_supports' )
+			|| ! wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ) {
+			return $formats;
+		}
+
+		$formats['image/jpeg'] = 'image/webp';
+		$formats['image/png']  = 'image/webp';
+
+		return $formats;
+	}
+);
+
+/**
+ * Output quality for JPEG/WebP generation (perceptual; WebP is still smaller at 88).
  *
  * @param int $quality Default quality.
  * @return int
