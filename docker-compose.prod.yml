@@ -18,6 +18,13 @@ services:
       WP_DEBUG_DISPLAY: ${WP_DEBUG_DISPLAY:-0}
       WP_HOME: ${WP_HOME:-}
       WP_SITEURL: ${WP_SITEURL:-}
+      STREAMIT_MINIO_ENDPOINT: ${STREAMIT_MINIO_ENDPOINT:-}
+      STREAMIT_MINIO_BUCKET: ${STREAMIT_MINIO_BUCKET:-site-images}
+      STREAMIT_MINIO_REGION: ${STREAMIT_MINIO_REGION:-us-east-1}
+      STREAMIT_MINIO_KEY: ${STREAMIT_MINIO_KEY:-}
+      STREAMIT_MINIO_SECRET: ${STREAMIT_MINIO_SECRET:-}
+      STREAMIT_MINIO_PUBLIC_BASE: ${STREAMIT_MINIO_PUBLIC_BASE:-}
+      STREAMIT_MINIO_REMOVE_LOCAL: ${STREAMIT_MINIO_REMOVE_LOCAL:-0}
     volumes:
       - wp_content:/var/www/html/wp-content
       - ./php.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro

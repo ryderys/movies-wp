@@ -88,6 +88,31 @@ if ( $wp_siteurl ) {
 	define( 'WP_SITEURL', $wp_siteurl );
 }
 
+/**
+ * MinIO object storage (optional). Set via Docker env — see docker-compose.prod.yml / .env.
+ * When KEY+SECRET+ENDPOINT are set, streamit-child offloads attachments.
+ */
+$minio_endpoint = getenv( 'STREAMIT_MINIO_ENDPOINT' );
+$minio_key      = getenv( 'STREAMIT_MINIO_KEY' );
+$minio_secret   = getenv( 'STREAMIT_MINIO_SECRET' );
+if ( $minio_endpoint && $minio_key && $minio_secret ) {
+	$minio_bucket = getenv( 'STREAMIT_MINIO_BUCKET' ) ?: 'site-images';
+	define( 'STREAMIT_MINIO_ENDPOINT', $minio_endpoint );
+	define( 'STREAMIT_MINIO_BUCKET', $minio_bucket );
+	define( 'STREAMIT_MINIO_REGION', getenv( 'STREAMIT_MINIO_REGION' ) ?: 'us-east-1' );
+	define( 'STREAMIT_MINIO_KEY', $minio_key );
+	define( 'STREAMIT_MINIO_SECRET', $minio_secret );
+	$public_base = getenv( 'STREAMIT_MINIO_PUBLIC_BASE' );
+	define(
+		'STREAMIT_MINIO_PUBLIC_BASE',
+		$public_base ?: ( rtrim( $minio_endpoint, '/' ) . '/' . $minio_bucket )
+	);
+	define(
+		'STREAMIT_MINIO_REMOVE_LOCAL',
+		filter_var( getenv( 'STREAMIT_MINIO_REMOVE_LOCAL' ) ?: '0', FILTER_VALIDATE_BOOLEAN )
+	);
+}
+
 /* That's all, stop editing! Happy publishing. */
 
 if ( ! defined( 'ABSPATH' ) ) {
