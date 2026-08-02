@@ -51,9 +51,42 @@ add_action(
 );
 
 /**
- * Generate WebP for intermediate sizes (and editor output) when the
- * PHP image library supports it. Originals may stay JPEG/PNG; cards/heroes
- * use sized WebP URLs after offload to MinIO.
+ * Whether PHP GD can encode WebP.
+ *
+ * Prefer this over wp_image_editor_supports() — some stacks report false
+ * even when imagetypes() includes IMG_WEBP.
+ *
+ * @return bool
+ */
+function streamit_child_webp_encoding_supported() {
+	return function_exists( 'imagewebp' )
+		&& defined( 'IMG_WEBP' )
+		&& ( imagetypes() & IMG_WEBP );
+}
+
+/**
+ * Prefer GD so WebP encoding works without Imagick.
+ *
+ * @param string[] $editors Editor class names.
+ * @return string[]
+ */
+add_filter(
+	'wp_image_editors',
+	function ( $editors ) {
+		if ( ! streamit_child_webp_encoding_supported() ) {
+			return $editors;
+		}
+
+		$editors = array_values( array_diff( $editors, array( 'WP_Image_Editor_GD' ) ) );
+		array_unshift( $editors, 'WP_Image_Editor_GD' );
+
+		return $editors;
+	}
+);
+
+/**
+ * Generate WebP for intermediate sizes when GD can encode WebP.
+ * Originals may stay JPEG/PNG; sized URLs become .webp after MinIO offload.
  *
  * @param array<string, string> $formats Input mime => output mime.
  * @return array<string, string>
@@ -61,8 +94,7 @@ add_action(
 add_filter(
 	'image_editor_output_format',
 	function ( $formats ) {
-		if ( ! function_exists( 'wp_image_editor_supports' )
-			|| ! wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ) {
+		if ( ! streamit_child_webp_encoding_supported() ) {
 			return $formats;
 		}
 
