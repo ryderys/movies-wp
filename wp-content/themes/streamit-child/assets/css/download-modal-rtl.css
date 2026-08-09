@@ -125,31 +125,20 @@
 	opacity: 0.9;
 }
 
-.st-download-modal .stc-download-meta {
-	margin: 0;
-	padding: 0;
-	display: inline-flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 6px 14px;
-	direction: rtl;
-	text-align: right;
-	list-style: none;
-}
-
-.st-download-modal .stc-download-meta li {
+.st-download-modal .stc-download-meta-item {
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
+	margin: 0;
 	padding: 0;
 	font-size: 13px;
 	line-height: 1.3;
 	opacity: 0.9;
-	border: 0;
 }
 
 .st-download-modal .stc-download-meta__label {
 	font-weight: 600;
+	line-height: inherit;
 }
 
 .st-download-modal .stc-download-meta__label::after {
@@ -157,6 +146,7 @@
 }
 
 .st-download-modal .stc-download-meta__value {
+	line-height: inherit;
 	opacity: 0.95;
 }
 

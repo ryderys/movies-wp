@@ -21,6 +21,7 @@ if ( ! $has_video && empty( $subs ) ) {
 	return;
 }
 
+$post_id = (int) $st_data->get_id();
 $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 	? streamit_child_get_downloadable_sources( $sources )
 	: array_filter(
@@ -56,7 +57,16 @@ $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 										<span class="stc-download-icon" aria-hidden="true">
 											<?php echo st_get_icon( 'download-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 										</span>
-										<a href="<?php echo esc_url( $source['download_content'] ); ?>" class="stc-download-btn link-primary" download>
+										<?php
+										$dl_href = function_exists( 'streamit_child_resolve_download_href' )
+											? streamit_child_resolve_download_href(
+												$source['download_content'],
+												$post_id,
+												isset( $source['source_index'] ) ? (int) $source['source_index'] : 0
+											)
+											: $source['download_content'];
+										?>
+										<a href="<?php echo esc_url( $dl_href ); ?>" class="stc-download-btn link-primary">
 											<?php esc_html_e( 'دانلود', 'streamit' ); ?>
 										</a>
 									</div>

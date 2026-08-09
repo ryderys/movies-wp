@@ -20,6 +20,7 @@ $enable_upcoming_badges = ($streamit_options['streamit_recommended_enable_upcomi
 <?php
 $current_episode_id = (int)$st_data->get_id();
 $current_tab = $slider_position = 0;
+$total_slides = 0;
 $tvshow    = streamit_get_tvshow((int)$st_data->get_meta('tvshow_id'));
 if (empty($tvshow)) {
     return;
@@ -42,7 +43,7 @@ foreach ($seasons as $index => $val) {
 
 
 $slides_to_show = 5;
-if ($slider_position > $total_slides - $slides_to_show) {
+if ($total_slides > 0 && $slider_position > $total_slides - $slides_to_show) {
     $slider_position = max(0, $total_slides - $slides_to_show);
 }
 

@@ -12,9 +12,10 @@ defined( 'ABSPATH' ) || exit;
  *
  * Falls back to the playback URL (link) when download_content is empty.
  * Optional UX fields: file_size (حجم), name used as Encoder.
+ * source_index matches gateway / array_values( _source|_sources ) position.
  *
  * @param mixed $sources Raw _source / _sources meta.
- * @return array<int, array{quality: string, language: string, download_content: string, name: string, file_size: string, encoder: string}>
+ * @return array<int, array{quality: string, language: string, download_content: string, name: string, file_size: string, encoder: string, source_index: int}>
  */
 function streamit_child_get_downloadable_sources( $sources ) {
 	if ( ! is_array( $sources ) || empty( $sources ) ) {
@@ -23,7 +24,7 @@ function streamit_child_get_downloadable_sources( $sources ) {
 
 	$normalized = array();
 
-	foreach ( $sources as $source ) {
+	foreach ( array_values( $sources ) as $index => $source ) {
 		if ( ! is_array( $source ) ) {
 			continue;
 		}
@@ -50,6 +51,7 @@ function streamit_child_get_downloadable_sources( $sources ) {
 			'name'             => $name,
 			'file_size'        => $file_size,
 			'encoder'          => $name, // Admin "Name" field doubles as Encoder.
+			'source_index'     => (int) $index,
 		);
 	}
 
@@ -68,22 +70,25 @@ function streamit_child_render_download_source_meta( $source ) {
 	if ( '' === $file_size && '' === $encoder ) {
 		return;
 	}
-	?>
-	<ul class="stc-download-meta list-unstyled m-0 p-0">
-		<?php if ( '' !== $file_size ) : ?>
-			<li>
-				<span class="stc-download-meta__label"><?php esc_html_e( 'حجم', 'streamit' ); ?></span>
-				<span class="stc-download-meta__value"><?php echo esc_html( $file_size ); ?></span>
-			</li>
-		<?php endif; ?>
-		<?php if ( '' !== $encoder ) : ?>
-			<li>
-				<span class="stc-download-meta__label"><?php esc_html_e( 'Encoder', 'streamit' ); ?></span>
-				<span class="stc-download-meta__value"><?php echo esc_html( $encoder ); ?></span>
-			</li>
-		<?php endif; ?>
-	</ul>
-	<?php
+
+	// Flat spans so meta sits on the same flex line as quality/lang.
+	if ( '' !== $file_size ) :
+		?>
+		<span class="stc-download-meta-item">
+			<span class="stc-download-meta__label"><?php esc_html_e( 'حجم', 'streamit' ); ?></span>
+			<span class="stc-download-meta__value"><?php echo esc_html( $file_size ); ?></span>
+		</span>
+		<?php
+	endif;
+
+	if ( '' !== $encoder ) :
+		?>
+		<span class="stc-download-meta-item">
+			<span class="stc-download-meta__label"><?php esc_html_e( 'Encoder', 'streamit' ); ?></span>
+			<span class="stc-download-meta__value"><?php echo esc_html( $encoder ); ?></span>
+		</span>
+		<?php
+	endif;
 }
 
 /**
@@ -116,11 +121,16 @@ function streamit_child_user_can_download( $st_data, $post_type = null, $user_id
 		return false;
 	}
 
+	$user_id = null !== $user_id ? (int) $user_id : get_current_user_id();
+
+	// Site-wide free/paid policy takes precedence when the MU-plugin is loaded.
+	if ( function_exists( 'movies_wp_user_can_access_media' ) ) {
+		return (bool) movies_wp_user_can_access_media( $user_id );
+	}
+
 	if ( ! function_exists( 'streamit_user_has_stream_access' ) ) {
 		return true;
 	}
-
-	$user_id = null !== $user_id ? (int) $user_id : get_current_user_id();
 
 	if ( null === $post_type && method_exists( $st_data, 'get_post_type' ) ) {
 		$post_type = $st_data->get_post_type();

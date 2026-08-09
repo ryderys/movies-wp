@@ -89,6 +89,21 @@ if ( $wp_siteurl ) {
 }
 
 /**
+ * Signed media URLs (media.asiastarx.ir). Shared secret must match the media server.
+ * Set MEDIA_URL_SECRET via Docker/.env — never commit the real secret.
+ */
+$media_url_secret = getenv( 'MEDIA_URL_SECRET' );
+if ( $media_url_secret ) {
+	define( 'MEDIA_URL_SECRET', $media_url_secret );
+}
+$media_base_url = getenv( 'MEDIA_BASE_URL' );
+if ( $media_base_url ) {
+	define( 'MEDIA_BASE_URL', $media_base_url );
+} elseif ( ! defined( 'MEDIA_BASE_URL' ) ) {
+	define( 'MEDIA_BASE_URL', 'https://media.asiastarx.ir' );
+}
+
+/**
  * MinIO object storage (optional). Set via Docker env — see docker-compose.prod.yml / .env.
  * When KEY+SECRET+ENDPOINT are set, streamit-child offloads attachments.
  */

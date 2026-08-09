@@ -25,6 +25,8 @@ services:
       STREAMIT_MINIO_SECRET: ${STREAMIT_MINIO_SECRET:-}
       STREAMIT_MINIO_PUBLIC_BASE: ${STREAMIT_MINIO_PUBLIC_BASE:-}
       STREAMIT_MINIO_REMOVE_LOCAL: ${STREAMIT_MINIO_REMOVE_LOCAL:-0}
+      MEDIA_URL_SECRET: ${MEDIA_URL_SECRET:-}
+      MEDIA_BASE_URL: ${MEDIA_BASE_URL:-https://media.asiastarx.ir}
     volumes:
       - wp_content:/var/www/html/wp-content
       - ./php.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
