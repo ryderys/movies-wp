@@ -136,6 +136,16 @@ body.streamit-digits-login-page .digits_ui .digits-form_input input:not([type="c
 	box-shadow: none !important;
 }
 
+/* Passwords / emails are logical LTR strings; trailing @ must not jump in RTL. */
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="password"],
+body.streamit-digits-login-page .streamit-digits-login .digits-form_input input[type="email"],
+body.streamit-digits-login-page .digits_ui .digits-form_input input[type="password"],
+body.streamit-digits-login-page .digits_ui .digits-form_input input[type="email"] {
+	direction: ltr !important;
+	unicode-bidi: isolate;
+	text-align: left !important;
+}
+
 body.streamit-digits-login-page .streamit-digits-login .digits-form_input input::placeholder,
 body.streamit-digits-login-page .digits_ui .digits-form_input input::placeholder {
 	color: rgba(var(--bs-white-rgb), 0.55);

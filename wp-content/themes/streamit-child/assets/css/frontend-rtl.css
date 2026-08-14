@@ -13,7 +13,8 @@ html[dir="rtl"] .detail-page {
 	direction: rtl;
 }
 
-/* Keep numerals / URLs readable inside RTL blocks. */
+/* Keep numerals / URLs / credentials in logical LTR order inside RTL pages.
+   Password must stay LTR even after the eye icon switches type to text. */
 html[dir="rtl"] .imdb-ratting,
 html[dir="rtl"] .slider-ratting,
 html[dir="rtl"] .movie-time-text,
@@ -21,9 +22,24 @@ html[dir="rtl"] .plyr__time,
 html[dir="rtl"] input[type="url"],
 html[dir="rtl"] input[type="email"],
 html[dir="rtl"] input[type="number"],
-html[dir="rtl"] input[type="tel"] {
+html[dir="rtl"] input[type="tel"],
+html[dir="rtl"] input[type="password"],
+html[dir="rtl"] input[autocomplete="username"],
+html[dir="rtl"] input[autocomplete="current-password"],
+html[dir="rtl"] input[autocomplete="new-password"],
+html[dir="rtl"] input[name="user_username"],
+html[dir="rtl"] input[name="user_password"],
+html[dir="rtl"] input[name="current_password"],
+html[dir="rtl"] input[name="new_password"],
+html[dir="rtl"] input[name="confirm_password"],
+html[dir="rtl"] #streamit-login-form input:not([type="checkbox"]),
+html[dir="rtl"] #streamit-registration-form input:not([type="checkbox"]),
+html[dir="rtl"] #st_password_change input[type="password"],
+html[dir="rtl"] .streamit-digits-login input[type="password"],
+html[dir="rtl"] .digits_ui input[type="password"] {
 	direction: ltr;
-	unicode-bidi: embed;
+	unicode-bidi: isolate;
+	text-align: left;
 }
 
 /* Slick arrows: theme icons assume RTL when dir=rtl on html. */

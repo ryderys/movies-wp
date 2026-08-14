@@ -55,6 +55,8 @@ $atts = get_query_var('login_atts', array());
                                 name="<?php echo esc_attr($field_name); ?>"
                                 value="<?php echo isset($field_details['value']) ? esc_attr($field_details['value']) : ''; ?>"
                                 class="form-control <?php echo esc_attr($field_details['class']); ?>"
+                                dir="ltr"
+                                autocomplete="<?php echo ($field_details['type'] === 'password') ? 'current-password' : 'username'; ?>"
                                 <?php echo $field_details['required'] ? 'required' : ''; ?>
                                 placeholder="<?php echo !empty($field_details['placeholder']) ? esc_attr($field_details['placeholder']) : ''; ?>" />
                         <?php endif; ?>

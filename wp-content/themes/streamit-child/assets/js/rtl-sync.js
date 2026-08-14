@@ -77,12 +77,32 @@
 		});
 	}
 
+	function isolateCredentialInputs() {
+		var selector = [
+			'input[type="password"]',
+			'input[type="email"]',
+			'input[autocomplete="username"]',
+			'input[autocomplete="current-password"]',
+			'input[autocomplete="new-password"]',
+			'input[name="user_username"]',
+			'input[name="user_password"]',
+			'#streamit-login-form input:not([type="checkbox"])',
+			'.streamit-digits-login input[type="password"]',
+			'.digits_ui input[type="password"]'
+		].join(',');
+
+		document.querySelectorAll(selector).forEach(function (el) {
+			el.setAttribute('dir', 'ltr');
+		});
+	}
+
 	function runSync() {
 		var dir = getDirectionFromCookie();
 		applyDirection(dir);
 		ensureCookie(dir);
 		syncSwitcherUi(dir);
 		reinitSlickSliders(dir);
+		isolateCredentialInputs();
 	}
 
 	runSync();
