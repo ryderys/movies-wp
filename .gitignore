@@ -102,3 +102,4 @@ cloudflare-worker-updated.js
 .cursor/
 graphify-out
 *.txt
+*.md
