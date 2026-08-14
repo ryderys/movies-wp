@@ -1,0 +1,8 @@
+/**
+ * Visual busy state for Streamit admin Update/Add buttons.
+ */
+.stc-admin-saving {
+	opacity: 0.85 !important;
+	cursor: wait !important;
+	pointer-events: none;
+}
