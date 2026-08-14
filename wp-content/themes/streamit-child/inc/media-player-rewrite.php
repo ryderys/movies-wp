@@ -193,3 +193,43 @@ function streamit_child_get_url_video_html_for_stored( $stored, $post_id = 0, $i
 	}
 	return streamit_child_build_video_html( $playable, $stored );
 }
+
+/**
+ * Display label for the Streamit player source picker.
+ *
+ * `_source.name` is encoder-only. When encoder is unknown (empty name), the
+ * picker may still show the source using quality as a display-only label.
+ * This never writes quality into name and never invents KNPSK/SS/Unknown.
+ *
+ * Inclusion:
+ * - missing/empty link → excluded (null)
+ * - non-empty name → label = name (quality optional; preserves prior encoder sources)
+ * - empty name + non-empty quality → label = quality
+ * - empty name + empty quality → excluded
+ *
+ * @param mixed $source Raw `_source` row.
+ * @return string|null Display label, or null when the source must not appear.
+ */
+function streamit_child_player_source_display_label( $source ) {
+	if ( ! is_array( $source ) ) {
+		return null;
+	}
+
+	$link = isset( $source['link'] ) ? trim( (string) $source['link'] ) : '';
+	if ( '' === $link ) {
+		return null;
+	}
+
+	$name    = isset( $source['name'] ) ? trim( (string) $source['name'] ) : '';
+	$quality = isset( $source['quality'] ) ? trim( (string) $source['quality'] ) : '';
+
+	if ( '' !== $name ) {
+		return $name;
+	}
+	if ( '' !== $quality ) {
+		return $quality;
+	}
+
+	return null;
+}
+

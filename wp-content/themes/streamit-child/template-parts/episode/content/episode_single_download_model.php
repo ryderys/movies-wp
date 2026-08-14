@@ -27,7 +27,12 @@ $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 	: array_filter(
 		$sources,
 		static function ( $src ) {
-			return ! empty( $src['quality'] ) && ! empty( $src['language'] ) && ! empty( $src['download_content'] );
+			$quality  = isset( $src['quality'] ) ? trim( (string) $src['quality'] ) : '';
+			$download = isset( $src['download_content'] ) ? trim( (string) $src['download_content'] ) : '';
+			if ( '' === $download && isset( $src['link'] ) ) {
+				$download = trim( (string) $src['link'] );
+			}
+			return '' !== $quality && '' !== $download;
 		}
 	);
 ?>
@@ -50,7 +55,9 @@ $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 								<div class="stc-download-row">
 									<div class="stc-download-info">
 										<span class="stc-download-quality"><?php echo esc_html( $source['quality'] ); ?></span>
-										<span class="stc-download-lang"><?php echo esc_html( $source['language'] ); ?></span>
+										<?php if ( '' !== trim( (string) ( $source['language'] ?? '' ) ) ) : ?>
+											<span class="stc-download-lang"><?php echo esc_html( $source['language'] ); ?></span>
+										<?php endif; ?>
 										<?php streamit_child_render_download_source_meta( $source ); ?>
 									</div>
 									<div class="stc-download-action">

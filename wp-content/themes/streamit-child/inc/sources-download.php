@@ -12,6 +12,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * Falls back to the playback URL (link) when download_content is empty.
  * Optional UX fields: file_size (حجم), name used as Encoder.
+ * Language is optional — empty language does not exclude a source and is never
+ * invented (no Unknown / guessed locale).
  * source_index matches gateway / array_values( _source|_sources ) position.
  *
  * @param mixed $sources Raw _source / _sources meta.
@@ -40,7 +42,8 @@ function streamit_child_get_downloadable_sources( $sources ) {
 			$download = $link;
 		}
 
-		if ( '' === $quality || '' === $language || '' === $download ) {
+		// Language is optional; do not invent a value when empty.
+		if ( '' === $quality || '' === $download ) {
 			continue;
 		}
 
