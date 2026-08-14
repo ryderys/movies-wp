@@ -96,6 +96,21 @@ if ($content) :
     // Add to where you output the player container attributes
     $next_overlay_time = $st_data->get_meta('_next_episode_overlay');
 
+    $subtitles       = function_exists('streamit_child_build_subtitle_tracks') ? streamit_child_get_subtitles($st_data) : [];
+    $subtitle_tracks = !empty($subtitles) ? streamit_child_build_subtitle_tracks($subtitles, $post_id, $post_type) : '';
+
+    if (!$is_hls && $subtitle_tracks !== '') {
+        $content = streamit_child_insert_subtitle_tracks($content, $subtitle_tracks);
+
+        // Plyr only auto-enables captions when a track matches its configured
+        // language, so aim it at the language we render.
+        $controllers['captions'] = [
+            'active'   => true,
+            'language' => streamit_child_subtitle_track_language($subtitles),
+            'update'   => false,
+        ];
+    }
+
     ob_start();
     ?>
 

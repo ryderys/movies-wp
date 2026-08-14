@@ -874,6 +874,7 @@ require_once get_stylesheet_directory() . '/inc/media-player-rewrite.php';
 require_once get_stylesheet_directory() . '/inc/pmpro-currency.php';
 require_once get_stylesheet_directory() . '/inc/subscribe-required.php';
 require_once get_stylesheet_directory() . '/inc/subtitles.php';
+require_once get_stylesheet_directory() . '/inc/subtitle-track.php';
 require_once get_stylesheet_directory() . '/inc/tvshow-episodes-guide.php';
 require_once get_stylesheet_directory() . '/inc/admin-persian-labels.php';
 require_once get_stylesheet_directory() . '/inc/frontend-persian-labels.php';

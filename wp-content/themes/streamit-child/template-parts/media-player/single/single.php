@@ -157,22 +157,47 @@ $is_upcoming = !$is_upcoming_data['is_future_release'] ?? false;
                             $content = streamit_render_attach_video_player($post_type, $content_data);
                             break;
                     }
+                    $subtitles       = function_exists('streamit_child_build_subtitle_tracks') ? streamit_child_get_subtitles($content_data) : [];
+                    $subtitle_tracks = !empty($subtitles) ? streamit_child_build_subtitle_tracks($subtitles, $post_id, $post_type) : '';
+
+                    if ($subtitle_tracks !== '') {
+                        $content = streamit_child_insert_subtitle_tracks($content, $subtitle_tracks);
+
+                        // Plyr only auto-enables captions when a track matches its
+                        // configured language, so aim it at the language we render.
+                        $controllers['captions'] = [
+                            'active'   => true,
+                            'language' => streamit_child_subtitle_track_language($subtitles),
+                            'update'   => false,
+                        ];
+                    }
+
                     $processed_sources = [];
 
                     if (!empty($sources) && is_array($sources)) {
                         !empty($content) && $processed_sources[] = ['name' => __('Default', 'streamit'), 'content' => $content, 'quality' => '', 'language' => ''];
                         foreach (array_values($sources) as $source_index => $s) {
-                            if (!empty($s['name']) && !empty($s['link'])) {
-                                $src_html = function_exists('streamit_child_get_url_video_html_for_stored')
-                                    ? streamit_child_get_url_video_html_for_stored($s['link'], $post_id, (int) $source_index)
-                                    : streamit_get_url_video_html($s['link']);
-                                $processed_sources[] = [
-                                    'name'     => $s['name'],
-                                    'content'  => $src_html,
-                                    'quality'  => $s['quality'] ?? '',
-                                    'language' => $s['language'] ?? '',
-                                ];
+                            if (!is_array($s)) {
+                                continue;
                             }
+                            $label = function_exists('streamit_child_player_source_display_label')
+                                ? streamit_child_player_source_display_label($s)
+                                : ((!empty($s['name']) && !empty($s['link'])) ? (string) $s['name'] : null);
+                            if (null === $label || '' === $label) {
+                                continue;
+                            }
+                            $src_html = function_exists('streamit_child_get_url_video_html_for_stored')
+                                ? streamit_child_get_url_video_html_for_stored($s['link'], $post_id, (int) $source_index)
+                                : streamit_get_url_video_html($s['link']);
+                            if ($subtitle_tracks !== '') {
+                                $src_html = streamit_child_insert_subtitle_tracks($src_html, $subtitle_tracks);
+                            }
+                            $processed_sources[] = [
+                                'name'     => $label,
+                                'content'  => $src_html,
+                                'quality'  => $s['quality'] ?? '',
+                                'language' => $s['language'] ?? '',
+                            ];
                         }
                     }
 

@@ -125,8 +125,12 @@ function streamit_child_get_subtitles_by_id( $post_id, $post_type ) {
 		return array();
 	}
 
-	$meta_type = ( 'episode' === $post_type ) ? 'streamit_episode' : 'streamit_movie';
-	$raw       = get_metadata( $meta_type, $post_id, '_subtitles', true );
+	$post_type = sanitize_key( (string) $post_type );
+	if ( ! in_array( $post_type, array( 'movie', 'episode', 'video' ), true ) ) {
+		$post_type = 'movie';
+	}
+
+	$raw = get_metadata( 'streamit_' . $post_type, $post_id, '_subtitles', true );
 
 	return streamit_child_normalize_subtitles( $raw );
 }
@@ -143,6 +147,64 @@ function streamit_child_get_subtitles( $st_data ) {
 	}
 
 	return streamit_child_normalize_subtitles( $st_data->get_meta( '_subtitles' ) );
+}
+
+/**
+ * Resolve a stored subtitle path/URL for render time.
+ *
+ * Relative Movie/... paths are signed with the existing media mint.
+ * Absolute http(s) URLs pass through. Missing/invalid paths return "".
+ * Never returns a /data filesystem path. Does not write meta.
+ *
+ * @param string $stored Stored `_subtitles[].url` (relative path or absolute URL).
+ * @param string $type   Mint type: 'v' (player track) or 'd' (download).
+ * @return string Playable/downloadable URL, or empty string.
+ */
+function streamit_child_resolve_subtitle_url( $stored, $type = 'v' ) {
+	$stored = str_replace( '\\', '/', trim( (string) $stored ) );
+	if ( '' === $stored ) {
+		return '';
+	}
+
+	// Never expose absolute /data paths — strip to a relative path when possible.
+	if ( str_starts_with( $stored, '/data/' ) || str_contains( $stored, '/data/' ) ) {
+		$stored = preg_replace( '#^.*?/data/#', '', $stored );
+		$stored = ltrim( (string) $stored, '/' );
+	}
+
+	if ( '' === $stored ) {
+		return '';
+	}
+
+	if ( function_exists( 'streamit_child_is_external_media_link' ) && streamit_child_is_external_media_link( $stored ) ) {
+		return $stored;
+	}
+
+	if ( preg_match( '#^https?://#i', $stored ) ) {
+		return $stored;
+	}
+
+	// Local relative path (e.g. Movie/.../*.srt).
+	if ( str_starts_with( $stored, '/' ) || str_contains( $stored, '://' ) ) {
+		return '';
+	}
+
+	if ( ! function_exists( 'movies_wp_media_signed_url' ) ) {
+		return '';
+	}
+
+	$type   = ( 'd' === $type ) ? 'd' : 'v';
+	$signed = movies_wp_media_signed_url( $stored, $type );
+	if ( is_wp_error( $signed ) ) {
+		return '';
+	}
+
+	$signed = trim( (string) $signed );
+	if ( '' === $signed || str_contains( $signed, '/data/' ) || str_starts_with( $signed, '/data' ) ) {
+		return '';
+	}
+
+	return $signed;
 }
 
 /**
@@ -172,18 +234,37 @@ add_filter( 'streamit_update_episode_meta_controller', 'streamit_child_add_subti
 /**
  * Build the <track> markup for a set of normalized subtitles.
  *
- * @param array $subs Normalized subtitles.
+ * `src` points at the same-origin WebVTT endpoint (see inc/subtitle-track.php),
+ * which mints the signed /v/ URL per request. Row order must match the
+ * normalized list the endpoint rebuilds from meta.
+ *
+ * @param array  $subs      Normalized subtitles (stored url stays relative).
+ * @param int    $post_id   Movie/episode/video ID.
+ * @param string $post_type movie|episode|video.
  * @return string
  */
-function streamit_child_build_subtitle_tracks( $subs ) {
+function streamit_child_build_subtitle_tracks( $subs, $post_id = 0, $post_type = 'movie' ) {
+	$post_id = absint( $post_id );
+	if ( ! $post_id || ! is_array( $subs ) ) {
+		return '';
+	}
+
 	$tracks = '';
 
-	foreach ( $subs as $sub ) {
+	foreach ( array_values( $subs ) as $index => $sub ) {
+		if ( ! is_array( $sub ) ) {
+			continue;
+		}
+		$stored = isset( $sub['url'] ) ? (string) $sub['url'] : '';
+		if ( '' === streamit_child_resolve_subtitle_url( $stored, 'v' ) ) {
+			continue;
+		}
+		$srclang = isset( $sub['srclang'] ) ? trim( (string) $sub['srclang'] ) : '';
 		$tracks .= sprintf(
 			'<track kind="captions" src="%s" srclang="%s" label="%s"%s />',
-			esc_url( $sub['url'] ),
-			esc_attr( '' !== $sub['srclang'] ? $sub['srclang'] : 'und' ),
-			esc_attr( $sub['label'] ),
+			esc_url( streamit_child_subtitle_track_url( $post_id, $post_type, $index ) ),
+			esc_attr( '' !== $srclang ? $srclang : 'und' ),
+			esc_attr( isset( $sub['label'] ) ? (string) $sub['label'] : '' ),
 			! empty( $sub['default'] ) ? ' default' : ''
 		);
 	}
@@ -192,44 +273,68 @@ function streamit_child_build_subtitle_tracks( $subs ) {
 }
 
 /**
- * Inject caption <track> elements into the rendered player HTML.
+ * Language Plyr should preselect for a set of rendered tracks.
  *
- * Runs on the non-HLS player HTML (self-hosted / direct URL <video>). Embeds
- * (YouTube/Vimeo/iframe) have no <video> element and are left untouched.
+ * Mirrors what `streamit_child_build_subtitle_tracks()` emits, so Plyr's
+ * language match succeeds and captions come up enabled. Unknown languages stay
+ * unknown — `und` is the HTML value for "undetermined", not a guess.
  *
- * @param string $html Player HTML.
+ * @param array $subs Normalized subtitles.
  * @return string
  */
-function streamit_child_inject_player_tracks( $html ) {
-	if ( ! is_string( $html ) || '' === $html ) {
+function streamit_child_subtitle_track_language( $subs ) {
+	if ( ! is_array( $subs ) ) {
+		return '';
+	}
+
+	foreach ( $subs as $sub ) {
+		if ( ! is_array( $sub ) ) {
+			continue;
+		}
+		if ( ! empty( $sub['default'] ) ) {
+			$srclang = isset( $sub['srclang'] ) ? trim( (string) $sub['srclang'] ) : '';
+			return '' !== $srclang ? $srclang : 'und';
+		}
+	}
+
+	foreach ( $subs as $sub ) {
+		if ( ! is_array( $sub ) ) {
+			continue;
+		}
+		$srclang = isset( $sub['srclang'] ) ? trim( (string) $sub['srclang'] ) : '';
+		return '' !== $srclang ? $srclang : 'und';
+	}
+
+	return '';
+}
+
+/**
+ * Insert caption <track> elements into one rendered <video> block.
+ *
+ * Applied to the default player HTML and to every `data-sources` entry, because
+ * switching quality replaces the whole player markup with the stored entry.
+ * Embeds (YouTube/Vimeo/iframe) have no <video> element and are left untouched.
+ *
+ * @param string $html   Player HTML for a single source.
+ * @param string $tracks Track markup from streamit_child_build_subtitle_tracks().
+ * @return string
+ */
+function streamit_child_insert_subtitle_tracks( $html, $tracks ) {
+	if ( ! is_string( $html ) || '' === $html || ! is_string( $tracks ) || '' === $tracks ) {
 		return $html;
 	}
 
-	if ( ! is_singular( array( 'movie', 'episode' ) ) ) {
+	if ( false !== strpos( $html, 'kind="captions"' ) ) {
 		return $html;
 	}
 
 	$pos = strpos( $html, '</video>' );
 	if ( false === $pos ) {
-		return $html; // Embed player — nothing to caption.
-	}
-
-	$obj = get_queried_object();
-	if ( ! $obj || empty( $obj->ID ) || empty( $obj->post_type ) ) {
 		return $html;
 	}
-
-	$subs = streamit_child_get_subtitles_by_id( $obj->ID, $obj->post_type );
-	if ( empty( $subs ) ) {
-		return $html;
-	}
-
-	$tracks = streamit_child_build_subtitle_tracks( $subs );
 
 	return substr( $html, 0, $pos ) . $tracks . substr( $html, $pos );
 }
-add_filter( 'streamit_media_player_html', 'streamit_child_inject_player_tracks', 20 );
-add_filter( 'streamit_episode_player_html', 'streamit_child_inject_player_tracks', 20 );
 
 /**
  * Render the subtitle repeater inside the Sources tab (movie/episode edit).
@@ -435,6 +540,12 @@ function streamit_child_render_subtitle_download_section( $subs ) {
 		<h6 class="stc-subtitle-title"><?php esc_html_e( 'دانلود زیرنویس', 'streamit' ); ?></h6>
 		<ul class="stc-subtitle-list">
 			<?php foreach ( $subs as $sub ) : ?>
+				<?php
+				$dl_href = streamit_child_resolve_subtitle_url( isset( $sub['url'] ) ? $sub['url'] : '', 'd' );
+				if ( '' === $dl_href ) {
+					continue;
+				}
+				?>
 				<li>
 					<div class="stc-subtitle-row">
 						<div class="stc-subtitle-meta">
@@ -453,7 +564,7 @@ function streamit_child_render_subtitle_download_section( $subs ) {
 							<span class="stc-download-icon" aria-hidden="true">
 								<?php echo st_get_icon( 'download-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 							</span>
-							<a href="<?php echo esc_url( $sub['url'] ); ?>" class="stc-download-btn link-primary" download>
+							<a href="<?php echo esc_url( $dl_href ); ?>" class="stc-download-btn link-primary" download>
 								<?php esc_html_e( 'دانلود', 'streamit' ); ?>
 							</a>
 						</div>
