@@ -175,8 +175,51 @@ $is_upcoming = !$is_upcoming_data['is_future_release'] ?? false;
                     $processed_sources = [];
 
                     if (!empty($sources) && is_array($sources)) {
-                        !empty($content) && $processed_sources[] = ['name' => __('Default', 'streamit'), 'content' => $content, 'quality' => '', 'language' => ''];
-                        foreach (array_values($sources) as $source_index => $s) {
+                        $source_rows = array_values($sources);
+                        $default_identity = function_exists('streamit_child_player_source_identity')
+                            ? streamit_child_player_source_identity($media_stored)
+                            : null;
+                        $default_source = null;
+                        $default_source_index = -1;
+
+                        if (null !== $default_identity) {
+                            foreach ($source_rows as $source_index => $source_row) {
+                                if (!is_array($source_row)) {
+                                    continue;
+                                }
+                                $source_identity = streamit_child_player_source_identity($source_row['link'] ?? '');
+                                if ($source_identity === $default_identity) {
+                                    $default_source = $source_row;
+                                    $default_source_index = (int) $source_index;
+                                    break;
+                                }
+                            }
+                        }
+
+                        $default_was_added = !empty($content);
+                        if ($default_was_added) {
+                            $default_name = is_array($default_source) ? trim((string) ($default_source['name'] ?? '')) : '';
+                            $default_quality = is_array($default_source) ? trim((string) ($default_source['quality'] ?? '')) : '';
+                            $default_language = is_array($default_source) ? trim((string) ($default_source['language'] ?? '')) : '';
+
+                            $processed_sources[] = [
+                                'id'           => $default_source_index >= 0 ? 'source-' . $default_source_index : 'default',
+                                'source_index' => $default_source_index,
+                                'is_default'   => true,
+                                'label'        => ($default_quality !== '' || $default_name !== '') ? '' : __('Default', 'streamit'),
+                                'name'         => $default_name,
+                                'quality'      => $default_quality,
+                                'language'     => $default_language,
+                                'content'      => $content,
+                            ];
+                        }
+
+                        $seen_identities = [];
+                        if ($default_was_added && null !== $default_identity) {
+                            $seen_identities[$default_identity] = true;
+                        }
+
+                        foreach ($source_rows as $source_index => $s) {
                             if (!is_array($s)) {
                                 continue;
                             }
@@ -186,6 +229,12 @@ $is_upcoming = !$is_upcoming_data['is_future_release'] ?? false;
                             if (null === $label || '' === $label) {
                                 continue;
                             }
+                            $source_identity = function_exists('streamit_child_player_source_identity')
+                                ? streamit_child_player_source_identity($s['link'] ?? '')
+                                : null;
+                            if (null !== $source_identity && isset($seen_identities[$source_identity])) {
+                                continue;
+                            }
                             $src_html = function_exists('streamit_child_get_url_video_html_for_stored')
                                 ? streamit_child_get_url_video_html_for_stored($s['link'], $post_id, (int) $source_index)
                                 : streamit_get_url_video_html($s['link']);
@@ -193,18 +242,25 @@ $is_upcoming = !$is_upcoming_data['is_future_release'] ?? false;
                                 $src_html = streamit_child_insert_subtitle_tracks($src_html, $subtitle_tracks);
                             }
                             $processed_sources[] = [
-                                'name'     => $label,
-                                'content'  => $src_html,
-                                'quality'  => $s['quality'] ?? '',
-                                'language' => $s['language'] ?? '',
+                                'id'           => 'source-' . $source_index,
+                                'source_index' => (int) $source_index,
+                                'is_default'   => false,
+                                'label'        => $label,
+                                'name'         => trim((string) ($s['name'] ?? '')),
+                                'content'      => $src_html,
+                                'quality'      => trim((string) ($s['quality'] ?? '')),
+                                'language'     => trim((string) ($s['language'] ?? '')),
                             ];
+                            if (null !== $source_identity) {
+                                $seen_identities[$source_identity] = true;
+                            }
                         }
                     }
 
                     if (!empty($processed_sources)) {
                         if (!in_array('sources', $controllers['controls'], true)) {
                             $controllers['controls'][] = 'sources';
-                            $controllers['i18n']['sources'] = 'Sources';
+                            $controllers['i18n']['sources'] = __('Quality', 'streamit');
                             $controllers['i18n']['sourceIcon'] = '<svg id="Layer_1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1">
                             <path d="m3 8h10a1 1 0 0 0 2 0v-2a1 1 0 0 0 -2 0h-10a1 1 0 0 0 0 2z"/><path d="m17 8h4a1 1 0 0 0 0-2h-4a1 1 0 0 0 0 2z"/>
                             <path d="m21 16h-7a1 1 0 0 0 0 2h7a1 1 0 0 0 0-2z"/><path d="m11 15a1 1 0 0 0 -1 1h-7a1 1 0 0 0 0 2h7a1 1 0 0 0 2 0v-2a1 1 0 0 0 -1-1z"/>

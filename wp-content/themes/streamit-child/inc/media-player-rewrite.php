@@ -233,3 +233,38 @@ function streamit_child_player_source_display_label( $source ) {
 	return null;
 }
 
+/**
+ * Stable, display-time identity for one stored player link.
+ *
+ * This is used only to avoid rendering the same physical progressive file
+ * twice (notably `_movie_url_link` plus its matching `_source` row). It never
+ * changes persisted source data and never contains a signed URL.
+ *
+ * @param mixed $stored Relative media path or external URL.
+ * @return string|null Normalized identity, or null for an empty/invalid link.
+ */
+function streamit_child_player_source_identity( $stored ) {
+	$stored = trim( (string) $stored );
+	if ( '' === $stored ) {
+		return null;
+	}
+
+	if ( streamit_child_is_external_media_link( $stored ) ) {
+		return 'external:' . $stored;
+	}
+
+	if ( ! streamit_child_is_local_media_path( $stored ) ) {
+		return null;
+	}
+
+	$path  = ltrim( str_replace( '\\', '/', $stored ), '/' );
+	$parts = explode( '/', $path );
+	foreach ( $parts as $part ) {
+		if ( '' === $part || '.' === $part || '..' === $part ) {
+			return null;
+		}
+	}
+
+	return 'local:' . implode( '/', $parts );
+}
+

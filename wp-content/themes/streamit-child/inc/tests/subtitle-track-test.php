@@ -226,12 +226,20 @@ assert_eq( $default_html, streamit_child_insert_subtitle_tracks( $default_html, 
 echo "\nsource switching\n";
 
 // mediaplayer.js replaces the player markup with the stored data-sources entry,
-// so every quality entry must already carry the tracks.
-$quality_html = array( '480p' => '', '720p' => '', '1080p' => '' );
-foreach ( array_keys( $quality_html ) as $quality ) {
-	$quality_html[ $quality ] = streamit_child_insert_subtitle_tracks(
+// so every quality entry (including same-quality alternatives) must already
+// carry the tracks.
+$quality_sources = array(
+	'1080p'          => '1080p',
+	'720p Source 1'  => '720p',
+	'720p Source 2'  => '720p',
+	'480p Source 1'  => '480p',
+	'480p Source 2'  => '480p',
+);
+$quality_html = array();
+foreach ( $quality_sources as $source_label => $quality ) {
+	$quality_html[ $source_label ] = streamit_child_insert_subtitle_tracks(
 		'<video class="plyr__video-embed" id="streamit_player" playsinline >'
-			. '<source src="https://media.asiastarx.ir/v/TOKEN_' . $quality . '" type="video/mp4" />'
+			. '<source src="https://media.asiastarx.ir/v/TOKEN_' . rawurlencode( $source_label ) . '" type="video/mp4" />'
 			. '</video>',
 		$tracks
 	);
@@ -240,8 +248,12 @@ foreach ( array_keys( $quality_html ) as $quality ) {
 $processed_sources = array_merge(
 	array( array( 'name' => 'Default', 'content' => $with_tracks ) ),
 	array_map(
-		static function ( $quality ) use ( $quality_html ) {
-			return array( 'name' => $quality, 'content' => $quality_html[ $quality ] );
+		static function ( $source_label ) use ( $quality_html, $quality_sources ) {
+			return array(
+				'name'    => $source_label,
+				'quality' => $quality_sources[ $source_label ],
+				'content' => $quality_html[ $source_label ],
+			);
 		},
 		array_keys( $quality_html )
 	)
@@ -304,11 +316,15 @@ assert_true(
 	'a .vtt file that is really SubRip is still repaired'
 );
 
-if ( function_exists( 'mb_convert_encoding' ) ) {
+// Skip when this PHP build has no Windows-1256 (common on slim Docker images).
+$mb_encodings = function_exists( 'mb_list_encodings' ) ? mb_list_encodings() : array();
+if ( function_exists( 'mb_convert_encoding' ) && in_array( 'Windows-1256', $mb_encodings, true ) ) {
 	$legacy = mb_convert_encoding( "1\n00:00:01,000 --> 00:00:02,000\nسلام\n", 'Windows-1256', 'UTF-8' );
 	$out    = streamit_child_subtitle_body_to_vtt( $legacy, 'srt' );
 	assert_true( mb_check_encoding( $out, 'UTF-8' ), 'Windows-1256 subtitles are decoded to UTF-8' );
 	assert_true( str_contains( $out, 'سلام' ), 'Windows-1256 Persian text survives conversion' );
+} else {
+	echo "  skip  Windows-1256 encoding not available in this PHP build\n";
 }
 
 echo "\nsubtitle format gate\n";

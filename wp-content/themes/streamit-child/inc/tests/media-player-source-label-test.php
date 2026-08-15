@@ -152,6 +152,32 @@ $before = $row;
 streamit_child_player_source_display_label( $row );
 assert_eq( $before, $row, 'helper does not mutate source row / name' );
 
+echo "\nstreamit_child_player_source_identity tests\n\n";
+
+assert_eq(
+	'local:Movie/Korea/2022/Decision.to.Leave/Decision.to.Leave.2022.720p.mkv',
+	streamit_child_player_source_identity(
+		'\\Movie\\Korea\\2022\\Decision.to.Leave\\Decision.to.Leave.2022.720p.mkv'
+	),
+	'local identity normalizes separators and a leading slash'
+);
+assert_eq(
+	streamit_child_player_source_identity( 'Movie/Korea/2022/Decision.to.Leave/movie.720p.mkv' ),
+	streamit_child_player_source_identity( '/Movie/Korea/2022/Decision.to.Leave/movie.720p.mkv' ),
+	'the same normalized media link has the same identity'
+);
+assert_true(
+	streamit_child_player_source_identity( 'Movie/Korea/2022/Decision.to.Leave/movie.720p-a.mkv' )
+		!== streamit_child_player_source_identity( 'Movie/Korea/2022/Decision.to.Leave/movie.720p-b.mkv' ),
+	'different files at the same quality remain distinct'
+);
+assert_eq( null, streamit_child_player_source_identity( '' ), 'empty identity excluded' );
+assert_eq(
+	null,
+	streamit_child_player_source_identity( 'Movie/Korea/2022/Decision.to.Leave/../other.mkv' ),
+	'traversal identity excluded'
+);
+
 echo "\n";
 if ( $failures > 0 ) {
 	echo "FAILED: {$failures} assertion(s)\n";

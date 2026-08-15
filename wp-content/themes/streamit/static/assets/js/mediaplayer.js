@@ -12,6 +12,8 @@ export default class MediaPlayer {
     constructor() {
         this.playerContainer = document.querySelector('.streamit-player-ctrl');
         this.player = null;
+        this.activeSourceIndex = null;
+        this.sourcesDocumentClickHandler = null;
         this.countdownState = {
             active: false,
             startTime: 0,
@@ -30,7 +32,7 @@ export default class MediaPlayer {
 
         this.autoplayConfig = {
             enabled: true,
-            countdown: this.timeStringToSeconds(this.playerContainer.dataset.next_overlay_time),
+            countdown: this.timeStringToSeconds(this.getPlayerData('nextOverlayTime', 'next_overlay_time')),
             timer: null
         };
 
@@ -68,26 +70,31 @@ export default class MediaPlayer {
     }
 
     getPlayerConfig() {
-        const playerData = this.playerContainer?.dataset || {};
-        if (!playerData.playerControls) {
+        const rawConfig = this.getPlayerData('playerControls', 'player_controls');
+        if (!rawConfig) {
             return {};
         }
 
-        const config = JSON.parse(playerData.playerControls);
+        const config = JSON.parse(rawConfig);
+        const rawI18n = this.getPlayerData('i18n');
 
         return {
             ...config,
             controls: config.controls ?? [],
             i18n: {
                 ...(config.i18n ?? {}),
-                ...(playerData.i18n ? JSON.parse(playerData.i18n) : {}),
+                ...(rawI18n ? JSON.parse(rawI18n) : {}),
             },
         };
     }
 
     getLocalizedText() {
+        return this.getPlayerConfig().i18n ?? {};
+    }
+
+    getPlayerData(camelKey, legacyKey = camelKey) {
         const playerData = this.playerContainer?.dataset || {};
-        return playerData.i18n ? JSON.parse(playerData.i18n) : {};
+        return playerData[camelKey] ?? playerData[legacyKey];
     }
 
     // Player Events
@@ -454,6 +461,11 @@ export default class MediaPlayer {
             JSON.parse(this.playerContainer.dataset.sources) : [];
 
         if (!sources.length) return;
+        const displaySources = this.prepareSourcesForDisplay(sources);
+        const defaultIndex = displaySources.findIndex((source) => source.is_default);
+        if (!Number.isInteger(this.activeSourceIndex)) {
+            this.activeSourceIndex = defaultIndex >= 0 ? defaultIndex : 0;
+        }
 
         const checkAndAddControls = () => {
             if (!this.player?.elements?.controls) {
@@ -461,7 +473,7 @@ export default class MediaPlayer {
                 return;
             }
 
-            const sourcesMenu = this.createSourcesMenu(sources);
+            const sourcesMenu = this.createSourcesMenu(displaySources);
             const sourcesButton = this.createSourcesButton();
 
             const controls = this.player.elements.controls;
@@ -470,7 +482,8 @@ export default class MediaPlayer {
             controls.insertBefore(sourcesButton, controls.lastElementChild);
             controls.insertBefore(sourcesMenu, controls.lastElementChild);
 
-            this.setupSourcesMenuEvents(sourcesMenu, sourcesButton);
+            this.setupSourcesMenuEvents(sourcesMenu, sourcesButton, sources);
+            this.highlightActiveSource(this.activeSourceIndex);
         };
 
         checkAndAddControls();
@@ -490,14 +503,55 @@ export default class MediaPlayer {
         return menu;
     }
 
+    prepareSourcesForDisplay(sources) {
+        const prepared = sources.map((source, index) => {
+            const quality = String(source.quality || '').trim();
+            const name = String(source.name || '').trim();
+            const fallback = String(source.label || '').trim();
+            const primary = quality || name || fallback || `Source ${index + 1}`;
+            const secondary = quality && name && name !== quality ? name : '';
+            const duplicateKey = `${quality || primary}\u0000${name}`;
+
+            return {
+                ...source,
+                displayPrimary: primary,
+                displaySecondary: secondary,
+                duplicateKey,
+                sourceIndex: index,
+            };
+        });
+
+        const totals = prepared.reduce((counts, source) => {
+            counts[source.duplicateKey] = (counts[source.duplicateKey] || 0) + 1;
+            return counts;
+        }, {});
+        const ordinals = {};
+
+        return prepared.map((source) => {
+            ordinals[source.duplicateKey] = (ordinals[source.duplicateKey] || 0) + 1;
+            return {
+                ...source,
+                duplicateCount: totals[source.duplicateKey],
+                duplicateOrdinal: ordinals[source.duplicateKey],
+            };
+        });
+    }
+
     createSourceItem(source, index) {
-        if (!source.name || !source.content) return '';
+        if (!source.displayPrimary || !source.content) return '';
+        const details = [];
+        if (source.displaySecondary) {
+            details.push(source.displaySecondary);
+        }
+        if (source.duplicateCount > 1) {
+            details.push(`Source ${source.duplicateOrdinal}`);
+        }
 
         return `
             <li class="plyr__sources__item">
                 <button type="button" class="plyr__sources__button" data-source-index="${index}">
-                    ${this.escapeHtml(source.name)}
-                    ${source.quality ? `<span class="source-quality">(${this.escapeHtml(source.quality)})</span>` : ''}
+                    <span class="source-quality">${this.escapeHtml(source.displayPrimary)}</span>
+                    ${details.length ? `<span class="source-name"> — ${this.escapeHtml(details.join(' — '))}</span>` : ''}
                     ${source.language ? `<span class="source-language">${this.escapeHtml(source.language)}</span>` : ''}
                 </button>
             </li>
@@ -525,7 +579,7 @@ export default class MediaPlayer {
         </svg>`;
     }
 
-    setupSourcesMenuEvents(menu, button) {
+    setupSourcesMenuEvents(menu, button, sources) {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
 
@@ -539,32 +593,78 @@ export default class MediaPlayer {
             menu.classList.toggle('plyr__sources--active');
         });
 
-        document.addEventListener('click', (e) => {
+        if (this.sourcesDocumentClickHandler) {
+            document.removeEventListener('click', this.sourcesDocumentClickHandler);
+        }
+        this.sourcesDocumentClickHandler = (e) => {
             if (!menu.contains(e.target) && !button.contains(e.target)) {
                 menu.classList.remove('plyr__sources--active');
             }
-        });
+        };
+        document.addEventListener('click', this.sourcesDocumentClickHandler);
 
-        menu.querySelectorAll('.plyr__sources__button').forEach((btn, index) => {
+        menu.querySelectorAll('.plyr__sources__button').forEach((btn) => {
             btn.addEventListener('click', () => {
-                const sources = this.playerContainer?.dataset.sources ?
-                    JSON.parse(this.playerContainer.dataset.sources) : [];
+                const index = Number.parseInt(btn.dataset.sourceIndex, 10);
 
-                if (sources[index]) {
-                    this.switchSource(sources[index]);
+                if (Number.isInteger(index) && sources[index]) {
+                    this.switchSource(sources[index], index);
                 }
             });
         });
     }
 
 
-    switchSource(source) {
+    capturePlaybackState() {
+        if (!this.player) return null;
+
+        return {
+            currentTime: Number(this.player.currentTime) || 0,
+            wasPlaying: !this.player.paused,
+            volume: Number(this.player.volume),
+            muted: Boolean(this.player.muted),
+            playbackRate: Number(this.player.speed) || 1,
+            captionsActive: Boolean(this.player.captions?.active),
+            currentTrack: Number.isInteger(this.player.currentTrack) ? this.player.currentTrack : -1,
+        };
+    }
+
+    restorePlaybackState(state) {
+        if (!this.player || !state) return;
+
+        if (Number.isFinite(state.volume)) {
+            this.player.volume = Math.min(1, Math.max(0, state.volume));
+        }
+        this.player.muted = state.muted;
+        if (Number.isFinite(state.playbackRate) && state.playbackRate > 0) {
+            this.player.speed = state.playbackRate;
+        }
+        if (state.currentTime > 0) {
+            this.player.currentTime = state.currentTime;
+        }
+        if (state.currentTrack >= 0) {
+            try {
+                this.player.currentTrack = state.currentTrack;
+            } catch (error) {
+                console.warn('Caption track restore failed:', error);
+            }
+        }
+        if (typeof this.player.toggleCaptions === 'function') {
+            this.player.toggleCaptions(state.captionsActive);
+        }
+        if (state.wasPlaying) {
+            const playPromise = this.player.play();
+            if (playPromise?.catch) {
+                playPromise.catch((error) => console.warn('Playback resume failed:', error));
+            }
+        }
+    }
+
+    switchSource(source, sourceIndex) {
         if (!source?.content) return;
 
         try {
-            const currentTime = this.player.currentTime;
-            const wasPlaying = !this.player.paused;
-            const currentSourceName = source.name;
+            const state = this.capturePlaybackState();
 
             this.player.destroy();
             this.playerContainer.innerHTML = source.content;
@@ -573,13 +673,13 @@ export default class MediaPlayer {
             window.streamitPlayerInstance = this.player;
 
             this.player.once('ready', () => {
-                if (currentTime > 0) this.player.currentTime = currentTime;
-                if (wasPlaying) this.player.play();
+                this.restorePlaybackState(state);
+                this.activeSourceIndex = sourceIndex;
 
                 setTimeout(() => {
                     if (this.getPlayerConfig().controls?.includes('sources')) {
                         this.setupSourcesMenu();
-                        this.highlightActiveSource(currentSourceName);
+                        this.highlightActiveSource(sourceIndex);
                     }
                 }, MediaPlayer.SOURCE_UPDATE_DELAY);
             });
@@ -590,9 +690,10 @@ export default class MediaPlayer {
         }
     }
 
-    highlightActiveSource(sourceName) {
+    highlightActiveSource(sourceIndex) {
         document.querySelectorAll('.plyr__sources__button').forEach(btn => {
-            btn.classList.toggle('active', btn.textContent.trim().startsWith(sourceName));
+            const buttonIndex = Number.parseInt(btn.dataset.sourceIndex, 10);
+            btn.classList.toggle('active', buttonIndex === sourceIndex);
         });
     }
 
@@ -682,7 +783,7 @@ export default class MediaPlayer {
 
     // Watch List and Time Tracking
     initWatchList() {
-        const currentTime = parseInt(this.playerContainer?.dataset.currentTime) || 0;
+        const currentTime = parseInt(this.getPlayerData('currentTime', 'current_time')) || 0;
         if (currentTime > 5 && this.player) {
             this.player.currentTime = currentTime;
         }
@@ -708,10 +809,10 @@ export default class MediaPlayer {
 
         const data = {
             watched_time: currentTime,
-            post_type: this.playerContainer.dataset.postType,
-            user_id: this.playerContainer.dataset.userId,
+            post_type: this.getPlayerData('postType', 'post_type'),
+            user_id: this.getPlayerData('userId', 'user_id'),
             watched_total_time: totalTime,
-            post_id: this.playerContainer.dataset.postId
+            post_id: this.getPlayerData('postId', 'post_id')
         };
 
         try {
