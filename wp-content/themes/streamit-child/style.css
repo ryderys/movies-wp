@@ -5,3 +5,35 @@
 * Template: streamit
 * Version: 4.3.0
 */
+
+/* Progressive quality selector: quality first, optional source detail second. */
+.plyr__sources .plyr__sources__button {
+	justify-content: flex-start;
+}
+
+.plyr__sources .plyr__sources__button .source-quality {
+	margin-left: 0;
+	opacity: 1;
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.plyr__sources .plyr__sources__button .source-name {
+	margin-left: 0.25rem;
+	opacity: 0.75;
+	font-size: 0.75rem;
+}
+
+.plyr__sources .plyr__sources__button .source-language {
+	margin-left: auto;
+}
+
+/* Movie single: TMDb-localized title remains secondary to the local post title. */
+.streamit-child-tmdb-title {
+	color: var(--bs-body-color);
+	font-size: clamp(0.875rem, 1.5vw, 1.05rem);
+	font-weight: 400;
+	line-height: 1.4;
+	opacity: 0.72;
+	text-transform: none;
+}

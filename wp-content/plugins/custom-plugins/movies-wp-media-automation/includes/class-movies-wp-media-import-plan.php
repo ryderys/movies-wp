@@ -180,7 +180,7 @@ class Movies_WP_Media_Import_Plan {
 				'media_directory'  => $dir,
 				'tmdb_title'       => $tmdb_title,
 				'tmdb_overview'    => $tmdb_overview,
-				// TMDb original title is metadata only — not a Streamit field to write.
+				// Adapter persists non-empty TMDb titles as dedicated movie meta.
 				'tmdb_original_title' => isset( $tmdb['original_title'] ) ? (string) $tmdb['original_title'] : null,
 			),
 			'identity' => array(

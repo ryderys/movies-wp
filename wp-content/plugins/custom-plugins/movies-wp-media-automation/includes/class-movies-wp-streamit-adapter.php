@@ -210,7 +210,8 @@ class Movies_WP_Streamit_Adapter {
 	}
 
 	/**
-	 * Load-merge-write title/summary. Never calls streamit_update_movie().
+	 * Load-merge-write title/summary and non-empty TMDb titles.
+	 * Never calls streamit_update_movie().
 	 *
 	 * @param array<string, mixed> $plan
 	 * @param array<string, mixed> $options
@@ -258,6 +259,34 @@ class Movies_WP_Streamit_Adapter {
 		}
 		if ( false === $updated || null === $updated ) {
 			return array( 'ok' => false, 'error' => self::err( 'media_adapter_metadata_failed', 'Movie metadata update failed.' ) );
+		}
+
+		$tmdb_titles = array(
+			'_tmdb_title'          => isset( $plan['movie']['tmdb_title'] ) ? trim( (string) $plan['movie']['tmdb_title'] ) : '',
+			'_tmdb_original_title' => isset( $plan['movie']['tmdb_original_title'] ) ? trim( (string) $plan['movie']['tmdb_original_title'] ) : '',
+		);
+
+		foreach ( $tmdb_titles as $key => $value ) {
+			// Missing/empty plan values never erase an existing title.
+			if ( '' === $value ) {
+				continue;
+			}
+
+			if ( isset( $options['update_meta'] ) && is_callable( $options['update_meta'] ) ) {
+				$written = call_user_func( $options['update_meta'], (int) $movie_id, $key, $value );
+			} else {
+				if ( ! function_exists( 'streamit_update_movie_meta' ) ) {
+					return array( 'ok' => false, 'error' => self::err( 'media_adapter_update_meta_missing', 'streamit_update_movie_meta() is not available.' ) );
+				}
+				$written = streamit_update_movie_meta( (int) $movie_id, $key, $value );
+			}
+
+			if ( is_wp_error( $written ) ) {
+				return array( 'ok' => false, 'error' => self::err( $written->get_error_code(), $written->get_error_message() ) );
+			}
+			if ( ! self::meta_write_succeeded( $written, $movie_id, $key, $value, $options ) ) {
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_metadata_failed', 'Failed to persist ' . $key . '.' ) );
+			}
 		}
 
 		return array( 'ok' => true );

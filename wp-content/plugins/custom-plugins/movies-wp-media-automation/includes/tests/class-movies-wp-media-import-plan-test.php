@@ -269,7 +269,8 @@ assert_true( ( $plan['metadata']['title'] ?? null ) === 'مبارزان شکار
 assert_true( ( $plan['metadata']['title_source'] ?? null ) === 'admin', 'title_source admin' );
 assert_true( ( $plan['metadata']['summary'] ?? null ) === 'خلاصه فارسی ادمین', 'admin summary authoritative' );
 assert_true( ( $plan['metadata']['summary_source'] ?? null ) === 'admin', 'summary_source admin' );
-assert_true( ( $plan['movie']['tmdb_original_title'] ?? null ) === 'Bounty Hunters', 'original_title kept as TMDb metadata only' );
+assert_true( ( $plan['movie']['tmdb_title'] ?? null ) === 'Bounty Hunters', 'TMDb localized title kept for adapter persistence' );
+assert_true( ( $plan['movie']['tmdb_original_title'] ?? null ) === 'Bounty Hunters', 'TMDb original title kept for adapter persistence' );
 assert_true( ! isset( $plan['metadata']['original_title'] ), 'no invented original_title write field' );
 assert_true( count( $plan['sources'] ) === 2, 'two video sources' );
 assert_true( ( $plan['sources'][0]['link'] ?? null ) === ( $plan['sources'][0]['media_path'] ?? null ), 'link is relative media_path' );

@@ -348,6 +348,7 @@ function harness( array &$state ): array {
 		'update_rows'    => array(),
 		'sources_written'=> null,
 		'meta_written'   => array(),
+		'existing_meta'  => array(),
 		'existing_sources' => array(),
 		'movie_fields'   => base_movie_fields(),
 		'create_result'  => array( 'status' => true, 'data' => 100 ),
@@ -399,7 +400,12 @@ function harness( array &$state ): array {
 				return false;
 			}
 			$state['meta_written'][ $key ] = array( 'movie_id' => $movie_id, 'value' => $value );
+			$state['existing_meta'][ $key ] = $value;
 			return true;
+		},
+		'get_meta' => static function ( $movie_id, $key ) use ( &$state ) {
+			unset( $movie_id );
+			return $state['existing_meta'][ $key ] ?? null;
 		},
 		'get_subtitles' => static function ( $movie_id ) use ( &$state ) {
 			if ( isset( $state['meta_written']['_subtitles']['value'] ) && is_array( $state['meta_written']['_subtitles']['value'] ) ) {
@@ -483,6 +489,12 @@ echo "\n[create]\n";
 					'download_content' => 'Movie/Iran/2024/some-slug/video.mkv',
 				),
 			),
+			'movie'    => array(
+				'tmdb_id'            => 999,
+				'media_directory'     => 'Movie/Iran/2024/some-slug',
+				'tmdb_title'         => 'Decision to Leave',
+				'tmdb_original_title' => '헤어질 결심',
+			),
 		)
 	);
 	$before = json_encode( $plan );
@@ -492,6 +504,10 @@ echo "\n[create]\n";
 	assert_eq( 'create', $r['identity_action'] ?? null, '4. identity_action=create' );
 	assert_eq( 1, $state['create_calls'], '4. insert_movie_tmdb called once' );
 	assert_eq( 999, $state['create_tmdb_id'] ?? null, '4. tmdb id passed' );
+	assert_eq( 'Admin Title', $state['update_rows'][0]['payload']['post_title'] ?? null, '4. create overlay keeps local title as post_title' );
+	assert_eq( 'Decision to Leave', $state['meta_written']['_tmdb_title']['value'] ?? null, '4. create persists _tmdb_title' );
+	assert_eq( '헤어질 결심', $state['meta_written']['_tmdb_original_title']['value'] ?? null, '4. create persists _tmdb_original_title' );
+	assert_true( ! isset( $state['meta_written']['original_title'] ), '4. create never writes unprefixed original_title' );
 	assert_eq( $before, json_encode( $plan ), '36. no plan mutation on create' );
 	assert_true( in_array( 'movie', $r['completed'], true ), '41. completed includes movie' );
 	assert_true( in_array( 'metadata', $r['completed'], true ), '41. completed includes metadata' );
@@ -510,6 +526,12 @@ echo "\n[update]\n";
 	$opts  = harness( $state );
 	$plan  = make_plan(
 		array(
+			'movie'   => array(
+				'tmdb_id'            => 999,
+				'media_directory'     => 'Movie/Iran/2024/some-slug',
+				'tmdb_title'         => 'Decision to Leave',
+				'tmdb_original_title' => '헤어질 결심',
+			),
 			'sources' => array(
 				array(
 					'action'           => 'keep_existing',
@@ -546,6 +568,9 @@ echo "\n[update]\n";
 	assert_eq( 1, count( $state['update_rows'] ), '7. full-row update called once' );
 	$payload = $state['update_rows'][0]['payload'];
 	assert_eq( 'Admin Title', $payload['post_title'], '8. title overlay' );
+	assert_eq( 'Decision to Leave', $state['meta_written']['_tmdb_title']['value'] ?? null, '8. update persists _tmdb_title' );
+	assert_eq( '헤어질 결심', $state['meta_written']['_tmdb_original_title']['value'] ?? null, '8. update persists _tmdb_original_title' );
+	assert_true( ! isset( $state['meta_written']['original_title'] ), '8. update never writes unprefixed original_title' );
 	assert_eq( 'Admin Summary', $payload['post_content'], '9. summary overlay' );
 	assert_eq( 'old-slug', $payload['post_name'], '10. post_name preserved' );
 	assert_eq( 'publish', $payload['post_status'], '10. post_status preserved' );
@@ -553,6 +578,36 @@ echo "\n[update]\n";
 	assert_eq( 1, $payload['post_author'], '10. post_author preserved' );
 	assert_eq( 'excerpt', $payload['post_excerpt'], '10. excerpt preserved' );
 	assert_eq( '2026-08-12 12:00:00', $payload['post_modified'], '10. post_modified updated' );
+}
+
+echo "\n[empty-tmdb-titles-preserve-existing]\n";
+{
+	$state = array(
+		'existing_meta' => array(
+			'_tmdb_title'          => 'Existing TMDb Title',
+			'_tmdb_original_title' => 'Existing Original Title',
+		),
+	);
+	$opts  = harness( $state );
+	$plan  = make_plan(
+		array(
+			'movie' => array(
+				'tmdb_id'            => 999,
+				'media_directory'     => 'Movie/Iran/2024/some-slug',
+				'tmdb_title'         => '',
+				'tmdb_original_title' => null,
+			),
+		)
+	);
+
+	$r = Movies_WP_Streamit_Adapter::apply( $plan, $opts );
+
+	assert_true( ! empty( $r['ok'] ), 'empty TMDb titles do not fail update' );
+	assert_eq( 'Admin Title', $state['update_rows'][0]['payload']['post_title'] ?? null, 'empty TMDb titles do not change local post_title behavior' );
+	assert_true( ! isset( $state['meta_written']['_tmdb_title'] ), 'empty plan _tmdb_title is not written' );
+	assert_true( ! isset( $state['meta_written']['_tmdb_original_title'] ), 'empty plan _tmdb_original_title is not written' );
+	assert_eq( 'Existing TMDb Title', $state['existing_meta']['_tmdb_title'], 'existing _tmdb_title preserved' );
+	assert_eq( 'Existing Original Title', $state['existing_meta']['_tmdb_original_title'], 'existing _tmdb_original_title preserved' );
 }
 
 // ---------------------------------------------------------------------------
