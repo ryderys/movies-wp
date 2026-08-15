@@ -55,9 +55,6 @@ $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 								<div class="stc-download-row">
 									<div class="stc-download-info">
 										<span class="stc-download-quality"><?php echo esc_html( $source['quality'] ); ?></span>
-										<?php if ( '' !== trim( (string) ( $source['language'] ?? '' ) ) ) : ?>
-											<span class="stc-download-lang"><?php echo esc_html( $source['language'] ); ?></span>
-										<?php endif; ?>
 										<?php streamit_child_render_download_source_meta( $source ); ?>
 									</div>
 									<div class="stc-download-action">

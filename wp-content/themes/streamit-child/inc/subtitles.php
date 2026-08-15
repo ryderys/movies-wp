@@ -150,6 +150,82 @@ function streamit_child_get_subtitles( $st_data ) {
 }
 
 /**
+ * Basename of a stored subtitle path/URL for display only.
+ *
+ * @param string $stored Stored `_subtitles[].url`.
+ * @return string
+ */
+function streamit_child_subtitle_display_basename( $stored ) {
+	$stored = str_replace( '\\', '/', trim( (string) $stored ) );
+	if ( '' === $stored ) {
+		return '';
+	}
+
+	$path = $stored;
+	if ( preg_match( '#^https?://#i', $stored ) ) {
+		$parsed = parse_url( $stored, PHP_URL_PATH );
+		$path   = is_string( $parsed ) && '' !== $parsed ? $parsed : $stored;
+	} else {
+		$path = strtok( $stored, '?#' );
+		$path = is_string( $path ) ? $path : $stored;
+	}
+
+	$base = basename( $path );
+	return (string) $base;
+}
+
+/**
+ * Display format for a subtitle row: stored format, else path extension.
+ *
+ * @param array<string, mixed> $sub Normalized subtitle row.
+ * @return string Uppercased format, or empty string.
+ */
+function streamit_child_subtitle_display_format( $sub ) {
+	$format = isset( $sub['format'] ) ? trim( (string) $sub['format'] ) : '';
+	if ( '' !== $format ) {
+		return strtoupper( $format );
+	}
+
+	$url = isset( $sub['url'] ) ? (string) $sub['url'] : '';
+	$ext = function_exists( 'streamit_child_download_path_extension' )
+		? streamit_child_download_path_extension( $url )
+		: '';
+
+	if ( '' !== $ext ) {
+		return $ext;
+	}
+
+	$base = streamit_child_subtitle_display_basename( $url );
+	$from_base = strtolower( (string) pathinfo( $base, PATHINFO_EXTENSION ) );
+	if ( '' === $from_base || ! preg_match( '/^[a-z0-9]{1,10}$/', $from_base ) ) {
+		return '';
+	}
+
+	return strtoupper( $from_base );
+}
+
+/**
+ * Compact secondary line values for a subtitle download row.
+ *
+ * @param array<string, mixed> $sub Normalized subtitle row.
+ * @return array<int, string>
+ */
+function streamit_child_subtitle_download_meta_values( $sub ) {
+	$values = array();
+	$base   = streamit_child_subtitle_display_basename( isset( $sub['url'] ) ? $sub['url'] : '' );
+	$format = streamit_child_subtitle_display_format( $sub );
+
+	if ( '' !== $base ) {
+		$values[] = $base;
+	}
+	if ( '' !== $format ) {
+		$values[] = $format;
+	}
+
+	return $values;
+}
+
+/**
  * Resolve a stored subtitle path/URL for render time.
  *
  * Relative Movie/... paths are signed with the existing media mint.
@@ -545,19 +621,14 @@ function streamit_child_render_subtitle_download_section( $subs ) {
 				if ( '' === $dl_href ) {
 					continue;
 				}
+				$meta_values = streamit_child_subtitle_download_meta_values( $sub );
 				?>
 				<li>
 					<div class="stc-subtitle-row">
 						<div class="stc-subtitle-meta">
 							<span class="stc-subtitle-label"><?php echo esc_html( $sub['label'] ); ?></span>
-							<?php if ( ! empty( $sub['srclang'] ) ) : ?>
-								<span class="stc-subtitle-lang"><?php echo esc_html( strtoupper( $sub['srclang'] ) ); ?></span>
-							<?php endif; ?>
-							<?php if ( ! empty( $sub['format'] ) ) : ?>
-								<span class="stc-subtitle-format">
-									<span class="stc-download-meta__label"><?php esc_html_e( 'نوع زیرنویس', 'streamit' ); ?></span>
-									<span class="stc-download-meta__value"><?php echo esc_html( $sub['format'] ); ?></span>
-								</span>
+							<?php if ( ! empty( $meta_values ) ) : ?>
+								<span class="stc-subtitle-secondary"><?php echo esc_html( implode( ' · ', $meta_values ) ); ?></span>
 							<?php endif; ?>
 						</div>
 						<div class="stc-subtitle-download stc-download-action">

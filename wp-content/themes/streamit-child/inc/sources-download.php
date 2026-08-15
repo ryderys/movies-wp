@@ -62,36 +62,90 @@ function streamit_child_get_downloadable_sources( $sources ) {
 }
 
 /**
- * Render optional download-row meta (size + encoder) for the modal.
+ * Safely derive an uppercase extension from a stored path or URL.
  *
- * @param array<string, string> $source Normalized downloadable source.
+ * @param string $stored Stored relative path or URL.
+ * @return string
  */
-function streamit_child_render_download_source_meta( $source ) {
-	$file_size = isset( $source['file_size'] ) ? trim( (string) $source['file_size'] ) : '';
-	$encoder   = isset( $source['encoder'] ) ? trim( (string) $source['encoder'] ) : '';
-
-	if ( '' === $file_size && '' === $encoder ) {
-		return;
+function streamit_child_download_path_extension( $stored ) {
+	$stored = str_replace( '\\', '/', trim( (string) $stored ) );
+	if ( '' === $stored ) {
+		return '';
 	}
 
-	// Flat spans so meta sits on the same flex line as quality/lang.
-	if ( '' !== $file_size ) :
-		?>
-		<span class="stc-download-meta-item">
-			<span class="stc-download-meta__label"><?php esc_html_e( 'حجم', 'streamit' ); ?></span>
-			<span class="stc-download-meta__value"><?php echo esc_html( $file_size ); ?></span>
-		</span>
-		<?php
-	endif;
+	$path = $stored;
+	if ( preg_match( '#^https?://#i', $stored ) ) {
+		$parsed = parse_url( $stored, PHP_URL_PATH );
+		$path   = is_string( $parsed ) && '' !== $parsed ? $parsed : '';
+	} else {
+		// Relative Movie/... paths: strip query/fragment without parse_url host confusion.
+		$path = strtok( $stored, '?#' );
+		$path = is_string( $path ) ? $path : $stored;
+	}
 
-	if ( '' !== $encoder ) :
-		?>
-		<span class="stc-download-meta-item">
-			<span class="stc-download-meta__label"><?php esc_html_e( 'Encoder', 'streamit' ); ?></span>
-			<span class="stc-download-meta__value"><?php echo esc_html( $encoder ); ?></span>
-		</span>
-		<?php
-	endif;
+	if ( '' === $path ) {
+		return '';
+	}
+
+	$extension = strtolower( (string) pathinfo( $path, PATHINFO_EXTENSION ) );
+	if ( '' === $extension || ! preg_match( '/^[a-z0-9]{1,10}$/', $extension ) ) {
+		return '';
+	}
+
+	return strtoupper( $extension );
+}
+
+/**
+ * Build compact, display-only metadata for one video download row.
+ *
+ * @param array<string, mixed> $source Normalized downloadable source.
+ * @return array<int, string>
+ */
+function streamit_child_download_source_meta_values( $source ) {
+	$quality  = isset( $source['quality'] ) ? trim( (string) $source['quality'] ) : '';
+	$name     = isset( $source['name'] ) ? trim( (string) $source['name'] ) : '';
+	$path     = isset( $source['download_content'] ) ? trim( (string) $source['download_content'] ) : '';
+	$file_size = isset( $source['file_size'] ) ? trim( (string) $source['file_size'] ) : '';
+	$values   = array();
+
+	if ( '' !== $name && $name !== $quality ) {
+		$values[] = $name;
+	}
+
+	$container = streamit_child_download_path_extension( $path );
+	if ( '' !== $container ) {
+		$values[] = $container;
+	}
+
+	if ( '' !== $file_size ) {
+		$values[] = $file_size;
+	}
+
+	return $values;
+}
+
+/**
+ * Render optional compact metadata for the modal.
+ *
+ * @param array<string, mixed> $source Normalized downloadable source.
+ */
+function streamit_child_render_download_source_meta( $source ) {
+	$values   = streamit_child_download_source_meta_values( $source );
+	$language = isset( $source['language'] ) ? trim( (string) $source['language'] ) : '';
+
+	if ( empty( $values ) && '' === $language ) {
+		return;
+	}
+	?>
+	<div class="stc-download-secondary">
+		<?php if ( ! empty( $values ) ) : ?>
+			<span class="stc-download-meta"><?php echo esc_html( implode( ' · ', $values ) ); ?></span>
+		<?php endif; ?>
+		<?php if ( '' !== $language ) : ?>
+			<span class="stc-download-lang"><?php echo esc_html( $language ); ?></span>
+		<?php endif; ?>
+	</div>
+	<?php
 }
 
 /**
