@@ -25,9 +25,9 @@ function streamit_enqueue_styles() {
 }
 
 /**
- * Cloudflare Worker host — used for server-side requests only (server can resolve workers.dev).
+ * Cloudflare Worker host — custom domain on asiastars.ir (workers.dev is blocked on this server).
  */
-const STREAMIT_TMDB_PROXY_HOST = 'tmdb.youssefi-ashkan-ys.workers.dev';
+const STREAMIT_TMDB_PROXY_HOST = 'tmdb.asiastars.ir';
 
 /**
  * Direct TMDB image URL for server-side downloads (proxied via pre_http_request).

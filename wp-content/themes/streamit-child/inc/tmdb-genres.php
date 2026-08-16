@@ -94,7 +94,7 @@ function streamit_child_fetch_tmdb_genres( $tmdb_id, $type ) {
 		return array();
 	}
 
-	$host     = defined( 'STREAMIT_TMDB_PROXY_HOST' ) ? STREAMIT_TMDB_PROXY_HOST : 'tmdb.youssefi-ashkan-ys.workers.dev';
+	$host     = defined( 'STREAMIT_TMDB_PROXY_HOST' ) ? STREAMIT_TMDB_PROXY_HOST : 'tmdb.asiastars.ir';
 	$language = 'en-US';
 
 	if ( 'tvshow' === $type ) {
