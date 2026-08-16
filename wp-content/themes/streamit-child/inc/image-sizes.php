@@ -394,10 +394,10 @@ function streamit_child_filter_image_downsize( $downsize, $id, $size ) {
 add_filter( 'image_downsize', 'streamit_child_filter_image_downsize', 10, 3 );
 
 /**
- * Use w1280 instead of TMDB original during server-side image downloads.
+ * Use w1280 instead of TMDB original during ordinary server-side downloads.
  *
- * w1280 is TMDB's largest standard width before original — sharp enough for
- * 1920px heroes and retina poster cards while avoiding 3000px+ masters.
+ * Backdrop imports carry `_streamit_image_role=backdrop`; those retain TMDB
+ * original so WordPress can generate the 1920x1080 hero derivative.
  *
  * Runs at priority 9, before the TMDB proxy filter at 10 in functions.php.
  *
@@ -408,6 +408,9 @@ add_filter( 'image_downsize', 'streamit_child_filter_image_downsize', 10, 3 );
  */
 function streamit_child_tmdb_import_image_size( $pre, $args, $url ) {
 	if ( false !== $pre ) {
+		return $pre;
+	}
+	if ( ! empty( $args['streamit_tmdb_image_size_handled'] ) ) {
 		return $pre;
 	}
 
@@ -424,13 +427,25 @@ function streamit_child_tmdb_import_image_size( $pre, $args, $url ) {
 		return $pre;
 	}
 
-	$url = str_replace( '/t/p/original/', '/t/p/w1280/', $url );
+	$query       = parse_url( $url, PHP_URL_QUERY );
+	$query_args  = array();
+	if ( is_string( $query ) ) {
+		parse_str( $query, $query_args );
+	}
+	$is_backdrop = isset( $query_args['_streamit_image_role'] )
+		&& 'backdrop' === $query_args['_streamit_image_role'];
+	$url         = remove_query_arg( '_streamit_image_role', $url );
+
+	if ( ! $is_backdrop ) {
+		$url = str_replace( '/t/p/original/', '/t/p/w1280/', $url );
+	}
 
 	if ( function_exists( 'streamit_tmdb_server_proxy_url' ) ) {
 		$url = streamit_tmdb_server_proxy_url( $url );
 	}
 
-	$args['timeout'] = max( (int) ( $args['timeout'] ?? 5 ), 40 );
+	$args['timeout']                         = max( (int) ( $args['timeout'] ?? 5 ), 40 );
+	$args['streamit_tmdb_image_size_handled'] = true;
 
 	return wp_remote_request( $url, $args );
 }
