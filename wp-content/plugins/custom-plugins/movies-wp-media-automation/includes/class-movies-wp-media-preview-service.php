@@ -69,16 +69,16 @@ class Movies_WP_Media_Preview_Service {
 		$dir     = isset( $input['media_directory'] ) ? $input['media_directory'] : '';
 
 		if ( $tmdb_id <= 0 ) {
-			return new WP_Error( 'media_preview_invalid_input', 'TMDb ID must be a positive integer.' );
+			return new WP_Error( 'media_preview_invalid_input', __( 'TMDb ID must be a positive integer.', 'movies-wp' ) );
 		}
 
 		if ( '' === $title ) {
-			return new WP_Error( 'media_preview_invalid_input', 'Title is required.' );
+			return new WP_Error( 'media_preview_invalid_input', __( 'Title is required.', 'movies-wp' ) );
 		}
 
 		$directory = Movies_WP_Media_Api_Client::normalize_directory( $dir );
 		if ( is_wp_error( $directory ) ) {
-			return new WP_Error( 'media_preview_invalid_input', 'Media directory must be a relative Movie path.' );
+			return new WP_Error( 'media_preview_invalid_input', __( 'Media directory must be a relative Movie path.', 'movies-wp' ) );
 		}
 
 		return array(
@@ -132,7 +132,7 @@ class Movies_WP_Media_Preview_Service {
 		}
 
 		if ( $videos === array() ) {
-			$errors[] = self::issue( 'no_video_files', 'No video files were detected.' );
+			$errors[] = self::issue( 'no_video_files', __( 'No video files were detected.', 'movies-wp' ) );
 		}
 
 		$quality_keys = array();
@@ -141,7 +141,7 @@ class Movies_WP_Media_Preview_Service {
 
 			$quality = isset( $file['quality'] ) ? trim( (string) $file['quality'] ) : '';
 			if ( '' === $quality ) {
-				$warnings[] = self::issue( 'quality_unknown', 'Quality could not be detected.', $name );
+				$warnings[] = self::issue( 'quality_unknown', __( 'Quality could not be detected.', 'movies-wp' ), $name );
 			}
 
 			// User-facing audio_unknown only when filename is unknown AND probe has no language tags.
@@ -149,7 +149,7 @@ class Movies_WP_Media_Preview_Service {
 			$probe_langs  = self::probe_audio_languages( $file );
 			$filename_unknown = ( 'unknown' === $confidence || '' === $confidence );
 			if ( $filename_unknown && $probe_langs === array() ) {
-				$warnings[] = self::issue( 'audio_unknown', 'Audio language could not be detected.', $name );
+				$warnings[] = self::issue( 'audio_unknown', __( 'Audio language could not be detected.', 'movies-wp' ), $name );
 			}
 
 			$source = isset( $file['source_type'] ) ? trim( (string) $file['source_type'] ) : '';
@@ -158,7 +158,11 @@ class Movies_WP_Media_Preview_Service {
 				if ( isset( $quality_keys[ $key ] ) ) {
 					$warnings[] = self::issue(
 						'duplicate_quality',
-						'Duplicate quality detected: ' . trim( $quality . ' ' . $source ) . '.',
+						sprintf(
+							/* translators: %s: detected quality and source, for example "1080p WEB-DL" */
+							__( 'Duplicate quality detected: %s.', 'movies-wp' ),
+							trim( $quality . ' ' . $source )
+						),
 						$name
 					);
 				} else {
@@ -172,7 +176,7 @@ class Movies_WP_Media_Preview_Service {
 			$lang = $file['subtitle_lang'] ?? null;
 			if ( null === $lang || '' === $lang ) {
 				$name       = isset( $file['name'] ) ? (string) $file['name'] : '';
-				$warnings[] = self::issue( 'subtitle_lang_unknown', 'Subtitle language could not be detected.', $name );
+				$warnings[] = self::issue( 'subtitle_lang_unknown', __( 'Subtitle language could not be detected.', 'movies-wp' ), $name );
 			}
 		}
 
@@ -185,7 +189,7 @@ class Movies_WP_Media_Preview_Service {
 				if ( isset( self::internal_warning_codes()[ $code ] ) ) {
 					continue;
 				}
-				$msg  = isset( $warning['message'] ) ? (string) $warning['message'] : 'Media scan warning.';
+				$msg  = isset( $warning['message'] ) ? (string) $warning['message'] : __( 'Media scan warning.', 'movies-wp' );
 				$name = isset( $warning['name'] ) ? (string) $warning['name'] : '';
 				$warnings[] = self::issue( $code, $msg, $name );
 			}
@@ -210,7 +214,7 @@ class Movies_WP_Media_Preview_Service {
 				if ( isset( $skip_file_codes[ $code ] ) ) {
 					continue;
 				}
-				$msg = isset( $warning['message'] ) ? (string) $warning['message'] : 'Unclassified filename tokens.';
+				$msg = isset( $warning['message'] ) ? (string) $warning['message'] : __( 'Unclassified filename tokens.', 'movies-wp' );
 				$warnings[] = self::issue( $code, $msg, $name );
 			}
 		}
@@ -226,7 +230,7 @@ class Movies_WP_Media_Preview_Service {
 					continue;
 				}
 				$code = isset( $issue['code'] ) ? (string) $issue['code'] : 'validation_error';
-				$msg  = isset( $issue['message'] ) ? (string) $issue['message'] : 'Validation error.';
+				$msg  = isset( $issue['message'] ) ? (string) $issue['message'] : __( 'Validation error.', 'movies-wp' );
 				$errors[] = self::issue( $code, $msg, $name );
 			}
 		}
@@ -237,7 +241,8 @@ class Movies_WP_Media_Preview_Service {
 			$warnings[] = self::issue(
 				'year_mismatch',
 				sprintf(
-					'Media directory year (%d) differs from TMDb year (%d). TMDb ID remains authoritative.',
+					/* translators: 1: media directory year, 2: TMDb year */
+					__( 'Media directory year (%1$d) differs from TMDb year (%2$d). TMDb ID remains authoritative.', 'movies-wp' ),
 					$media_year,
 					$tmdb_year
 				)
@@ -324,7 +329,7 @@ class Movies_WP_Media_Preview_Service {
 	private static function wrap_media_error( $error ) {
 		$code = $error->get_error_code();
 		if ( 'media_api_invalid_dir' === $code ) {
-			return new WP_Error( 'media_preview_invalid_input', 'Media directory must be a relative Movie path.' );
+			return new WP_Error( 'media_preview_invalid_input', __( 'Media directory must be a relative Movie path.', 'movies-wp' ) );
 		}
 
 		$data = $error->get_error_data();

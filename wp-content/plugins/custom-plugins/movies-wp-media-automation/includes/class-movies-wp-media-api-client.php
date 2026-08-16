@@ -69,7 +69,7 @@ class Movies_WP_Media_Api_Client {
 		if ( ! is_array( $decoded ) ) {
 			return new WP_Error(
 				'media_api_invalid_json',
-				'The media scan response was not valid JSON.',
+				__( 'The media scan response was not valid JSON.', 'movies-wp' ),
 				array( 'status' => $status )
 			);
 		}
@@ -77,7 +77,7 @@ class Movies_WP_Media_Api_Client {
 		if ( 401 === $status || 403 === $status ) {
 			return self::server_error(
 				'media_api_authentication_failed',
-				'Media scan authentication failed.',
+				__( 'Media scan authentication failed.', 'movies-wp' ),
 				$status,
 				$decoded
 			);
@@ -92,7 +92,7 @@ class Movies_WP_Media_Api_Client {
 			}
 			return self::server_error(
 				$code,
-				'Media scan failed.',
+				__( 'Media scan failed.', 'movies-wp' ),
 				$status,
 				$decoded
 			);
@@ -101,7 +101,7 @@ class Movies_WP_Media_Api_Client {
 		if ( $status < 200 || $status >= 300 ) {
 			return new WP_Error(
 				'media_api_http_error',
-				'The media scan request returned an unexpected HTTP status.',
+				__( 'The media scan request returned an unexpected HTTP status.', 'movies-wp' ),
 				array( 'status' => $status )
 			);
 		}
@@ -109,7 +109,7 @@ class Movies_WP_Media_Api_Client {
 		if ( ( $decoded['kind'] ?? '' ) !== 'movie' || ! isset( $decoded['files'] ) || ! is_array( $decoded['files'] ) ) {
 			return new WP_Error(
 				'media_api_invalid_response',
-				'The media scan response was missing required fields.',
+				__( 'The media scan response was missing required fields.', 'movies-wp' ),
 				array( 'status' => $status )
 			);
 		}
@@ -135,7 +135,7 @@ class Movies_WP_Media_Api_Client {
 		if ( '' === $key || '' === $secret ) {
 			return new WP_Error(
 				'media_api_config_error',
-				'Media scan API is not configured.',
+				__( 'Media scan API is not configured.', 'movies-wp' ),
 				array( 'status' => 0 )
 			);
 		}
@@ -155,37 +155,37 @@ class Movies_WP_Media_Api_Client {
 	 */
 	public static function normalize_directory( $directory ) {
 		if ( ! is_string( $directory ) ) {
-			return new WP_Error( 'media_api_invalid_dir', 'dir must be a relative movie directory.' );
+			return new WP_Error( 'media_api_invalid_dir', __( 'The directory must be a relative movie path.', 'movies-wp' ) );
 		}
 
 		if ( '' === $directory || '' === trim( $directory ) ) {
-			return new WP_Error( 'media_api_invalid_dir', 'dir must be a relative movie directory.' );
+			return new WP_Error( 'media_api_invalid_dir', __( 'The directory must be a relative movie path.', 'movies-wp' ) );
 		}
 
 		if ( str_contains( $directory, "\0" ) ) {
-			return new WP_Error( 'media_api_invalid_dir', 'dir must be a relative movie directory.' );
+			return new WP_Error( 'media_api_invalid_dir', __( 'The directory must be a relative movie path.', 'movies-wp' ) );
 		}
 
 		$normalized = str_replace( '\\', '/', trim( $directory ) );
 
 		if ( str_starts_with( $normalized, '/' ) || preg_match( '#^[A-Za-z]:/#', $normalized ) || str_starts_with( $normalized, '//' ) ) {
-			return new WP_Error( 'media_api_invalid_dir', 'dir must be a relative movie directory.' );
+			return new WP_Error( 'media_api_invalid_dir', __( 'The directory must be a relative movie path.', 'movies-wp' ) );
 		}
 
 		$normalized = trim( $normalized, '/' );
 		if ( '' === $normalized ) {
-			return new WP_Error( 'media_api_invalid_dir', 'dir must be a relative movie directory.' );
+			return new WP_Error( 'media_api_invalid_dir', __( 'The directory must be a relative movie path.', 'movies-wp' ) );
 		}
 
 		$segments = explode( '/', $normalized );
 		foreach ( $segments as $segment ) {
 			if ( '' === $segment || '.' === $segment || '..' === $segment ) {
-				return new WP_Error( 'media_api_invalid_dir', 'dir must be a relative movie directory.' );
+				return new WP_Error( 'media_api_invalid_dir', __( 'The directory must be a relative movie path.', 'movies-wp' ) );
 			}
 		}
 
 		if ( 'Movie' !== $segments[0] || count( $segments ) < 2 ) {
-			return new WP_Error( 'media_api_invalid_dir', 'dir must be a relative movie directory.' );
+			return new WP_Error( 'media_api_invalid_dir', __( 'The directory must be a relative movie path.', 'movies-wp' ) );
 		}
 
 		return $normalized;
@@ -225,14 +225,14 @@ class Movies_WP_Media_Api_Client {
 		if ( $is_timeout ) {
 			return new WP_Error(
 				'media_api_timeout',
-				'The media scan request timed out.',
+				__( 'The media scan request timed out.', 'movies-wp' ),
 				array( 'status' => 0 )
 			);
 		}
 
 		return new WP_Error(
 			'media_api_request_error',
-			'The media scan request failed.',
+			__( 'The media scan request failed.', 'movies-wp' ),
 			array( 'status' => 0 )
 		);
 	}
@@ -247,7 +247,11 @@ class Movies_WP_Media_Api_Client {
 			$data['server_code'] = $decoded['code'];
 		}
 		if ( isset( $decoded['message'] ) && is_string( $decoded['message'] ) && '' !== $decoded['message'] ) {
-			$message = $decoded['message'];
+			$message .= ' ' . sprintf(
+				/* translators: %s: technical error returned by the media server */
+				__( 'Error details: %s', 'movies-wp' ),
+				$decoded['message']
+			);
 		}
 
 		return new WP_Error( $code, $message, $data );

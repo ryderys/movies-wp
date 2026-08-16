@@ -100,7 +100,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 						printf(
 							/* translators: %s: create|update */
 							esc_html__( 'Identity action: %s', 'movies-wp' ),
-							esc_html( (string) $import_details['identity_action'] )
+							esc_html( Movies_WP_Media_Admin::identity_action_label( $import_details['identity_action'] ) )
 						);
 						?>
 					</li>
@@ -108,7 +108,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 				<?php if ( ! empty( $import_details['media_directory'] ) ) : ?>
 					<li>
 						<?php esc_html_e( 'Media directory:', 'movies-wp' ); ?>
-						<code><?php echo esc_html( (string) $import_details['media_directory'] ); ?></code>
+						<code dir="ltr"><?php echo esc_html( (string) $import_details['media_directory'] ); ?></code>
 					</li>
 				<?php endif; ?>
 				<?php
@@ -155,19 +155,26 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 				<?php if ( ! empty( $import_details['completed'] ) && is_array( $import_details['completed'] ) ) : ?>
 					<li>
 						<?php esc_html_e( 'Completed steps:', 'movies-wp' ); ?>
-						<code><?php echo esc_html( implode( ', ', array_map( 'strval', $import_details['completed'] ) ) ); ?></code>
+						<?php
+						echo esc_html(
+							implode(
+								'، ',
+								array_map( array( 'Movies_WP_Media_Admin', 'import_step_label' ), $import_details['completed'] )
+							)
+						);
+						?>
 					</li>
 				<?php endif; ?>
 				<?php if ( ! empty( $import_details['failed_step'] ) ) : ?>
 					<li>
 						<?php esc_html_e( 'Failed step:', 'movies-wp' ); ?>
-						<code><?php echo esc_html( (string) $import_details['failed_step'] ); ?></code>
+						<strong><?php echo esc_html( Movies_WP_Media_Admin::import_step_label( $import_details['failed_step'] ) ); ?></strong>
 					</li>
 				<?php endif; ?>
 				<?php if ( ! empty( $import_details['error']['code'] ) || ! empty( $import_details['error']['message'] ) ) : ?>
 					<li>
 						<?php esc_html_e( 'Error:', 'movies-wp' ); ?>
-						<code><?php echo esc_html( (string) ( $import_details['error']['code'] ?? '' ) ); ?></code>
+						<code dir="ltr"><?php echo esc_html( (string) ( $import_details['error']['code'] ?? '' ) ); ?></code>
 						<?php echo esc_html( Movies_WP_Media_Import_Service::safe_text( (string) ( $import_details['error']['message'] ?? '' ) ) ); ?>
 					</li>
 				<?php endif; ?>
@@ -180,7 +187,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 			<?php if ( ! empty( $import_details['warnings'] ) && is_array( $import_details['warnings'] ) ) : ?>
 				<ul>
 					<?php foreach ( $import_details['warnings'] as $w ) : ?>
-						<li><?php echo esc_html( is_array( $w ) ? (string) ( $w['message'] ?? '' ) : (string) $w ); ?></li>
+						<li><?php echo esc_html( Movies_WP_Media_Admin::issue_message( is_array( $w ) ? $w : (string) $w ) ); ?></li>
 					<?php endforeach; ?>
 				</ul>
 			<?php endif; ?>
@@ -222,7 +229,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 					<label for="movies-wp-media-directory"><?php esc_html_e( 'Media Directory', 'movies-wp' ); ?></label>
 				</th>
 				<td>
-					<input type="text" class="large-text code" id="movies-wp-media-directory" name="media_directory" value="<?php echo esc_attr( $values['media_directory'] ); ?>" placeholder="Movie/Korea/2016/Bounty.Hunters" required />
+					<input type="text" class="large-text code" id="movies-wp-media-directory" name="media_directory" dir="ltr" value="<?php echo esc_attr( $values['media_directory'] ); ?>" placeholder="Movie/Korea/2016/Bounty.Hunters" required />
 					<p class="description"><?php esc_html_e( 'Relative path under Movie/. Directory browser will be added later.', 'movies-wp' ); ?></p>
 				</td>
 			</tr>
@@ -275,9 +282,9 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 				<ul>
 					<?php foreach ( $errors as $issue ) : ?>
 						<li>
-							<?php echo esc_html( $issue['message'] ?? '' ); ?>
+							<?php echo esc_html( Movies_WP_Media_Admin::issue_message( $issue ) ); ?>
 							<?php if ( ! empty( $issue['file'] ) ) : ?>
-								<code><?php echo esc_html( (string) $issue['file'] ); ?></code>
+								<code dir="ltr"><?php echo esc_html( (string) $issue['file'] ); ?></code>
 							<?php endif; ?>
 						</li>
 					<?php endforeach; ?>
@@ -291,9 +298,9 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 				<ul>
 					<?php foreach ( $warns as $issue ) : ?>
 						<li>
-							<?php echo esc_html( $issue['message'] ?? '' ); ?>
+							<?php echo esc_html( Movies_WP_Media_Admin::issue_message( $issue ) ); ?>
 							<?php if ( ! empty( $issue['file'] ) ) : ?>
-								<code><?php echo esc_html( (string) $issue['file'] ); ?></code>
+								<code dir="ltr"><?php echo esc_html( (string) $issue['file'] ); ?></code>
 							<?php endif; ?>
 						</li>
 					<?php endforeach; ?>
@@ -308,10 +315,10 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 				<?php if ( ! empty( $tmdb['poster_url'] ) || ! empty( $tmdb['backdrop_url'] ) ) : ?>
 					<div class="movies-wp-preview-images">
 						<?php if ( ! empty( $tmdb['poster_url'] ) ) : ?>
-							<img src="<?php echo esc_url( $tmdb['poster_url'] ); ?>" alt="" class="movies-wp-poster" />
+							<img src="<?php echo esc_url( $tmdb['poster_url'] ); ?>" alt="<?php esc_attr_e( 'Poster', 'movies-wp' ); ?>" class="movies-wp-poster" />
 						<?php endif; ?>
 						<?php if ( ! empty( $tmdb['backdrop_url'] ) ) : ?>
-							<img src="<?php echo esc_url( $tmdb['backdrop_url'] ); ?>" alt="" class="movies-wp-backdrop" />
+							<img src="<?php echo esc_url( $tmdb['backdrop_url'] ); ?>" alt="<?php esc_attr_e( 'Backdrop', 'movies-wp' ); ?>" class="movies-wp-backdrop" />
 						<?php endif; ?>
 					</div>
 				<?php endif; ?>
@@ -332,11 +339,11 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 						</tr>
 						<tr>
 							<th><?php esc_html_e( 'TMDb title', 'movies-wp' ); ?></th>
-							<td><?php echo esc_html( (string) ( $tmdb['title'] ?? '' ) ); ?></td>
+							<td dir="auto"><?php echo esc_html( (string) ( $tmdb['title'] ?? '' ) ); ?></td>
 						</tr>
 						<tr>
 							<th><?php esc_html_e( 'Original title', 'movies-wp' ); ?></th>
-							<td><?php echo esc_html( (string) ( $tmdb['original_title'] ?? '' ) ); ?></td>
+							<td dir="auto"><?php echo esc_html( (string) ( $tmdb['original_title'] ?? '' ) ); ?></td>
 						</tr>
 						<tr>
 							<th><?php esc_html_e( 'Release year', 'movies-wp' ); ?></th>
@@ -359,7 +366,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 						</tr>
 						<tr>
 							<th><?php esc_html_e( 'Genres', 'movies-wp' ); ?></th>
-							<td>
+							<td dir="auto">
 								<?php
 								$genre_names = array();
 								if ( ! empty( $tmdb['genres'] ) && is_array( $tmdb['genres'] ) ) {
@@ -375,7 +382,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 						</tr>
 						<tr>
 							<th><?php esc_html_e( 'Countries', 'movies-wp' ); ?></th>
-							<td>
+							<td dir="auto">
 								<?php
 								$country_names = array();
 								if ( ! empty( $tmdb['countries'] ) && is_array( $tmdb['countries'] ) ) {
@@ -399,7 +406,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 					<tbody>
 						<tr>
 							<th><?php esc_html_e( 'Directory', 'movies-wp' ); ?></th>
-							<td><code><?php echo esc_html( (string) ( $media['directory'] ?? '' ) ); ?></code></td>
+							<td><code dir="ltr"><?php echo esc_html( (string) ( $media['directory'] ?? '' ) ); ?></code></td>
 						</tr>
 						<tr>
 							<th><?php esc_html_e( 'Country', 'movies-wp' ); ?></th>
@@ -446,7 +453,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 							$codec = trim( implode( ' / ', array_filter( array( $vc, $ac ) ) ) );
 							?>
 							<tr>
-								<td><code><?php echo esc_html( (string) ( $file['name'] ?? '' ) ); ?></code></td>
+								<td><code dir="ltr"><?php echo esc_html( (string) ( $file['name'] ?? '' ) ); ?></code></td>
 								<td><?php echo esc_html( Movies_WP_Media_Admin::dash( $file['quality'] ?? null ) ); ?></td>
 								<td><?php echo esc_html( Movies_WP_Media_Admin::dash( $file['source_type'] ?? null ) ); ?></td>
 								<td><?php echo esc_html( Movies_WP_Media_Admin::dash( $file['provider'] ?? null ) ); ?></td>
@@ -479,7 +486,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 					<tbody>
 						<?php foreach ( $subtitles as $file ) : ?>
 							<tr>
-								<td><code><?php echo esc_html( (string) ( $file['name'] ?? '' ) ); ?></code></td>
+								<td><code dir="ltr"><?php echo esc_html( (string) ( $file['name'] ?? '' ) ); ?></code></td>
 								<td><?php echo esc_html( Movies_WP_Media_Admin::language_label( $file['subtitle_lang'] ?? null ) ); ?></td>
 								<td><?php echo esc_html( strtoupper( Movies_WP_Media_Admin::dash( $file['extension'] ?? $file['format'] ?? null ) ) ); ?></td>
 								<td><?php echo esc_html( Movies_WP_Media_Admin::dash( $file['quality'] ?? null ) ); ?></td>

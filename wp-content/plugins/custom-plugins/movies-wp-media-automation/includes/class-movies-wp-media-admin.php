@@ -143,7 +143,7 @@ class Movies_WP_Media_Admin {
 			: 'current_user_can';
 
 		if ( ! call_user_func( $can, self::CAP ) ) {
-			return new WP_Error( 'media_import_forbidden', 'Insufficient capability for import.' );
+			return new WP_Error( 'media_import_forbidden', __( 'Insufficient capability for import.', 'movies-wp' ) );
 		}
 
 		$nonce = isset( $post['_wpnonce'] ) ? (string) $post['_wpnonce'] : '';
@@ -153,7 +153,7 @@ class Movies_WP_Media_Admin {
 			$ok = (bool) wp_verify_nonce( $nonce, self::IMPORT_NONCE );
 		}
 		if ( ! $ok ) {
-			return new WP_Error( 'media_import_invalid_nonce', 'Invalid import nonce.' );
+			return new WP_Error( 'media_import_invalid_nonce', __( 'Invalid import nonce.', 'movies-wp' ) );
 		}
 
 		$request = array(
@@ -330,6 +330,150 @@ class Movies_WP_Media_Admin {
 
 		$key = strtolower( $code );
 		return $map[ $key ] ?? strtoupper( $code );
+	}
+
+	/**
+	 * Localize a known import identity action without changing its stored value.
+	 *
+	 * @param mixed $action Technical action value.
+	 * @return string
+	 */
+	public static function identity_action_label( $action ) {
+		$map = array(
+			'create' => __( 'Create', 'movies-wp' ),
+			'update' => __( 'Update', 'movies-wp' ),
+		);
+		$key = is_string( $action ) ? strtolower( $action ) : '';
+
+		return $map[ $key ] ?? (string) $action;
+	}
+
+	/**
+	 * Localize known adapter step names for the administrator.
+	 *
+	 * Unknown values remain unchanged because they are useful technical details.
+	 *
+	 * @param mixed $step Technical step value.
+	 * @return string
+	 */
+	public static function import_step_label( $step ) {
+		$map = array(
+			'validate'        => __( 'Validation', 'movies-wp' ),
+			'movie'           => __( 'Movie creation or update', 'movies-wp' ),
+			'metadata'        => __( 'Movie metadata', 'movies-wp' ),
+			'sources'         => __( 'Media sources', 'movies-wp' ),
+			'default_stream'  => __( 'Default playback source', 'movies-wp' ),
+			'media_directory' => __( 'Media directory', 'movies-wp' ),
+			'subtitles'       => __( 'Subtitles', 'movies-wp' ),
+		);
+		$key = is_string( $step ) ? $step : '';
+
+		return $map[ $key ] ?? (string) $step;
+	}
+
+	/**
+	 * Localize a Scan & Preview issue for the administrator.
+	 *
+	 * Prefer stable issue codes so media-server English payloads remain
+	 * technical facts while the UI shows Persian explanations.
+	 *
+	 * @param array<string, mixed>|string $issue Issue array or raw message.
+	 * @return string
+	 */
+	public static function issue_message( $issue ) {
+		if ( is_string( $issue ) ) {
+			return $issue;
+		}
+		if ( ! is_array( $issue ) ) {
+			return '';
+		}
+
+		$code    = isset( $issue['code'] ) ? (string) $issue['code'] : '';
+		$message = isset( $issue['message'] ) ? trim( (string) $issue['message'] ) : '';
+		$map     = array(
+			'no_video_files'                      => __( 'No video files were detected.', 'movies-wp' ),
+			'quality_unknown'                     => __( 'Quality could not be detected.', 'movies-wp' ),
+			'audio_unknown'                       => __( 'Audio language could not be detected.', 'movies-wp' ),
+			'subtitle_lang_unknown'               => __( 'Subtitle language could not be detected.', 'movies-wp' ),
+			'source_unknown'                      => __( 'No source-type token was found.', 'movies-wp' ),
+			'empty_name'                          => __( 'Filename is empty.', 'movies-wp' ),
+			'ambiguous_quality_hd'                => __( 'HD is ambiguous and was normalized to 720p.', 'movies-wp' ),
+			'unclassified_tokens'                 => __( 'Some filename tokens could not be classified.', 'movies-wp' ),
+			'unexpected_subdirectory'             => __( 'Unexpected subdirectory; it was not scanned.', 'movies-wp' ),
+			'unrecognized_extension'              => __( 'Unrecognized file extension.', 'movies-wp' ),
+			'sample_or_trailer'                   => __( 'Flagged as sample/trailer; not treated as a movie file.', 'movies-wp' ),
+			'broken_symlink'                      => __( 'Skipped a broken symlink.', 'movies-wp' ),
+			'symlink_outside'                     => __( 'Skipped a symlink that points outside the movie directory.', 'movies-wp' ),
+			'unreadable'                          => __( 'Skipped an unreadable entry.', 'movies-wp' ),
+			'size_failed'                         => __( 'Could not read the file size.', 'movies-wp' ),
+			'invalid_name'                        => __( 'Skipped an entry with an invalid name.', 'movies-wp' ),
+			'ambiguous_subtitle_match'            => __( 'Subtitle matches more than one video and was left unassociated.', 'movies-wp' ),
+			'filename_probe_resolution_mismatch'  => __( 'Filename quality and probed resolution differ.', 'movies-wp' ),
+			'filename_probe_video_codec_mismatch' => __( 'Filename codec and probed video codec differ.', 'movies-wp' ),
+			'filename_probe_audio_mismatch'       => __( 'Filename audio claim does not match probed audio facts.', 'movies-wp' ),
+			'probe_missing_video_stream'          => __( 'Probe succeeded but no video stream was found.', 'movies-wp' ),
+			'probe_resolution_detected'           => __( 'Filename has no quality token; probe resolution is available as a fact only.', 'movies-wp' ),
+			'year_mismatch'                       => __( 'Media directory year differs from TMDb year. TMDb ID remains authoritative.', 'movies-wp' ),
+			'duplicate_quality'                   => __( 'Duplicate quality detected.', 'movies-wp' ),
+			'duplicate_tmdb_id'                   => __( 'Multiple Streamit movies share this TMDb ID. Resolve duplicates before import.', 'movies-wp' ),
+			'association_module_missing'          => __( 'Subtitle association module is not available.', 'movies-wp' ),
+			'media_warning'                       => __( 'Media scan warning.', 'movies-wp' ),
+			'validation_error'                    => __( 'Validation error.', 'movies-wp' ),
+			'parse_failed'                        => __( 'Filename parsing failed.', 'movies-wp' ),
+			'ffprobe_failed'                      => __( 'Media probe failed.', 'movies-wp' ),
+			'ffprobe_missing'                     => __( 'Media probe is not available on the media server.', 'movies-wp' ),
+			'ffprobe_timeout'                     => __( 'Media probe timed out.', 'movies-wp' ),
+			'ffprobe_bad_json'                    => __( 'Media probe returned invalid data.', 'movies-wp' ),
+			'ffprobe_output_too_large'            => __( 'Media probe output was too large.', 'movies-wp' ),
+			'invalid_path'                        => __( 'Media path could not be resolved safely.', 'movies-wp' ),
+		);
+
+		if ( isset( $map[ $code ] ) ) {
+			$localized = $map[ $code ];
+			$details   = self::issue_message_details( $code, $message );
+			if ( '' !== $details ) {
+				return $localized . ' ' . sprintf(
+					/* translators: %s: technical details from media scan or filename parsing */
+					__( 'Error details: %s', 'movies-wp' ),
+					$details
+				);
+			}
+			return $localized;
+		}
+
+		return $message;
+	}
+
+	/**
+	 * Extract useful technical details from an upstream English message.
+	 *
+	 * @param string $code    Issue code.
+	 * @param string $message Upstream message.
+	 * @return string
+	 */
+	private static function issue_message_details( $code, $message ) {
+		$message = trim( (string) $message );
+		if ( '' === $message ) {
+			return '';
+		}
+
+		if ( 'unclassified_tokens' === $code && preg_match( '/^Unclassified tokens:\s*(.+)$/u', $message, $m ) ) {
+			return trim( $m[1] );
+		}
+
+		if ( 'duplicate_quality' === $code && preg_match( '/^Duplicate quality detected:\s*(.+)\.?$/u', $message, $m ) ) {
+			return rtrim( trim( $m[1] ), '.' );
+		}
+
+		if ( 'year_mismatch' === $code && preg_match( '/\((\d+)\).*?\((\d+)\)/u', $message, $m ) ) {
+			return $m[1] . ' / ' . $m[2];
+		}
+
+		if ( 'duplicate_tmdb_id' === $code && preg_match( '/\(([^)]+)\)/u', $message, $m ) ) {
+			return trim( $m[1] );
+		}
+
+		return '';
 	}
 
 	public static function dash( $value ) {

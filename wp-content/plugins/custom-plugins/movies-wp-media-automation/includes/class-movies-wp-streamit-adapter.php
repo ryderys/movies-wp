@@ -57,7 +57,7 @@ class Movies_WP_Streamit_Adapter {
 					$identity_action,
 					$completed,
 					'movie',
-					self::err( 'media_adapter_missing_movie_id', 'Update plan is missing existing_movie_id.' )
+					self::err( 'media_adapter_missing_movie_id', __( 'Update plan is missing existing_movie_id.', 'movies-wp' ) )
 				);
 			}
 			$completed[] = 'movie';
@@ -118,35 +118,35 @@ class Movies_WP_Streamit_Adapter {
 	 */
 	private static function validate_plan( array $plan ) {
 		if ( empty( $plan['ok'] ) ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_invalid_plan', 'Plan ok flag is missing or false.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_invalid_plan', __( 'Plan ok flag is missing or false.', 'movies-wp' ) ) );
 		}
 		if ( empty( $plan['ready_to_import'] ) ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_not_ready', 'Plan ready_to_import is false.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_not_ready', __( 'Plan ready_to_import is false.', 'movies-wp' ) ) );
 		}
 		if ( ! empty( $plan['errors'] ) && is_array( $plan['errors'] ) && $plan['errors'] !== array() ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_plan_has_errors', 'Plan contains errors and must not be applied.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_plan_has_errors', __( 'Plan contains errors and must not be applied.', 'movies-wp' ) ) );
 		}
 		if ( empty( $plan['contract']['kind'] ) || 'import_plan' !== $plan['contract']['kind'] ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_bad_contract', 'Plan is missing the import_plan contract.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_bad_contract', __( 'Plan is missing the import_plan contract.', 'movies-wp' ) ) );
 		}
 		if ( empty( $plan['identity']['action'] ) || ! in_array( $plan['identity']['action'], array( 'create', 'update' ), true ) ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_bad_identity', 'Plan identity.action must be create or update.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_bad_identity', __( 'Plan identity.action must be create or update.', 'movies-wp' ) ) );
 		}
 		if ( empty( $plan['metadata']['title'] ) || ! is_string( $plan['metadata']['title'] ) ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_missing_title', 'Plan metadata.title is required.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_missing_title', __( 'Plan metadata.title is required.', 'movies-wp' ) ) );
 		}
 		if ( ! isset( $plan['metadata']['summary'] ) || ! is_string( $plan['metadata']['summary'] ) ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_missing_summary', 'Plan metadata.summary is required.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_missing_summary', __( 'Plan metadata.summary is required.', 'movies-wp' ) ) );
 		}
 		if ( empty( $plan['movie']['media_directory'] ) || ! is_string( $plan['movie']['media_directory'] ) ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_missing_directory', 'Plan movie.media_directory is required.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_missing_directory', __( 'Plan movie.media_directory is required.', 'movies-wp' ) ) );
 		}
 		// Relative-path subtitle persistence is required (signed URLs remain render-time only).
 		if ( empty( $plan['subtitle_persistence'] ) || ! is_array( $plan['subtitle_persistence'] ) ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_subtitles_not_ready', 'Plan must declare subtitle_persistence with ready=true.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_subtitles_not_ready', __( 'Plan must declare subtitle_persistence with ready=true.', 'movies-wp' ) ) );
 		}
 		if ( empty( $plan['subtitle_persistence']['ready'] ) ) {
-			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_subtitles_not_ready', 'Plan subtitle_persistence.ready must be true to persist relative _subtitles paths.' ) );
+			return self::failure_result( null, null, array(), 'validate', self::err( 'media_adapter_subtitles_not_ready', __( 'Plan subtitle_persistence.ready must be true to persist relative _subtitles paths.', 'movies-wp' ) ) );
 		}
 		$dir = str_replace( '\\', '/', (string) $plan['movie']['media_directory'] );
 		if ( str_starts_with( $dir, '/' ) || str_contains( $dir, '/data' ) || ! str_starts_with( $dir, 'Movie/' ) ) {
@@ -163,7 +163,7 @@ class Movies_WP_Streamit_Adapter {
 	private static function step_create( array $plan, array $options ) {
 		$tmdb_id = isset( $plan['movie']['tmdb_id'] ) ? absint( $plan['movie']['tmdb_id'] ) : 0;
 		if ( $tmdb_id <= 0 ) {
-			return array( 'ok' => false, 'error' => self::err( 'media_adapter_missing_tmdb_id', 'Create plan is missing movie.tmdb_id.' ) );
+			return array( 'ok' => false, 'error' => self::err( 'media_adapter_missing_tmdb_id', __( 'Create plan is missing movie.tmdb_id.', 'movies-wp' ) ) );
 		}
 
 		// Test hook: skip Streamit file load / settings.
@@ -183,7 +183,7 @@ class Movies_WP_Streamit_Adapter {
 			if ( '' === $args['api_key'] ) {
 				return array(
 					'ok'    => false,
-					'error' => self::err( 'media_adapter_tmdb_api_key_missing', 'Please Add TMDb Api Key.' ),
+					'error' => self::err( 'media_adapter_tmdb_api_key_missing', __( 'Please add a TMDb API key.', 'movies-wp' ) ),
 				);
 			}
 
@@ -193,17 +193,26 @@ class Movies_WP_Streamit_Adapter {
 		if ( is_wp_error( $result ) ) {
 			return array(
 				'ok'    => false,
-				'error' => self::err( $result->get_error_code(), $result->get_error_message() ),
+				'error' => self::err(
+					$result->get_error_code(),
+					self::external_error_message( $result->get_error_code(), $result->get_error_message() )
+				),
 			);
 		}
 		if ( ! is_array( $result ) || empty( $result['status'] ) ) {
-			$message = is_array( $result ) && isset( $result['message'] ) ? (string) $result['message'] : 'TMDb movie create failed.';
-			return array( 'ok' => false, 'error' => self::err( 'media_adapter_create_failed', $message ) );
+			$message = is_array( $result ) && isset( $result['message'] ) ? (string) $result['message'] : __( 'TMDb movie creation failed.', 'movies-wp' );
+			return array(
+				'ok'    => false,
+				'error' => self::err(
+					'media_adapter_create_failed',
+					self::external_error_message( 'media_adapter_create_failed', $message )
+				),
+			);
 		}
 
 		$movie_id = isset( $result['data'] ) ? absint( $result['data'] ) : 0;
 		if ( $movie_id <= 0 ) {
-			return array( 'ok' => false, 'error' => self::err( 'media_adapter_create_no_id', 'TMDb create returned no movie ID.' ) );
+			return array( 'ok' => false, 'error' => self::err( 'media_adapter_create_no_id', __( 'TMDb movie creation returned no movie ID.', 'movies-wp' ) ) );
 		}
 
 		return array( 'ok' => true, 'movie_id' => $movie_id );
@@ -231,7 +240,7 @@ class Movies_WP_Streamit_Adapter {
 		}
 
 		if ( ! $movie || ! is_object( $movie ) ) {
-			return array( 'ok' => false, 'error' => self::err( 'media_adapter_movie_not_found', 'Streamit movie could not be loaded for metadata update.' ) );
+			return array( 'ok' => false, 'error' => self::err( 'media_adapter_movie_not_found', __( 'The Streamit movie could not be loaded for metadata update.', 'movies-wp' ) ) );
 		}
 
 		$payload = self::movie_row_from_object( $movie, (int) $movie_id );
@@ -248,7 +257,7 @@ class Movies_WP_Streamit_Adapter {
 			$updated = call_user_func( $options['update_movie_row'], (int) $movie_id, $payload );
 		} else {
 			if ( ! class_exists( 'Streamit_Movie' ) ) {
-				return array( 'ok' => false, 'error' => self::err( 'media_adapter_streamit_movie_missing', 'Streamit_Movie class is not available.' ) );
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_streamit_movie_missing', __( 'The Streamit_Movie class is not available.', 'movies-wp' ) ) );
 			}
 			// Intentionally NOT streamit_update_movie().
 			$updated = ( new Streamit_Movie() )->update( (int) $movie_id, $payload );
@@ -258,7 +267,7 @@ class Movies_WP_Streamit_Adapter {
 			return array( 'ok' => false, 'error' => self::err( $updated->get_error_code(), $updated->get_error_message() ) );
 		}
 		if ( false === $updated || null === $updated ) {
-			return array( 'ok' => false, 'error' => self::err( 'media_adapter_metadata_failed', 'Movie metadata update failed.' ) );
+			return array( 'ok' => false, 'error' => self::err( 'media_adapter_metadata_failed', __( 'Movie metadata update failed.', 'movies-wp' ) ) );
 		}
 
 		$tmdb_titles = array(
@@ -285,7 +294,7 @@ class Movies_WP_Streamit_Adapter {
 				return array( 'ok' => false, 'error' => self::err( $written->get_error_code(), $written->get_error_message() ) );
 			}
 			if ( ! self::meta_write_succeeded( $written, $movie_id, $key, $value, $options ) ) {
-				return array( 'ok' => false, 'error' => self::err( 'media_adapter_metadata_failed', 'Failed to persist ' . $key . '.' ) );
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_metadata_failed', sprintf( __( 'Failed to save %s.', 'movies-wp' ), $key ) ) );
 			}
 		}
 
@@ -372,7 +381,7 @@ class Movies_WP_Streamit_Adapter {
 				return array( 'ok' => false, 'error' => self::err( $written->get_error_code(), $written->get_error_message() ) );
 			}
 			if ( false === $written ) {
-				return array( 'ok' => false, 'error' => self::err( 'media_adapter_sources_failed', 'Failed to persist _source.' ) );
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_sources_failed', __( 'Failed to save _source.', 'movies-wp' ) ) );
 			}
 		} else {
 			if ( ! function_exists( 'streamit_update_movie_meta' ) ) {
@@ -384,7 +393,7 @@ class Movies_WP_Streamit_Adapter {
 			}
 			// WP update_metadata() returns false when the value is unchanged.
 			if ( ! self::meta_write_succeeded( $written, $movie_id, '_source', $merged, $options ) ) {
-				return array( 'ok' => false, 'error' => self::err( 'media_adapter_sources_failed', 'Failed to persist _source.' ) );
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_sources_failed', __( 'Failed to save _source.', 'movies-wp' ) ) );
 			}
 		}
 
@@ -419,7 +428,7 @@ class Movies_WP_Streamit_Adapter {
 				if ( false === $written ) {
 					return array(
 						'ok'    => false,
-						'error' => self::err( 'media_adapter_default_stream_failed', 'Failed to persist ' . $key . '.' ),
+						'error' => self::err( 'media_adapter_default_stream_failed', sprintf( __( 'Failed to save %s.', 'movies-wp' ), $key ) ),
 					);
 				}
 			} else {
@@ -433,7 +442,7 @@ class Movies_WP_Streamit_Adapter {
 				if ( ! self::meta_write_succeeded( $written, $movie_id, $key, $value, $options ) ) {
 					return array(
 						'ok'    => false,
-						'error' => self::err( 'media_adapter_default_stream_failed', 'Failed to persist ' . $key . '.' ),
+						'error' => self::err( 'media_adapter_default_stream_failed', sprintf( __( 'Failed to save %s.', 'movies-wp' ), $key ) ),
 					);
 				}
 			}
@@ -485,7 +494,7 @@ class Movies_WP_Streamit_Adapter {
 				return array( 'ok' => false, 'error' => self::err( $written->get_error_code(), $written->get_error_message() ) );
 			}
 			if ( false === $written ) {
-				return array( 'ok' => false, 'error' => self::err( 'media_adapter_directory_failed', 'Failed to persist _media_directory.' ) );
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_directory_failed', __( 'Failed to save _media_directory.', 'movies-wp' ) ) );
 			}
 		} else {
 			if ( ! function_exists( 'streamit_update_movie_meta' ) ) {
@@ -496,7 +505,7 @@ class Movies_WP_Streamit_Adapter {
 				return array( 'ok' => false, 'error' => self::err( $written->get_error_code(), $written->get_error_message() ) );
 			}
 			if ( ! self::meta_write_succeeded( $written, $movie_id, '_media_directory', $dir, $options ) ) {
-				return array( 'ok' => false, 'error' => self::err( 'media_adapter_directory_failed', 'Failed to persist _media_directory.' ) );
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_directory_failed', __( 'Failed to save _media_directory.', 'movies-wp' ) ) );
 			}
 		}
 
@@ -574,7 +583,7 @@ class Movies_WP_Streamit_Adapter {
 				return array( 'ok' => false, 'error' => self::err( $written->get_error_code(), $written->get_error_message() ) );
 			}
 			if ( false === $written ) {
-				return array( 'ok' => false, 'error' => self::err( 'media_adapter_subtitles_failed', 'Failed to persist _subtitles.' ) );
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_subtitles_failed', __( 'Failed to save _subtitles.', 'movies-wp' ) ) );
 			}
 		} else {
 			if ( ! function_exists( 'streamit_update_movie_meta' ) ) {
@@ -585,7 +594,7 @@ class Movies_WP_Streamit_Adapter {
 				return array( 'ok' => false, 'error' => self::err( $written->get_error_code(), $written->get_error_message() ) );
 			}
 			if ( ! self::meta_write_succeeded( $written, $movie_id, '_subtitles', $merged, $options ) ) {
-				return array( 'ok' => false, 'error' => self::err( 'media_adapter_subtitles_failed', 'Failed to persist _subtitles.' ) );
+				return array( 'ok' => false, 'error' => self::err( 'media_adapter_subtitles_failed', __( 'Failed to save _subtitles.', 'movies-wp' ) ) );
 			}
 		}
 
@@ -938,7 +947,7 @@ class Movies_WP_Streamit_Adapter {
 		$row = array( 'ID' => (int) $movie_id );
 		foreach ( $getters as $field => $method ) {
 			if ( ! method_exists( $movie, $method ) ) {
-				return new WP_Error( 'media_adapter_incomplete_movie', 'Streamit movie object is missing ' . $method . '.' );
+				return new WP_Error( 'media_adapter_incomplete_movie', sprintf( __( 'The Streamit movie object is missing %s.', 'movies-wp' ), $method ) );
 			}
 			$row[ $field ] = $movie->{$method}();
 		}
@@ -957,15 +966,15 @@ class Movies_WP_Streamit_Adapter {
 			return true;
 		}
 		if ( ! defined( 'STREAMIT_PLUGIN_PATH' ) ) {
-			return self::err( 'media_adapter_tmdb_importer_missing', 'Streamit plugin path is not available.' );
+			return self::err( 'media_adapter_tmdb_importer_missing', __( 'The Streamit plugin path is not available.', 'movies-wp' ) );
 		}
 		$file = STREAMIT_PLUGIN_PATH . 'admin/content-import/streamit-tmdb_movie-function.php';
 		if ( ! is_readable( $file ) ) {
-			return self::err( 'media_adapter_tmdb_importer_missing', 'insert_movie_tmdb_to_streamit() is not available.' );
+			return self::err( 'media_adapter_tmdb_importer_missing', __( 'insert_movie_tmdb_to_streamit() is not available.', 'movies-wp' ) );
 		}
 		require_once $file;
 		if ( ! function_exists( 'insert_movie_tmdb_to_streamit' ) ) {
-			return self::err( 'media_adapter_tmdb_importer_missing', 'insert_movie_tmdb_to_streamit() is not available.' );
+			return self::err( 'media_adapter_tmdb_importer_missing', __( 'insert_movie_tmdb_to_streamit() is not available.', 'movies-wp' ) );
 		}
 		return true;
 	}
@@ -1047,6 +1056,34 @@ class Movies_WP_Streamit_Adapter {
 		return array(
 			'code'    => (string) $code,
 			'message' => (string) $message,
+		);
+	}
+
+	/**
+	 * Add a localized explanation to errors returned by the native Streamit importer.
+	 *
+	 * The original message is retained as a technical detail because it may come
+	 * from Streamit or an upstream API.
+	 *
+	 * @param mixed $code    External error code.
+	 * @param mixed $message External error message.
+	 * @return string
+	 */
+	private static function external_error_message( $code, $message ) {
+		$code    = (string) $code;
+		$message = trim( (string) $message );
+		$summary = 'api_error' === $code
+			? __( 'Could not connect to TMDb.', 'movies-wp' )
+			: __( 'TMDb movie creation failed.', 'movies-wp' );
+
+		if ( '' === $message || $message === $summary ) {
+			return $summary;
+		}
+
+		return $summary . ' ' . sprintf(
+			/* translators: %s: technical error returned by Streamit or TMDb */
+			__( 'Error details: %s', 'movies-wp' ),
+			$message
 		);
 	}
 

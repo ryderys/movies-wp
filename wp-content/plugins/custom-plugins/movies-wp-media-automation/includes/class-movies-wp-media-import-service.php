@@ -37,7 +37,7 @@ class Movies_WP_Media_Import_Service {
 		if ( ! self::is_confirmed( $confirm ) ) {
 			return self::fail(
 				'media_import_confirmation_required',
-				'Import confirmation is required.'
+				__( 'Import confirmation is required.', 'movies-wp' )
 			);
 		}
 
@@ -70,7 +70,7 @@ class Movies_WP_Media_Import_Service {
 		if ( ! is_array( $adapter_result ) ) {
 			return self::fail(
 				'media_import_execution_failed',
-				'Import adapter returned an unexpected result.'
+				__( 'Import adapter returned an unexpected result.', 'movies-wp' )
 			);
 		}
 
@@ -98,23 +98,23 @@ class Movies_WP_Media_Import_Service {
 		$dir     = isset( $request['media_directory'] ) ? (string) $request['media_directory'] : '';
 
 		if ( $tmdb_id <= 0 ) {
-			return new WP_Error( 'media_import_invalid_input', 'TMDb Movie ID must be a positive number.' );
+			return new WP_Error( 'media_import_invalid_input', __( 'TMDb Movie ID must be a positive number.', 'movies-wp' ) );
 		}
 		if ( '' === $title ) {
-			return new WP_Error( 'media_import_invalid_input', 'Persian / local title is required.' );
+			return new WP_Error( 'media_import_invalid_input', __( 'Persian / local title is required.', 'movies-wp' ) );
 		}
 
 		if ( class_exists( 'Movies_WP_Media_Api_Client' ) ) {
 			$normalized_dir = Movies_WP_Media_Api_Client::normalize_directory( $dir );
 			if ( is_wp_error( $normalized_dir ) ) {
-				return new WP_Error( 'media_import_invalid_input', 'Invalid movie directory.' );
+				return new WP_Error( 'media_import_invalid_input', __( 'Invalid movie directory.', 'movies-wp' ) );
 			}
 			$dir = $normalized_dir;
 		} else {
 			$dir = str_replace( '\\', '/', trim( $dir ) );
 			$dir = ltrim( $dir, '/' );
 			if ( '' === $dir || ! str_starts_with( $dir, 'Movie/' ) || str_contains( $dir, '/data' ) || str_starts_with( $dir, '/' ) ) {
-				return new WP_Error( 'media_import_invalid_input', 'Invalid movie directory.' );
+				return new WP_Error( 'media_import_invalid_input', __( 'Invalid movie directory.', 'movies-wp' ) );
 			}
 		}
 
@@ -164,17 +164,17 @@ class Movies_WP_Media_Import_Service {
 	 */
 	private static function verify_plan( array $plan ) {
 		if ( empty( $plan['ok'] ) ) {
-			return new WP_Error( 'media_import_not_ready', 'Import plan is not valid.' );
+			return new WP_Error( 'media_import_not_ready', __( 'Import plan is not valid.', 'movies-wp' ) );
 		}
 		if ( empty( $plan['ready_to_import'] ) ) {
-			return new WP_Error( 'media_import_not_ready', 'Import plan is not ready to import.' );
+			return new WP_Error( 'media_import_not_ready', __( 'Import plan is not ready to import.', 'movies-wp' ) );
 		}
 		if ( ! empty( $plan['errors'] ) && is_array( $plan['errors'] ) && array() !== $plan['errors'] ) {
-			return new WP_Error( 'media_import_not_ready', 'Import plan contains errors and cannot be executed.' );
+			return new WP_Error( 'media_import_not_ready', __( 'Import plan contains errors and cannot be executed.', 'movies-wp' ) );
 		}
 		$action = isset( $plan['identity']['action'] ) ? (string) $plan['identity']['action'] : '';
 		if ( ! in_array( $action, array( 'create', 'update' ), true ) ) {
-			return new WP_Error( 'media_import_not_ready', 'Import plan identity action must be create or update.' );
+			return new WP_Error( 'media_import_not_ready', __( 'Import plan identity action must be create or update.', 'movies-wp' ) );
 		}
 		return true;
 	}
@@ -196,7 +196,7 @@ class Movies_WP_Media_Import_Service {
 			if ( count( $ids ) > 0 ) {
 				return new WP_Error(
 					'media_import_duplicate_identity',
-					'A Streamit movie with this TMDb ID already exists. Import aborted to avoid creating a duplicate.'
+					__( 'A Streamit movie with this TMDb ID already exists. Import aborted to avoid creating a duplicate.', 'movies-wp' )
 				);
 			}
 			return true;
@@ -205,32 +205,32 @@ class Movies_WP_Media_Import_Service {
 		// update
 		$expected = isset( $plan['identity']['existing_movie_id'] ) ? absint( $plan['identity']['existing_movie_id'] ) : 0;
 		if ( $expected <= 0 ) {
-			return new WP_Error( 'media_import_identity_changed', 'Update plan is missing an existing movie ID. Refresh the preview and try again.' );
+			return new WP_Error( 'media_import_identity_changed', __( 'Update plan is missing an existing movie ID. Refresh the preview and try again.', 'movies-wp' ) );
 		}
 
 		if ( ! self::movie_exists( $expected, $options ) ) {
 			return new WP_Error(
 				'media_import_identity_changed',
-				'The target Streamit movie no longer exists. Refresh the preview and try again.'
+				__( 'The target Streamit movie no longer exists. Refresh the preview and try again.', 'movies-wp' )
 			);
 		}
 
 		if ( 0 === count( $ids ) ) {
 			return new WP_Error(
 				'media_import_identity_changed',
-				'TMDb identity no longer matches an existing movie. Refresh the preview and try again.'
+				__( 'TMDb identity no longer matches an existing movie. Refresh the preview and try again.', 'movies-wp' )
 			);
 		}
 		if ( count( $ids ) > 1 ) {
 			return new WP_Error(
 				'media_import_duplicate_identity',
-				'Multiple Streamit movies now share this TMDb ID. Resolve duplicates before importing.'
+				__( 'Multiple Streamit movies now share this TMDb ID. Resolve duplicates before importing.', 'movies-wp' )
 			);
 		}
 		if ( (int) $ids[0] !== $expected ) {
 			return new WP_Error(
 				'media_import_identity_changed',
-				'The Streamit movie matched by TMDb ID changed since planning. Refresh the preview and try again.'
+				__( 'The Streamit movie matched by TMDb ID changed since planning. Refresh the preview and try again.', 'movies-wp' )
 			);
 		}
 
@@ -335,8 +335,8 @@ class Movies_WP_Media_Import_Service {
 				'partial'         => false,
 				'code'            => null,
 				'message'         => 'create' === $action
-					? 'Movie imported successfully.'
-					: 'Movie updated successfully.',
+					? __( 'Movie imported successfully.', 'movies-wp' )
+					: __( 'Movie updated successfully.', 'movies-wp' ),
 				'movie_id'        => null !== $movie_id ? (int) $movie_id : null,
 				'identity_action' => $action,
 				'media_directory' => $dir,
@@ -362,11 +362,11 @@ class Movies_WP_Media_Import_Service {
 		$error = isset( $adapter['error'] ) && is_array( $adapter['error'] )
 			? array(
 				'code'    => self::safe_text( (string) ( $adapter['error']['code'] ?? 'media_adapter_error' ) ),
-				'message' => self::safe_text( (string) ( $adapter['error']['message'] ?? 'Import failed.' ) ),
+				'message' => self::safe_text( (string) ( $adapter['error']['message'] ?? __( 'Import failed.', 'movies-wp' ) ) ),
 			)
 			: array(
 				'code'    => 'media_import_execution_failed',
-				'message' => 'Import failed.',
+				'message' => __( 'Import failed.', 'movies-wp' ),
 			);
 
 		$partial = null !== $movie_id && $completed !== array();
@@ -375,7 +375,7 @@ class Movies_WP_Media_Import_Service {
 			'ok'              => false,
 			'partial'         => $partial,
 			'code'            => $partial ? 'media_import_execution_failed' : 'media_import_execution_failed',
-			'message'         => $partial ? 'Import partially completed.' : 'Import failed.',
+			'message'         => $partial ? __( 'Import partially completed.', 'movies-wp' ) : __( 'Import failed.', 'movies-wp' ),
 			'movie_id'        => null !== $movie_id ? (int) $movie_id : null,
 			'identity_action' => $action,
 			'media_directory' => $dir,

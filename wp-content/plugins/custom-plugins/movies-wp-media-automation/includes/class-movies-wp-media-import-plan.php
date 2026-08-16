@@ -35,7 +35,7 @@ class Movies_WP_Media_Import_Plan {
 	 */
 	public static function build( array $preview, array $options = array() ) {
 		if ( empty( $preview['ok'] ) || ! is_array( $preview ) ) {
-			return new WP_Error( 'media_import_plan_invalid_preview', 'Preview payload is invalid.' );
+			return new WP_Error( 'media_import_plan_invalid_preview', __( 'Preview payload is invalid.', 'movies-wp' ) );
 		}
 
 		$input = isset( $preview['input'] ) && is_array( $preview['input'] ) ? $preview['input'] : array();
@@ -48,7 +48,7 @@ class Movies_WP_Media_Import_Plan {
 		$dir     = isset( $input['media_directory'] ) ? (string) $input['media_directory'] : '';
 
 		if ( $tmdb_id <= 0 || '' === $title || '' === $dir ) {
-			return new WP_Error( 'media_import_plan_invalid_preview', 'Preview input is missing required fields.' );
+			return new WP_Error( 'media_import_plan_invalid_preview', __( 'Preview input is missing required fields.', 'movies-wp' ) );
 		}
 
 		$files = isset( $media['files'] ) && is_array( $media['files'] ) ? $media['files'] : array();
@@ -72,7 +72,7 @@ class Movies_WP_Media_Import_Plan {
 				}
 				$warnings[] = self::issue(
 					$code,
-					isset( $warning['message'] ) ? (string) $warning['message'] : 'Media scan warning.',
+					isset( $warning['message'] ) ? (string) $warning['message'] : __( 'Media scan warning.', 'movies-wp' ),
 					isset( $warning['name'] ) ? (string) $warning['name'] : ( isset( $warning['file'] ) ? (string) $warning['file'] : '' )
 				);
 			}
@@ -120,7 +120,7 @@ class Movies_WP_Media_Import_Plan {
 					}
 					$warnings[] = self::issue(
 						$code,
-						isset( $warning['message'] ) ? (string) $warning['message'] : 'Filename warning.',
+						isset( $warning['message'] ) ? (string) $warning['message'] : __( 'Filename warning.', 'movies-wp' ),
 						$name
 					);
 				}
@@ -144,7 +144,7 @@ class Movies_WP_Media_Import_Plan {
 			if ( is_array( $warning ) ) {
 				$warnings[] = self::issue(
 					isset( $warning['code'] ) ? (string) $warning['code'] : 'association_warning',
-					isset( $warning['message'] ) ? (string) $warning['message'] : 'Association warning.',
+					isset( $warning['message'] ) ? (string) $warning['message'] : __( 'Association warning.', 'movies-wp' ),
 					isset( $warning['subtitle'] ) ? (string) $warning['subtitle'] : ''
 				);
 			}
@@ -264,7 +264,8 @@ class Movies_WP_Media_Import_Plan {
 				'error'             => self::issue(
 					'duplicate_tmdb_id',
 					sprintf(
-						'Multiple Streamit movies share TMDb ID %d (%s). Resolve duplicates before import.',
+						/* translators: 1: TMDb ID, 2: comma-separated Streamit movie IDs */
+						__( 'Multiple Streamit movies share TMDb ID %1$d (%2$s). Resolve duplicates before import.', 'movies-wp' ),
 						(int) $tmdb_id,
 						implode( ', ', $ids )
 					)
@@ -363,7 +364,7 @@ class Movies_WP_Media_Import_Plan {
 		if ( isset( $options['associate'] ) && is_callable( $options['associate'] ) ) {
 			$result = call_user_func( $options['associate'], $files );
 			if ( ! is_array( $result ) ) {
-				return new WP_Error( 'media_import_plan_association_failed', 'Association hook returned an invalid result.' );
+				return new WP_Error( 'media_import_plan_association_failed', __( 'Association hook returned an invalid result.', 'movies-wp' ) );
 			}
 			return array(
 				'associations'           => isset( $result['associations'] ) && is_array( $result['associations'] ) ? $result['associations'] : array(),
@@ -376,7 +377,7 @@ class Movies_WP_Media_Import_Plan {
 		if ( ! function_exists( 'media_associate_movie_files' ) ) {
 			return new WP_Error(
 				'media_import_plan_association_unavailable',
-				'Subtitle association module is not available.'
+				__( 'Subtitle association module is not available.', 'movies-wp' )
 			);
 		}
 

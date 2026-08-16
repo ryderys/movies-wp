@@ -4,6 +4,8 @@
 	border-radius: 4px;
 	padding: 16px 20px;
 	margin: 16px 0;
+	text-align: start;
+	overflow-x: auto;
 }
 
 .movies-wp-scan-preview .movies-wp-panel h2 {
@@ -11,26 +13,11 @@
 }
 
 .movies-wp-scan-preview .movies-wp-panel-error {
-	border-left: 4px solid #d63638;
-	border-right: none;
+	border-inline-start: 4px solid #d63638;
 }
 
 .movies-wp-scan-preview .movies-wp-panel-warning {
-	border-left: 4px solid #dba617;
-	border-right: none;
-}
-
-.rtl .movies-wp-scan-preview .movies-wp-panel-error,
-.rtl .movies-wp-scan-preview .movies-wp-panel-warning {
-	border-left: 1px solid #c3c4c7;
-}
-
-.rtl .movies-wp-scan-preview .movies-wp-panel-error {
-	border-right: 4px solid #d63638;
-}
-
-.rtl .movies-wp-scan-preview .movies-wp-panel-warning {
-	border-right: 4px solid #dba617;
+	border-inline-start: 4px solid #dba617;
 }
 
 .movies-wp-scan-preview .movies-wp-panel-error ul,
@@ -65,17 +52,11 @@
 }
 
 .movies-wp-scan-preview .movies-wp-import-form {
-	margin-top: 12px;
+	margin-block-start: 12px;
 }
 
 .movies-wp-scan-preview .movies-wp-panel-success {
-	border-left: 4px solid #00a32a;
-	border-right: none;
-}
-
-.rtl .movies-wp-scan-preview .movies-wp-panel-success {
-	border-left: 1px solid #c3c4c7;
-	border-right: 4px solid #00a32a;
+	border-inline-start: 4px solid #00a32a;
 }
 
 .movies-wp-scan-preview .movies-wp-import-result-list {
@@ -98,7 +79,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 12px;
-	margin: 0 0 16px;
+	margin-block-end: 16px;
 }
 
 .movies-wp-scan-preview .movies-wp-poster {
@@ -124,4 +105,12 @@
 .movies-wp-scan-preview table.movies-wp-files code {
 	font-size: 11px;
 	word-break: break-all;
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+.movies-wp-scan-preview code[dir="ltr"] {
+	display: inline-block;
+	text-align: left;
+	unicode-bidi: isolate;
 }

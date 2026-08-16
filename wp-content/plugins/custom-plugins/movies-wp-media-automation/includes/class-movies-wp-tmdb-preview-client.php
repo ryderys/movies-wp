@@ -21,17 +21,17 @@ class Movies_WP_Tmdb_Preview_Client {
 	public static function get_movie( $tmdb_id ) {
 		$tmdb_id = absint( $tmdb_id );
 		if ( $tmdb_id <= 0 ) {
-			return new WP_Error( 'media_preview_invalid_tmdb_response', 'TMDb ID is invalid.' );
+			return new WP_Error( 'media_preview_invalid_tmdb_response', __( 'TMDb ID is invalid.', 'movies-wp' ) );
 		}
 
 		$api_key = self::api_key();
 		if ( '' === $api_key ) {
-			return new WP_Error( 'media_preview_tmdb_error', 'TMDb is not configured.' );
+			return new WP_Error( 'media_preview_tmdb_error', __( 'TMDb is not configured.', 'movies-wp' ) );
 		}
 
 		$host = defined( 'STREAMIT_TMDB_PROXY_HOST' )
 			? STREAMIT_TMDB_PROXY_HOST
-			: 'tmdb.youssefi-ashkan-ys.workers.dev';
+			: 'tmdb.asiastars.ir';
 
 		$url = sprintf(
 			'https://%s/3/movie/%d?api_key=%s&language=%s&append_to_response=%s',
@@ -54,22 +54,22 @@ class Movies_WP_Tmdb_Preview_Client {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'media_preview_tmdb_error', 'TMDb request failed.' );
+			return new WP_Error( 'media_preview_tmdb_error', __( 'TMDb request failed.', 'movies-wp' ) );
 		}
 
 		$status = (int) wp_remote_retrieve_response_code( $response );
 		$body   = json_decode( (string) wp_remote_retrieve_body( $response ), true );
 
 		if ( 404 === $status ) {
-			return new WP_Error( 'media_preview_tmdb_error', 'TMDb movie not found.' );
+			return new WP_Error( 'media_preview_tmdb_error', __( 'TMDb movie not found.', 'movies-wp' ) );
 		}
 
 		if ( $status < 200 || $status >= 300 || ! is_array( $body ) ) {
-			return new WP_Error( 'media_preview_tmdb_error', 'TMDb request failed.' );
+			return new WP_Error( 'media_preview_tmdb_error', __( 'TMDb request failed.', 'movies-wp' ) );
 		}
 
 		if ( empty( $body['id'] ) ) {
-			return new WP_Error( 'media_preview_invalid_tmdb_response', 'TMDb response was missing required fields.' );
+			return new WP_Error( 'media_preview_invalid_tmdb_response', __( 'TMDb response was missing required fields.', 'movies-wp' ) );
 		}
 
 		return self::normalize_movie( $body );
