@@ -27,8 +27,8 @@ class Movies_WP_Media_Admin {
 
 	public static function register_menu() {
 		add_menu_page(
-			__( 'Media Automation', 'movies-wp' ),
-			__( 'Media Automation', 'movies-wp' ),
+			__( 'Movie Automation', 'movies-wp' ),
+			__( 'Movie Automation', 'movies-wp' ),
 			self::CAP,
 			self::SLUG,
 			array( __CLASS__, 'render_page' ),

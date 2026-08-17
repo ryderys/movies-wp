@@ -98,7 +98,7 @@ if ( $not_persian ) {
 }
 
 $required = array(
-	'Media Automation'                                  => 'اتوماسیون رسانه',
+	'Movie Automation'                                  => 'اتوماسیون فیلم',
 	'Scan & Preview'                                    => 'اسکن و پیش‌نمایش',
 	'Import Movie'                                      => 'درون‌ریزی فیلم',
 	'Movie imported successfully.'                      => 'فیلم با موفقیت درون‌ریزی شد.',
