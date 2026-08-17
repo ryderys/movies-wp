@@ -1,6 +1,9 @@
 <?php
 /**
- * WordPress admin workflow for Series media preview and import.
+ * Internal Series media preview/import helpers.
+ *
+ * Kept for tests and reuse. The public admin menu is no longer registered;
+ * unified Series Automation owns the operator-facing workflow.
  *
  * @package movies-wp
  */

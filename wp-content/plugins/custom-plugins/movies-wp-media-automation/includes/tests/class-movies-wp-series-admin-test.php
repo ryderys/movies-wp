@@ -63,17 +63,24 @@ function series_admin_same( $expected, $actual, string $label ): void {
 function series_admin_preview(): array {
 	return array(
 		'ok'              => true,
-		'type'            => 'series',
+		'type'            => 'series_automation',
 		'input'           => array(
-			'tmdb_id' => 100,
-			'title'   => 'عنوان محلی',
-			'summary' => 'خلاصه',
+			'tmdb_id'          => 100,
+			'title'            => 'عنوان محلی',
+			'summary'          => 'خلاصه',
+			'series_directory' => 'Series/korea/2024/Show',
 		),
 		'series'          => array(
 			'tmdb_id' => 100,
 			'name'    => 'TMDb Series',
 			'seasons' => array(),
 		),
+		'metadata_plan'   => series_admin_plan(),
+		'media'           => array(
+			'directory' => array( 'path' => 'Series/korea/2024/Show' ),
+			'episodes'  => array(),
+		),
+		'episodes'        => array(),
 		'validation'      => array(
 			'errors'   => array(),
 			'warnings' => array(),
@@ -119,6 +126,7 @@ function series_admin_post( bool $confirmed = true ): array {
 		'tmdb_id'                    => '100',
 		'title'                      => '  عنوان محلی  ',
 		'summary'                    => 'خلاصه',
+		'series_directory'           => 'Series/korea/2024/Show',
 		'confirm_import'             => $confirmed ? '1' : null,
 		'plan'                       => array( 'identity' => array( 'action' => 'update' ) ),
 		'identity_action'            => 'update',
@@ -129,35 +137,31 @@ function series_admin_post( bool $confirmed = true ): array {
 	);
 }
 
-function series_admin_options( array &$calls, ?array &$received_plan = null ): array {
+function series_admin_options( array &$calls, ?array &$received_values = null ): array {
 	return array(
-		'current_user_can' => static function ( $capability ) use ( &$calls ): bool {
+		'current_user_can'    => static function ( $capability ) use ( &$calls ): bool {
 			++$calls['capability'];
 			return 'manage_options' === $capability;
 		},
-		'verify_nonce'     => static function ( $nonce, $action ) use ( &$calls ): bool {
+		'verify_nonce'        => static function ( $nonce, $action ) use ( &$calls ): bool {
 			++$calls['nonce'];
 			return 'valid' === $nonce
 				&& in_array( $action, array( Movies_WP_Series_Admin::PREVIEW_NONCE, Movies_WP_Series_Admin::IMPORT_NONCE ), true );
 		},
-		'preview_build'    => static function ( array $values ) use ( &$calls ): array {
+		'orchestrator_preview' => static function ( array $values ) use ( &$calls ): array {
 			++$calls['preview'];
-			series_admin_same( array( 'tmdb_id', 'title', 'summary' ), array_keys( $values ), 'preview receives whitelisted inputs only' );
+			series_admin_same( array( 'tmdb_id', 'title', 'summary', 'series_directory' ), array_keys( $values ), 'preview receives whitelisted inputs only' );
 			return series_admin_preview();
 		},
-		'plan_build'       => static function ( array $preview ) use ( &$calls ): array {
-			++$calls['plan'];
-			series_admin_same( 100, $preview['series']['tmdb_id'], 'plan receives authoritative preview' );
-			return series_admin_plan();
-		},
-		'import_execute'   => static function ( array $plan ) use ( &$calls, &$received_plan ): array {
+		'orchestrator_execute' => static function ( array $values ) use ( &$calls, &$received_values ): array {
 			++$calls['import'];
-			$received_plan = $plan;
+			$received_values = $values;
 			return array(
 				'ok'        => true,
 				'partial'   => false,
 				'series_id' => 501,
 				'action'    => 'create',
+				'completed' => 1,
 				'warnings'  => array(),
 				'errors'    => array(),
 				'series'    => array( 'ok' => true ),
@@ -171,70 +175,84 @@ function series_admin_options( array &$calls, ?array &$received_plan = null ): a
 
 echo "Series admin request contract\n";
 
-$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'plan' => 0, 'import' => 0 );
-$received_plan = null;
+$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'import' => 0 );
+$received_values = null;
 $preview_result = Movies_WP_Series_Admin::process_preview_request(
 	series_admin_post(),
-	series_admin_options( $calls, $received_plan )
+	series_admin_options( $calls, $received_values )
 );
 series_admin_assert( is_array( $preview_result ), 'valid preview request returns context' );
 series_admin_same( 'عنوان محلی', $preview_result['values']['title'], 'preview uses normalized server result' );
-series_admin_same( 1, $calls['preview'], 'preview service called once' );
-series_admin_same( 1, $calls['plan'], 'plan builder called once' );
+series_admin_same( 'Series/korea/2024/Show', $preview_result['values']['series_directory'], 'preview keeps Series directory' );
+series_admin_same( 1, $calls['preview'], 'orchestrator preview called once' );
 series_admin_same( 0, $calls['import'], 'preview performs no import' );
+series_admin_same( series_admin_plan(), $preview_result['plan'], 'admin displays metadata plan from combined preview' );
 
-$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'plan' => 0, 'import' => 0 );
-$received_plan = null;
+$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'import' => 0 );
+$received_values = null;
 $import_result = Movies_WP_Series_Admin::process_import_request(
 	series_admin_post(),
-	series_admin_options( $calls, $received_plan )
+	series_admin_options( $calls, $received_values )
 );
-series_admin_assert( is_array( $import_result ) && true === $import_result['ok'], 'valid import returns service result' );
-series_admin_same( 1, $calls['preview'], 'import rebuilds preview exactly once' );
-series_admin_same( 1, $calls['plan'], 'import rebuilds plan exactly once' );
-series_admin_same( 1, $calls['import'], 'Import Service invoked exactly once' );
-series_admin_same( series_admin_plan(), $received_plan, 'Import Service receives only rebuilt authoritative plan' );
-series_admin_assert( ! isset( $received_plan['_sources'] ), 'browser _sources payload is discarded' );
-series_admin_assert( ! isset( $received_plan['existing_series_id'] ), 'browser identity fields are discarded' );
-series_admin_same( false, $received_plan['sources_policy']['mutate'], 'rebuilt plan preserves _sources immutability' );
+series_admin_assert( is_array( $import_result ) && true === $import_result['ok'], 'valid import returns orchestrator result' );
+series_admin_same( 0, $calls['preview'], 'import does not reuse the preview-time media plan' );
+series_admin_same( 1, $calls['import'], 'orchestrator invoked exactly once' );
+series_admin_same(
+	array(
+		'tmdb_id'          => 100,
+		'title'            => 'عنوان محلی',
+		'summary'          => 'خلاصه',
+		'series_directory' => 'Series/korea/2024/Show',
+	),
+	$received_values,
+	'orchestrator receives only rebuilt operator inputs'
+);
+series_admin_assert( ! isset( $received_values['plan'] ), 'browser plan payload is discarded' );
+series_admin_assert( ! isset( $received_values['_sources'] ), 'browser _sources payload is discarded' );
+series_admin_assert( ! isset( $received_values['existing_series_id'] ), 'browser identity fields are discarded' );
 
-$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'plan' => 0, 'import' => 0 );
-$received_plan = null;
+$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'import' => 0 );
+$received_values = null;
 $confirmation_error = Movies_WP_Series_Admin::process_import_request(
 	series_admin_post( false ),
-	series_admin_options( $calls, $received_plan )
+	series_admin_options( $calls, $received_values )
 );
 series_admin_same( 'series_import_confirmation_required', $confirmation_error->get_error_code(), 'explicit confirmation is required' );
 series_admin_same( 0, $calls['preview'], 'missing confirmation blocks preview rebuild' );
 series_admin_same( 0, $calls['import'], 'missing confirmation blocks import' );
 
-$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'plan' => 0, 'import' => 0 );
-$received_plan = null;
-$options = series_admin_options( $calls, $received_plan );
+$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'import' => 0 );
+$received_values = null;
+$options = series_admin_options( $calls, $received_values );
 $options['current_user_can'] = static function (): bool { return false; };
 $forbidden = Movies_WP_Series_Admin::process_import_request( series_admin_post(), $options );
 series_admin_same( 'series_import_forbidden', $forbidden->get_error_code(), 'capability failure is deterministic' );
 series_admin_same( 0, $calls['import'], 'capability failure blocks import' );
 
-$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'plan' => 0, 'import' => 0 );
-$received_plan = null;
-$options = series_admin_options( $calls, $received_plan );
+$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'import' => 0 );
+$received_values = null;
+$options = series_admin_options( $calls, $received_values );
 $options['verify_nonce'] = static function (): bool { return false; };
 $invalid_nonce = Movies_WP_Series_Admin::process_import_request( series_admin_post(), $options );
 series_admin_same( 'series_import_invalid_nonce', $invalid_nonce->get_error_code(), 'nonce failure is deterministic' );
 series_admin_same( 0, $calls['preview'], 'nonce failure blocks preview rebuild' );
 series_admin_same( 0, $calls['import'], 'nonce failure blocks import' );
 
-$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'plan' => 0, 'import' => 0 );
-$received_plan = null;
-$options = series_admin_options( $calls, $received_plan );
-$options['plan_build'] = static function () use ( &$calls ) {
-	++$calls['plan'];
+$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'import' => 0 );
+$received_values = null;
+$options = series_admin_options( $calls, $received_values );
+$options['orchestrator_preview'] = static function () use ( &$calls ) {
+	++$calls['preview'];
 	return new WP_Error( 'series_import_duplicate_identity', 'Duplicate identity.' );
 };
-$plan_error = Movies_WP_Series_Admin::process_import_request( series_admin_post(), $options );
-series_admin_same( 'series_import_duplicate_identity', $plan_error->get_error_code(), 'plan error is preserved' );
-series_admin_same( 0, $calls['import'], 'invalid plan is rejected before import' );
+$plan_error = Movies_WP_Series_Admin::process_preview_request( series_admin_post(), $options );
+series_admin_same( 'series_import_duplicate_identity', $plan_error->get_error_code(), 'preview/plan error is preserved' );
+series_admin_same( 0, $calls['import'], 'invalid preview is rejected before import' );
+
+$view = (string) file_get_contents( dirname( __DIR__ ) . '/views/series-preview.php' );
+series_admin_assert( str_contains( $view, 'name="series_directory"' ), 'Series page includes the directory field' );
+series_admin_assert( str_contains( $view, 'Episode media matches' ), 'Series page shows combined media matches' );
+series_admin_assert( ! str_contains( $view, 'V1 is metadata-only' ), 'metadata-only copy is removed' );
 
 echo $failures ? "\n{$failures} failure(s)\n" : "\nAll Series admin contract tests passed.\n";
 exit( $failures ? 1 : 0 );

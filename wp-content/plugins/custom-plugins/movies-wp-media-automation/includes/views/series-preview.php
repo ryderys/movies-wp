@@ -1,8 +1,8 @@
 <?php
 /**
- * Metadata-only Series Preview and Import admin view.
+ * Unified Series metadata and media Preview and Import admin view.
  *
- * @var array{tmdb_id:int|string,title:string,summary:string} $values
+ * @var array{tmdb_id:int|string,title:string,summary:string,series_directory:string} $values
  * @var array<string,mixed>|null $preview
  * @var array<string,mixed>|null $plan
  * @var array{type:string,message:string}|null $notice
@@ -13,15 +13,19 @@ defined( 'ABSPATH' ) || exit;
 
 $series  = is_array( $preview ) && is_array( $preview['series'] ?? null ) ? $preview['series'] : array();
 $seasons = is_array( $series['seasons'] ?? null ) ? $series['seasons'] : array();
-$errors  = is_array( $plan ) && is_array( $plan['errors'] ?? null )
-	? $plan['errors']
-	: ( is_array( $preview['validation']['errors'] ?? null ) ? $preview['validation']['errors'] : array() );
-$warnings = is_array( $plan ) && is_array( $plan['warnings'] ?? null )
-	? $plan['warnings']
-	: ( is_array( $preview['validation']['warnings'] ?? null ) ? $preview['validation']['warnings'] : array() );
-$ready = is_array( $plan )
+$media    = is_array( $preview ) && is_array( $preview['media'] ?? null ) ? $preview['media'] : array();
+$episode_matches = is_array( $preview ) && is_array( $preview['episodes'] ?? null ) ? $preview['episodes'] : array();
+$errors   = is_array( $preview ) && is_array( $preview['validation']['errors'] ?? null )
+	? $preview['validation']['errors']
+	: array();
+$warnings = is_array( $preview ) && is_array( $preview['validation']['warnings'] ?? null )
+	? $preview['validation']['warnings']
+	: array();
+$ready = is_array( $preview )
+	&& is_array( $plan )
 	&& true === ( $plan['ok'] ?? null )
 	&& true === ( $plan['ready_to_import'] ?? null )
+	&& true === ( $preview['ready_to_import'] ?? null )
 	&& array() === $errors;
 
 $season_create_count  = 0;
@@ -51,10 +55,7 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 <div class="wrap movies-wp-scan-preview movies-wp-series-preview">
 	<h1><?php esc_html_e( 'Series Automation', 'movies-wp' ); ?></h1>
 	<p class="description">
-		<?php esc_html_e( 'Preview Series metadata from TMDb, review the exact create/update plan, then import only after explicit confirmation.', 'movies-wp' ); ?>
-	</p>
-	<p class="description">
-		<?php esc_html_e( 'V1 is metadata-only. It does not scan Series media files and never changes episode sources.', 'movies-wp' ); ?>
+		<?php esc_html_e( 'Scan TMDb and the Series directory, preview metadata and episode media together, then import only after explicit confirmation.', 'movies-wp' ); ?>
 	</p>
 
 	<?php if ( is_array( $notice ) ) : ?>
@@ -94,6 +95,10 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 						?>
 					</li>
 				<?php endif; ?>
+				<li>
+					<?php esc_html_e( 'Media episodes completed:', 'movies-wp' ); ?>
+					<strong><?php echo (int) ( $import_result['completed'] ?? 0 ); ?></strong>
+				</li>
 			</ul>
 
 			<?php if ( ! empty( $import_result['errors'] ) && is_array( $import_result['errors'] ) ) : ?>
@@ -217,7 +222,7 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 	<?php endif; ?>
 
 	<div class="movies-wp-panel">
-		<h2><?php esc_html_e( 'TMDb Series input', 'movies-wp' ); ?></h2>
+		<h2><?php esc_html_e( 'Series input', 'movies-wp' ); ?></h2>
 		<form method="post">
 			<?php wp_nonce_field( Movies_WP_Series_Admin::PREVIEW_NONCE ); ?>
 			<input type="hidden" name="<?php echo esc_attr( Movies_WP_Series_Admin::ACTION_FIELD ); ?>" value="<?php echo esc_attr( Movies_WP_Series_Admin::PREVIEW_ACTION ); ?>">
@@ -228,14 +233,21 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 				</tr>
 				<tr>
 					<th scope="row"><label for="series-local-title"><?php esc_html_e( 'Persian / local title', 'movies-wp' ); ?></label></th>
-					<td><input id="series-local-title" name="title" type="text" required value="<?php echo esc_attr( (string) $values['title'] ); ?>" class="regular-text"></td>
+					<td><input id="series-local-title" name="title" type="text" required value="<?php echo esc_attr( (string) $values['title'] ); ?>" class="regular-text" dir="auto"></td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="series-summary"><?php esc_html_e( 'Summary', 'movies-wp' ); ?></label></th>
-					<td><textarea id="series-summary" name="summary" rows="5" class="large-text"><?php echo esc_textarea( (string) $values['summary'] ); ?></textarea></td>
+					<td><textarea id="series-summary" name="summary" rows="5" class="large-text" dir="auto"><?php echo esc_textarea( (string) $values['summary'] ); ?></textarea></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="series-directory"><?php esc_html_e( 'Series directory', 'movies-wp' ); ?></label></th>
+					<td>
+						<input id="series-directory" name="series_directory" type="text" required value="<?php echo esc_attr( (string) $values['series_directory'] ); ?>" class="large-text code" dir="ltr" placeholder="Series/korea/2024/Marry.My.Husband">
+						<p class="description"><?php esc_html_e( 'Relative path under the media root. Absolute and signed paths are rejected.', 'movies-wp' ); ?></p>
+					</td>
 				</tr>
 			</table>
-			<?php submit_button( __( 'Preview Series', 'movies-wp' ) ); ?>
+			<?php submit_button( __( 'Scan & Preview', 'movies-wp' ) ); ?>
 		</form>
 	</div>
 
@@ -281,6 +293,9 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 							<tr><th><?php esc_html_e( 'Seasons to update', 'movies-wp' ); ?></th><td><?php echo (int) $season_update_count; ?></td></tr>
 							<tr><th><?php esc_html_e( 'Episodes to create', 'movies-wp' ); ?></th><td><?php echo (int) $episode_create_count; ?></td></tr>
 							<tr><th><?php esc_html_e( 'Episodes to update', 'movies-wp' ); ?></th><td><?php echo (int) $episode_update_count; ?></td></tr>
+							<tr><th><?php esc_html_e( 'Media directory', 'movies-wp' ); ?></th><td><code dir="ltr"><?php echo esc_html( (string) ( $media['directory']['path'] ?? $values['series_directory'] ) ); ?></code></td></tr>
+							<tr><th><?php esc_html_e( 'Video files', 'movies-wp' ); ?></th><td><?php echo (int) ( $media['stats']['video_count'] ?? 0 ); ?></td></tr>
+							<tr><th><?php esc_html_e( 'Subtitle files', 'movies-wp' ); ?></th><td><?php echo (int) ( $media['stats']['subtitle_count'] ?? 0 ); ?></td></tr>
 							<tr><th><?php esc_html_e( 'Poster action', 'movies-wp' ); ?></th><td><?php echo esc_html( Movies_WP_Series_Admin::action_label( $plan['images']['poster']['action'] ?? '' ) ); ?></td></tr>
 							<tr><th><?php esc_html_e( 'Backdrop action', 'movies-wp' ); ?></th><td><?php echo esc_html( Movies_WP_Series_Admin::action_label( $plan['images']['backdrop']['action'] ?? '' ) ); ?></td></tr>
 							<tr><th><?php esc_html_e( 'Episode sources', 'movies-wp' ); ?></th><td><strong><?php esc_html_e( 'Always preserved', 'movies-wp' ); ?></strong></td></tr>
@@ -369,6 +384,34 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 			</table>
 		</div>
 
+		<div class="movies-wp-panel">
+			<h2><?php esc_html_e( 'Episode media matches', 'movies-wp' ); ?></h2>
+			<table class="widefat striped movies-wp-files">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Episode', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'TMDb title', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'Metadata action', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'Media status', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'Sources', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'Subtitles', 'movies-wp' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $episode_matches as $episode_match ) : ?>
+						<tr>
+							<td><code dir="ltr"><?php printf( 'S%02dE%02d', (int) ( $episode_match['season_number'] ?? 0 ), (int) ( $episode_match['episode_number'] ?? 0 ) ); ?></code></td>
+							<td><?php echo esc_html( Movies_WP_Series_Admin::dash( $episode_match['name'] ?? null ) ); ?></td>
+							<td><?php echo esc_html( Movies_WP_Series_Admin::action_label( $episode_match['action'] ?? '' ) ); ?></td>
+							<td><code dir="ltr"><?php echo esc_html( (string) ( $episode_match['status'] ?? '' ) ); ?></code></td>
+							<td><?php echo (int) ( $episode_match['source_count'] ?? 0 ); ?></td>
+							<td><?php echo (int) ( $episode_match['subtitle_count'] ?? 0 ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+
 		<?php if ( $ready ) : ?>
 			<div class="movies-wp-panel movies-wp-panel-warning">
 				<h2><?php esc_html_e( 'Confirm Series import', 'movies-wp' ); ?></h2>
@@ -379,11 +422,12 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 					<input type="hidden" name="tmdb_id" value="<?php echo esc_attr( (string) $values['tmdb_id'] ); ?>">
 					<input type="hidden" name="title" value="<?php echo esc_attr( (string) $values['title'] ); ?>">
 					<input type="hidden" name="summary" value="<?php echo esc_attr( (string) $values['summary'] ); ?>">
+					<input type="hidden" name="series_directory" value="<?php echo esc_attr( (string) $values['series_directory'] ); ?>">
 					<label>
 						<input type="checkbox" name="confirm_import" value="1" required>
-						<?php esc_html_e( 'I reviewed this plan and approve the Series create/update operations.', 'movies-wp' ); ?>
+						<?php esc_html_e( 'I reviewed this plan and approve the Series metadata and media operations.', 'movies-wp' ); ?>
 					</label>
-					<?php submit_button( __( 'Import Series', 'movies-wp' ), 'primary', 'submit', false ); ?>
+					<?php submit_button( __( 'Import Series & Media', 'movies-wp' ), 'primary', 'submit', false ); ?>
 				</form>
 			</div>
 		<?php endif; ?>

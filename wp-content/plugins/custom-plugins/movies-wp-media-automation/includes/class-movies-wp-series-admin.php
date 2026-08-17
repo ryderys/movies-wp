@@ -1,10 +1,10 @@
 <?php
 /**
- * WordPress admin workflow for metadata-only Series preview and import.
+ * WordPress admin workflow for unified Series metadata + media automation.
  *
  * The browser submits operator inputs only. Import rebuilds the authoritative
- * preview and plan server-side, then delegates exactly once to the Series
- * Import Service. This class performs no Streamit writes.
+ * preview server-side, then delegates to the Series Orchestrator. This class
+ * performs no Streamit writes.
  *
  * @package movies-wp
  */
@@ -128,7 +128,7 @@ class Movies_WP_Series_Admin {
 	}
 
 	/**
-	 * Rebuild the authoritative plan, then invoke only the Series Import Service.
+	 * Delegate whitelisted operator inputs to the Series Orchestrator.
 	 *
 	 * Browser-submitted plan, identity, episode, image, and source payloads are
 	 * ignored. They cannot influence persistence.
@@ -146,14 +146,10 @@ class Movies_WP_Series_Admin {
 			return new WP_Error( 'series_import_confirmation_required', __( 'Series import confirmation is required.', 'movies-wp' ) );
 		}
 
-		$context = self::build_context( self::values_from_array( $post ), $options );
-		if ( is_wp_error( $context ) ) {
-			return $context;
-		}
-
-		$result = isset( $options['import_execute'] ) && is_callable( $options['import_execute'] )
-			? call_user_func( $options['import_execute'], $context['plan'] )
-			: Movies_WP_Series_Import_Service::execute( $context['plan'] );
+		$values = self::values_from_array( $post );
+		$result = isset( $options['orchestrator_execute'] ) && is_callable( $options['orchestrator_execute'] )
+			? call_user_func( $options['orchestrator_execute'], $values )
+			: Movies_WP_Series_Orchestrator::execute( $values );
 
 		if ( ! is_array( $result ) ) {
 			return new WP_Error( 'series_import_invalid_result', __( 'Series import returned an invalid result.', 'movies-wp' ) );
@@ -167,9 +163,9 @@ class Movies_WP_Series_Admin {
 	 * @return array{values:array,preview:array,plan:array}|WP_Error
 	 */
 	private static function build_context( array $values, array $options = array() ) {
-		$preview = isset( $options['preview_build'] ) && is_callable( $options['preview_build'] )
-			? call_user_func( $options['preview_build'], $values )
-			: Movies_WP_Series_Preview_Service::build( $values );
+		$preview = isset( $options['orchestrator_preview'] ) && is_callable( $options['orchestrator_preview'] )
+			? call_user_func( $options['orchestrator_preview'], $values )
+			: Movies_WP_Series_Orchestrator::build_preview( $values );
 		if ( is_wp_error( $preview ) ) {
 			return $preview;
 		}
@@ -177,12 +173,7 @@ class Movies_WP_Series_Admin {
 			return new WP_Error( 'series_preview_invalid_result', __( 'Series preview returned invalid data.', 'movies-wp' ) );
 		}
 
-		$plan = isset( $options['plan_build'] ) && is_callable( $options['plan_build'] )
-			? call_user_func( $options['plan_build'], $preview )
-			: Movies_WP_Series_Import_Plan::build( $preview );
-		if ( is_wp_error( $plan ) ) {
-			return $plan;
-		}
+		$plan = $preview['metadata_plan'] ?? null;
 		if ( ! is_array( $plan ) ) {
 			return new WP_Error( 'series_import_plan_invalid_result', __( 'Series Import Plan returned invalid data.', 'movies-wp' ) );
 		}
@@ -224,31 +215,34 @@ class Movies_WP_Series_Admin {
 
 	private static function empty_values() {
 		return array(
-			'tmdb_id' => '',
-			'title'   => '',
-			'summary' => '',
+			'tmdb_id'          => '',
+			'title'            => '',
+			'summary'          => '',
+			'series_directory' => '',
 		);
 	}
 
 	/**
 	 * Whitelist and sanitize operator inputs only.
 	 *
-	 * @return array{tmdb_id:int,title:string,summary:string}
+	 * @return array{tmdb_id:int,title:string,summary:string,series_directory:string}
 	 */
 	private static function values_from_array( array $post ) {
 		return array(
-			'tmdb_id' => isset( $post['tmdb_id'] ) ? absint( $post['tmdb_id'] ) : 0,
-			'title'   => isset( $post['title'] ) ? sanitize_text_field( (string) $post['title'] ) : '',
-			'summary' => isset( $post['summary'] ) ? sanitize_textarea_field( (string) $post['summary'] ) : '',
+			'tmdb_id'          => isset( $post['tmdb_id'] ) ? absint( $post['tmdb_id'] ) : 0,
+			'title'            => isset( $post['title'] ) ? sanitize_text_field( (string) $post['title'] ) : '',
+			'summary'          => isset( $post['summary'] ) ? sanitize_textarea_field( (string) $post['summary'] ) : '',
+			'series_directory' => isset( $post['series_directory'] ) ? sanitize_text_field( (string) $post['series_directory'] ) : '',
 		);
 	}
 
 	private static function notice_for_preview_error( $error ) {
 		$code = (string) $error->get_error_code();
 		$map  = array(
-			'series_preview_invalid_input' => __( 'Please check the Series fields and try again.', 'movies-wp' ),
-			'tmdb_tv_not_found'            => __( 'Could not find this series on TMDb.', 'movies-wp' ),
-			'tmdb_tv_request_failed'       => __( 'Could not load this series from TMDb. Please try again.', 'movies-wp' ),
+			'series_preview_invalid_input'    => __( 'Please check the Series fields and try again.', 'movies-wp' ),
+			'series_automation_invalid_input' => __( 'Please check the Series fields and directory, then try again.', 'movies-wp' ),
+			'tmdb_tv_not_found'               => __( 'Could not find this series on TMDb.', 'movies-wp' ),
+			'tmdb_tv_request_failed'          => __( 'Could not load this series from TMDb. Please try again.', 'movies-wp' ),
 		);
 		return array(
 			'type'    => 'error',
