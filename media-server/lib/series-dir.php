@@ -3,7 +3,7 @@
  * Pure series-directory resolver/validator.
  *
  * Expected relative layout:
- *   Series/{country}/{year}/{title}
+ *   series/{country}/{year}/{title}
  *
  * @package movies-wp
  */
@@ -28,7 +28,7 @@ function media_series_dir_roots(): array {
 
 	$series = getenv( 'SERIES_ROOT' );
 	if ( ! is_string( $series ) || $series === '' ) {
-		$series = $media . '/Series';
+		$series = $media . '/series';
 	}
 
 	return array(
@@ -40,7 +40,7 @@ function media_series_dir_roots(): array {
 /**
  * Resolve and validate a relative series directory.
  *
- * @param string $relative   Relative directory, e.g. Series/korea/2024/Marry.My.Husband.
+ * @param string $relative   Relative directory, e.g. series/korea/2024/Marry.My.Husband.
  * @param string $media_root MEDIA_ROOT (must exist).
  * @param string $series_root SERIES_ROOT (must exist and be inside MEDIA_ROOT).
  * @return array{
@@ -167,7 +167,7 @@ function media_series_dir_parse_relative( string $relative ): array {
 	if ( count( $segments ) < 4 ) {
 		return media_movie_dir_error(
 			'invalid_structure',
-			'Path must be Series/{country}/{year}/{title}.'
+			'Path must be series/{country}/{year}/{title}.'
 		);
 	}
 

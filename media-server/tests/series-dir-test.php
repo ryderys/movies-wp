@@ -26,7 +26,7 @@ function series_dir_assert_error( array $result, string $code, string $label ): 
 }
 
 $tmp = sys_get_temp_dir() . '/series-dir-test-' . bin2hex( random_bytes( 4 ) );
-$series_root = $tmp . '/Series';
+$series_root = $tmp . '/series';
 $ok_dir      = $series_root . '/korea/2024/Marry.My.Husband';
 
 if ( ! mkdir( $ok_dir, 0777, true ) ) {
@@ -50,25 +50,26 @@ $cleanup = static function () use ( $tmp ): void {
 
 echo "media_resolve_series_dir\n";
 
-$ok = media_resolve_series_dir( 'Series/korea/2024/Marry.My.Husband', $tmp, $series_root );
+$ok = media_resolve_series_dir( 'series/korea/2024/Marry.My.Husband', $tmp, $series_root );
 series_dir_assert_true( ( $ok['ok'] ?? false ) === true, 'accepts canonical relative series dir' );
 series_dir_assert_true( ( $ok['kind'] ?? '' ) === 'series', 'kind=series' );
-series_dir_assert_true( ( $ok['directory'] ?? '' ) === 'Series/korea/2024/Marry.My.Husband', 'directory' );
+series_dir_assert_true( ( $ok['directory'] ?? '' ) === 'series/korea/2024/Marry.My.Husband', 'directory' );
 series_dir_assert_true( ( $ok['country'] ?? '' ) === 'korea', 'country' );
 series_dir_assert_true( ( $ok['year'] ?? 0 ) === 2024, 'year' );
 series_dir_assert_true( ( $ok['series_title'] ?? '' ) === 'Marry.My.Husband', 'series_title' );
 
 series_dir_assert_error( media_resolve_series_dir( '', $tmp, $series_root ), 'empty_path', 'rejects empty' );
-series_dir_assert_error( media_resolve_series_dir( "Series/korea/2024/Marry\0My.Husband", $tmp, $series_root ), 'invalid_path', 'rejects NUL' );
-series_dir_assert_error( media_resolve_series_dir( '/Series/korea/2024/Marry.My.Husband', $tmp, $series_root ), 'absolute_path', 'rejects absolute path' );
-series_dir_assert_error( media_resolve_series_dir( 'Series/korea/2024/../Marry.My.Husband', $tmp, $series_root ), 'invalid_segment', 'rejects ..' );
+series_dir_assert_error( media_resolve_series_dir( "series/korea/2024/Marry\0My.Husband", $tmp, $series_root ), 'invalid_path', 'rejects NUL' );
+series_dir_assert_error( media_resolve_series_dir( '/series/korea/2024/Marry.My.Husband', $tmp, $series_root ), 'absolute_path', 'rejects absolute path' );
+series_dir_assert_error( media_resolve_series_dir( 'series/korea/2024/../Marry.My.Husband', $tmp, $series_root ), 'invalid_segment', 'rejects ..' );
 series_dir_assert_error( media_resolve_series_dir( 'Movie/korea/2024/Marry.My.Husband', $tmp, $series_root ), 'invalid_structure', 'rejects movie path' );
-series_dir_assert_error( media_resolve_series_dir( 'Series/korea/1800/Marry.My.Husband', $tmp, $series_root ), 'invalid_year', 'rejects wrong year' );
-series_dir_assert_error( media_resolve_series_dir( 'Series/korea/2024/Missing.Show', $tmp, $series_root ), 'not_found', 'rejects missing directory' );
+series_dir_assert_error( media_resolve_series_dir( 'Series/korea/2024/Marry.My.Husband', $tmp, $series_root ), 'invalid_structure', 'rejects non-canonical uppercase Series prefix' );
+series_dir_assert_error( media_resolve_series_dir( 'series/korea/1800/Marry.My.Husband', $tmp, $series_root ), 'invalid_year', 'rejects wrong year' );
+series_dir_assert_error( media_resolve_series_dir( 'series/korea/2024/Missing.Show', $tmp, $series_root ), 'not_found', 'rejects missing directory' );
 
 echo "\nmedia_series_dir_roots defaults\n";
 $defaults = media_series_dir_roots();
-series_dir_assert_true( str_ends_with( $defaults['series_root'], '/Series' ), 'default SERIES_ROOT suffix' );
+series_dir_assert_true( $defaults['series_root'] === '/data/series', 'default SERIES_ROOT is /data/series' );
 
 $cleanup();
 

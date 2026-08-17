@@ -54,7 +54,7 @@ function series_scan_ffprobe_runner(): callable {
 }
 
 $tmp = sys_get_temp_dir() . '/series-scan-test-' . bin2hex( random_bytes( 4 ) );
-$series_root = $tmp . '/Series';
+$series_root = $tmp . '/series';
 $show_dir    = $series_root . '/korea/2024/I.Really.Really.Like.You';
 $dirs = array(
 	$show_dir . '/720p x265 WEB-DL',
@@ -108,7 +108,7 @@ $cleanup = static function () use ( $tmp ): void {
 
 echo "scan contract\n";
 $result = media_scan_series_dir(
-	'Series/korea/2024/I.Really.Really.Like.You',
+	'series/korea/2024/I.Really.Really.Like.You',
 	$tmp,
 	$series_root,
 	array( 'ffprobe_runner' => series_scan_ffprobe_runner() )
@@ -178,12 +178,18 @@ foreach ( $result['warnings'] as $warning ) {
 series_scan_assert_true( $has_root_file, 'root file warns' );
 
 echo "\nscan auth route signature\n";
-$dir = 'Series/korea/2024/I.Really.Really.Like.You';
+$dir = 'series/Chin/2025/Spring.Burning';
 $movie = media_scan_canonical_request( '1700000000', $dir );
 $series = media_scan_canonical_request_for_path( '1700000000', '/scan/series', $dir );
+$uppercase = media_scan_canonical_request_for_path( '1700000000', '/scan/series', 'Series/Chin/2025/Spring.Burning' );
 series_scan_assert_true( str_contains( $movie, '/scan/movie' ), 'movie route preserved' );
 series_scan_assert_true( str_contains( $series, '/scan/series' ), 'series route distinct' );
 series_scan_assert_true( $movie !== $series, 'series and movie signatures differ' );
+series_scan_assert_true( str_contains( $series, 'dir=series%2FChin%2F2025%2FSpring.Burning' ), 'canonical request signs exact lowercase dir value' );
+series_scan_assert_true( $series !== $uppercase, 'dir casing changes canonical request and signature input' );
+$secret = 'test-secret';
+$signature = media_scan_signature( $series, $secret );
+series_scan_assert_true( media_scan_signature_valid( $series, $secret, $signature ), 'lowercase series dir HMAC validates' );
 
 $cleanup();
 

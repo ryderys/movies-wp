@@ -71,7 +71,7 @@ function media_scan_http_config(): array {
 	$series = media_scan_config_string( 'SERIES_ROOT', $file );
 	if ( $series === '' ) {
 		$media = $roots['media_root'] !== '' ? $roots['media_root'] : '/data';
-		$series = rtrim( $media, '/' ) . '/Series';
+		$series = rtrim( $media, '/' ) . '/series';
 	}
 
 	return array(

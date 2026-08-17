@@ -24,17 +24,17 @@ function series_sub_assoc_assert_true( bool $cond, string $label ): void {
 $files = array(
 	array(
 		'kind'       => 'subtitle',
-		'media_path' => 'Series/korea/2024/Show/SUB.ENG/Show.S01E02.ENG.srt',
+		'media_path' => 'series/korea/2024/Show/SUB.ENG/Show.S01E02.ENG.srt',
 		'episode'    => array( 'season_number' => '1', 'episode_number' => '2' ),
 	),
 	array(
 		'kind'       => 'subtitle',
-		'media_path' => 'Series/korea/2024/Show/SUB.ENG/Show.S01E02.alt.ENG.srt',
+		'media_path' => 'series/korea/2024/Show/SUB.ENG/Show.S01E02.alt.ENG.srt',
 		'episode'    => array( 'season_number' => '1', 'episode_number' => '2' ),
 	),
 	array(
 		'kind'       => 'subtitle',
-		'media_path' => 'Series/korea/2024/Show/SUB.ENG/Show.S01E03.ENG.srt',
+		'media_path' => 'series/korea/2024/Show/SUB.ENG/Show.S01E03.ENG.srt',
 		'episode'    => array( 'season_number' => '1', 'episode_number' => '3' ),
 	),
 );
@@ -47,12 +47,12 @@ $dup = media_associate_series_subtitles(
 	array(
 		array(
 			'kind'       => 'subtitle',
-			'media_path' => 'Series/korea/2024/Show/SUB.ENG/a.srt',
+			'media_path' => 'series/korea/2024/Show/SUB.ENG/a.srt',
 			'episode'    => array( 'season_number' => '1', 'episode_number' => '1' ),
 		),
 		array(
 			'kind'       => 'subtitle',
-			'media_path' => 'Series/korea/2024/Show/SUB.ENG/a.srt',
+			'media_path' => 'series/korea/2024/Show/SUB.ENG/a.srt',
 			'episode'    => array( 'season_number' => '1', 'episode_number' => '1' ),
 		),
 	)
