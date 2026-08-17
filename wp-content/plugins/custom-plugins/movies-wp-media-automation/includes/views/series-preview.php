@@ -242,7 +242,7 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 				<tr>
 					<th scope="row"><label for="series-directory"><?php esc_html_e( 'Series directory', 'movies-wp' ); ?></label></th>
 					<td>
-						<input id="series-directory" name="series_directory" type="text" required value="<?php echo esc_attr( (string) $values['series_directory'] ); ?>" class="large-text code" dir="ltr" placeholder="Series/korea/2024/Marry.My.Husband">
+						<input id="series-directory" name="series_directory" type="text" required value="<?php echo esc_attr( (string) $values['series_directory'] ); ?>" class="large-text code" dir="ltr" placeholder="series/korea/2024/Marry.My.Husband">
 						<p class="description"><?php esc_html_e( 'Relative path under the media root. Absolute and signed paths are rejected.', 'movies-wp' ); ?></p>
 					</td>
 				</tr>

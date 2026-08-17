@@ -77,19 +77,21 @@ function sm_api_same( $expected, $actual, string $label ): void {
 
 echo "Series media API client directory normalization\n";
 
-$valid = Movies_WP_Series_Media_Api_Client::normalize_directory( 'Series/korea/2024/Marry.My.Husband' );
-sm_api_same( 'Series/korea/2024/Marry.My.Husband', $valid, 'valid series path normalizes' );
+$valid = Movies_WP_Series_Media_Api_Client::normalize_directory( 'series/Chin/2025/Spring.Burning' );
+sm_api_same( 'series/Chin/2025/Spring.Burning', $valid, 'canonical lowercase series path normalizes' );
 
-$backslash = Movies_WP_Series_Media_Api_Client::normalize_directory( 'Series\\korea\\2024\\Show' );
-sm_api_same( 'Series/korea/2024/Show', $backslash, 'backslashes normalize to forward slashes' );
+$backslash = Movies_WP_Series_Media_Api_Client::normalize_directory( 'series\\korea\\2024\\Show' );
+sm_api_same( 'series/korea/2024/Show', $backslash, 'backslashes normalize to forward slashes' );
 
-foreach ( array( '', '/Series/korea/2024/Show', 'Movie/korea/2024/Show', 'Series/korea/2024', 'Series/../korea/2024/Show', 'Series/korea/2024/..' ) as $bad ) {
+foreach ( array( '', '/series/korea/2024/Show', 'Movie/korea/2024/Show', 'Series/Chin/2025/Spring.Burning', 'series/korea/2024', 'series/../korea/2024/Show', 'series/korea/2024/..' ) as $bad ) {
 	$result = Movies_WP_Series_Media_Api_Client::normalize_directory( $bad );
 	sm_api_assert( is_wp_error( $result ), 'invalid path rejected: ' . $bad );
 	sm_api_same( 'series_media_api_invalid_dir', $result->get_error_code(), 'invalid path error code stable for ' . $bad );
 }
 
 echo "Series media API client config\n";
+
+sm_api_same( '/scan/series', Movies_WP_Series_Media_Api_Client::REQUEST_PATH, 'Series scan HTTP route remains unchanged' );
 
 if ( ! class_exists( 'Movies_WP_Media_Api_Client' ) ) {
 	class Movies_WP_Media_Api_Client {

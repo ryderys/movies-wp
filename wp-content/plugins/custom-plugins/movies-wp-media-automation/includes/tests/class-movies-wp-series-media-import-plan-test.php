@@ -93,7 +93,7 @@ function sm_plan_preview(): array {
 		'input'           => array(
 			'tvshow_id'        => 50,
 			'expected_tmdb_id' => 0,
-			'series_directory' => 'Series/korea/2024/Show',
+			'series_directory' => 'series/korea/2024/Show',
 		),
 		'validation'      => array(
 			'errors'   => array(),
@@ -109,18 +109,18 @@ function sm_plan_preview(): array {
 				'tmdb_id'        => 900,
 				'sources'        => array(
 					array(
-						'media_path' => 'Series/korea/2024/Show/720p/S01E01.mkv',
+						'media_path' => 'series/korea/2024/Show/720p/S01E01.mkv',
 						'quality'    => '720p',
 						'size_label' => '1.0 GB',
 					),
 					array(
-						'media_path' => 'Series/korea/2024/Show/720p/S01E01.mkv',
+						'media_path' => 'series/korea/2024/Show/720p/S01E01.mkv',
 						'quality'    => '720p',
 					),
 				),
 				'subtitles'      => array(
 					array(
-						'media_path' => 'Series/korea/2024/Show/SUB.ENG/S01E01.srt',
+						'media_path' => 'series/korea/2024/Show/SUB.ENG/S01E01.srt',
 						'extension'  => 'srt',
 						'subtitle'     => array(
 							'label'   => 'ENG',
@@ -129,7 +129,7 @@ function sm_plan_preview(): array {
 						),
 					),
 					array(
-						'media_path' => 'Series/korea/2024/Show/SUB.ENG/S01E01.ass',
+						'media_path' => 'series/korea/2024/Show/SUB.ENG/S01E01.ass',
 						'extension'  => 'ass',
 						'subtitle'     => array(
 							'label'   => 'ENG',
@@ -145,29 +145,31 @@ function sm_plan_preview(): array {
 
 echo "Series media import plan path validation\n";
 
-$signed = Movies_WP_Series_Media_Import_Plan::normalize_series_path( 'https://media.example.test/Series/korea/file.mkv' );
+$signed = Movies_WP_Series_Media_Import_Plan::normalize_series_path( 'https://media.example.test/series/korea/file.mkv' );
 sm_plan_assert( is_wp_error( $signed ), 'signed URL rejected' );
 
-$absolute = Movies_WP_Series_Media_Import_Plan::normalize_series_path( '/data/Series/korea/file.mkv' );
+$absolute = Movies_WP_Series_Media_Import_Plan::normalize_series_path( '/data/series/korea/file.mkv' );
 sm_plan_assert( is_wp_error( $absolute ), 'absolute path rejected' );
 
-$valid = Movies_WP_Series_Media_Import_Plan::normalize_series_path( 'Series/korea/2024/Show/file.mkv' );
-sm_plan_same( 'Series/korea/2024/Show/file.mkv', $valid, 'relative series path accepted' );
+$valid = Movies_WP_Series_Media_Import_Plan::normalize_series_path( 'series/korea/2024/Show/file.mkv' );
+sm_plan_same( 'series/korea/2024/Show/file.mkv', $valid, 'lowercase relative series path accepted' );
+$uppercase = Movies_WP_Series_Media_Import_Plan::normalize_series_path( 'Series/korea/2024/Show/file.mkv' );
+sm_plan_assert( is_wp_error( $uppercase ), 'uppercase Series path rejected as non-canonical' );
 
 echo "Series media import plan operations\n";
 
 $existing_sources = array(
 	array(
 		'name'             => 'Manual',
-		'link'             => 'Series/korea/2024/Show/manual.mkv',
+		'link'             => 'series/korea/2024/Show/manual.mkv',
 		'custom_flag'      => 'keep-me',
-		'download_content' => 'Series/korea/2024/Show/manual.mkv',
+		'download_content' => 'series/korea/2024/Show/manual.mkv',
 	),
 );
 $existing_subtitles = array(
 	array(
 		'label'   => 'FA',
-		'url'     => 'Series/korea/2024/Show/SUB.FA/S01E01.srt',
+		'url'     => 'series/korea/2024/Show/SUB.FA/S01E01.srt',
 		'default' => 1,
 	),
 );
@@ -201,8 +203,8 @@ foreach ( $ops['_sources'] as $operation ) {
 	}
 }
 sm_plan_assert( is_array( $upsert ), 'upsert operation found' );
-sm_plan_same( 'Series/korea/2024/Show/720p/S01E01.mkv', $upsert['row']['link'], 'source row stores relative path not signed URL' );
-sm_plan_same( 'Series/korea/2024/Show/720p/S01E01.mkv', $upsert['row']['download_content'], 'download_content stores relative path' );
+sm_plan_same( 'series/korea/2024/Show/720p/S01E01.mkv', $upsert['row']['link'], 'source row persists lowercase relative path not signed URL' );
+sm_plan_same( 'series/korea/2024/Show/720p/S01E01.mkv', $upsert['row']['download_content'], 'download_content persists lowercase relative path' );
 
 $subtitle_warnings = array_filter(
 	$plan['warnings'],

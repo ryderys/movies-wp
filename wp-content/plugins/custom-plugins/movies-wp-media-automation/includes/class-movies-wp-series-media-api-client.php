@@ -14,7 +14,7 @@ class Movies_WP_Series_Media_Api_Client {
 	const TIMEOUT      = 20;
 
 	/**
-	 * @param string $relative_directory e.g. Series/korea/2024/Marry.My.Husband.
+	 * @param string $relative_directory e.g. series/korea/2024/Marry.My.Husband.
 	 * @return array<string, mixed>|WP_Error
 	 */
 	public static function scan_series_directory( $relative_directory ) {
@@ -163,7 +163,7 @@ class Movies_WP_Series_Media_Api_Client {
 				return new WP_Error( 'series_media_api_invalid_dir', __( 'The directory must be a relative series path.', 'movies-wp' ) );
 			}
 		}
-		if ( 'Series' !== ( $segments[0] ?? '' ) || count( $segments ) < 4 ) {
+		if ( 'series' !== ( $segments[0] ?? '' ) || count( $segments ) < 4 ) {
 			return new WP_Error( 'series_media_api_invalid_dir', __( 'The directory must be a relative series path.', 'movies-wp' ) );
 		}
 

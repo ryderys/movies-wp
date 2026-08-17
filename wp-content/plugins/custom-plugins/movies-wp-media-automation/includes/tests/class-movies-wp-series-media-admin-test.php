@@ -93,7 +93,7 @@ function sm_admin_preview(): array {
 		'input'           => array(
 			'tvshow_id'        => 50,
 			'expected_tmdb_id' => 0,
-			'series_directory' => 'Series/korea/2024/Show',
+			'series_directory' => 'series/korea/2024/Show',
 		),
 		'validation'      => array(
 			'errors'   => array(),
@@ -114,7 +114,7 @@ function sm_admin_plan(): array {
 		),
 		'identity'        => array(
 			'tvshow_id'        => 50,
-			'series_directory' => 'Series/korea/2024/Show',
+			'series_directory' => 'series/korea/2024/Show',
 			'expected_tmdb_id' => 0,
 		),
 		'episodes'        => array(),
@@ -129,7 +129,7 @@ function sm_admin_post( bool $confirmed = true ): array {
 		'_wpnonce'         => 'valid',
 		'tvshow_id'        => '50',
 		'expected_tmdb_id' => '',
-		'series_directory' => 'Series/korea/2024/Show',
+		'series_directory' => 'series/korea/2024/Show',
 		'confirm_import'   => $confirmed ? '1' : null,
 		'plan'             => array(
 			'episodes' => array(
@@ -138,7 +138,7 @@ function sm_admin_post( bool $confirmed = true ): array {
 						'_sources' => array(
 							array(
 								'action' => 'upsert',
-								'path'   => 'Series/evil/injected.mkv',
+								'path'   => 'series/evil/injected.mkv',
 							),
 						),
 					),
@@ -147,7 +147,7 @@ function sm_admin_post( bool $confirmed = true ): array {
 		),
 		'_sources'         => array(
 			array(
-				'link' => 'Series/evil/browser.mkv',
+				'link' => 'series/evil/browser.mkv',
 			),
 		),
 	);
@@ -207,7 +207,7 @@ $preview_result = Movies_WP_Series_Media_Admin::process_preview_request(
 	sm_admin_options( $calls, $received_plan )
 );
 sm_admin_assert( is_array( $preview_result ), 'valid preview request returns context' );
-sm_admin_same( 'Series/korea/2024/Show', $preview_result['values']['series_directory'], 'preview uses normalized directory' );
+sm_admin_same( 'series/korea/2024/Show', $preview_result['values']['series_directory'], 'preview uses normalized directory' );
 sm_admin_same( 1, $calls['preview'], 'preview service called once' );
 sm_admin_same( 1, $calls['plan'], 'plan builder called once' );
 sm_admin_same( 0, $calls['import'], 'preview performs no import' );

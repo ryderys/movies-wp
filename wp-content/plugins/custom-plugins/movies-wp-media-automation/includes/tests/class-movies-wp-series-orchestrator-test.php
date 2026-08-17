@@ -86,7 +86,7 @@ function orch_input(): array {
 		'tmdb_id'          => 100,
 		'title'            => 'عنوان محلی',
 		'summary'          => 'خلاصه',
-		'series_directory' => 'Series/korea/2024/Show',
+		'series_directory' => 'series/korea/2024/Show',
 	);
 }
 
@@ -192,7 +192,7 @@ function orch_scan( array $episodes = array() ): array {
 		'kind'      => 'series',
 		'ready'     => true,
 		'directory' => array(
-			'path' => 'Series/korea/2024/Show',
+			'path' => 'series/korea/2024/Show',
 		),
 		'files'     => array(),
 		'episodes'  => $episodes,
@@ -215,11 +215,11 @@ function orch_scan_episode( $season, $episode, bool $with_files = true ): array 
 	);
 	if ( $with_files ) {
 		$row['sources'][] = array(
-			'media_path' => sprintf( 'Series/korea/2024/Show/720p/S%02dE%02d.mkv', (int) $season, (int) $episode ),
+			'media_path' => sprintf( 'series/korea/2024/Show/720p/S%02dE%02d.mkv', (int) $season, (int) $episode ),
 			'quality'    => '720p',
 		);
 		$row['subtitles'][] = array(
-			'media_path' => sprintf( 'Series/korea/2024/Show/SUB.ENG/S%02dE%02d.srt', (int) $season, (int) $episode ),
+			'media_path' => sprintf( 'series/korea/2024/Show/SUB.ENG/S%02dE%02d.srt', (int) $season, (int) $episode ),
 			'extension'  => 'srt',
 		);
 	}
@@ -233,7 +233,7 @@ function orch_media_preview( int $tvshow_id = 501 ): array {
 		'input'           => array(
 			'tvshow_id'         => $tvshow_id,
 			'expected_tmdb_id'  => 100,
-			'series_directory'  => 'Series/korea/2024/Show',
+			'series_directory'  => 'series/korea/2024/Show',
 		),
 		'episodes'        => array(
 			array(
@@ -244,7 +244,7 @@ function orch_media_preview( int $tvshow_id = 501 ): array {
 				'episode_number' => '1',
 				'tmdb_id'        => 9001,
 				'sources'        => array(
-					array( 'media_path' => 'Series/korea/2024/Show/720p/S01E01.mkv' ),
+					array( 'media_path' => 'series/korea/2024/Show/720p/S01E01.mkv' ),
 				),
 				'subtitles'      => array(),
 			),
@@ -268,7 +268,7 @@ function orch_media_plan( int $tvshow_id = 501 ): array {
 		),
 		'identity'        => array(
 			'tvshow_id'         => $tvshow_id,
-			'series_directory'  => 'Series/korea/2024/Show',
+			'series_directory'  => 'series/korea/2024/Show',
 			'expected_tmdb_id'  => 100,
 		),
 		'episodes'        => array(
@@ -281,7 +281,7 @@ function orch_media_plan( int $tvshow_id = 501 ): array {
 					'_sources'   => array(
 						array(
 							'action' => 'upsert',
-							'path'   => 'Series/korea/2024/Show/720p/S01E01.mkv',
+							'path'   => 'series/korea/2024/Show/720p/S01E01.mkv',
 						),
 					),
 					'_subtitles' => array(),
@@ -313,7 +313,7 @@ function orch_options( array &$calls, array $scan_episodes, string $identity_act
 		},
 		'scan_series'              => static function ( string $directory ) use ( &$calls, $scan_episodes ): array {
 			++$calls['scan'];
-			orch_same( 'Series/korea/2024/Show', $directory, 'scan receives normalized directory' );
+			orch_same( 'series/korea/2024/Show', $directory, 'scan receives normalized directory' );
 			return orch_scan( $scan_episodes );
 		},
 		'metadata_import_execute'  => static function ( array $plan ) use ( &$calls, $identity_action ): array {
@@ -352,7 +352,7 @@ function orch_options( array &$calls, array $scan_episodes, string $identity_act
 			++$calls['media_preview'];
 			orch_same( 501, $values['tvshow_id'], 'rebuilt media preview uses live series id' );
 			orch_same( 100, $values['expected_tmdb_id'], 'rebuilt media preview checks TMDb identity' );
-			orch_same( 'Series/korea/2024/Show', $values['series_directory'], 'rebuilt media preview uses Series directory' );
+			orch_same( 'series/korea/2024/Show', $values['series_directory'], 'rebuilt media preview uses lowercase series directory' );
 			orch_assert( $calls['metadata_import'] > 0, 'media preview rebuild happens after metadata import' );
 			return orch_media_preview( 501 );
 		},

@@ -313,8 +313,8 @@ class Movies_WP_Series_Media_Import_Plan {
 		if ( '' === $path || str_contains( $path, "\0" ) || str_contains( $path, '..' ) ) {
 			return new WP_Error( 'invalid_media_path', __( 'Invalid series media path.', 'movies-wp' ) );
 		}
-		if ( ! str_starts_with( $path, 'Series/' ) ) {
-			return new WP_Error( 'invalid_media_path', __( 'Series media paths must begin with Series/.', 'movies-wp' ) );
+		if ( ! str_starts_with( $path, 'series/' ) ) {
+			return new WP_Error( 'invalid_media_path', __( 'Series media paths must begin with series/.', 'movies-wp' ) );
 		}
 		if ( preg_match( '#^(https?://|/data/|/v/|/d/)#i', $path ) ) {
 			return new WP_Error( 'invalid_media_path', __( 'Signed or absolute paths are not allowed.', 'movies-wp' ) );

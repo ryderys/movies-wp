@@ -126,26 +126,26 @@ function ema_plan(): array {
 					'_sources'   => array(
 						array(
 							'action' => 'preserve',
-							'path'   => 'Series/korea/2024/Show/manual.mkv',
+							'path'   => 'series/korea/2024/Show/manual.mkv',
 							'row'    => array(
 								'name'             => 'Manual',
-								'link'             => 'Series/korea/2024/Show/manual.mkv',
+								'link'             => 'series/korea/2024/Show/manual.mkv',
 								'custom_flag'      => 'keep-me',
-								'download_content' => 'Series/korea/2024/Show/manual.mkv',
+								'download_content' => 'series/korea/2024/Show/manual.mkv',
 							),
 						),
 						array(
 							'action' => 'upsert',
-							'path'   => 'Series/korea/2024/Show/720p/S01E01.mkv',
+							'path'   => 'series/korea/2024/Show/720p/S01E01.mkv',
 							'row'    => array(
 								'name'             => '',
-								'link'             => 'Series/korea/2024/Show/720p/S01E01.mkv',
+								'link'             => 'series/korea/2024/Show/720p/S01E01.mkv',
 								'is_affiliate'     => '0',
 								'quality'          => '720p',
 								'language'         => '',
 								'player'           => '',
 								'date_added'       => '{{import_date}}',
-								'download_content' => 'Series/korea/2024/Show/720p/S01E01.mkv',
+								'download_content' => 'series/korea/2024/Show/720p/S01E01.mkv',
 								'file_size'        => '1.0 GB',
 							),
 						),
@@ -153,20 +153,20 @@ function ema_plan(): array {
 					'_subtitles' => array(
 						array(
 							'action' => 'preserve',
-							'path'   => 'Series/korea/2024/Show/SUB.FA/S01E01.srt',
+							'path'   => 'series/korea/2024/Show/SUB.FA/S01E01.srt',
 							'row'    => array(
 								'label'   => 'FA',
-								'url'     => 'Series/korea/2024/Show/SUB.FA/S01E01.srt',
+								'url'     => 'series/korea/2024/Show/SUB.FA/S01E01.srt',
 								'default' => 1,
 							),
 						),
 						array(
 							'action' => 'upsert',
-							'path'   => 'Series/korea/2024/Show/SUB.ENG/S01E01.srt',
+							'path'   => 'series/korea/2024/Show/SUB.ENG/S01E01.srt',
 							'row'    => array(
 								'label'   => 'ENG',
 								'srclang' => 'en',
-								'url'     => 'Series/korea/2024/Show/SUB.ENG/S01E01.srt',
+								'url'     => 'series/korea/2024/Show/SUB.ENG/S01E01.srt',
 								'default' => 0,
 								'format'  => 'SRT',
 							),
@@ -187,21 +187,21 @@ function ema_options( bool $readback_fail = false, bool $with_duplicate_sources 
 	$sources = array(
 		array(
 			'name'             => 'Manual',
-			'link'             => 'Series/korea/2024/Show/manual.mkv',
+			'link'             => 'series/korea/2024/Show/manual.mkv',
 			'custom_flag'      => 'keep-me',
-			'download_content' => 'Series/korea/2024/Show/manual.mkv',
+			'download_content' => 'series/korea/2024/Show/manual.mkv',
 		),
 	);
 	if ( $with_duplicate_sources ) {
 		$sources[] = array(
 			'name'             => 'Dup',
-			'link'             => 'Series/korea/2024/Show/dup.mkv',
-			'download_content' => 'Series/korea/2024/Show/dup.mkv',
+			'link'             => 'series/korea/2024/Show/dup.mkv',
+			'download_content' => 'series/korea/2024/Show/dup.mkv',
 		);
 		$sources[] = array(
 			'name'             => 'Dup',
-			'link'             => 'Series/korea/2024/Show/dup.mkv',
-			'download_content' => 'Series/korea/2024/Show/dup.mkv',
+			'link'             => 'series/korea/2024/Show/dup.mkv',
+			'download_content' => 'series/korea/2024/Show/dup.mkv',
 		);
 	}
 
@@ -214,7 +214,7 @@ function ema_options( bool $readback_fail = false, bool $with_duplicate_sources 
 		'_subtitles'      => array(
 			array(
 				'label'   => 'FA',
-				'url'     => 'Series/korea/2024/Show/SUB.FA/S01E01.srt',
+				'url'     => 'series/korea/2024/Show/SUB.FA/S01E01.srt',
 				'default' => 1,
 			),
 		),
@@ -268,7 +268,7 @@ ema_same( 1, $success['completed'], 'one episode completed' );
 $sources = $GLOBALS['episode_meta_store'][101]['_sources'];
 ema_same( 2, count( $sources ), 'merged sources preserve order with upsert append' );
 ema_same( 'keep-me', $sources[0]['custom_flag'], 'unknown manual fields retained' );
-ema_same( 'Series/korea/2024/Show/720p/S01E01.mkv', $sources[1]['link'], 'new source appended with relative path' );
+ema_same( 'series/korea/2024/Show/720p/S01E01.mkv', $sources[1]['link'], 'new source appended with lowercase relative path' );
 ema_same( '2026-08-17 10:00:00', $sources[1]['date_added'], 'import date placeholder resolved' );
 ema_assert( ! str_contains( (string) $sources[1]['link'], 'https://' ), 'no signed URL persisted in sources' );
 

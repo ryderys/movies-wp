@@ -68,7 +68,7 @@ function series_admin_preview(): array {
 			'tmdb_id'          => 100,
 			'title'            => 'عنوان محلی',
 			'summary'          => 'خلاصه',
-			'series_directory' => 'Series/korea/2024/Show',
+			'series_directory' => 'series/korea/2024/Show',
 		),
 		'series'          => array(
 			'tmdb_id' => 100,
@@ -77,7 +77,7 @@ function series_admin_preview(): array {
 		),
 		'metadata_plan'   => series_admin_plan(),
 		'media'           => array(
-			'directory' => array( 'path' => 'Series/korea/2024/Show' ),
+			'directory' => array( 'path' => 'series/korea/2024/Show' ),
 			'episodes'  => array(),
 		),
 		'episodes'        => array(),
@@ -126,7 +126,7 @@ function series_admin_post( bool $confirmed = true ): array {
 		'tmdb_id'                    => '100',
 		'title'                      => '  عنوان محلی  ',
 		'summary'                    => 'خلاصه',
-		'series_directory'           => 'Series/korea/2024/Show',
+		'series_directory'           => 'series/korea/2024/Show',
 		'confirm_import'             => $confirmed ? '1' : null,
 		'plan'                       => array( 'identity' => array( 'action' => 'update' ) ),
 		'identity_action'            => 'update',
@@ -183,7 +183,7 @@ $preview_result = Movies_WP_Series_Admin::process_preview_request(
 );
 series_admin_assert( is_array( $preview_result ), 'valid preview request returns context' );
 series_admin_same( 'عنوان محلی', $preview_result['values']['title'], 'preview uses normalized server result' );
-series_admin_same( 'Series/korea/2024/Show', $preview_result['values']['series_directory'], 'preview keeps Series directory' );
+series_admin_same( 'series/korea/2024/Show', $preview_result['values']['series_directory'], 'preview keeps lowercase series directory' );
 series_admin_same( 1, $calls['preview'], 'orchestrator preview called once' );
 series_admin_same( 0, $calls['import'], 'preview performs no import' );
 series_admin_same( series_admin_plan(), $preview_result['plan'], 'admin displays metadata plan from combined preview' );
@@ -202,7 +202,7 @@ series_admin_same(
 		'tmdb_id'          => 100,
 		'title'            => 'عنوان محلی',
 		'summary'          => 'خلاصه',
-		'series_directory' => 'Series/korea/2024/Show',
+		'series_directory' => 'series/korea/2024/Show',
 	),
 	$received_values,
 	'orchestrator receives only rebuilt operator inputs'

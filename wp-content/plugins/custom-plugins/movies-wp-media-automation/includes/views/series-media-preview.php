@@ -51,8 +51,8 @@ $episodes = is_array( $preview ) && is_array( $preview['episodes'] ?? null ) ? $
 			<tr>
 				<th scope="row"><label for="series_directory"><?php esc_html_e( 'Series directory', 'movies-wp' ); ?></label></th>
 				<td>
-					<input name="series_directory" id="series_directory" type="text" class="large-text code" dir="ltr" value="<?php echo esc_attr( (string) ( $values['series_directory'] ?? '' ) ); ?>" placeholder="Series/korea/2024/Marry.My.Husband" required>
-					<p class="description"><?php esc_html_e( 'Relative path under the media root. Example: Series/korea/2024/Marry.My.Husband', 'movies-wp' ); ?></p>
+					<input name="series_directory" id="series_directory" type="text" class="large-text code" dir="ltr" value="<?php echo esc_attr( (string) ( $values['series_directory'] ?? '' ) ); ?>" placeholder="series/korea/2024/Marry.My.Husband" required>
+					<p class="description"><?php esc_html_e( 'Relative path under the media root. Example: series/korea/2024/Marry.My.Husband', 'movies-wp' ); ?></p>
 				</td>
 			</tr>
 		</table>

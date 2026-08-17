@@ -312,7 +312,7 @@ $state = array(
 	'episode_meta' => array(
 		50 => array(
 			'tvshow_id' => '42',
-			'_sources' => array( array( 'name' => 'Manual source', 'link' => 'Series/file.mkv' ) ),
+			'_sources' => array( array( 'name' => 'Manual source', 'link' => 'series/file.mkv' ) ),
 			'thumbnail_id' => 777,
 		),
 	),

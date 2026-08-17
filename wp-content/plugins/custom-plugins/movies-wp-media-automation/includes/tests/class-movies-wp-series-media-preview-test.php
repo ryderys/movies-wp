@@ -88,14 +88,14 @@ function sm_preview_scan(): array {
 				'token'          => 'S01E01',
 				'sources'        => array(
 					array(
-						'media_path' => 'Series/korea/2024/Show/720p/S01E01.mkv',
+						'media_path' => 'series/korea/2024/Show/720p/S01E01.mkv',
 						'quality'    => '720p',
 						'size_label' => '1.0 GB',
 					),
 				),
 				'subtitles'      => array(
 					array(
-						'media_path' => 'Series/korea/2024/Show/SUB.ENG/S01E01.srt',
+						'media_path' => 'series/korea/2024/Show/SUB.ENG/S01E01.srt',
 						'extension'  => 'srt',
 						'subtitle'     => array(
 							'label'   => 'ENG',
@@ -161,7 +161,7 @@ echo "Series media preview input validation\n";
 $invalid = Movies_WP_Series_Media_Preview_Service::build(
 	array(
 		'tvshow_id'        => 0,
-		'series_directory' => 'Series/korea/2024/Show',
+		'series_directory' => 'series/korea/2024/Show',
 	)
 );
 sm_preview_assert( is_wp_error( $invalid ), 'missing tvshow_id rejected' );
@@ -171,7 +171,7 @@ $tmdb_mismatch = Movies_WP_Series_Media_Preview_Service::build(
 	array(
 		'tvshow_id'         => 50,
 		'expected_tmdb_id'  => 111,
-		'series_directory'  => 'Series/korea/2024/Show',
+		'series_directory'  => 'series/korea/2024/Show',
 	),
 	sm_preview_options( sm_preview_episodes(), 900 )
 );
@@ -183,7 +183,7 @@ echo "Series media preview strict episode lookup\n";
 $preview = Movies_WP_Series_Media_Preview_Service::build(
 	array(
 		'tvshow_id'        => 50,
-		'series_directory' => 'Series/korea/2024/Show',
+		'series_directory' => 'series/korea/2024/Show',
 	),
 	sm_preview_options()
 );
@@ -214,7 +214,7 @@ $ambiguous_options = sm_preview_options(
 $ambiguous = Movies_WP_Series_Media_Preview_Service::build(
 	array(
 		'tvshow_id'        => 50,
-		'series_directory' => 'Series/korea/2024/Show',
+		'series_directory' => 'series/korea/2024/Show',
 	),
 	$ambiguous_options
 );

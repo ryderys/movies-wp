@@ -91,7 +91,7 @@ function sm_import_plan( array $overrides = array() ): array {
 		),
 		'identity'        => array(
 			'tvshow_id'        => 50,
-			'series_directory' => 'Series/korea/2024/Show',
+			'series_directory' => 'series/korea/2024/Show',
 			'expected_tmdb_id' => 0,
 		),
 		'warnings'        => array(),
@@ -106,10 +106,10 @@ function sm_import_plan( array $overrides = array() ): array {
 					'_sources'   => array(
 						array(
 							'action' => 'upsert',
-							'path'   => 'Series/korea/2024/Show/S00E01.mkv',
+							'path'   => 'series/korea/2024/Show/S00E01.mkv',
 							'row'    => array(
-								'link'             => 'Series/korea/2024/Show/S00E01.mkv',
-								'download_content' => 'Series/korea/2024/Show/S00E01.mkv',
+								'link'             => 'series/korea/2024/Show/S00E01.mkv',
+								'download_content' => 'series/korea/2024/Show/S00E01.mkv',
 							),
 						),
 					),
