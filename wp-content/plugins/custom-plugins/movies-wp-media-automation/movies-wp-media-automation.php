@@ -38,6 +38,13 @@ require_once __DIR__ . '/includes/class-movies-wp-media-import-service.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-import-service.php';
 require_once __DIR__ . '/includes/class-movies-wp-media-admin.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-admin.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-media-api-client.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-media-preview-service.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-media-import-plan.php';
+require_once __DIR__ . '/includes/class-movies-wp-streamit-episode-media-adapter.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-media-import-service.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-media-admin.php';
 
 Movies_WP_Media_Admin::init();
 Movies_WP_Series_Admin::init();
+Movies_WP_Series_Media_Admin::init();
