@@ -21,7 +21,8 @@ const MEDIA_SCAN_DEFAULT_SKEW = 300;
  *   allowed_ips: list<string>,
  *   timestamp_skew: int,
  *   media_root: string,
- *   movie_root: string
+ *   movie_root: string,
+ *   series_root: string
  * }
  */
 function media_scan_http_config(): array {
@@ -67,6 +68,12 @@ function media_scan_http_config(): array {
 		$roots['movie_root'] = $movie !== '' ? $movie : rtrim( $media, '/' ) . '/Movie';
 	}
 
+	$series = media_scan_config_string( 'SERIES_ROOT', $file );
+	if ( $series === '' ) {
+		$media = $roots['media_root'] !== '' ? $roots['media_root'] : '/data';
+		$series = rtrim( $media, '/' ) . '/Series';
+	}
+
 	return array(
 		'api_key'         => $api_key,
 		'hmac_secret'     => $secret,
@@ -74,6 +81,7 @@ function media_scan_http_config(): array {
 		'timestamp_skew'  => $skew_int,
 		'media_root'      => $roots['media_root'],
 		'movie_root'      => $roots['movie_root'],
+		'series_root'     => $series,
 	);
 }
 
@@ -99,7 +107,11 @@ function media_scan_canonical_query( string $dir ): string {
 }
 
 function media_scan_canonical_request( string $timestamp, string $dir ): string {
-	return $timestamp . "\nGET\n" . MEDIA_SCAN_REQUEST_PATH . "\n" . media_scan_canonical_query( $dir );
+	return media_scan_canonical_request_for_path( $timestamp, MEDIA_SCAN_REQUEST_PATH, $dir );
+}
+
+function media_scan_canonical_request_for_path( string $timestamp, string $request_path, string $dir ): string {
+	return $timestamp . "\nGET\n" . $request_path . "\n" . media_scan_canonical_query( $dir );
 }
 
 function media_scan_signature( string $canonical, string $secret ): string {
@@ -207,6 +219,43 @@ function media_scan_http_error_for_code( string $code ): array {
 		'not_directory'         => array( 422, 'invalid_movie_dir', 'dir is not a valid movie directory.' ),
 		'outside_media_root'    => array( 422, 'invalid_movie_dir', 'dir is not a valid movie directory.' ),
 		'outside_movie_root'    => array( 422, 'invalid_movie_dir', 'dir is not a valid movie directory.' ),
+		'root_not_found'        => array( 500, 'scan_failed', 'Scan is not available.' ),
+		'invalid_roots'         => array( 500, 'scan_failed', 'Scan is not available.' ),
+		'list_failed'           => array( 500, 'scan_failed', 'Scan is not available.' ),
+	);
+
+	if ( ! isset( $map[ $code ] ) ) {
+		return array(
+			'status'  => 400,
+			'code'    => 'invalid_dir',
+			'message' => 'Missing or invalid dir.',
+		);
+	}
+
+	return array(
+		'status'  => $map[ $code ][0],
+		'code'    => $map[ $code ][1],
+		'message' => $map[ $code ][2],
+	);
+}
+
+/**
+ * Map series scanner/resolver error codes to HTTP status.
+ *
+ * @return array{status: int, code: string, message: string}
+ */
+function media_series_scan_http_error_for_code( string $code ): array {
+	$map = array(
+		'empty_path'            => array( 400, 'invalid_dir', 'Missing or invalid dir.' ),
+		'invalid_path'          => array( 400, 'invalid_dir', 'Missing or invalid dir.' ),
+		'absolute_path'         => array( 400, 'invalid_dir', 'dir must be a relative series directory.' ),
+		'invalid_segment'       => array( 400, 'invalid_dir', 'dir contains invalid path segments.' ),
+		'not_found'             => array( 404, 'not_found', 'Series directory not found.' ),
+		'invalid_structure'     => array( 422, 'invalid_series_dir', 'dir is not a valid series directory.' ),
+		'invalid_year'          => array( 422, 'invalid_series_dir', 'dir is not a valid series directory.' ),
+		'not_directory'         => array( 422, 'invalid_series_dir', 'dir is not a valid series directory.' ),
+		'outside_media_root'    => array( 422, 'invalid_series_dir', 'dir is not a valid series directory.' ),
+		'outside_series_root'   => array( 422, 'invalid_series_dir', 'dir is not a valid series directory.' ),
 		'root_not_found'        => array( 500, 'scan_failed', 'Scan is not available.' ),
 		'invalid_roots'         => array( 500, 'scan_failed', 'Scan is not available.' ),
 		'list_failed'           => array( 500, 'scan_failed', 'Scan is not available.' ),
