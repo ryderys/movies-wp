@@ -144,6 +144,112 @@ series_assert_same( '/backdrop.jpg', $valid['backdrop_path'], 'backdrop path is 
 series_assert_same( 1, $valid['seasons'][0]['episodes'][0]['season_number'], 'episode season identity is retained' );
 series_assert_same( 59, $valid['seasons'][0]['episodes'][0]['runtime'], 'episode runtime is normalized' );
 
+$unseasoned = Movies_WP_Tmdb_TV_Preview_Client::normalize_series(
+	array(
+		'id'                 => 283049,
+		'name'               => 'Spring Burning',
+		'number_of_seasons'  => 0,
+		'number_of_episodes' => 2,
+		'seasons'            => array(),
+		'episodes'           => array(
+			array( 'id' => 5941320, 'episode_number' => 1, 'name' => 'Episode 1' ),
+			array( 'id' => 6063812, 'episode_number' => 2, 'name' => 'Episode 2' ),
+		),
+	)
+);
+series_assert_true( ! is_wp_error( $unseasoned ), 'authoritative unseasoned episode catalog normalizes' );
+series_assert_same( 1, $unseasoned['number_of_seasons'], 'unseasoned catalog uses internal Season 1' );
+series_assert_same( 'unseasoned_season_1', $unseasoned['episode_catalog'], 'unseasoned catalog source is explicit' );
+series_assert_same( 1, $unseasoned['seasons'][0]['season_number'], 'unseasoned episodes are wrapped in Season 1' );
+series_assert_same( 1, $unseasoned['seasons'][0]['episodes'][0]['season_number'], 'unseasoned EP01 becomes S01E01' );
+series_assert_same( 2, $unseasoned['seasons'][0]['episodes'][1]['episode_number'], 'unseasoned EP02 remains episode 2' );
+series_assert_same( 6063812, $unseasoned['seasons'][0]['episodes'][1]['tmdb_id'], 'unseasoned episodes retain authoritative TMDb IDs' );
+
+$fallback_urls = array();
+$unseasoned_fallback = Movies_WP_Tmdb_TV_Preview_Client::get_series(
+	283049,
+	array(
+		'api_key'   => 'test-key',
+		'fetch_json' => static function ( $url ) use ( &$fallback_urls ) {
+			$fallback_urls[] = $url;
+			if ( str_contains( $url, '/external_ids?' ) ) {
+				return array();
+			}
+			if ( str_contains( $url, '/credits?' ) ) {
+				return array( 'cast' => array(), 'crew' => array() );
+			}
+			if ( str_contains( $url, '/season/1?' ) ) {
+				return array(
+					'id'             => 439808,
+					'season_number'  => 1,
+					'episodes'       => array(
+						array( 'id' => 5941320, 'episode_number' => 1, 'name' => 'Episode 1' ),
+						array( 'id' => 6063812, 'episode_number' => 2, 'name' => 'Episode 2' ),
+					),
+				);
+			}
+			return array(
+				'id'                 => 283049,
+				'name'               => 'Spring Burning',
+				'number_of_seasons'  => 0,
+				'number_of_episodes' => 2,
+				'seasons'            => array(),
+			);
+		},
+	)
+);
+series_assert_true( ! is_wp_error( $unseasoned_fallback ), 'zero-season TMDb response loads authoritative Season 1 episode catalog' );
+series_assert_true( count( array_filter( $fallback_urls, static fn( $url ) => str_contains( $url, '/season/1?' ) ) ) === 1, 'zero-season TMDb response probes Season 1 once' );
+series_assert_same( 'unseasoned_season_1', $unseasoned_fallback['episode_catalog'], 'Season 1 fallback is marked as unseasoned' );
+series_assert_same( 5941320, $unseasoned_fallback['seasons'][0]['episodes'][0]['tmdb_id'], 'Season 1 fallback retains authoritative episode identity' );
+
+$listed_season_urls = array();
+$listed_season = Movies_WP_Tmdb_TV_Preview_Client::get_series(
+	283049,
+	array(
+		'api_key'    => 'test-key',
+		'fetch_json' => static function ( $url ) use ( &$listed_season_urls ) {
+			$listed_season_urls[] = $url;
+			if ( str_contains( $url, '/external_ids?' ) ) {
+				return array();
+			}
+			if ( str_contains( $url, '/credits?' ) ) {
+				return array( 'cast' => array(), 'crew' => array() );
+			}
+			if ( str_contains( $url, '/season/1?' ) ) {
+				return array(
+					'id'            => 439808,
+					'season_number' => 1,
+					'name'          => 'Season 1',
+					'episodes'      => array(
+						array( 'id' => 5941320, 'episode_number' => 1, 'name' => 'Episode 1' ),
+						array( 'id' => 6063812, 'episode_number' => 2, 'name' => 'Episode 2' ),
+					),
+				);
+			}
+			return array(
+				'id'                 => 283049,
+				'name'               => 'Spring Burning',
+				'number_of_seasons'  => 1,
+				'number_of_episodes' => 24,
+				'seasons'            => array(
+					array(
+						'id'            => 439808,
+						'name'          => 'Season 1',
+						'season_number' => 1,
+						'episode_count' => 24,
+					),
+				),
+			);
+		},
+	)
+);
+series_assert_true( ! is_wp_error( $listed_season ), 'listed Season 1 catalog is not discarded after fetch' );
+series_assert_same( 'seasoned', $listed_season['episode_catalog'], 'listed Season 1 remains a seasoned catalog' );
+series_assert_same( 1, count( $listed_season['seasons'] ), 'listed Season 1 survives normalization' );
+series_assert_same( 2, count( $listed_season['seasons'][0]['episodes'] ), 'listed Season 1 keeps authoritative episodes' );
+series_assert_same( 5941320, $listed_season['seasons'][0]['episodes'][0]['tmdb_id'], 'listed Season 1 episode IDs remain authoritative' );
+
 $minimal = Movies_WP_Tmdb_TV_Preview_Client::normalize_series(
 	array(
 		'id'   => 10,
@@ -233,6 +339,28 @@ $warning_codes = array_column( $preview['validation']['warnings'], 'code' );
 series_assert_true( in_array( 'series_poster_missing', $warning_codes, true ), 'missing poster produces a warning' );
 series_assert_true( in_array( 'series_backdrop_missing', $warning_codes, true ), 'missing backdrop produces a warning' );
 series_assert_true( in_array( 'series_episode_still_missing', $warning_codes, true ), 'missing episode still produces a warning' );
+
+$no_catalog_preview = Movies_WP_Series_Preview_Service::build(
+	array(
+		'tmdb_id' => 11,
+		'title'   => 'بدون فهرست قسمت',
+	),
+	array(
+		'get_series' => static fn() => Movies_WP_Tmdb_TV_Preview_Client::normalize_series(
+			array(
+				'id'                 => 11,
+				'name'               => 'No Episode Catalog',
+				'number_of_seasons'  => 0,
+				'number_of_episodes' => 3,
+				'seasons'            => array(),
+			)
+		),
+	)
+);
+series_assert_true( ! is_wp_error( $no_catalog_preview ), 'series without usable episode catalog remains reportable' );
+series_assert_same( array(), $no_catalog_preview['series']['seasons'], 'episode counts alone never fabricate Season 1 episodes' );
+$no_catalog_warnings = array_column( $no_catalog_preview['validation']['warnings'], 'code' );
+series_assert_true( in_array( 'series_seasons_missing', $no_catalog_warnings, true ), 'missing episode catalog is reported clearly' );
 
 $invalid_input = Movies_WP_Series_Preview_Service::build(
 	array( 'tmdb_id' => 0, 'title' => '' ),

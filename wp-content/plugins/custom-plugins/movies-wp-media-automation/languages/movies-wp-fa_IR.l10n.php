@@ -241,7 +241,7 @@ return array(
 		'Required TMDb series data is missing.'                                                                                 => 'اطلاعات الزامی مجموعه در TMDb موجود نیست.',
 		'TMDb has no poster for this series.'                                                                                   => 'برای این مجموعه پوستری در TMDb موجود نیست.',
 		'TMDb has no backdrop for this series.'                                                                                 => 'برای این مجموعه تصویر پس‌زمینه‌ای در TMDb موجود نیست.',
-		'TMDb returned no seasons for this series.'                                                                             => 'TMDb هیچ فصلی برای این مجموعه برنگرداند.',
+		'TMDb returned no usable season or episode catalog. Episodes will not be created from filenames.'                     => 'TMDb هیچ فهرست قابل‌استفاده‌ای از فصل‌ها یا قسمت‌ها برنگرداند. قسمت‌ها از روی نام فایل ساخته نخواهند شد.',
 		'%s has no episode still on TMDb.'                                                                                      => 'برای قسمت %s تصویر ثابتی در TMDb موجود نیست.',
 		'Series preview payload is not ready for import.'                                                                       => 'داده پیش‌نمایش مجموعه برای درون‌ریزی آماده نیست.',
 		'Series preview is missing required identity fields.'                                                                   => 'فیلدهای الزامی هویت در پیش‌نمایش مجموعه کامل نیستند.',
@@ -471,5 +471,6 @@ return array(
 		'Failed to create a Streamit image attachment.'                                                                          => 'ایجاد پیوست تصویر Streamit ناموفق بود.',
 		'Failed to record the TMDb source URL for a Streamit attachment.'                                                        => 'ثبت نشانی منبع TMDb برای پیوست Streamit ناموفق بود.',
 		'Import'                                                                                                                 => 'درون‌ریزی',
+		'Season 1'                                                                                                               => 'فصل ۱',
 	),
 );

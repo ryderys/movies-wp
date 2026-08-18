@@ -53,8 +53,20 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 			return $credits;
 		}
 
+		$season_summaries = isset( $details['seasons'] ) && is_array( $details['seasons'] ) ? $details['seasons'] : array();
+		$top_level_episodes = isset( $details['episodes'] ) && is_array( $details['episodes'] ) ? $details['episodes'] : array();
+		if ( $season_summaries === array() && $top_level_episodes === array() && absint( $details['number_of_episodes'] ?? 0 ) > 0 ) {
+			$season_summaries = array(
+				array(
+					'season_number'   => 1,
+					'identity_source' => 'tmdb_unseasoned_episode_catalog',
+					'unseasoned'      => true,
+				),
+			);
+		}
+
 		$seasons = array();
-		foreach ( isset( $details['seasons'] ) && is_array( $details['seasons'] ) ? $details['seasons'] : array() as $season_summary ) {
+		foreach ( $season_summaries as $season_summary ) {
 			if ( ! is_array( $season_summary ) || ! array_key_exists( 'season_number', $season_summary ) ) {
 				continue;
 			}
@@ -80,11 +92,8 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 				);
 			}
 
-			$season = self::normalize_season( array_merge( $season_summary, $season_body ) );
-			if ( is_wp_error( $season ) ) {
-				return $season;
-			}
-			$seasons[] = $season;
+			// Keep the raw TMDb season payload. normalize_series() is the single normalization pass.
+			$seasons[] = array_merge( $season_summary, is_array( $season_body ) ? $season_body : array() );
 		}
 
 		$details['external_ids'] = $external;
@@ -141,6 +150,26 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 			}
 		}
 
+		$unseasoned_episodes = isset( $body['unseasoned_episodes'] ) && is_array( $body['unseasoned_episodes'] )
+			? $body['unseasoned_episodes']
+			: ( isset( $body['episodes'] ) && is_array( $body['episodes'] ) ? $body['episodes'] : array() );
+		$uses_unseasoned_catalog = false;
+		if ( $seasons === array() && $unseasoned_episodes !== array() ) {
+			$unseasoned_season = isset( $body['unseasoned_season'] ) && is_array( $body['unseasoned_season'] )
+				? $body['unseasoned_season']
+				: array();
+			$unseasoned_season['season_number']  = 1;
+			$unseasoned_season['name']           = __( 'Season 1', 'movies-wp' );
+			$unseasoned_season['episodes']       = $unseasoned_episodes;
+			$unseasoned_season['identity_source'] = 'tmdb_unseasoned_episode_catalog';
+			$unseasoned_season['unseasoned']      = true;
+			$normalized = self::normalize_season( $unseasoned_season );
+			if ( ! is_wp_error( $normalized ) ) {
+				$seasons[] = $normalized;
+				$uses_unseasoned_catalog = true;
+			}
+		}
+
 		usort(
 			$seasons,
 			static function ( $a, $b ) {
@@ -152,6 +181,17 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 		$backdrop_path = self::optional_path( $body['backdrop_path'] ?? null );
 		$external      = isset( $body['external_ids'] ) && is_array( $body['external_ids'] ) ? $body['external_ids'] : array();
 		$credits       = isset( $body['credits'] ) && is_array( $body['credits'] ) ? $body['credits'] : array();
+
+		$number_of_seasons = isset( $body['number_of_seasons'] ) ? absint( $body['number_of_seasons'] ) : count( array_filter( $seasons, static fn( $season ) => 0 !== (int) $season['season_number'] ) );
+		foreach ( $seasons as $season ) {
+			if ( ! empty( $season['unseasoned'] ) ) {
+				$uses_unseasoned_catalog = true;
+				break;
+			}
+		}
+		if ( $uses_unseasoned_catalog && $number_of_seasons < 1 ) {
+			$number_of_seasons = 1;
+		}
 
 		return array(
 			'tmdb_id'            => $tmdb_id,
@@ -168,9 +208,10 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 			'origin_country'     => array_values( array_unique( $countries ) ),
 			'original_language'  => isset( $body['original_language'] ) ? trim( (string) $body['original_language'] ) : '',
 			'imdb_id'            => isset( $external['imdb_id'] ) ? trim( (string) $external['imdb_id'] ) : '',
-			'number_of_seasons'  => isset( $body['number_of_seasons'] ) ? absint( $body['number_of_seasons'] ) : count( array_filter( $seasons, static fn( $season ) => 0 !== (int) $season['season_number'] ) ),
+			'number_of_seasons'  => $number_of_seasons,
 			'number_of_episodes' => isset( $body['number_of_episodes'] ) ? absint( $body['number_of_episodes'] ) : array_sum( array_map( static fn( $season ) => count( $season['episodes'] ), $seasons ) ),
 			'seasons'            => $seasons,
+			'episode_catalog'    => $uses_unseasoned_catalog ? 'unseasoned_season_1' : ( $seasons !== array() ? 'seasoned' : 'unavailable' ),
 			'cast'               => self::normalize_people( $credits['cast'] ?? array(), 'cast' ),
 			'crew'               => self::normalize_people( $credits['crew'] ?? array(), 'crew' ),
 		);
@@ -215,16 +256,18 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 		$poster_path = self::optional_path( $body['poster_path'] ?? null );
 
 		return array(
-			'season_number' => $season_number,
-			'name'          => isset( $body['name'] ) && '' !== trim( (string) $body['name'] )
+			'season_number'   => $season_number,
+			'name'            => isset( $body['name'] ) && '' !== trim( (string) $body['name'] )
 				? trim( (string) $body['name'] )
 				: ( 0 === $season_number ? __( 'Specials', 'movies-wp' ) : sprintf( __( 'Season %d', 'movies-wp' ), $season_number ) ),
-			'air_date'      => isset( $body['air_date'] ) ? trim( (string) $body['air_date'] ) : '',
-			'overview'      => isset( $body['overview'] ) ? (string) $body['overview'] : '',
-			'poster_path'   => $poster_path,
-			'poster_url'    => self::image_url( $poster_path, 'w500' ),
-			'episode_count' => isset( $body['episode_count'] ) ? absint( $body['episode_count'] ) : count( $episodes ),
-			'episodes'      => $episodes,
+			'air_date'        => isset( $body['air_date'] ) ? trim( (string) $body['air_date'] ) : '',
+			'overview'        => isset( $body['overview'] ) ? (string) $body['overview'] : '',
+			'poster_path'     => $poster_path,
+			'poster_url'      => self::image_url( $poster_path, 'w500' ),
+			'episode_count'   => isset( $body['episode_count'] ) ? absint( $body['episode_count'] ) : count( $episodes ),
+			'episodes'        => $episodes,
+			'identity_source' => isset( $body['identity_source'] ) ? (string) $body['identity_source'] : 'tmdb_season',
+			'unseasoned'      => ! empty( $body['unseasoned'] ),
 		);
 	}
 
@@ -235,7 +278,7 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 	 * @return array<string, mixed>|WP_Error
 	 */
 	public static function normalize_episode( array $body ) {
-		$tmdb_id = isset( $body['id'] ) ? absint( $body['id'] ) : 0;
+		$tmdb_id = isset( $body['id'] ) ? absint( $body['id'] ) : ( isset( $body['tmdb_id'] ) ? absint( $body['tmdb_id'] ) : 0 );
 		if ( $tmdb_id <= 0 || ! isset( $body['season_number'] ) || ! is_numeric( $body['season_number'] ) || ! isset( $body['episode_number'] ) || ! is_numeric( $body['episode_number'] ) ) {
 			return new WP_Error( 'series_preview_invalid_episode', __( 'TMDb episode response was missing required identity fields.', 'movies-wp' ) );
 		}
@@ -274,14 +317,10 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 				: new WP_Error( 'series_preview_tmdb_error', __( 'TMDb request returned invalid data.', 'movies-wp' ) );
 		}
 
-		$response = wp_remote_get(
-			$url,
-			array(
-				'timeout'     => 40,
-				'redirection' => 0,
-				'headers'     => array( 'Accept' => 'application/json' ),
-			)
-		);
+		$response = self::remote_get( $url );
+		if ( self::is_transient_tmdb_failure( $response ) ) {
+			$response = self::remote_get( $url );
+		}
 		if ( is_wp_error( $response ) ) {
 			return new WP_Error( 'series_preview_tmdb_error', __( 'TMDb request failed.', 'movies-wp' ) );
 		}
@@ -295,6 +334,36 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 			return new WP_Error( 'series_preview_tmdb_error', __( 'TMDb request failed.', 'movies-wp' ) );
 		}
 		return $body;
+	}
+
+	/**
+	 * @param string $url
+	 * @return array|WP_Error
+	 */
+	private static function remote_get( $url ) {
+		return wp_remote_get(
+			$url,
+			array(
+				'timeout'     => 40,
+				'redirection' => 0,
+				'headers'     => array( 'Accept' => 'application/json' ),
+			)
+		);
+	}
+
+	/**
+	 * @param array|WP_Error $response
+	 */
+	private static function is_transient_tmdb_failure( $response ) {
+		if ( is_wp_error( $response ) ) {
+			return true;
+		}
+		$status = (int) wp_remote_retrieve_response_code( $response );
+		if ( 429 === $status || $status >= 500 ) {
+			return true;
+		}
+		$body = (string) wp_remote_retrieve_body( $response );
+		return $status >= 200 && $status < 300 && '' === trim( $body );
 	}
 
 	private static function host() {

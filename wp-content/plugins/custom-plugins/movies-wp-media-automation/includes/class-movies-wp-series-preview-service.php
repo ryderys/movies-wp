@@ -87,7 +87,10 @@ class Movies_WP_Series_Preview_Service {
 			$warnings[] = self::issue( 'series_backdrop_missing', __( 'TMDb has no backdrop for this series.', 'movies-wp' ) );
 		}
 		if ( empty( $series['seasons'] ) ) {
-			$warnings[] = self::issue( 'series_seasons_missing', __( 'TMDb returned no seasons for this series.', 'movies-wp' ) );
+			$warnings[] = self::issue(
+				'series_seasons_missing',
+				__( 'TMDb returned no usable season or episode catalog. Episodes will not be created from filenames.', 'movies-wp' )
+			);
 		}
 
 		foreach ( isset( $series['seasons'] ) && is_array( $series['seasons'] ) ? $series['seasons'] : array() as $season ) {
