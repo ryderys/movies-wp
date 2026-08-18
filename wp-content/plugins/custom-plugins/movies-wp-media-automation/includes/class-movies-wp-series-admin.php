@@ -277,6 +277,132 @@ class Movies_WP_Series_Admin {
 		return is_string( $issue ) ? $issue : '';
 	}
 
+	/**
+	 * Collapse repeated validation issues by code for operator-facing display.
+	 * Warning payloads themselves are not mutated.
+	 *
+	 * @param array<int, mixed> $issues
+	 * @return array<int, array{code:string,count:int,summary:string,details:array<int,string>}>
+	 */
+	public static function grouped_issues( array $issues ) {
+		$by_code = array();
+		foreach ( $issues as $issue ) {
+			if ( ! is_array( $issue ) ) {
+				$issue = array(
+					'code'    => '',
+					'message' => (string) $issue,
+				);
+			}
+			$code = (string) ( $issue['code'] ?? '' );
+			if ( ! isset( $by_code[ $code ] ) ) {
+				$by_code[ $code ] = array();
+			}
+			$by_code[ $code ][] = $issue;
+		}
+
+		$groups = array();
+		foreach ( $by_code as $code => $items ) {
+			$details = array();
+			foreach ( $items as $item ) {
+				$details[] = self::issue_message( $item );
+			}
+			$count = count( $items );
+			if ( 'series_episode_still_missing' === $code ) {
+				$summary = sprintf(
+					/* translators: %d: number of episodes missing TMDb stills */
+					__( '%d episodes have no TMDb stills. Episode still images will be skipped.', 'movies-wp' ),
+					$count
+				);
+			} elseif ( 1 === $count ) {
+				$summary = $details[0];
+			} else {
+				$unique = array_values( array_unique( $details ) );
+				if ( 1 === count( $unique ) ) {
+					$summary = sprintf(
+						/* translators: 1: warning count, 2: warning message */
+						__( '%1$d identical warnings: %2$s', 'movies-wp' ),
+						$count,
+						$unique[0]
+					);
+				} else {
+					$summary = sprintf(
+						/* translators: %d: warning count */
+						__( '%d similar warnings.', 'movies-wp' ),
+						$count
+					);
+				}
+			}
+			$groups[] = array(
+				'code'    => $code,
+				'count'   => $count,
+				'summary' => $summary,
+				'details' => $details,
+			);
+		}
+
+		return $groups;
+	}
+
+	/**
+	 * Operator-facing coverage counts for TMDb episodes that have matching media.
+	 *
+	 * @param array<int, mixed> $episode_matches
+	 * @return array{total:int,matched:int,range:string,uniform:bool,videos_per_episode:int,subtitles_per_episode:int}
+	 */
+	public static function episode_coverage( array $episode_matches ) {
+		$total      = 0;
+		$matched    = 0;
+		$codes      = array();
+		$src_counts = array();
+		$sub_counts = array();
+
+		foreach ( $episode_matches as $episode ) {
+			if ( ! is_array( $episode ) ) {
+				continue;
+			}
+			if ( 'media_without_tmdb' === ( $episode['status'] ?? '' ) ) {
+				continue;
+			}
+			++$total;
+			$sources = (int) ( $episode['source_count'] ?? 0 );
+			$subs    = (int) ( $episode['subtitle_count'] ?? 0 );
+			if ( ( $sources + $subs ) > 0 ) {
+				++$matched;
+				$codes[]      = sprintf( 'S%02dE%02d', (int) ( $episode['season_number'] ?? 0 ), (int) ( $episode['episode_number'] ?? 0 ) );
+				$src_counts[] = $sources;
+				$sub_counts[] = $subs;
+			}
+		}
+
+		$range = '';
+		if ( array() !== $codes ) {
+			$last  = $codes[ count( $codes ) - 1 ];
+			$range = $codes[0] === $last ? $codes[0] : $codes[0] . '–' . $last;
+		}
+
+		$uniform = $matched > 0
+			&& 1 === count( array_unique( $src_counts ) )
+			&& 1 === count( array_unique( $sub_counts ) );
+
+		return array(
+			'total'                 => $total,
+			'matched'               => $matched,
+			'range'                 => $range,
+			'uniform'               => $uniform,
+			'videos_per_episode'    => $uniform ? (int) $src_counts[0] : 0,
+			'subtitles_per_episode' => $uniform ? (int) $sub_counts[0] : 0,
+		);
+	}
+
+	public static function media_status_label( $status ) {
+		$map = array(
+			'metadata_and_media' => __( 'Matched', 'movies-wp' ),
+			'metadata_only'      => __( 'Metadata only', 'movies-wp' ),
+			'media_without_tmdb' => __( 'Media without TMDb episode', 'movies-wp' ),
+		);
+		return $map[ (string) $status ] ?? (string) $status;
+	}
+
 	public static function action_label( $action ) {
 		$map = array(
 			'create' => __( 'Create', 'movies-wp' ),

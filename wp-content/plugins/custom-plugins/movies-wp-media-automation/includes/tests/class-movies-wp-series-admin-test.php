@@ -251,8 +251,47 @@ series_admin_same( 0, $calls['import'], 'invalid preview is rejected before impo
 
 $view = (string) file_get_contents( dirname( __DIR__ ) . '/views/series-preview.php' );
 series_admin_assert( str_contains( $view, 'name="series_directory"' ), 'Series page includes the directory field' );
-series_admin_assert( str_contains( $view, 'Episode media matches' ), 'Series page shows combined media matches' );
-series_admin_assert( ! str_contains( $view, 'V1 is metadata-only' ), 'metadata-only copy is removed' );
+series_admin_assert( str_contains( $view, 'What will happen' ), 'Series page leads with operator-facing import outcome' );
+series_admin_assert( str_contains( $view, 'Episode coverage' ), 'Series page shows episode coverage' );
+series_admin_assert( str_contains( $view, 'Episode details' ), 'Series page keeps episode matches under details' );
+series_admin_assert( ! str_contains( $view, 'Import Plan summary' ), 'internal import-plan summary is not the primary heading' );
+series_admin_assert( ! str_contains( $view, 'Always preserved' ), 'source preservation is not marketed as an operator feature' );
+series_admin_assert( ! str_contains( $view, 'metadata_and_media' ), 'internal media status codes stay out of the view' );
+series_admin_assert( ! str_contains( $view, 'keep_existing_untouched' ), 'internal source-policy values stay out of the view' );
+
+echo "Series admin presentation helpers\n";
+
+$still_warnings = array();
+for ( $i = 1; $i <= 24; $i++ ) {
+	$still_warnings[] = array(
+		'code'    => 'series_episode_still_missing',
+		'message' => sprintf( 'S01E%02d has no episode still on TMDb.', $i ),
+	);
+}
+$still_groups = Movies_WP_Series_Admin::grouped_issues( $still_warnings );
+series_admin_same( 1, count( $still_groups ), 'identical still warnings collapse to one group' );
+series_admin_same( 24, $still_groups[0]['count'], 'still group retains the original warning count' );
+series_admin_same(
+	'24 episodes have no TMDb stills. Episode still images will be skipped.',
+	$still_groups[0]['summary'],
+	'missing stills use a single non-blocking operator summary'
+);
+series_admin_same( 24, count( $still_groups[0]['details'] ), 'still group keeps expandable per-episode details' );
+
+$coverage = Movies_WP_Series_Admin::episode_coverage(
+	array(
+		array( 'season_number' => 1, 'episode_number' => 1, 'status' => 'metadata_and_media', 'source_count' => 3, 'subtitle_count' => 2 ),
+		array( 'season_number' => 1, 'episode_number' => 24, 'status' => 'metadata_and_media', 'source_count' => 3, 'subtitle_count' => 2 ),
+		array( 'season_number' => 1, 'episode_number' => 99, 'status' => 'media_without_tmdb', 'source_count' => 1, 'subtitle_count' => 0 ),
+	)
+);
+series_admin_same( 2, $coverage['total'], 'coverage denominator counts TMDb episodes only' );
+series_admin_same( 2, $coverage['matched'], 'coverage numerator counts matched TMDb episodes' );
+series_admin_same( 'S01E01–S01E24', $coverage['range'], 'coverage range uses first and last matched codes' );
+series_admin_same( true, $coverage['uniform'], 'uniform source counts are detected' );
+series_admin_same( 3, $coverage['videos_per_episode'], 'uniform video count is exposed' );
+series_admin_same( 2, $coverage['subtitles_per_episode'], 'uniform subtitle count is exposed' );
+series_admin_same( 'Matched', Movies_WP_Series_Admin::media_status_label( 'metadata_and_media' ), 'internal media status is operator-facing' );
 
 echo $failures ? "\n{$failures} failure(s)\n" : "\nAll Series admin contract tests passed.\n";
 exit( $failures ? 1 : 0 );
