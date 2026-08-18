@@ -36,6 +36,7 @@ series_category_assert_true( series_category_type( '1080p WEB-DL' ) === 'VIDEO_R
 echo "\nsubtitle categories\n";
 series_category_assert_true( series_category_type( 'SUB' ) === 'SUBTITLE', 'SUB' );
 series_category_assert_true( series_category_type( 'SUB.ENG' ) === 'SUBTITLE', 'SUB.ENG' );
+series_category_assert_true( series_category_type( 'SUB.CHI' ) === 'SUBTITLE', 'SUB.CHI' );
 series_category_assert_true( series_category_type( 'SUB_FA' ) === 'SUBTITLE', 'SUB_FA' );
 series_category_assert_true( series_category_type( 'SUB-FA' ) === 'SUBTITLE', 'SUB-FA' );
 
@@ -44,10 +45,14 @@ series_category_assert_true( series_category_type( 'OST' ) === 'SUPPLEMENTARY', 
 series_category_assert_true( series_category_type( 'ost' ) === 'SUPPLEMENTARY', 'ost case-insensitive' );
 series_category_assert_true( series_category_type( '720p' ) === 'UNKNOWN', 'bare 720p rejected' );
 series_category_assert_true( series_category_type( 'WEB-DL' ) === 'UNKNOWN', 'bare WEB-DL rejected' );
+series_category_assert_true( series_category_type( 'BluRay' ) === 'UNKNOWN', 'bare BluRay rejected at title level' );
+series_category_assert_true( series_category_type( 'HDTV' ) === 'UNKNOWN', 'bare HDTV rejected at title level' );
 series_category_assert_true( series_category_type( 'random-folder' ) === 'UNKNOWN', 'unknown category' );
 
 $eng = media_classify_series_category( 'SUB.ENG' );
 series_category_assert_true( ( $eng['language_hint'] ?? '' ) === 'ENG', 'SUB.ENG language hint' );
+$chi = media_classify_series_category( 'SUB.CHI' );
+series_category_assert_true( ( $chi['language_hint'] ?? '' ) === 'CHI', 'SUB.CHI language hint' );
 
 $quality = media_classify_series_category( '720p WEB-DL' )['quality_hint'] ?? '';
 series_category_assert_true( $quality === '720p', 'quality hint from category' );

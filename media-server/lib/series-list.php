@@ -280,17 +280,6 @@ function media_series_list_subtitle_category(
 			continue;
 		}
 
-		$release_class = media_classify_series_category( $name );
-		if ( $release_class['type'] !== 'VIDEO_RELEASE' ) {
-			$warnings[] = media_series_list_warning(
-				'excessive_subtitle_nesting',
-				'Unrecognized nested subtitle directory is skipped.',
-				$name,
-				$category_name
-			);
-			continue;
-		}
-
 		$release_entries = @scandir( $release_abs );
 		if ( ! is_array( $release_entries ) ) {
 			continue;
@@ -314,7 +303,7 @@ function media_series_list_subtitle_category(
 			media_series_list_add_file(
 				$series_directory,
 				$category_name . '/' . $name,
-				array_merge( $classification, array( 'release' => $release_class ) ),
+				$classification,
 				'subtitle',
 				$release_child,
 				$series_abs,

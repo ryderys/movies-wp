@@ -106,8 +106,7 @@ function media_series_category_is_subtitle( string $name, array &$result ): bool
  * @param array{type: string, name: string, quality_hint: string|null, language_hint: string|null, warnings: list<array{code: string, message: string}>} $result
  */
 function media_series_category_is_video_release( string $name, array &$result ): bool {
-	$normalized = strtolower( str_replace( array( '.', '_' ), ' ', $name ) );
-	$normalized = preg_replace( '/\s+/', ' ', $normalized ) ?? $normalized;
+	$normalized = media_series_category_normalize_name( $name );
 
 	$quality = null;
 	foreach ( MEDIA_SERIES_QUALITY_TOKENS as $token ) {
@@ -134,9 +133,13 @@ function media_series_category_is_video_release( string $name, array &$result ):
 	return false;
 }
 
-function media_series_category_extract_quality_hint( string $name ): ?string {
+function media_series_category_normalize_name( string $name ): string {
 	$normalized = strtolower( str_replace( array( '.', '_' ), ' ', $name ) );
-	$normalized = preg_replace( '/\s+/', ' ', $normalized ) ?? $normalized;
+	return preg_replace( '/\s+/', ' ', $normalized ) ?? $normalized;
+}
+
+function media_series_category_extract_quality_hint( string $name ): ?string {
+	$normalized = media_series_category_normalize_name( $name );
 	foreach ( MEDIA_SERIES_QUALITY_TOKENS as $token ) {
 		if ( str_contains( $normalized, $token ) ) {
 			return $token;
