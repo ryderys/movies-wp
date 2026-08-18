@@ -69,6 +69,12 @@ class Movies_WP_Series_Orchestrator {
 		self::append_issues( $warnings, $scan['warnings'] ?? array() );
 
 		$tmdb_index = self::index_tmdb_episodes( $metadata_preview, $metadata_plan, $errors );
+		$resolution = Movies_WP_Series_Media_Preview_Service::resolve_scan_episode_groups(
+			self::list_value( $scan['episodes'] ?? array() ),
+			array_values( $tmdb_index )
+		);
+		self::append_issues( $errors, $resolution['errors'] );
+		$scan['episodes'] = $resolution['episodes'];
 		$scan_index = self::index_scan_episodes( $scan, $errors );
 		$episodes   = array();
 

@@ -456,6 +456,8 @@ return array(
 		'TMDb returned an invalid episode identity.'                                                                             => 'TMDb هویت قسمت نامعتبری برگرداند.',
 		'TMDb preview contains a duplicate season/episode identity.'                                                             => 'پیش‌نمایش TMDb شامل هویت تکراری فصل/قسمت است.',
 		'Series scan returned an invalid episode identity.'                                                                      => 'اسکن مجموعه هویت قسمت نامعتبری برگرداند.',
+		'Episode EP%s has no authoritative season/episode match. No episode will be created from the filename.'                  => 'قسمت EP%s هیچ تطبیق معتبر فصل/قسمتی ندارد و هیچ قسمتی از روی نام فایل ساخته نخواهد شد.',
+		'Episode EP%1$s matches multiple authoritative seasons (%2$s); its season cannot be resolved safely.'                    => 'قسمت EP%1$s با چند فصل معتبر (%2$s) تطبیق دارد و فصل آن با اطمینان قابل تعیین نیست.',
 		'Series scan returned duplicate groups for the same season/episode identity.'                                            => 'اسکن مجموعه گروه‌های تکراری برای هویت یکسان فصل/قسمت برگرداند.',
 		'The complete existing Streamit season list could not be loaded safely.'                                                 => 'فهرست کامل فصل‌های موجود Streamit به‌صورت امن بارگذاری نشد.',
 		'Series plan must explicitly forbid episode source mutations.'                                                           => 'برنامه مجموعه باید تغییر منابع قسمت را صریحاً ممنوع کند.',

@@ -226,7 +226,32 @@ function orch_scan_episode( $season, $episode, bool $with_files = true ): array 
 	return $row;
 }
 
-function orch_media_preview( int $tvshow_id = 501 ): array {
+function orch_scan_episode_only( $episode, bool $with_files = true ): array {
+	$row = array(
+		'identity_type'  => 'episode_only',
+		'season_number'  => null,
+		'episode_number' => (string) $episode,
+		'token'          => sprintf( 'EP%02d', (int) $episode ),
+		'sources'        => array(),
+		'subtitles'      => array(),
+	);
+	if ( $with_files ) {
+		$row['sources'][] = array(
+			'media_path' => sprintf( 'series/korea/2024/Show/720p/Show.EP%02d.mkv', (int) $episode ),
+			'quality'    => '720p',
+		);
+		$row['subtitles'][] = array(
+			'media_path' => sprintf( 'series/korea/2024/Show/SUB.ENG/Show.EP%02d.srt', (int) $episode ),
+			'extension'  => 'srt',
+		);
+	}
+	return $row;
+}
+
+function orch_media_preview( int $tvshow_id = 501, bool $episode_only = false ): array {
+	$media_path = $episode_only
+		? 'series/korea/2024/Show/720p/Show.EP01.mkv'
+		: 'series/korea/2024/Show/720p/S01E01.mkv';
 	return array(
 		'ok'              => true,
 		'type'            => 'series_media',
@@ -244,7 +269,7 @@ function orch_media_preview( int $tvshow_id = 501 ): array {
 				'episode_number' => '1',
 				'tmdb_id'        => 9001,
 				'sources'        => array(
-					array( 'media_path' => 'series/korea/2024/Show/720p/S01E01.mkv' ),
+					array( 'media_path' => $media_path ),
 				),
 				'subtitles'      => array(),
 			),
@@ -257,7 +282,10 @@ function orch_media_preview( int $tvshow_id = 501 ): array {
 	);
 }
 
-function orch_media_plan( int $tvshow_id = 501 ): array {
+function orch_media_plan( int $tvshow_id = 501, bool $episode_only = false ): array {
+	$media_path = $episode_only
+		? 'series/korea/2024/Show/720p/Show.EP01.mkv'
+		: 'series/korea/2024/Show/720p/S01E01.mkv';
 	return array(
 		'ok'              => true,
 		'type'            => 'series_media',
@@ -281,7 +309,7 @@ function orch_media_plan( int $tvshow_id = 501 ): array {
 					'_sources'   => array(
 						array(
 							'action' => 'upsert',
-							'path'   => 'series/korea/2024/Show/720p/S01E01.mkv',
+							'path'   => $media_path,
 						),
 					),
 					'_subtitles' => array(),
@@ -299,6 +327,7 @@ function orch_media_plan( int $tvshow_id = 501 ): array {
  * @return array<string, mixed>
  */
 function orch_options( array &$calls, array $scan_episodes, string $identity_action = 'create' ): array {
+	$episode_only = 1 === count( $scan_episodes ) && 'episode_only' === ( $scan_episodes[0]['identity_type'] ?? '' );
 	return array(
 		'metadata_preview_build'   => static function ( array $values ) use ( &$calls ): array {
 			++$calls['metadata_preview'];
@@ -348,23 +377,29 @@ function orch_options( array &$calls, array $scan_episodes, string $identity_act
 				'images'    => array(),
 			);
 		},
-		'media_preview_build'      => static function ( array $values ) use ( &$calls ): array {
+		'media_preview_build'      => static function ( array $values ) use ( &$calls, $episode_only ): array {
 			++$calls['media_preview'];
 			orch_same( 501, $values['tvshow_id'], 'rebuilt media preview uses live series id' );
 			orch_same( 100, $values['expected_tmdb_id'], 'rebuilt media preview checks TMDb identity' );
 			orch_same( 'series/korea/2024/Show', $values['series_directory'], 'rebuilt media preview uses lowercase series directory' );
 			orch_assert( $calls['metadata_import'] > 0, 'media preview rebuild happens after metadata import' );
-			return orch_media_preview( 501 );
+			return orch_media_preview( 501, $episode_only );
 		},
-		'media_plan_build'         => static function ( array $preview ) use ( &$calls ): array {
+		'media_plan_build'         => static function ( array $preview ) use ( &$calls, $episode_only ): array {
 			++$calls['media_plan'];
 			orch_same( 701, $preview['episodes'][0]['episode_id'], 'media plan uses newly created episode id' );
-			return orch_media_plan( 501 );
+			if ( $episode_only ) {
+				orch_same( 'series/korea/2024/Show/720p/Show.EP01.mkv', $preview['episodes'][0]['sources'][0]['media_path'], 'rebuilt media preview retains EP01 source' );
+			}
+			return orch_media_plan( 501, $episode_only );
 		},
-		'media_import_execute'     => static function ( array $plan ) use ( &$calls ): array {
+		'media_import_execute'     => static function ( array $plan ) use ( &$calls, $episode_only ): array {
 			++$calls['media_import'];
 			orch_same( 701, $plan['episodes'][0]['episode_id'], 'media import attaches to created episode id' );
 			orch_same( array( '_sources', '_subtitles' ), array_keys( $plan['episodes'][0]['operations'] ), 'media plan only contains source and subtitle operations' );
+			if ( $episode_only ) {
+				orch_same( 'series/korea/2024/Show/720p/Show.EP01.mkv', $plan['episodes'][0]['operations']['_sources'][0]['path'], 'EP01 source attaches only after metadata creates the episode id' );
+			}
 			return array(
 				'ok'        => true,
 				'partial'   => false,
@@ -433,6 +468,56 @@ $calls = array(
 	'media_plan'       => 0,
 	'media_import'     => 0,
 );
+$episode_only = Movies_WP_Series_Orchestrator::build_preview(
+	orch_input(),
+	orch_options( $calls, array( orch_scan_episode_only( 1 ) ) )
+);
+orch_same( true, $episode_only['ready_to_import'], 'EP01 resolves against authoritative TMDb context' );
+orch_same( '1', $episode_only['episodes'][0]['season_number'], 'EP01 resolves to TMDb season 1' );
+orch_same( 'metadata_and_media', $episode_only['episodes'][0]['status'], 'resolved EP01 joins TMDb episode' );
+
+$mixed = Movies_WP_Series_Orchestrator::build_preview(
+	orch_input(),
+	orch_options( $calls, array( orch_scan_episode( 1, 1 ), orch_scan_episode_only( 1 ) ) )
+);
+orch_same( true, $mixed['ready_to_import'], 'explicit S01E01 and EP01 files can coexist' );
+orch_same( 2, $mixed['episodes'][0]['source_count'], 'explicit and resolved EP01 sources merge under TMDb episode' );
+orch_same( 2, $mixed['episodes'][0]['subtitle_count'], 'explicit and resolved EP01 subtitles merge under TMDb episode' );
+
+$episode_only_orphan = Movies_WP_Series_Orchestrator::build_preview(
+	orch_input(),
+	orch_options( $calls, array( orch_scan_episode_only( 9 ) ) )
+);
+orch_same( false, $episode_only_orphan['ready_to_import'], 'EP09 without TMDb episode blocks import' );
+orch_assert( in_array( 'episode_only_without_authoritative_match', orch_codes( $episode_only_orphan['validation']['errors'] ), true ), 'EP09 never creates an episode from filename' );
+
+$ep_orphan_calls = array(
+	'metadata_preview' => 0,
+	'metadata_plan'    => 0,
+	'scan'             => 0,
+	'metadata_import'  => 0,
+	'media_preview'    => 0,
+	'media_plan'       => 0,
+	'media_import'     => 0,
+);
+$blocked_ep_import = Movies_WP_Series_Orchestrator::execute(
+	orch_input(),
+	orch_options( $ep_orphan_calls, array( orch_scan_episode_only( 9 ) ) )
+);
+orch_assert( is_wp_error( $blocked_ep_import ), 'EP09 import is rejected before persistence' );
+orch_same( 'series_automation_not_ready', $blocked_ep_import->get_error_code(), 'EP09 cannot create an episode from filename' );
+orch_same( 0, $ep_orphan_calls['metadata_import'], 'EP09 blocks before TMDb metadata persistence' );
+orch_same( 0, $ep_orphan_calls['media_import'], 'EP09 blocks before media persistence' );
+
+$calls = array(
+	'metadata_preview' => 0,
+	'metadata_plan'    => 0,
+	'scan'             => 0,
+	'metadata_import'  => 0,
+	'media_preview'    => 0,
+	'media_plan'       => 0,
+	'media_import'     => 0,
+);
 $orphan = Movies_WP_Series_Orchestrator::build_preview(
 	orch_input(),
 	orch_options( $calls, array( orch_scan_episode( 1, 1 ), orch_scan_episode( 1, 9 ) ) )
@@ -486,6 +571,24 @@ orch_same( 'completed', $result['stages']['metadata'], 'metadata stage completed
 orch_same( 'completed', $result['stages']['media'], 'media stage completed' );
 orch_same( 701, $result['episodes'][0]['episode_id'], 'metadata result episode ids are preserved' );
 orch_same( 701, $result['media_episodes'][0]['episode_id'], 'media result uses created episode ids' );
+
+$calls = array(
+	'metadata_preview' => 0,
+	'metadata_plan'    => 0,
+	'scan'             => 0,
+	'metadata_import'  => 0,
+	'media_preview'    => 0,
+	'media_plan'       => 0,
+	'media_import'     => 0,
+);
+$episode_only_result = Movies_WP_Series_Orchestrator::execute(
+	orch_input(),
+	orch_options( $calls, array( orch_scan_episode_only( 1 ) ) )
+);
+orch_assert( is_array( $episode_only_result ) && true === $episode_only_result['ok'], 'fresh EP01 import completes after authoritative Season 1 resolution' );
+orch_same( 1, $calls['metadata_import'], 'EP01 metadata creates the authoritative episode first' );
+orch_same( 1, $calls['media_preview'], 'EP01 media rematches against live episode ids' );
+orch_same( 1, $calls['media_import'], 'EP01 source attaches after rematching' );
 
 $calls = array(
 	'metadata_preview' => 0,

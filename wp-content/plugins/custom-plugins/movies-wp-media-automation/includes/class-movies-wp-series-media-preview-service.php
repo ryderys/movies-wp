@@ -51,8 +51,14 @@ class Movies_WP_Series_Media_Preview_Service {
 		$errors   = array();
 		$warnings = self::collect_scan_warnings( $scan );
 		$matches  = array();
+		$resolution = self::resolve_scan_episode_groups(
+			isset( $scan['episodes'] ) && is_array( $scan['episodes'] ) ? $scan['episodes'] : array(),
+			array_values( $episode_index['by_id'] )
+		);
+		$errors = $resolution['errors'];
+		$scan['episodes'] = $resolution['episodes'];
 
-		foreach ( isset( $scan['episodes'] ) && is_array( $scan['episodes'] ) ? $scan['episodes'] : array() as $episode_group ) {
+		foreach ( $scan['episodes'] as $episode_group ) {
 			if ( ! is_array( $episode_group ) ) {
 				continue;
 			}
@@ -277,6 +283,126 @@ class Movies_WP_Series_Media_Preview_Service {
 		}
 
 		return $index;
+	}
+
+	/**
+	 * Resolve EPxx groups only when one authoritative season has that episode.
+	 *
+	 * @param list<array<string, mixed>> $groups
+	 * @param list<array<string, mixed>> $authoritative_episodes
+	 * @return array{episodes:list<array<string,mixed>>,errors:list<array<string,mixed>>}
+	 */
+	public static function resolve_scan_episode_groups( array $groups, array $authoritative_episodes ) {
+		$resolved = array();
+		$errors   = array();
+
+		foreach ( $groups as $group ) {
+			if ( ! is_array( $group ) ) {
+				continue;
+			}
+			$episode = self::canonical_episode_string( $group['episode_number'] ?? null );
+			$season  = self::canonical_season_string( $group['season_number'] ?? null );
+			if ( null === $episode ) {
+				$errors[] = self::issue(
+					'invalid_scan_episode_identity',
+					__( 'Series scan returned an invalid episode identity.', 'movies-wp' )
+				);
+				continue;
+			}
+
+			if ( null === $season ) {
+				if ( 'episode_only' !== ( $group['identity_type'] ?? '' ) ) {
+					$errors[] = self::issue(
+						'invalid_scan_episode_identity',
+						__( 'Series scan returned an invalid episode identity.', 'movies-wp' ),
+						'',
+						$episode
+					);
+					continue;
+				}
+
+				$candidate_seasons = array();
+				foreach ( $authoritative_episodes as $candidate ) {
+					if ( ! is_array( $candidate ) || self::canonical_episode_string( $candidate['episode_number'] ?? null ) !== $episode ) {
+						continue;
+					}
+					$candidate_season = self::canonical_season_string( $candidate['season_number'] ?? null );
+					if ( null !== $candidate_season ) {
+						$candidate_seasons[ $candidate_season ] = true;
+					}
+				}
+				$candidate_seasons = array_keys( $candidate_seasons );
+				sort( $candidate_seasons, SORT_NUMERIC );
+
+				if ( count( $candidate_seasons ) === 0 ) {
+					$errors[] = self::issue(
+						'episode_only_without_authoritative_match',
+						sprintf(
+							/* translators: %s: episode number */
+							__( 'Episode EP%s has no authoritative season/episode match. No episode will be created from the filename.', 'movies-wp' ),
+							$episode
+						),
+						'',
+						$episode
+					);
+					continue;
+				}
+				if ( count( $candidate_seasons ) > 1 ) {
+					$errors[] = array_merge(
+						self::issue(
+							'episode_only_ambiguous_season',
+							sprintf(
+								/* translators: 1: episode number, 2: candidate season numbers */
+								__( 'Episode EP%1$s matches multiple authoritative seasons (%2$s); its season cannot be resolved safely.', 'movies-wp' ),
+								$episode,
+								implode( ', ', $candidate_seasons )
+							),
+							'',
+							$episode
+						),
+						array( 'candidate_seasons' => $candidate_seasons )
+					);
+					continue;
+				}
+				$season = $candidate_seasons[0];
+				$group['resolved_from'] = 'episode_only';
+			}
+
+			$group['identity_type']  = 'season_episode';
+			$group['season_number']  = $season;
+			$group['episode_number'] = $episode;
+			$key = $season . ':' . $episode;
+			if ( ! isset( $resolved[ $key ] ) ) {
+				$resolved[ $key ] = $group;
+				continue;
+			}
+
+			$existing_episode_only = 'episode_only' === ( $resolved[ $key ]['resolved_from'] ?? '' );
+			$current_episode_only  = 'episode_only' === ( $group['resolved_from'] ?? '' );
+			if ( $existing_episode_only === $current_episode_only ) {
+				$resolved[ $key . '#' . count( $resolved ) ] = $group;
+				continue;
+			}
+
+			$resolved[ $key ]['sources'] = array_merge(
+				is_array( $resolved[ $key ]['sources'] ?? null ) ? $resolved[ $key ]['sources'] : array(),
+				is_array( $group['sources'] ?? null ) ? $group['sources'] : array()
+			);
+			$resolved[ $key ]['subtitles'] = array_merge(
+				is_array( $resolved[ $key ]['subtitles'] ?? null ) ? $resolved[ $key ]['subtitles'] : array(),
+				is_array( $group['subtitles'] ?? null ) ? $group['subtitles'] : array()
+			);
+			$resolved[ $key ]['source_count'] = count( $resolved[ $key ]['sources'] );
+			$resolved[ $key ]['subtitle_count'] = count( $resolved[ $key ]['subtitles'] );
+			if ( 'episode_only' !== ( $group['resolved_from'] ?? '' ) && ! empty( $group['token'] ) ) {
+				$resolved[ $key ]['token'] = (string) $group['token'];
+			}
+		}
+
+		return array(
+			'episodes' => array_values( $resolved ),
+			'errors'   => $errors,
+		);
 	}
 
 	/**

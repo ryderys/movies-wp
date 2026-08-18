@@ -137,7 +137,7 @@ function sm_preview_episodes(): array {
  * @param array<int, array<string, mixed>> $rows
  * @return array<string, mixed>
  */
-function sm_preview_options( array $rows = array(), ?int $tmdb_id = null ): array {
+function sm_preview_options( array $rows = array(), ?int $tmdb_id = null, ?array $scan = null ): array {
 	$episode_rows = $rows !== array() ? $rows : sm_preview_episodes();
 	return array(
 		'get_tvshow'       => static function ( int $id ): array {
@@ -147,8 +147,8 @@ function sm_preview_options( array $rows = array(), ?int $tmdb_id = null ): arra
 			unset( $id );
 			return '_tmdb_id' === $key ? ( $tmdb_id ?? 900 ) : null;
 		},
-		'scan_series'      => static function (): array {
-			return sm_preview_scan();
+		'scan_series'      => static function () use ( $scan ): array {
+			return null !== $scan ? $scan : sm_preview_scan();
 		},
 		'find_episodes'    => static function () use ( $episode_rows ): array {
 			return $episode_rows;
@@ -219,6 +219,110 @@ $ambiguous = Movies_WP_Series_Media_Preview_Service::build(
 	$ambiguous_options
 );
 sm_preview_same( 'ambiguous_episode', $ambiguous['episodes'][0]['status'], 'duplicate episode rows are ambiguous' );
+
+echo "Series media preview episode-only resolution\n";
+
+$ep_scan = sm_preview_scan();
+$ep_scan['episodes'] = array(
+	array(
+		'identity_type'  => 'episode_only',
+		'season_number'  => null,
+		'episode_number' => '1',
+		'token'          => 'EP01',
+		'sources'        => array( array( 'media_path' => 'series/korea/2024/Show/720p/Show.EP01.mkv' ) ),
+		'subtitles'      => array(),
+	),
+);
+$ep_preview = Movies_WP_Series_Media_Preview_Service::build(
+	array(
+		'tvshow_id'        => 50,
+		'series_directory' => 'series/korea/2024/Show',
+	),
+	sm_preview_options( sm_preview_episodes(), null, $ep_scan )
+);
+sm_preview_same( true, $ep_preview['ready_to_import'], 'EP01 is ready when one authoritative season matches' );
+sm_preview_same( '1', $ep_preview['episodes'][0]['season_number'], 'EP01 resolves to authoritative season 1' );
+sm_preview_same( 'matched', $ep_preview['episodes'][0]['status'], 'resolved EP01 matches existing episode' );
+sm_preview_same( 101, $ep_preview['episodes'][0]['episode_id'], 'resolved EP01 uses existing episode id' );
+
+$episode_word_scan = $ep_scan;
+$episode_word_scan['episodes'][0]['token'] = 'Episode 1';
+$episode_word_scan['episodes'][0]['sources'][0]['media_path'] = 'series/Chin/2025/Spring.Burning/720p/Spring Burning Episode 1.mkv';
+$episode_word_scan['episodes'][0]['subtitles'] = array(
+	array( 'media_path' => 'series/Chin/2025/Spring.Burning/SUB/WEB-DL/Spring Burning Episode 1 kisskh.srt' ),
+);
+$episode_word_preview = Movies_WP_Series_Media_Preview_Service::build(
+	array(
+		'tvshow_id'        => 50,
+		'series_directory' => 'series/Chin/2025/Spring.Burning',
+	),
+	sm_preview_options( sm_preview_episodes(), null, $episode_word_scan )
+);
+sm_preview_same( true, $episode_word_preview['ready_to_import'], 'Episode 1 is ready when one authoritative season matches' );
+sm_preview_same( '1', $episode_word_preview['episodes'][0]['season_number'], 'Episode 1 resolves like EP01 against authoritative season 1' );
+sm_preview_same( 'matched', $episode_word_preview['episodes'][0]['status'], 'resolved Episode 1 matches existing episode' );
+sm_preview_same( 101, $episode_word_preview['episodes'][0]['episode_id'], 'resolved Episode 1 uses existing episode id' );
+
+$missing_episode_word = Movies_WP_Series_Media_Preview_Service::build(
+	array(
+		'tvshow_id'        => 50,
+		'series_directory' => 'series/Chin/2025/Spring.Burning',
+	),
+	sm_preview_options(
+		array( array( 'id' => 102, 'tvshow_id' => 50, 'season_number' => '1', 'episode_number' => '2' ) ),
+		null,
+		$episode_word_scan
+	)
+);
+sm_preview_same( false, $missing_episode_word['ready_to_import'], 'Episode 1 without authoritative episode blocks import' );
+sm_preview_same( 'episode_only_without_authoritative_match', $missing_episode_word['validation']['errors'][0]['code'], 'missing Episode N match never creates an episode' );
+
+$ep02_scan = $ep_scan;
+$ep02_scan['episodes'][0]['episode_number'] = '2';
+$ep02_scan['episodes'][0]['token'] = 'EP02';
+$ep02_scan['episodes'][0]['sources'][0]['media_path'] = 'series/korea/2024/Show/720p/Show.EP02.mkv';
+$ep02_preview = Movies_WP_Series_Media_Preview_Service::build(
+	array(
+		'tvshow_id'        => 50,
+		'series_directory' => 'series/korea/2024/Show',
+	),
+	sm_preview_options(
+		array( array( 'id' => 102, 'tvshow_id' => 50, 'tmdb_id' => 901, 'season_number' => '1', 'episode_number' => '2' ) ),
+		null,
+		$ep02_scan
+	)
+);
+sm_preview_same( true, $ep02_preview['ready_to_import'], 'EP02 is ready against an authoritative unseasoned Season 1 episode' );
+sm_preview_same( '1', $ep02_preview['episodes'][0]['season_number'], 'EP02 resolves to internal Season 1' );
+sm_preview_same( '2', $ep02_preview['episodes'][0]['episode_number'], 'EP02 remains episode 2' );
+
+$ambiguous_ep_rows = array(
+	array( 'id' => 101, 'tvshow_id' => 50, 'season_number' => '1', 'episode_number' => '1' ),
+	array( 'id' => 201, 'tvshow_id' => 50, 'season_number' => '2', 'episode_number' => '1' ),
+);
+$ambiguous_ep = Movies_WP_Series_Media_Preview_Service::build(
+	array(
+		'tvshow_id'        => 50,
+		'series_directory' => 'series/korea/2024/Show',
+	),
+	sm_preview_options( $ambiguous_ep_rows, null, $ep_scan )
+);
+sm_preview_same( false, $ambiguous_ep['ready_to_import'], 'EP01 blocks when multiple authoritative seasons match' );
+sm_preview_same( 'episode_only_ambiguous_season', $ambiguous_ep['validation']['errors'][0]['code'], 'ambiguous EP season error is explicit' );
+
+$missing_ep = Movies_WP_Series_Media_Preview_Service::build(
+	array(
+		'tvshow_id'        => 50,
+		'series_directory' => 'series/korea/2024/Show',
+	),
+	sm_preview_options(
+		array( array( 'id' => 102, 'tvshow_id' => 50, 'season_number' => '1', 'episode_number' => '2' ) ),
+		null,
+		$ep_scan
+	)
+);
+sm_preview_same( false, $missing_ep['ready_to_import'], 'EP01 without authoritative episode blocks import' );
+sm_preview_same( 'episode_only_without_authoritative_match', $missing_ep['validation']['errors'][0]['code'], 'missing EP match never creates an episode' );
 
 echo "Series media preview canonical identity\n";
 
