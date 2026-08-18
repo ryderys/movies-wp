@@ -1,6 +1,6 @@
 <?php
 /**
- * Associate Series subtitle files to episodes by canonical S/E identity.
+ * Associate Series subtitle files to explicit or seasonless episode identity.
  *
  * Pure grouping helper for scan output. Does not mutate filesystem state.
  *
@@ -79,12 +79,7 @@ function media_series_subtitle_episode_key( array $file ): ?string {
 	if ( ! isset( $file['episode'] ) || ! is_array( $file['episode'] ) ) {
 		return null;
 	}
-	$season  = isset( $file['episode']['season_number'] ) ? (string) $file['episode']['season_number'] : '';
-	$episode = isset( $file['episode']['episode_number'] ) ? (string) $file['episode']['episode_number'] : '';
-	if ( $season === '' || $episode === '' ) {
-		return null;
-	}
-	return $season . ':' . $episode;
+	return media_series_episode_identity_key( $file['episode'] );
 }
 
 function media_series_subtitle_normalize_path( string $path ): string {

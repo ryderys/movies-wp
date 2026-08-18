@@ -141,6 +141,7 @@ function media_series_scan_enrich_file( array $file, ?string $abs_dir, array $ff
 	}
 
 	$file['episode'] = array(
+		'identity_type'  => (string) ( $identity['identity_type'] ?? 'season_episode' ),
 		'season_number'  => $identity['season_number'],
 		'episode_number' => $identity['episode_number'],
 		'token'          => $identity['token'],
@@ -317,10 +318,14 @@ function media_series_scan_group_episodes( array $files, array $subtitles_by_epi
 		if ( ! isset( $file['episode'] ) || ! is_array( $file['episode'] ) ) {
 			continue;
 		}
-		$key = (string) $file['episode']['season_number'] . ':' . (string) $file['episode']['episode_number'];
+		$key = media_series_episode_identity_key( $file['episode'] );
+		if ( null === $key ) {
+			continue;
+		}
 		if ( ! isset( $groups[ $key ] ) ) {
 			$groups[ $key ] = array(
-				'season_number'  => (string) $file['episode']['season_number'],
+				'identity_type'  => (string) ( $file['episode']['identity_type'] ?? 'season_episode' ),
+				'season_number'  => null === ( $file['episode']['season_number'] ?? null ) ? null : (string) $file['episode']['season_number'],
 				'episode_number' => (string) $file['episode']['episode_number'],
 				'token'          => (string) ( $file['episode']['token'] ?? '' ),
 				'sources'        => array(),
@@ -332,9 +337,11 @@ function media_series_scan_group_episodes( array $files, array $subtitles_by_epi
 
 	foreach ( $subtitles_by_episode as $key => $subtitle_files ) {
 		if ( ! isset( $groups[ $key ] ) ) {
+			$episode_only = str_starts_with( $key, 'EP:' );
 			$parts = explode( ':', $key, 2 );
 			$groups[ $key ] = array(
-				'season_number'  => $parts[0] ?? '',
+				'identity_type'  => $episode_only ? 'episode_only' : 'season_episode',
+				'season_number'  => $episode_only ? null : ( $parts[0] ?? '' ),
 				'episode_number' => $parts[1] ?? '',
 				'token'          => '',
 				'sources'        => array(),
@@ -348,6 +355,11 @@ function media_series_scan_group_episodes( array $files, array $subtitles_by_epi
 	usort(
 		$episodes,
 		static function ( array $a, array $b ): int {
+			$left_episode_only  = null === ( $a['season_number'] ?? null );
+			$right_episode_only = null === ( $b['season_number'] ?? null );
+			if ( $left_episode_only !== $right_episode_only ) {
+				return $left_episode_only ? 1 : -1;
+			}
 			$season_cmp = (int) $a['season_number'] <=> (int) $b['season_number'];
 			if ( $season_cmp !== 0 ) {
 				return $season_cmp;
