@@ -11,6 +11,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-series-import-profiler.php';
+require_once __DIR__ . '/class-movies-wp-series-import-job-runner.php';
+
 class Movies_WP_Series_Orchestrator {
 
 	/**
@@ -31,9 +34,11 @@ class Movies_WP_Series_Orchestrator {
 			'title'   => $normalized['title'],
 			'summary' => $normalized['summary'],
 		);
+		$tmdb_snap        = Movies_WP_Series_Import_Profiler::phase_start( 'tmdb_preview' );
 		$metadata_preview = isset( $options['metadata_preview_build'] ) && is_callable( $options['metadata_preview_build'] )
 			? call_user_func( $options['metadata_preview_build'], $metadata_input )
 			: Movies_WP_Series_Preview_Service::build( $metadata_input );
+		Movies_WP_Series_Import_Profiler::phase_end( 'tmdb_preview', $tmdb_snap, 1, 'metadata_preview_build' );
 		if ( is_wp_error( $metadata_preview ) ) {
 			return $metadata_preview;
 		}
@@ -41,9 +46,11 @@ class Movies_WP_Series_Orchestrator {
 			return new WP_Error( 'series_automation_invalid_metadata_preview', __( 'Series metadata preview returned invalid data.', 'movies-wp' ) );
 		}
 
+		$plan_snap     = Movies_WP_Series_Import_Profiler::phase_start( 'metadata_plan' );
 		$metadata_plan = isset( $options['metadata_plan_build'] ) && is_callable( $options['metadata_plan_build'] )
 			? call_user_func( $options['metadata_plan_build'], $metadata_preview )
 			: Movies_WP_Series_Import_Plan::build( $metadata_preview );
+		Movies_WP_Series_Import_Profiler::phase_end( 'metadata_plan', $plan_snap, 1, 'metadata_plan_build' );
 		if ( is_wp_error( $metadata_plan ) ) {
 			return $metadata_plan;
 		}
@@ -51,9 +58,12 @@ class Movies_WP_Series_Orchestrator {
 			return new WP_Error( 'series_automation_invalid_metadata_plan', __( 'Series metadata plan returned invalid data.', 'movies-wp' ) );
 		}
 
-		$scan = isset( $options['scan_series'] ) && is_callable( $options['scan_series'] )
+		$scan_snap = Movies_WP_Series_Import_Profiler::phase_start( 'media_scan' );
+		$scan      = isset( $options['scan_series'] ) && is_callable( $options['scan_series'] )
 			? call_user_func( $options['scan_series'], $normalized['series_directory'] )
 			: Movies_WP_Series_Media_Api_Client::scan_series_directory( $normalized['series_directory'] );
+		$scan_eps = is_array( $scan ) ? count( $scan['episodes'] ?? array() ) : 0;
+		Movies_WP_Series_Import_Profiler::phase_end( 'media_scan', $scan_snap, $scan_eps, (string) $normalized['series_directory'] );
 		if ( is_wp_error( $scan ) ) {
 			return $scan;
 		}
@@ -168,90 +178,13 @@ class Movies_WP_Series_Orchestrator {
 	 * @return array<string, mixed>|WP_Error
 	 */
 	public static function execute( array $input, array $options = array() ) {
-		$preview = self::build_preview( $input, $options );
-		if ( is_wp_error( $preview ) ) {
-			return $preview;
+		if ( isset( $options['snapshot'] ) && is_array( $options['snapshot'] ) ) {
+			return Movies_WP_Series_Import_Job_Runner::run_inline( $options['snapshot'], $options );
 		}
-		if ( true !== ( $preview['ready_to_import'] ?? null ) ) {
-			return new WP_Error( 'series_automation_not_ready', __( 'Series Automation preview contains errors and is not ready to import.', 'movies-wp' ) );
-		}
-
-		$metadata_plan   = $preview['metadata_plan'];
-		$metadata_result = isset( $options['metadata_import_execute'] ) && is_callable( $options['metadata_import_execute'] )
-			? call_user_func( $options['metadata_import_execute'], $metadata_plan )
-			: Movies_WP_Series_Import_Service::execute( $metadata_plan );
-		if ( ! is_array( $metadata_result ) ) {
-			return self::result(
-				array(),
-				null,
-				self::issue( 'series_automation_invalid_metadata_result', __( 'Series metadata import returned invalid data.', 'movies-wp' ) )
-			);
-		}
-		if ( empty( $metadata_result['ok'] ) ) {
-			return self::result( $metadata_result, null );
-		}
-
-		$series_id = absint( $metadata_result['series_id'] ?? 0 );
-		if ( $series_id <= 0 ) {
-			return self::result(
-				$metadata_result,
-				null,
-				self::issue( 'series_automation_missing_series_id', __( 'Series metadata import succeeded without a valid Streamit Series ID.', 'movies-wp' ) )
-			);
-		}
-
-		$media_input = array(
-			'tvshow_id'         => $series_id,
-			'expected_tmdb_id'  => absint( $preview['input']['tmdb_id'] ?? 0 ),
-			'series_directory'  => (string) ( $preview['input']['series_directory'] ?? '' ),
+		return new WP_Error(
+			'series_automation_snapshot_required',
+			__( 'Series import must start from a saved preview snapshot.', 'movies-wp' )
 		);
-		$media_preview = isset( $options['media_preview_build'] ) && is_callable( $options['media_preview_build'] )
-			? call_user_func( $options['media_preview_build'], $media_input )
-			: Movies_WP_Series_Media_Preview_Service::build( $media_input );
-		if ( is_wp_error( $media_preview ) ) {
-			return self::result( $metadata_result, null, self::wp_error_issue( $media_preview, 'series_automation_media_rebuild_failed' ) );
-		}
-		if ( ! is_array( $media_preview ) ) {
-			return self::result(
-				$metadata_result,
-				null,
-				self::issue( 'series_automation_invalid_media_preview', __( 'Series media preview returned invalid data after metadata import.', 'movies-wp' ) )
-			);
-		}
-
-		$media_plan = isset( $options['media_plan_build'] ) && is_callable( $options['media_plan_build'] )
-			? call_user_func( $options['media_plan_build'], $media_preview )
-			: Movies_WP_Series_Media_Import_Plan::build( $media_preview );
-		if ( is_wp_error( $media_plan ) ) {
-			return self::result( $metadata_result, null, self::wp_error_issue( $media_plan, 'series_automation_media_plan_failed' ) );
-		}
-		if ( ! is_array( $media_plan ) || true !== ( $media_plan['ready_to_import'] ?? null ) ) {
-			return self::result(
-				$metadata_result,
-				null,
-				self::issue( 'series_automation_media_not_ready', __( 'Series metadata was imported, but the rebuilt media plan is not safe to execute.', 'movies-wp' ) )
-			);
-		}
-
-		$media_result = isset( $options['media_import_execute'] ) && is_callable( $options['media_import_execute'] )
-			? call_user_func( $options['media_import_execute'], $media_plan )
-			: Movies_WP_Series_Media_Import_Service::execute( $media_plan );
-		if ( ! is_array( $media_result ) ) {
-			return self::result(
-				$metadata_result,
-				null,
-				self::issue( 'series_automation_invalid_media_result', __( 'Series media import returned invalid data.', 'movies-wp' ) )
-			);
-		}
-		if ( absint( $media_result['tvshow_id'] ?? 0 ) !== $series_id ) {
-			return self::result(
-				$metadata_result,
-				$media_result,
-				self::issue( 'series_automation_media_identity_mismatch', __( 'Series media import returned an unexpected TV show identity.', 'movies-wp' ) )
-			);
-		}
-
-		return self::result( $metadata_result, $media_result );
 	}
 
 	/**

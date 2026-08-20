@@ -11,6 +11,9 @@ declare(strict_types=1);
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', sys_get_temp_dir() . '/movies-wp-series-orchestrator-test/' );
 }
+if ( ! defined( 'MOVIES_WP_SERIES_IMPORT_TEST_MEMORY' ) ) {
+	define( 'MOVIES_WP_SERIES_IMPORT_TEST_MEMORY', true );
+}
 
 if ( ! class_exists( 'WP_Error' ) ) {
 	class WP_Error {
@@ -358,24 +361,40 @@ function orch_options( array &$calls, array $scan_episodes, string $identity_act
 				'errors'    => array(),
 				'series'    => array( 'ok' => true, 'series_id' => 501 ),
 				'seasons'   => array(),
-				'episodes'  => array(
-					array(
-						'ok'             => true,
-						'action'         => $identity_action,
-						'episode_id'     => 701,
-						'season_number'  => '1',
-						'episode_number' => 1,
-					),
-					array(
-						'ok'             => true,
-						'action'         => $identity_action,
-						'episode_id'     => 702,
-						'season_number'  => '1',
-						'episode_number' => 2,
-					),
-				),
+				'episodes'  => array(),
 				'images'    => array(),
 			);
+		},
+		'apply_series'             => static function ( array $plan ) use ( &$calls, $identity_action ): array {
+			++$calls['metadata_import'];
+			orch_same( false, $plan['sources_policy']['mutate'], 'metadata import plan still forbids _sources' );
+			orch_same( $identity_action, $plan['identity']['action'], 'metadata identity action preserved' );
+			return array(
+				'ok'        => true,
+				'action'    => $identity_action,
+				'series_id' => 501,
+			);
+		},
+		'apply_people'             => static function (): array {
+			return array( 'ok' => true );
+		},
+		'apply_images'             => static function (): array {
+			return array( 'ok' => true, 'continue' => true, 'images' => array() );
+		},
+		'persist_episode'          => static function ( $series_id, array $episode_plan ): array {
+			unset( $episode_plan );
+			return array(
+				'ok'             => true,
+				'episode_id'     => 501 === (int) $series_id ? 701 : 0,
+				'season_number'  => '1',
+				'episode_number' => 1,
+			);
+		},
+		'apply_seasons'            => static function (): array {
+			return array( 'ok' => true, 'seasons' => array() );
+		},
+		'schedule_action'          => static function () {
+			return true;
 		},
 		'media_preview_build'      => static function ( array $values ) use ( &$calls, $episode_only ): array {
 			++$calls['media_preview'];
@@ -502,7 +521,10 @@ $ep_orphan_calls = array(
 );
 $blocked_ep_import = Movies_WP_Series_Orchestrator::execute(
 	orch_input(),
-	orch_options( $ep_orphan_calls, array( orch_scan_episode_only( 9 ) ) )
+	array_merge(
+		orch_options( $ep_orphan_calls, array( orch_scan_episode_only( 9 ) ) ),
+		array( 'snapshot' => $episode_only_orphan )
+	)
 );
 orch_assert( is_wp_error( $blocked_ep_import ), 'EP09 import is rejected before persistence' );
 orch_same( 'series_automation_not_ready', $blocked_ep_import->get_error_code(), 'EP09 cannot create an episode from filename' );
@@ -557,13 +579,21 @@ $calls = array(
 	'media_plan'       => 0,
 	'media_import'     => 0,
 );
-$result = Movies_WP_Series_Orchestrator::execute(
+$preview = Movies_WP_Series_Orchestrator::build_preview(
 	orch_input(),
 	orch_options( $calls, array( orch_scan_episode( 1, 1 ) ) )
+);
+$result = Movies_WP_Series_Orchestrator::execute(
+	orch_input(),
+	array_merge(
+		orch_options( $calls, array( orch_scan_episode( 1, 1 ) ) ),
+		array( 'snapshot' => $preview )
+	)
 );
 orch_assert( is_array( $result ) && true === $result['ok'], 'successful create import returns combined result' );
 orch_same( 501, $result['series_id'], 'combined result exposes created series id' );
 orch_same( 1, $calls['metadata_import'], 'metadata import runs once' );
+orch_same( 1, $calls['scan'], 'import reuses the preview scan and does not scan again' );
 orch_same( 1, $calls['media_preview'], 'media preview is rebuilt after metadata' );
 orch_same( 1, $calls['media_plan'], 'media plan is rebuilt after metadata' );
 orch_same( 1, $calls['media_import'], 'media import runs once after rebuild' );
@@ -581,9 +611,16 @@ $calls = array(
 	'media_plan'       => 0,
 	'media_import'     => 0,
 );
-$episode_only_result = Movies_WP_Series_Orchestrator::execute(
+$episode_only_preview = Movies_WP_Series_Orchestrator::build_preview(
 	orch_input(),
 	orch_options( $calls, array( orch_scan_episode_only( 1 ) ) )
+);
+$episode_only_result = Movies_WP_Series_Orchestrator::execute(
+	orch_input(),
+	array_merge(
+		orch_options( $calls, array( orch_scan_episode_only( 1 ) ) ),
+		array( 'snapshot' => $episode_only_preview )
+	)
 );
 orch_assert( is_array( $episode_only_result ) && true === $episode_only_result['ok'], 'fresh EP01 import completes after authoritative Season 1 resolution' );
 orch_same( 1, $calls['metadata_import'], 'EP01 metadata creates the authoritative episode first' );
@@ -599,9 +636,16 @@ $calls = array(
 	'media_plan'       => 0,
 	'media_import'     => 0,
 );
-$updated = Movies_WP_Series_Orchestrator::execute(
+$updated_preview = Movies_WP_Series_Orchestrator::build_preview(
 	orch_input(),
 	orch_options( $calls, array( orch_scan_episode( 1, 1 ) ), 'update' )
+);
+$updated = Movies_WP_Series_Orchestrator::execute(
+	orch_input(),
+	array_merge(
+		orch_options( $calls, array( orch_scan_episode( 1, 1 ) ), 'update' ),
+		array( 'snapshot' => $updated_preview )
+	)
 );
 orch_assert( is_array( $updated ) && true === $updated['ok'], 'existing series can still be updated' );
 orch_same( 'update', $updated['action'], 'update identity is preserved' );
@@ -616,28 +660,24 @@ $calls = array(
 	'media_import'     => 0,
 );
 $fail_options = orch_options( $calls, array( orch_scan_episode( 1, 1 ) ) );
-$fail_options['metadata_import_execute'] = static function ( array $plan ) use ( &$calls ): array {
+$fail_preview = Movies_WP_Series_Orchestrator::build_preview( orch_input(), $fail_options );
+$fail_options['apply_series'] = static function ( array $plan ) use ( &$calls ): array {
 	++$calls['metadata_import'];
 	unset( $plan );
 	return array(
 		'ok'        => false,
-		'partial'   => false,
 		'series_id' => null,
 		'action'    => 'create',
-		'warnings'  => array(),
-		'errors'    => array(
-			array(
-				'code'    => 'series_tv_adapter_series_create_failed',
-				'message' => 'create failed',
-			),
+		'error'     => array(
+			'code'    => 'series_tv_adapter_series_create_failed',
+			'message' => 'create failed',
 		),
-		'series'    => array(),
-		'seasons'   => array(),
-		'episodes'  => array(),
-		'images'    => array(),
 	);
 };
-$failed = Movies_WP_Series_Orchestrator::execute( orch_input(), $fail_options );
+$failed = Movies_WP_Series_Orchestrator::execute(
+	orch_input(),
+	array_merge( $fail_options, array( 'snapshot' => $fail_preview ) )
+);
 orch_same( false, $failed['ok'], 'metadata failure is not successful' );
 orch_same( 1, $calls['metadata_import'], 'metadata import still ran' );
 orch_same( 0, $calls['media_preview'], 'metadata failure skips media rebuild' );
@@ -654,20 +694,31 @@ $calls = array(
 	'media_import'     => 0,
 );
 $rebuild_fail = orch_options( $calls, array( orch_scan_episode( 1, 1 ) ) );
+$rebuild_preview = Movies_WP_Series_Orchestrator::build_preview( orch_input(), $rebuild_fail );
 $rebuild_fail['media_preview_build'] = static function ( array $values ) use ( &$calls ) {
 	++$calls['media_preview'];
 	unset( $values );
 	return new WP_Error( 'series_media_preview_tvshow_not_found', 'TV show not found after create.' );
 };
-$partial = Movies_WP_Series_Orchestrator::execute( orch_input(), $rebuild_fail );
+$partial = Movies_WP_Series_Orchestrator::execute(
+	orch_input(),
+	array_merge( $rebuild_fail, array( 'snapshot' => $rebuild_preview ) )
+);
 orch_same( false, $partial['ok'], 'media rebuild failure is not successful' );
 orch_same( true, $partial['partial'], 'metadata success with media rebuild failure is partial' );
 orch_same( 501, $partial['series_id'], 'partial result still reports created series id' );
 orch_same( 0, $calls['media_import'], 'failed media rebuild does not attach files' );
 
-$blocked = Movies_WP_Series_Orchestrator::execute(
+$blocked_preview = Movies_WP_Series_Orchestrator::build_preview(
 	orch_input(),
 	orch_options( $calls, array( orch_scan_episode( 1, 9 ) ) )
+);
+$blocked = Movies_WP_Series_Orchestrator::execute(
+	orch_input(),
+	array_merge(
+		orch_options( $calls, array( orch_scan_episode( 1, 9 ) ) ),
+		array( 'snapshot' => $blocked_preview )
+	)
 );
 orch_assert( is_wp_error( $blocked ), 'import of media without TMDb is rejected before persistence' );
 orch_same( 'series_automation_not_ready', $blocked->get_error_code(), 'unready combined preview blocks import' );
