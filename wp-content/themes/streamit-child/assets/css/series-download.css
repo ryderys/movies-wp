@@ -1,0 +1,323 @@
+/**
+ * Series single: compact season cards + episode grid (RTL).
+ * Does not affect Movie/episode download modal styles.
+ */
+
+.stc-series-download {
+	direction: rtl;
+	text-align: right;
+}
+
+.stc-series-download-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.stc-series-download-season {
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.03);
+	overflow: hidden;
+}
+
+.stc-series-download-season.is-open {
+	border-color: rgba(255, 255, 255, 0.18);
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.stc-series-download-season__header {
+	padding: 0;
+}
+
+.stc-series-download-season__toggle {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 16px;
+	width: 100%;
+	padding: 14px 16px;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	text-align: right;
+	cursor: pointer;
+}
+
+.stc-series-download-season__toggle:hover,
+.stc-series-download-season__toggle:focus-visible {
+	background: rgba(255, 255, 255, 0.04);
+	outline: none;
+}
+
+.stc-series-download-season__toggle:focus-visible {
+	box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.stc-series-download-season__meta {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	min-width: 0;
+}
+
+.stc-series-download-season__title {
+	font-size: 1.05rem;
+	font-weight: 600;
+	color: inherit;
+}
+
+.stc-series-download-season__count {
+	font-size: 0.85rem;
+	opacity: 0.7;
+}
+
+.stc-series-download-season__actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+	pointer-events: none;
+}
+
+.stc-series-download-season__action-label {
+	min-height: 40px;
+	padding-inline: 1rem;
+	display: inline-flex;
+	align-items: center;
+	pointer-events: none;
+}
+
+.stc-series-download-chevron {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 8px;
+}
+
+.stc-series-download-chevron__icon {
+	display: block;
+	width: 10px;
+	height: 10px;
+	border-inline-end: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: rotate(45deg);
+	transition: transform 0.2s ease;
+	margin-top: -4px;
+}
+
+.stc-series-download-season.is-open .stc-series-download-chevron__icon {
+	transform: rotate(-135deg);
+	margin-top: 4px;
+}
+
+.stc-series-download-season__panel {
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+	padding: 14px 12px 16px;
+}
+
+.stc-series-download-season__panel[hidden] {
+	display: none !important;
+}
+
+.stc-series-download-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 10px;
+}
+
+.stc-series-download-ep-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	min-height: 48px;
+	padding: 0.65rem 0.9rem;
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.28);
+	color: inherit;
+	font-size: 0.92rem;
+	font-weight: 600;
+	line-height: 1.3;
+	text-align: center;
+	cursor: pointer;
+	transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.stc-series-download-ep-btn:hover,
+.stc-series-download-ep-btn:focus-visible {
+	border-color: rgba(255, 255, 255, 0.4);
+	background: rgba(255, 255, 255, 0.08);
+	outline: none;
+}
+
+.stc-series-download-ep-btn.is-active {
+	border-color: var(--bs-primary, #e50914);
+	background: rgba(229, 9, 20, 0.18);
+	box-shadow: 0 0 0 1px rgba(229, 9, 20, 0.35);
+}
+
+.stc-series-download-ep-btn.is-empty {
+	opacity: 0.55;
+	font-weight: 500;
+}
+
+.stc-series-download-ep-btn__icon {
+	flex: 0 0 auto;
+	opacity: 0.85;
+	font-size: 0.85em;
+}
+
+.stc-series-download-ep-btn__text {
+	min-width: 0;
+}
+
+.stc-series-download-detail {
+	margin-top: 12px;
+	padding: 14px 14px 12px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.22);
+}
+
+.stc-series-download-detail[hidden] {
+	display: none !important;
+}
+
+.stc-series-download-detail__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 6px 10px;
+	margin-bottom: 12px;
+}
+
+.stc-series-download-detail__code {
+	font-size: 0.8rem;
+	font-weight: 700;
+	opacity: 0.85;
+	font-variant-numeric: tabular-nums;
+}
+
+.stc-series-download-detail__title {
+	font-weight: 600;
+	word-break: break-word;
+}
+
+.stc-series-download-detail__empty {
+	margin: 0;
+	font-size: 0.9rem;
+	opacity: 0.6;
+}
+
+.stc-series-download-qualities {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.stc-series-download-chip {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 40px;
+	padding: 0.45rem 0.9rem;
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 6px;
+	background: rgba(0, 0, 0, 0.25);
+	color: inherit;
+	font-size: 0.9rem;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+a.stc-series-download-chip:hover,
+a.stc-series-download-chip:focus-visible,
+button.stc-series-download-chip:hover,
+button.stc-series-download-chip:focus-visible {
+	border-color: rgba(255, 255, 255, 0.4);
+	background: rgba(255, 255, 255, 0.08);
+	color: inherit;
+	outline: none;
+	text-decoration: none;
+}
+
+.stc-series-download-subs {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+	margin-top: 12px;
+	padding-top: 10px;
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stc-series-download-subs__label {
+	font-size: 0.8rem;
+	opacity: 0.7;
+}
+
+.stc-series-download-subs__links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.stc-series-download-sub-link {
+	display: inline-flex;
+	align-items: center;
+	min-height: 36px;
+	padding: 0.3rem 0.7rem;
+	border: 0;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--bs-link-color, #6ea8fe);
+	font-size: 0.85rem;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.stc-series-download-more-wrap {
+	display: flex;
+	justify-content: center;
+	margin-top: 14px;
+}
+
+.stc-series-download-more-wrap[hidden] {
+	display: none !important;
+}
+
+.stc-series-download-more {
+	min-height: 44px;
+	padding-inline: 1.25rem;
+}
+
+@media (max-width: 992px) {
+	.stc-series-download-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 576px) {
+	.stc-series-download-season__toggle {
+		padding: 12px;
+	}
+
+	.stc-series-download-season__actions {
+		width: 100%;
+		justify-content: space-between;
+	}
+
+	.stc-series-download-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
