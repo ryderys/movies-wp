@@ -42,9 +42,17 @@ require_once __DIR__ . '/includes/class-movies-wp-series-media-preview-service.p
 require_once __DIR__ . '/includes/class-movies-wp-series-media-import-plan.php';
 require_once __DIR__ . '/includes/class-movies-wp-streamit-episode-media-adapter.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-media-import-service.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-import-profiler.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-import-schema.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-import-snapshot-store.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-import-job-store.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-import-invalidation-coalesce.php';
+require_once __DIR__ . '/includes/class-movies-wp-series-import-job-runner.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-orchestrator.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-admin.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-media-admin.php';
 
+add_action( 'init', array( 'Movies_WP_Series_Import_Schema', 'maybe_install' ), 1 );
+Movies_WP_Series_Import_Job_Runner::init();
 Movies_WP_Media_Admin::init();
 Movies_WP_Series_Admin::init();
