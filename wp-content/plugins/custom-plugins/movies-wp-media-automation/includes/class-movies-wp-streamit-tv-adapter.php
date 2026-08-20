@@ -397,7 +397,8 @@ class Movies_WP_Streamit_TV_Adapter {
 				return array( 'ok' => false, 'action' => $action, 'error' => self::err( $row->get_error_code(), $row->get_error_message() ) );
 			}
 
-			// Existing local title is authoritative on update.
+			// Approved plan title/summary overlay (same as Movie Import metadata step).
+			$row['post_title']        = (string) $data['title'];
 			$row['post_content']      = (string) $data['summary'];
 			$row['post_modified']     = self::now( false, $options );
 			$row['post_modified_gmt'] = self::now( true, $options );

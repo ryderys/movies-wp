@@ -259,6 +259,7 @@ tv_adapter_assert( ! empty( $result['ok'] ), 'create series succeeds' );
 tv_adapter_same( 100, $result['series_id'], 'create returns Streamit series ID' );
 tv_adapter_same( 'create', $result['seasons'][0]['action'], 'new Season 0 is created' );
 tv_adapter_same( 'عنوان اپراتور', $state['created_tv_rows'][0]['post_title'], 'create uses operator title' );
+tv_adapter_same( 'خلاصه جدید', $state['created_tv_rows'][0]['post_content'], 'create uses planned summary' );
 tv_adapter_same( '0', $state['episode_meta'][70]['_season_number'], 'Season 0 stored as string zero' );
 tv_adapter_same( 'E01', $state['episode_meta'][70]['_episode_number'], 'episode number uses E01 format' );
 tv_adapter_same( '100', $state['episode_meta'][70]['tvshow_id'], 'created episode receives current TV show identity meta' );
@@ -321,8 +322,9 @@ $before_sources = $state['episode_meta'][50]['_sources'];
 $result = Movies_WP_Streamit_TV_Adapter::apply( tv_adapter_plan( 'update' ), tv_adapter_harness( $state ) );
 tv_adapter_assert( ! empty( $result['ok'] ), 'update series succeeds' );
 tv_adapter_same( 'update', $result['seasons'][0]['action'], 'existing Season 0 is updated' );
-tv_adapter_same( 'عنوان فارسی موجود', $state['tv_rows'][0][1]['post_title'], 'update preserves existing local title' );
+tv_adapter_same( 'عنوان اپراتور', $state['tv_rows'][0][1]['post_title'], 'update applies planned local title' );
 tv_adapter_same( 'خلاصه جدید', $state['tv_rows'][0][1]['post_content'], 'update applies planned summary' );
+tv_adapter_same( 'TMDb Name', $state['tv_meta']['_tmdb_title'], 'update still writes _tmdb_title meta' );
 tv_adapter_same( $before_sources, $state['episode_meta'][50]['_sources'], 'episode _sources remain exactly unchanged' );
 tv_adapter_assert( ! in_array( '_sources', array_column( $state['episode_meta_writes'], 1 ), true ), 'adapter generates no _sources write payload' );
 tv_adapter_same( 777, $state['episode_meta'][50]['thumbnail_id'], 'missing still keeps existing thumbnail' );
@@ -342,6 +344,40 @@ tv_adapter_same( 776, $state['tv_meta']['_portrait_thumbmail'], 'missing update 
 tv_adapter_same( 775, $state['tv_meta']['thumbnail_id'], 'missing update backdrop preserves existing image' );
 tv_adapter_same( 799, $state['tv_meta']['_cast'][0]['id'], 'unrelated existing cast is not deleted' );
 tv_adapter_same( 798, $state['tv_meta']['_crew'][0]['id'], 'unrelated existing crew is not deleted' );
+
+echo "\n[update-applies-approved-persian-title]\n";
+$state = array(
+	'local_title' => 'A Shop for Killers',
+	'tv_meta'     => array(
+		'_tmdb_title' => 'Stale Meta',
+	),
+	'episode_meta' => array(
+		50 => array(
+			'tvshow_id' => '42',
+			'_sources'  => array(
+				array(
+					'name'    => '',
+					'link'    => 'series/korea/2024/A.Shop.for.Killers/ep.mkv',
+					'quality' => '1080p',
+				),
+			),
+		),
+	),
+);
+$before_sources = $state['episode_meta'][50]['_sources'];
+$plan           = tv_adapter_plan( 'update' );
+$plan['series']['title']      = 'فروشگاه قاتلان';
+$plan['series']['summary']    = 'خلاصه فروشگاه قاتلان';
+$plan['series']['tmdb_title'] = 'A Shop for Killers';
+$options = tv_adapter_harness( $state );
+$result  = Movies_WP_Streamit_TV_Adapter::apply_series_phase( $plan, $options );
+tv_adapter_assert( ! empty( $result['ok'] ), 'persian title series-phase update succeeds' );
+tv_adapter_same( 'فروشگاه قاتلان', $state['tv_rows'][0][1]['post_title'], 'UPDATE replaces English title with approved Persian title' );
+tv_adapter_same( 'خلاصه فروشگاه قاتلان', $state['tv_rows'][0][1]['post_content'], 'UPDATE still applies planned summary' );
+tv_adapter_same( 'A Shop for Killers', $state['tv_meta']['_tmdb_title'], '_tmdb_title remains the TMDb English name' );
+tv_adapter_same( $before_sources, $state['episode_meta'][50]['_sources'], 'series-phase title fix does not touch episode _sources' );
+tv_adapter_same( 0, count( $state['episode_rows'] ), 'series-phase does not rewrite episode titles/rows' );
+tv_adapter_same( 0, count( $state['created_episode_rows'] ), 'series-phase does not create episodes' );
 
 echo "\n[mixed-create-update-and-fallback-identity]\n";
 $plan = tv_adapter_plan( 'update' );
