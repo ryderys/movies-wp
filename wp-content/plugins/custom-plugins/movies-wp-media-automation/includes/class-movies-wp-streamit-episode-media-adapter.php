@@ -9,6 +9,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-series-import-profiler.php';
+
 class Movies_WP_Streamit_Episode_Media_Adapter {
 
 	/**
@@ -28,7 +30,14 @@ class Movies_WP_Streamit_Episode_Media_Adapter {
 			if ( ! is_array( $episode_plan ) ) {
 				continue;
 			}
-			$result = self::apply_episode( $episode_plan, $now_local, $options );
+			$episode_snap = Movies_WP_Series_Import_Profiler::phase_start( 'episode_media' );
+			$result       = self::apply_episode( $episode_plan, $now_local, $options );
+			Movies_WP_Series_Import_Profiler::phase_end(
+				'episode_media',
+				$episode_snap,
+				1,
+				sprintf( 'S%sE%s', (string) ( $episode_plan['season_number'] ?? '' ), (string) ( $episode_plan['episode_number'] ?? '' ) )
+			);
 			$results[] = $result;
 			if ( ! empty( $result['ok'] ) ) {
 				++$completed;
@@ -77,16 +86,30 @@ class Movies_WP_Streamit_Episode_Media_Adapter {
 			? $episode_plan['operations']
 			: array();
 
+		$source_snap   = Movies_WP_Series_Import_Profiler::phase_start( 'episode_sources_write' );
 		$source_result = self::apply_sources(
 			$episode_id,
 			self::list_value( $operations['_sources'] ?? array() ),
 			$now_local,
 			$options
 		);
+		Movies_WP_Series_Import_Profiler::phase_end(
+			'episode_sources_write',
+			$source_snap,
+			count( self::list_value( $operations['_sources'] ?? array() ) ),
+			(string) $episode_id
+		);
+		$subtitle_snap   = Movies_WP_Series_Import_Profiler::phase_start( 'episode_subtitles_write' );
 		$subtitle_result = self::apply_subtitles(
 			$episode_id,
 			self::list_value( $operations['_subtitles'] ?? array() ),
 			$options
+		);
+		Movies_WP_Series_Import_Profiler::phase_end(
+			'episode_subtitles_write',
+			$subtitle_snap,
+			count( self::list_value( $operations['_subtitles'] ?? array() ) ),
+			(string) $episode_id
 		);
 
 		$ok      = ! empty( $source_result['ok'] ) && ! empty( $subtitle_result['ok'] );
@@ -268,6 +291,8 @@ class Movies_WP_Streamit_Episode_Media_Adapter {
 				$new_row['date_added'] = $now_local;
 			}
 
+			Movies_WP_Series_Import_Profiler::mark_source( $path );
+
 			if ( isset( $index[ $path ] ) ) {
 				$rows[ $index[ $path ] ] = self::merge_preserving_unknown( $rows[ $index[ $path ] ], $new_row );
 			} else {
@@ -322,6 +347,8 @@ class Movies_WP_Streamit_Episode_Media_Adapter {
 				}
 				continue;
 			}
+
+			Movies_WP_Series_Import_Profiler::mark_subtitle( $path );
 
 			$new_row = isset( $operation['row'] ) && is_array( $operation['row'] ) ? $operation['row'] : array();
 			if ( isset( $index[ $path ] ) ) {

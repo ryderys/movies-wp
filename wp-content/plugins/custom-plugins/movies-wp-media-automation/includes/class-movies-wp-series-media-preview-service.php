@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-series-import-profiler.php';
+
 class Movies_WP_Series_Media_Preview_Service {
 
 	/**
@@ -38,12 +40,22 @@ class Movies_WP_Series_Media_Preview_Service {
 			}
 		}
 
-		$scan = self::scan_series( $normalized['series_directory'], $options );
+		$scan_snap = Movies_WP_Series_Import_Profiler::phase_start( 'media_scan' );
+		if ( isset( $options['scan'] ) && is_array( $options['scan'] ) ) {
+			$scan = $options['scan'];
+		} else {
+			$scan = self::scan_series( $normalized['series_directory'], $options );
+		}
+		$scan_eps  = is_array( $scan ) ? count( $scan['episodes'] ?? array() ) : 0;
+		Movies_WP_Series_Import_Profiler::phase_end( 'media_scan', $scan_snap, $scan_eps, 'media_preview_scan' );
 		if ( is_wp_error( $scan ) ) {
 			return $scan;
 		}
 
+		$lookup_snap   = Movies_WP_Series_Import_Profiler::phase_start( 'episode_lookup' );
 		$episode_index = self::index_episodes( $normalized['tvshow_id'], $options );
+		$lookup_count  = ( ! is_wp_error( $episode_index ) && is_array( $episode_index ) ) ? count( $episode_index['by_id'] ?? array() ) : 0;
+		Movies_WP_Series_Import_Profiler::phase_end( 'episode_lookup', $lookup_snap, $lookup_count, 'index_episodes' );
 		if ( is_wp_error( $episode_index ) ) {
 			return $episode_index;
 		}
