@@ -7,6 +7,13 @@
  * the live-streaming plugin for HLS (.m3u8) streams, while preserving the
  * theme's essential HTML structure to prevent layout and content issues.
  *
+ * Playback precedence (child):
+ * 1. Explicit `_episode_choice=episode_url` + `_episode_url_link`
+ * 2. `_episode_choice=episode_embed`
+ * 3. Attachment (`_episode_attachment_id`) when present
+ * 4. First usable `_sources[].link` (Series Import path)
+ * 5. Existing empty / unavailable player state
+ *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  * @package streamit
  */
@@ -27,26 +34,42 @@ if ( ! $episode_has_access ) {
     return;
 }
 
-$content_type = $st_data->get_meta('_episode_choice');
-$media_url    = '';
-$media_stored = '';
 $post_id_early = (int) $st_data->get_id();
+$content_type  = $st_data->get_meta('_episode_choice');
+$url_link      = trim( (string) $st_data->get_meta('_episode_url_link') );
+$attachment_id = (int) $st_data->get_meta('_episode_attachment_id');
+$attachment_url = '';
+if ( $attachment_id > 0 ) {
+    $attachment_url = (string) wp_get_attachment_url( $attachment_id );
+}
 
-switch ($content_type) {
-    case 'episode_url':
-        $media_stored = (string) $st_data->get_meta('_episode_url_link');
-        $media_url    = function_exists('streamit_child_resolve_playable_src')
-            ? streamit_child_resolve_playable_src($media_stored, $post_id_early, 0)
-            : $media_stored;
-        break;
-    case 'episode_file':
-    default:
-        $media_url_id = (int) $st_data->get_meta('_episode_attachment_id');
-        if ($media_url_id) {
-            $media_url = wp_get_attachment_url($media_url_id);
-        }
-        $media_stored = $media_url;
-        break;
+$resolved = function_exists( 'streamit_child_resolve_episode_media' )
+    ? streamit_child_resolve_episode_media(
+        array(
+            'choice'          => $content_type,
+            'url_link'        => $url_link,
+            'attachment_url'  => $attachment_url,
+            'sources'         => $st_data->get_meta( '_sources' ),
+        )
+    )
+    : array(
+        'mode'         => ( 'episode_url' === (string) $content_type && '' !== $url_link ) ? 'url' : ( 'episode_embed' === (string) $content_type ? 'embed' : ( '' !== $attachment_url ? 'file' : 'none' ) ),
+        'media_stored' => ( 'episode_url' === (string) $content_type && '' !== $url_link ) ? $url_link : $attachment_url,
+        'source_index' => 0,
+    );
+
+$mode          = (string) ( $resolved['mode'] ?? 'none' );
+$media_stored  = (string) ( $resolved['media_stored'] ?? '' );
+$source_index  = (int) ( $resolved['source_index'] ?? 0 );
+$media_url     = '';
+
+if ( in_array( $mode, array( 'url', 'sources' ), true ) && '' !== $media_stored ) {
+    $media_url = function_exists( 'streamit_child_resolve_playable_src' )
+        ? streamit_child_resolve_playable_src( $media_stored, $post_id_early, $source_index )
+        : $media_stored;
+} elseif ( 'file' === $mode ) {
+    $media_url    = $media_stored;
+    $media_stored = $media_url;
 }
 
 $hls_probe = $media_stored !== '' ? $media_stored : $media_url;
@@ -56,18 +79,22 @@ $content = '';
 if ($is_hls) {
     $content = 'is_hls_placeholder';
 } else {
-    switch ($content_type) {
-        case 'episode_embed':
-            $content = streamit_render_video_iframe('episode', $st_data);
+    switch ( $mode ) {
+        case 'embed':
+            $content = streamit_render_video_iframe( 'episode', $st_data );
             break;
-        case 'episode_url':
-            $content = function_exists('streamit_child_get_url_video_html_for_stored')
-                ? streamit_child_get_url_video_html_for_stored($media_stored, $post_id_early, 0)
-                : streamit_render_url_video_player('episode', $st_data);
+        case 'url':
+        case 'sources':
+            $content = function_exists( 'streamit_child_get_url_video_html_for_stored' )
+                ? streamit_child_get_url_video_html_for_stored( $media_stored, $post_id_early, $source_index )
+                : streamit_render_url_video_player( 'episode', $st_data );
             break;
-        case 'episode_file':
+        case 'file':
+            $content = streamit_render_attach_video_player( 'episode', $st_data );
+            break;
         default:
-            $content = streamit_render_attach_video_player('episode', $st_data);
+            // Preserve prior empty/unavailable outcome when nothing is playable.
+            $content = streamit_render_attach_video_player( 'episode', $st_data );
             break;
     }
 }

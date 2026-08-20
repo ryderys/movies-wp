@@ -268,3 +268,105 @@ function streamit_child_player_source_identity( $stored ) {
 	return 'local:' . implode( '/', $parts );
 }
 
+/**
+ * First usable playback row from a Streamit `_sources` (or `_source`) list.
+ *
+ * Skips non-arrays and empty/invalid `link` values. Does not mutate input.
+ *
+ * @param mixed $sources Raw sources meta.
+ * @return array{link:string,index:int,row:array<string,mixed>}|null
+ */
+function streamit_child_first_usable_source( $sources ) {
+	if ( ! is_array( $sources ) || array() === $sources ) {
+		return null;
+	}
+
+	foreach ( array_values( $sources ) as $index => $row ) {
+		if ( ! is_array( $row ) ) {
+			continue;
+		}
+		$link = isset( $row['link'] ) ? trim( (string) $row['link'] ) : '';
+		if ( '' === $link ) {
+			continue;
+		}
+		if ( ! streamit_child_is_external_media_link( $link ) && ! streamit_child_is_local_media_path( $link ) ) {
+			continue;
+		}
+		return array(
+			'link'  => $link,
+			'index' => (int) $index,
+			'row'   => $row,
+		);
+	}
+
+	return null;
+}
+
+/**
+ * Resolve episode playback inputs without mutating catalog meta.
+ *
+ * Precedence:
+ * 1. `_episode_choice=episode_url` with a non-empty `_episode_url_link`
+ * 2. `_episode_choice=episode_embed`
+ * 3. Usable attachment URL (established Streamit fallback)
+ * 4. First usable `_sources[].link`
+ * 5. none
+ *
+ * @param array{
+ *   choice?: mixed,
+ *   url_link?: mixed,
+ *   attachment_url?: mixed,
+ *   sources?: mixed
+ * } $input Normalized episode media fields.
+ * @return array{
+ *   mode: 'url'|'embed'|'file'|'sources'|'none',
+ *   media_stored: string,
+ *   source_index: int
+ * }
+ */
+function streamit_child_resolve_episode_media( array $input ) {
+	$choice         = isset( $input['choice'] ) ? trim( (string) $input['choice'] ) : '';
+	$url_link       = isset( $input['url_link'] ) ? trim( (string) $input['url_link'] ) : '';
+	$attachment_url = isset( $input['attachment_url'] ) ? trim( (string) $input['attachment_url'] ) : '';
+	$sources        = $input['sources'] ?? null;
+
+	if ( 'episode_url' === $choice && '' !== $url_link ) {
+		return array(
+			'mode'         => 'url',
+			'media_stored' => $url_link,
+			'source_index' => 0,
+		);
+	}
+
+	if ( 'episode_embed' === $choice ) {
+		return array(
+			'mode'         => 'embed',
+			'media_stored' => '',
+			'source_index' => 0,
+		);
+	}
+
+	if ( '' !== $attachment_url ) {
+		return array(
+			'mode'         => 'file',
+			'media_stored' => $attachment_url,
+			'source_index' => 0,
+		);
+	}
+
+	$usable = streamit_child_first_usable_source( $sources );
+	if ( is_array( $usable ) ) {
+		return array(
+			'mode'         => 'sources',
+			'media_stored' => (string) $usable['link'],
+			'source_index' => (int) $usable['index'],
+		);
+	}
+
+	return array(
+		'mode'         => 'none',
+		'media_stored' => '',
+		'source_index' => 0,
+	);
+}
+
