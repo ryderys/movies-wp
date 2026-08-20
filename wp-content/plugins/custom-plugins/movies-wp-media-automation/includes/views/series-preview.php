@@ -496,10 +496,7 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 				<form method="post" class="movies-wp-import-form">
 					<?php wp_nonce_field( Movies_WP_Series_Admin::IMPORT_NONCE ); ?>
 					<input type="hidden" name="<?php echo esc_attr( Movies_WP_Series_Admin::ACTION_FIELD ); ?>" value="<?php echo esc_attr( Movies_WP_Series_Admin::IMPORT_ACTION ); ?>">
-					<input type="hidden" name="tmdb_id" value="<?php echo esc_attr( (string) $values['tmdb_id'] ); ?>">
-					<input type="hidden" name="title" value="<?php echo esc_attr( (string) $values['title'] ); ?>">
-					<input type="hidden" name="summary" value="<?php echo esc_attr( (string) $values['summary'] ); ?>">
-					<input type="hidden" name="series_directory" value="<?php echo esc_attr( (string) $values['series_directory'] ); ?>">
+					<input type="hidden" name="snapshot_token" value="<?php echo esc_attr( (string) ( $snapshot_token ?? '' ) ); ?>">
 					<label>
 						<input type="checkbox" name="confirm_import" value="1" required>
 						<?php esc_html_e( 'I reviewed this plan and approve the Series metadata and media operations.', 'movies-wp' ); ?>

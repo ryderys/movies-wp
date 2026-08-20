@@ -2,9 +2,9 @@
 /**
  * WordPress admin workflow for unified Series metadata + media automation.
  *
- * The browser submits operator inputs only. Import rebuilds the authoritative
- * preview server-side, then delegates to the Series Orchestrator. This class
- * performs no Streamit writes.
+ * The browser submits operator inputs for Preview and only a snapshot token
+ * for Import. Import enqueues an Action Scheduler job. This class performs no
+ * Streamit writes.
  *
  * @package movies-wp
  */
@@ -20,11 +20,21 @@ class Movies_WP_Series_Admin {
 	const IMPORT_ACTION  = 'movies_wp_series_import';
 	const PREVIEW_NONCE  = 'movies_wp_series_preview';
 	const IMPORT_NONCE   = 'movies_wp_series_import';
+	const PROGRESS_NONCE = 'movies_wp_series_import_progress';
+	const RESUME_ACTION  = 'movies_wp_series_resume';
+	const CANCEL_ACTION  = 'movies_wp_series_cancel';
 
 	/**
 	 * @var string|false
 	 */
 	private static $page_hook = false;
+
+	/**
+	 * Notice deferred from an early Import mutation when redirect is not used.
+	 *
+	 * @var array{type:string,message:string}|null
+	 */
+	private static $pending_notice = null;
 
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_menu' ) );
@@ -40,6 +50,46 @@ class Movies_WP_Series_Admin {
 			self::SLUG,
 			array( __CLASS__, 'render_page' )
 		);
+		// Import / Resume / Cancel must run before admin HTML output so redirects work.
+		if ( is_string( self::$page_hook ) && '' !== self::$page_hook ) {
+			add_action( 'load-' . self::$page_hook, array( __CLASS__, 'handle_load' ) );
+		}
+	}
+
+	/**
+	 * Early POST handler for mutations that redirect (Import, Resume, Cancel).
+	 * Preview remains in render_page() because it must redisplay the plan.
+	 */
+	public static function handle_load() {
+		if ( 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) {
+			return;
+		}
+		if ( ! isset( $_POST[ self::ACTION_FIELD ] ) ) {
+			return;
+		}
+		self::handle_mutation_request( wp_unslash( $_POST ) );
+	}
+
+	/**
+	 * Process Import / Resume / Cancel before page output.
+	 *
+	 * @param array<string, mixed> $post
+	 * @param array<string, mixed> $options Test hooks.
+	 * @return void
+	 */
+	public static function handle_mutation_request( array $post, array $options = array() ) {
+		$action = isset( $post[ self::ACTION_FIELD ] ) ? sanitize_text_field( (string) $post[ self::ACTION_FIELD ] ) : '';
+		if ( self::IMPORT_ACTION === $action ) {
+			self::handle_import_mutation( $post, $options );
+			return;
+		}
+		if ( self::RESUME_ACTION === $action ) {
+			self::process_job_command( $post, 'resume', $options );
+			return;
+		}
+		if ( self::CANCEL_ACTION === $action ) {
+			self::process_job_command( $post, 'cancel', $options );
+		}
 	}
 
 	public static function enqueue( $hook ) {
@@ -61,17 +111,30 @@ class Movies_WP_Series_Admin {
 			wp_die( esc_html__( 'Sorry, you are not allowed to access this page.', 'movies-wp' ) );
 		}
 
-		$values        = self::empty_values();
-		$preview       = null;
-		$plan          = null;
-		$notice        = null;
-		$import_result = null;
+		$values         = self::empty_values();
+		$preview        = null;
+		$plan           = null;
+		$notice         = self::$pending_notice;
+		$job            = null;
+		$snapshot_token = '';
+		self::$pending_notice = null;
+
+		$job_token = isset( $_GET['job_token'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['job_token'] ) ) : '';
+		if ( '' !== $job_token && 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) {
+			$loaded = Movies_WP_Series_Import_Job_Store::find_by_token( $job_token );
+			if ( is_array( $loaded ) && self::job_owned_by_current_user( $loaded ) ) {
+				$job = $loaded;
+				include MOVIES_WP_MEDIA_AUTOMATION_DIR . '/includes/views/series-import-progress.php';
+				return;
+			}
+		}
 
 		if ( 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' ) && isset( $_POST[ self::ACTION_FIELD ] ) ) {
 			$post   = wp_unslash( $_POST );
 			$action = sanitize_text_field( (string) $post[ self::ACTION_FIELD ] );
 			$values = self::values_from_array( $post );
 
+			// Import / Resume / Cancel are handled on load-{$hook} before output.
 			if ( self::PREVIEW_ACTION === $action ) {
 				$context = self::process_preview_request( $post );
 				if ( is_wp_error( $context ) ) {
@@ -80,36 +143,42 @@ class Movies_WP_Series_Admin {
 					}
 					$notice = self::notice_for_preview_error( $context );
 				} else {
-					$values  = $context['values'];
-					$preview = $context['preview'];
-					$plan    = $context['plan'];
-				}
-			} elseif ( self::IMPORT_ACTION === $action ) {
-				$result = self::process_import_request( $post );
-				if ( is_wp_error( $result ) ) {
-					if ( 'series_import_forbidden' === $result->get_error_code() ) {
-						wp_die( esc_html__( 'Sorry, you are not allowed to access this page.', 'movies-wp' ) );
-					}
-					$notice = array(
-						'type'    => 'error',
-						'message' => $result->get_error_message(),
-					);
-				} else {
-					$import_result = $result;
-					$notice        = self::notice_for_import_result( $result );
-				}
-
-				// Refresh the read-only display from authoritative operator inputs.
-				$context = self::build_context( $values );
-				if ( ! is_wp_error( $context ) ) {
-					$preview = $context['preview'];
-					$plan    = $context['plan'];
-					$values  = $context['values'];
+					$values         = $context['values'];
+					$preview        = $context['preview'];
+					$plan           = $context['plan'];
+					$snapshot_token = (string) ( $context['snapshot_token'] ?? '' );
 				}
 			}
 		}
 
 		include MOVIES_WP_MEDIA_AUTOMATION_DIR . '/includes/views/series-preview.php';
+	}
+
+	/**
+	 * Enqueue-only Import mutation. Redirects to the progress page on success.
+	 *
+	 * @param array<string, mixed> $post
+	 * @param array<string, mixed> $options Test hooks.
+	 * @return void
+	 */
+	public static function handle_import_mutation( array $post, array $options = array() ) {
+		$result = self::process_import_request( $post, $options );
+		if ( is_wp_error( $result ) ) {
+			if ( 'series_import_forbidden' === $result->get_error_code() ) {
+				self::die_forbidden( $options );
+				return;
+			}
+			$notice = array(
+				'type'    => 'error',
+				'message' => $result->get_error_message(),
+			);
+			self::$pending_notice = $notice;
+			if ( isset( $options['on_notice'] ) && is_callable( $options['on_notice'] ) ) {
+				call_user_func( $options['on_notice'], $notice, $result );
+			}
+			return;
+		}
+		self::redirect_to_progress( (string) ( $result['token'] ?? '' ), $options );
 	}
 
 	/**
@@ -124,14 +193,32 @@ class Movies_WP_Series_Admin {
 		if ( is_wp_error( $gate ) ) {
 			return $gate;
 		}
-		return self::build_context( self::values_from_array( $post ), $options );
+		$context = self::build_context( self::values_from_array( $post ), $options );
+		if ( is_wp_error( $context ) ) {
+			return $context;
+		}
+		if ( true === ( $context['preview']['ready_to_import'] ?? null ) ) {
+			$create = isset( $options['snapshot_create'] ) && is_callable( $options['snapshot_create'] )
+				? $options['snapshot_create']
+				: array( 'Movies_WP_Series_Import_Snapshot_Store', 'create' );
+			$snapshot = call_user_func(
+				$create,
+				$context['preview'],
+				array(
+					'user_id' => self::current_user_id( $options ),
+					'blog_id' => self::current_blog_id( $options ),
+				)
+			);
+			if ( is_wp_error( $snapshot ) ) {
+				return $snapshot;
+			}
+			$context['snapshot_token'] = is_array( $snapshot ) ? (string) ( $snapshot['token'] ?? '' ) : '';
+		}
+		return $context;
 	}
 
 	/**
-	 * Delegate whitelisted operator inputs to the Series Orchestrator.
-	 *
-	 * Browser-submitted plan, identity, episode, image, and source payloads are
-	 * ignored. They cannot influence persistence.
+	 * Validate snapshot token and enqueue the Action Scheduler import job.
 	 *
 	 * @param array<string, mixed> $post
 	 * @param array<string, mixed> $options Test hooks.
@@ -146,12 +233,27 @@ class Movies_WP_Series_Admin {
 			return new WP_Error( 'series_import_confirmation_required', __( 'Series import confirmation is required.', 'movies-wp' ) );
 		}
 
-		$values = self::values_from_array( $post );
-		$result = isset( $options['orchestrator_execute'] ) && is_callable( $options['orchestrator_execute'] )
-			? call_user_func( $options['orchestrator_execute'], $values )
-			: Movies_WP_Series_Orchestrator::execute( $values );
+		$token = isset( $post['snapshot_token'] ) ? sanitize_text_field( (string) $post['snapshot_token'] ) : '';
+		if ( '' === $token ) {
+			return new WP_Error( 'series_import_snapshot_missing', __( 'Series import snapshot token is missing.', 'movies-wp' ) );
+		}
 
-		if ( ! is_array( $result ) ) {
+		$enqueue = isset( $options['enqueue_job'] ) && is_callable( $options['enqueue_job'] )
+			? $options['enqueue_job']
+			: array( 'Movies_WP_Series_Import_Job_Runner', 'enqueue_from_snapshot' );
+		$result  = call_user_func(
+			$enqueue,
+			$token,
+			array(
+				'user_id' => self::current_user_id( $options ),
+				'blog_id' => self::current_blog_id( $options ),
+			),
+			$options
+		);
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+		if ( ! is_array( $result ) || empty( $result['token'] ) ) {
 			return new WP_Error( 'series_import_invalid_result', __( 'Series import returned an invalid result.', 'movies-wp' ) );
 		}
 		return $result;
@@ -182,10 +284,131 @@ class Movies_WP_Series_Admin {
 			? array_merge( $values, $preview['input'] )
 			: $values;
 		return array(
-			'values'  => $normalized,
-			'preview' => $preview,
-			'plan'    => $plan,
+			'values'          => $normalized,
+			'preview'         => $preview,
+			'plan'            => $plan,
+			'snapshot_token'  => '',
 		);
+	}
+
+	public static function progress_url( $job_token ) {
+		if ( ! function_exists( 'admin_url' ) ) {
+			return '';
+		}
+		return admin_url( 'admin.php?page=' . self::SLUG . '&job_token=' . rawurlencode( (string) $job_token ) );
+	}
+
+	/**
+	 * Redirect to the progress page. Never exits after a failed redirect with an empty body.
+	 *
+	 * @param string               $job_token
+	 * @param array<string, mixed> $options Test hooks (`redirect` callable receives URL + status).
+	 * @return void
+	 */
+	public static function redirect_to_progress( $job_token, array $options = array() ) {
+		$url = self::progress_url( $job_token );
+		if ( isset( $options['redirect'] ) && is_callable( $options['redirect'] ) ) {
+			call_user_func( $options['redirect'], $url, 302 );
+			return;
+		}
+		if ( '' === $url ) {
+			self::die_message( __( 'Series import progress URL could not be built.', 'movies-wp' ), $options );
+			return;
+		}
+		if ( function_exists( 'wp_safe_redirect' ) ) {
+			$sent = wp_safe_redirect( $url );
+			if ( false !== $sent ) {
+				exit;
+			}
+		}
+		$message = sprintf(
+			/* translators: %s: progress URL */
+			__( 'Unable to redirect to Series import progress. Continue here: %s', 'movies-wp' ),
+			'<a href="' . esc_url( $url ) . '">' . esc_html( $url ) . '</a>'
+		);
+		self::die_message( $message, $options, array( 'response' => 200 ) );
+	}
+
+	/**
+	 * @param array<string, mixed> $post
+	 * @param string               $command resume|cancel
+	 * @param array<string, mixed> $options Test hooks.
+	 * @return void
+	 */
+	private static function process_job_command( array $post, $command, array $options = array() ) {
+		$gate = self::request_gate( $post, self::PROGRESS_NONCE, 'series_import_forbidden', 'series_import_invalid_nonce', $options );
+		if ( is_wp_error( $gate ) ) {
+			if ( 'series_import_forbidden' === $gate->get_error_code() ) {
+				self::die_forbidden( $options );
+				return;
+			}
+			self::die_message( $gate->get_error_message(), $options );
+			return;
+		}
+		$token = isset( $post['job_token'] ) ? sanitize_text_field( (string) $post['job_token'] ) : '';
+		$find  = isset( $options['find_job'] ) && is_callable( $options['find_job'] )
+			? $options['find_job']
+			: array( 'Movies_WP_Series_Import_Job_Store', 'find_by_token' );
+		$job   = call_user_func( $find, $token );
+		if ( ! is_array( $job ) || ! self::job_owned_by_current_user( $job, $options ) ) {
+			self::die_message( __( 'Series import job was not found.', 'movies-wp' ), $options );
+			return;
+		}
+		if ( 'resume' === $command ) {
+			$resume = isset( $options['resume_job'] ) && is_callable( $options['resume_job'] )
+				? $options['resume_job']
+				: array( 'Movies_WP_Series_Import_Job_Runner', 'resume' );
+			call_user_func( $resume, $token );
+		} else {
+			$cancel = isset( $options['cancel_job'] ) && is_callable( $options['cancel_job'] )
+				? $options['cancel_job']
+				: array( 'Movies_WP_Series_Import_Job_Runner', 'cancel' );
+			call_user_func( $cancel, $token );
+		}
+		self::redirect_to_progress( $token, $options );
+	}
+
+	/**
+	 * @param array<string, mixed> $options
+	 * @return void
+	 */
+	private static function die_forbidden( array $options = array() ) {
+		self::die_message( __( 'Sorry, you are not allowed to access this page.', 'movies-wp' ), $options );
+	}
+
+	/**
+	 * @param string               $message
+	 * @param array<string, mixed> $options
+	 * @param array<string, mixed> $args
+	 * @return void
+	 */
+	private static function die_message( $message, array $options = array(), array $args = array() ) {
+		if ( isset( $options['wp_die'] ) && is_callable( $options['wp_die'] ) ) {
+			call_user_func( $options['wp_die'], $message, $args );
+			return;
+		}
+		if ( function_exists( 'wp_die' ) ) {
+			wp_die( $message, '', $args );
+		}
+	}
+
+	private static function job_owned_by_current_user( array $job, array $options = array() ) {
+		return (int) ( $job['user_id'] ?? 0 ) === self::current_user_id( $options )
+			&& (int) ( $job['blog_id'] ?? 0 ) === self::current_blog_id( $options );
+	}
+
+	private static function current_user_id( array $options ) {
+		if ( isset( $options['user_id'] ) ) {
+			return (int) $options['user_id'];
+		}
+		return function_exists( 'get_current_user_id' ) ? (int) get_current_user_id() : 0;
+	}
+
+	private static function current_blog_id( array $options ) {
+		if ( isset( $options['blog_id'] ) ) {
+			return (int) $options['blog_id'];
+		}
+		return function_exists( 'get_current_blog_id' ) ? (int) get_current_blog_id() : 1;
 	}
 
 	/**
