@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-series-import-profiler.php';
+
 class Movies_WP_Streamit_TV_Adapter {
 
 	/**
@@ -25,8 +27,10 @@ class Movies_WP_Streamit_TV_Adapter {
 			return $gate;
 		}
 
-		$action = (string) $plan['identity']['action'];
-		$series = self::persist_series( $plan, $options );
+		$action       = (string) $plan['identity']['action'];
+		$series_snap  = Movies_WP_Series_Import_Profiler::phase_start( 'series_create' );
+		$series       = self::persist_series( $plan, $options );
+		Movies_WP_Series_Import_Profiler::phase_end( 'series_create', $series_snap, 1, (string) $action );
 		if ( empty( $series['ok'] ) ) {
 			$partial_series_id = absint( $series['series_id'] ?? 0 );
 			return self::result(
@@ -40,8 +44,13 @@ class Movies_WP_Streamit_TV_Adapter {
 				array( $series['error'] )
 			);
 		}
+		Movies_WP_Series_Import_Profiler::progress( 'SERIES CREATED id=' . (int) $series['series_id'] );
 
 		$series_id = (int) $series['series_id'];
+		$people    = self::apply_people_phase( $series_id, $plan, $options );
+		if ( empty( $people['ok'] ) ) {
+			return self::result( false, $series_id, $action, $series, array(), array(), array(), array( $people['error'] ) );
+		}
 		$seasons   = self::load_tvshow_meta( $series_id, '_seasons', $options );
 		if ( is_wp_error( $seasons ) || ! self::empty_meta_value( $seasons ) && ! is_array( $seasons ) ) {
 			$error = self::err(
@@ -52,7 +61,10 @@ class Movies_WP_Streamit_TV_Adapter {
 		}
 		$seasons = is_array( $seasons ) ? array_values( $seasons ) : array();
 
+		$image_snap    = Movies_WP_Series_Import_Profiler::phase_start( 'series_images' );
 		$image_results = self::persist_series_images( $series_id, $plan['images'], $options );
+		Movies_WP_Series_Import_Profiler::phase_end( 'series_images', $image_snap, count( $image_results ), 'poster_backdrop' );
+		Movies_WP_Series_Import_Profiler::progress( 'SERIES IMAGES DONE' );
 		$episode_rows  = array();
 		$season_rows   = array();
 		$errors        = array();
@@ -69,7 +81,10 @@ class Movies_WP_Streamit_TV_Adapter {
 			$episode_ids_by_season[ $season_number ] = array();
 
 			foreach ( $season_plan['episodes'] as $episode_plan ) {
+				$episode_snap   = Movies_WP_Series_Import_Profiler::phase_start( 'episode_create' );
 				$episode_result = self::persist_episode( $series_id, $episode_plan, $options );
+				$episode_label  = sprintf( 'S%02dE%02d', (int) ( $episode_plan['season_number'] ?? 0 ), (int) ( $episode_plan['episode_number'] ?? 0 ) );
+				Movies_WP_Series_Import_Profiler::phase_end( 'episode_create', $episode_snap, 1, $episode_label );
 				$episode_rows[] = $episode_result;
 
 				if ( ! empty( $episode_result['episode_id'] ) ) {
@@ -82,6 +97,7 @@ class Movies_WP_Streamit_TV_Adapter {
 		}
 
 		foreach ( $plan['seasons'] as $season_plan ) {
+			$season_snap   = Movies_WP_Series_Import_Profiler::phase_start( 'season_create' );
 			$season_result = self::upsert_season(
 				$series_id,
 				$seasons,
@@ -89,11 +105,13 @@ class Movies_WP_Streamit_TV_Adapter {
 				$episode_ids_by_season[ self::season_number_string( $season_plan['season_number'] ?? null ) ],
 				$options
 			);
+			Movies_WP_Series_Import_Profiler::phase_end( 'season_create', $season_snap, count( $season_plan['episodes'] ?? array() ), (string) ( $season_plan['season_number'] ?? '' ) );
 			$season_rows[] = $season_result;
 			if ( empty( $season_result['ok'] ) ) {
 				$errors[] = $season_result['error'];
 			} else {
 				$seasons = $season_result['seasons'];
+				Movies_WP_Series_Import_Profiler::progress( 'SEASON CREATED ' . (string) ( $season_plan['season_number'] ?? '' ) );
 			}
 		}
 
@@ -230,10 +248,125 @@ class Movies_WP_Streamit_TV_Adapter {
 		return true;
 	}
 
+	/**
+	 * Persist the Streamit series row and identity metadata only.
+	 *
+	 * @param array<string, mixed> $plan
+	 * @param array<string, mixed> $options
+	 * @return array<string, mixed>
+	 */
+	public static function apply_series_phase( array $plan, array $options = array() ) {
+		$gate = self::validate_plan( $plan );
+		if ( true !== $gate ) {
+			return is_array( $gate ) ? $gate : array( 'ok' => false, 'error' => self::err( 'series_tv_adapter_invalid_plan', __( 'Series Import Plan is not ready to apply.', 'movies-wp' ) ) );
+		}
+		return self::persist_series( $plan, $options );
+	}
+
+	/**
+	 * @param int                  $series_id
+	 * @param array<string, mixed> $plan
+	 * @param array<string, mixed> $options
+	 * @return array<string, mixed>
+	 */
+	public static function apply_people_phase( $series_id, array $plan, array $options = array() ) {
+		$people = self::persist_series_people( (int) $series_id, is_array( $plan['series'] ?? null ) ? $plan['series'] : array(), $options );
+		if ( true !== $people ) {
+			return array(
+				'ok'        => false,
+				'series_id' => (int) $series_id,
+				'error'     => $people,
+			);
+		}
+		return array(
+			'ok'        => true,
+			'series_id' => (int) $series_id,
+		);
+	}
+
+	/**
+	 * @param int                  $series_id
+	 * @param array<string, mixed> $plan
+	 * @param array<string, mixed> $options
+	 * @return array<string, mixed>
+	 */
+	public static function apply_images_phase( $series_id, array $plan, array $options = array() ) {
+		$images  = isset( $plan['images'] ) && is_array( $plan['images'] ) ? $plan['images'] : array();
+		$results = self::persist_series_images( (int) $series_id, $images, $options );
+		$errors  = array();
+		foreach ( $results as $image_result ) {
+			if ( empty( $image_result['ok'] ) && isset( $image_result['error'] ) ) {
+				$errors[] = $image_result['error'];
+			}
+		}
+		return array(
+			'ok'        => array() === $errors,
+			'continue'  => true,
+			'series_id' => (int) $series_id,
+			'images'    => $results,
+			'error'     => isset( $errors[0] ) ? $errors[0] : null,
+			'warnings'  => $errors,
+		);
+	}
+
+	/**
+	 * @param int                  $series_id
+	 * @param array<string, mixed> $episode_plan
+	 * @param array<string, mixed> $options
+	 * @return array<string, mixed>
+	 */
+	public static function apply_episode_phase( $series_id, array $episode_plan, array $options = array() ) {
+		return self::persist_episode( (int) $series_id, $episode_plan, $options );
+	}
+
+	/**
+	 * @param int                  $series_id
+	 * @param array<string, mixed> $plan
+	 * @param array<string, array<int, int>> $episode_ids_by_season
+	 * @param array<string, mixed> $options
+	 * @return array<string, mixed>
+	 */
+	public static function apply_seasons_phase( $series_id, array $plan, array $episode_ids_by_season, array $options = array() ) {
+		$seasons = self::load_tvshow_meta( $series_id, '_seasons', $options );
+		if ( is_wp_error( $seasons ) || ( ! self::empty_meta_value( $seasons ) && ! is_array( $seasons ) ) ) {
+			return array(
+				'ok'     => false,
+				'error'  => self::err( 'series_tv_adapter_seasons_unreadable', __( 'The complete existing Streamit season list could not be loaded safely.', 'movies-wp' ) ),
+			);
+		}
+		$seasons     = is_array( $seasons ) ? array_values( $seasons ) : array();
+		$season_rows = array();
+		$errors      = array();
+		foreach ( isset( $plan['seasons'] ) && is_array( $plan['seasons'] ) ? $plan['seasons'] : array() as $season_plan ) {
+			$key           = self::season_number_string( $season_plan['season_number'] ?? null );
+			$ids           = isset( $episode_ids_by_season[ $key ] ) && is_array( $episode_ids_by_season[ $key ] ) ? $episode_ids_by_season[ $key ] : array();
+			$season_result = self::upsert_season( $series_id, $seasons, $season_plan, $ids, $options );
+			$season_rows[] = $season_result;
+			if ( empty( $season_result['ok'] ) ) {
+				$errors[] = $season_result['error'];
+				continue;
+			}
+			$seasons = $season_result['seasons'];
+		}
+		if ( array() !== $season_rows ) {
+			$written = self::write_tvshow_meta( $series_id, '_seasons', $seasons, $options );
+			if ( true !== $written ) {
+				$errors[] = self::err( 'series_tv_adapter_seasons_failed', __( 'Failed to save Streamit seasons.', 'movies-wp' ) );
+			}
+		}
+		return array(
+			'ok'      => array() === $errors,
+			'seasons' => $season_rows,
+			'error'   => isset( $errors[0] ) ? $errors[0] : null,
+			'warnings'=> $errors,
+		);
+	}
+
 	private static function persist_series( array $plan, array $options ) {
 		$action = (string) $plan['identity']['action'];
 		$data   = $plan['series'];
 
+		$row_snap = Movies_WP_Series_Import_Profiler::phase_start( 'series_row' );
 		if ( 'create' === $action ) {
 			$row = self::new_row(
 				(string) $data['title'],
@@ -245,6 +378,7 @@ class Movies_WP_Streamit_TV_Adapter {
 				? call_user_func( $options['create_tvshow'], $row )
 				: ( function_exists( 'streamit_add_tvshow' ) ? streamit_add_tvshow( $row ) : new WP_Error( 'missing_api', 'streamit_add_tvshow() is not available.' ) );
 			if ( is_wp_error( $created ) || absint( $created ) <= 0 ) {
+				Movies_WP_Series_Import_Profiler::phase_end( 'series_row', $row_snap, 0, 'failed' );
 				return array(
 					'ok'     => false,
 					'action' => $action,
@@ -259,6 +393,7 @@ class Movies_WP_Streamit_TV_Adapter {
 				: ( function_exists( 'streamit_get_tvshow' ) ? streamit_get_tvshow( $series_id ) : null );
 			$row       = self::row_from_object( $tvshow, $series_id, 'tvshow' );
 			if ( is_wp_error( $row ) ) {
+				Movies_WP_Series_Import_Profiler::phase_end( 'series_row', $row_snap, 0, 'failed' );
 				return array( 'ok' => false, 'action' => $action, 'error' => self::err( $row->get_error_code(), $row->get_error_message() ) );
 			}
 
@@ -270,6 +405,7 @@ class Movies_WP_Streamit_TV_Adapter {
 				? call_user_func( $options['update_tvshow_row'], $series_id, $row )
 				: ( class_exists( 'Streamit_Tvshow' ) ? ( new Streamit_Tvshow() )->update( $series_id, $row ) : new WP_Error( 'missing_api', 'Streamit_Tvshow is not available.' ) );
 			if ( is_wp_error( $updated ) || false === $updated || null === $updated ) {
+				Movies_WP_Series_Import_Profiler::phase_end( 'series_row', $row_snap, 0, 'failed' );
 				return array(
 					'ok'     => false,
 					'action' => $action,
@@ -277,6 +413,7 @@ class Movies_WP_Streamit_TV_Adapter {
 				);
 			}
 		}
+		Movies_WP_Series_Import_Profiler::phase_end( 'series_row', $row_snap, 1, $action );
 
 		$meta = array(
 			'_tmdb_id'              => (string) absint( $data['tmdb_id'] ?? 0 ),
@@ -285,11 +422,13 @@ class Movies_WP_Streamit_TV_Adapter {
 			'_imdb_id'              => trim( (string) ( $data['imdb_id'] ?? '' ) ),
 			'name_custom_imdb_rating' => self::rating( $data['rating'] ?? null ),
 		);
+		$meta_snap = Movies_WP_Series_Import_Profiler::phase_start( 'series_meta' );
 		foreach ( $meta as $key => $value ) {
 			if ( '' === $value ) {
 				continue;
 			}
 			if ( true !== self::write_tvshow_meta( $series_id, $key, $value, $options ) ) {
+				Movies_WP_Series_Import_Profiler::phase_end( 'series_meta', $meta_snap, 0, $key );
 				return array(
 					'ok'        => false,
 					'action'    => $action,
@@ -300,6 +439,7 @@ class Movies_WP_Streamit_TV_Adapter {
 		}
 
 		$enrichment = self::persist_series_enrichment( $series_id, $data, $options );
+		Movies_WP_Series_Import_Profiler::phase_end( 'series_meta', $meta_snap, count( $meta ), 'identity_language_country_genres' );
 		if ( true !== $enrichment ) {
 			return array( 'ok' => false, 'action' => $action, 'series_id' => $series_id, 'error' => $enrichment );
 		}
@@ -354,16 +494,25 @@ class Movies_WP_Streamit_TV_Adapter {
 			}
 		}
 
+		return true;
+	}
+
+	private static function persist_series_people( $series_id, array $data, array $options ) {
+		$people_count = 0;
+		$people_snap  = Movies_WP_Series_Import_Profiler::phase_start( 'people' );
 		foreach ( array( 'cast', 'crew' ) as $type ) {
 			$credits = isset( $data[ $type ] ) && is_array( $data[ $type ] ) ? $data[ $type ] : array();
 			if ( array() === $credits ) {
 				continue;
 			}
-			$saved = self::persist_people( $series_id, $type, $credits, $options );
+			$people_count += count( $credits );
+			$saved         = self::persist_people( $series_id, $type, $credits, $options );
 			if ( is_wp_error( $saved ) ) {
+				Movies_WP_Series_Import_Profiler::phase_end( 'people', $people_snap, $people_count, 'failed' );
 				return self::err( $saved->get_error_code(), $saved->get_error_message() );
 			}
 		}
+		Movies_WP_Series_Import_Profiler::phase_end( 'people', $people_snap, $people_count, 'cast_crew' );
 		return true;
 	}
 
@@ -383,7 +532,10 @@ class Movies_WP_Streamit_TV_Adapter {
 			if ( ! is_array( $credit ) || '' === trim( (string) ( $credit['name'] ?? '' ) ) ) {
 				continue;
 			}
-			$person_id = self::resolve_person( $credit, $options );
+			$person_started = Movies_WP_Series_Import_Profiler::begin( 'person_resolve' );
+			$person_id      = self::resolve_person( $credit, $options );
+			Movies_WP_Series_Import_Profiler::end( 'person_resolve', $person_started, (string) ( $credit['name'] ?? '' ) );
+			Movies_WP_Series_Import_Profiler::progress( 'PERSON ' . $type . ' ' . (string) ( $credit['name'] ?? '' ) );
 			if ( is_wp_error( $person_id ) ) {
 				return $person_id;
 			}
@@ -541,7 +693,62 @@ class Movies_WP_Streamit_TV_Adapter {
 		$season_number  = (int) $season_string;
 		$episode_number = (int) $plan['episode_number'];
 		$title          = sprintf( 'S%02dE%02d - %s', $season_number, $episode_number, (string) $plan['name'] );
+		$episode_t0     = microtime( true );
+		$episode_q0     = Movies_WP_Series_Import_Profiler::queries();
+		$episode_http0  = Movies_WP_Series_Import_Profiler::http_count();
+		$episode_httpms0 = Movies_WP_Series_Import_Profiler::http_total_ms();
+		$insert_ms      = 0;
+		$meta_ms        = 0;
+		$still_ms       = 0;
 
+		$mark = static function () use ( $season_number, $episode_number, $episode_t0, $episode_q0, $episode_http0, $episode_httpms0, &$insert_ms, &$meta_ms, &$still_ms, $action ) {
+			Movies_WP_Series_Import_Profiler::close_episode_meta_window();
+			$report = Movies_WP_Series_Import_Profiler::last_episode_report();
+			Movies_WP_Series_Import_Profiler::mark_episode_created(
+				$season_number,
+				$episode_number,
+				array(
+					'elapsed_ms'              => (int) round( ( microtime( true ) - $episode_t0 ) * 1000 ),
+					'insert_ms'               => $insert_ms,
+					'meta_ms'                 => $meta_ms,
+					'still_ms'                => $still_ms,
+					'dq'                      => Movies_WP_Series_Import_Profiler::queries() - $episode_q0,
+					'person_lookups'          => 0,
+					'action'                  => $action,
+					'streamit_add_episode_ms' => (int) ( $report['add_episode_ms'] ?? 0 ),
+					'insert_span_ms'          => (int) ( $report['create_hook_span_ms'] ?? $insert_ms ),
+					'add_metadata_ms'         => (int) ( $report['add_metadata_ms'] ?? 0 ),
+					'child_invalidation_ms'   => (int) ( $report['child_invalidate_ms'] ?? 0 ),
+					'http_ms'                 => Movies_WP_Series_Import_Profiler::http_total_ms() - $episode_httpms0,
+					'http_count'              => Movies_WP_Series_Import_Profiler::http_count() - $episode_http0,
+				)
+			);
+			Movies_WP_Series_Import_Profiler::reset_episode_observers();
+		};
+
+		$insert_snap       = Movies_WP_Series_Import_Profiler::phase_start( 'episode_insert' );
+		$retry_created_id = absint( $plan['retry_created_episode_id'] ?? ( $options['retry_created_episode_id'] ?? 0 ) );
+		if ( 'create' === $action && $retry_created_id > 0 ) {
+			$action                     = 'update';
+			$plan['action']             = 'update';
+			$plan['existing_episode_id'] = $retry_created_id;
+			$plan['match_by']           = 'retry_created_id';
+		}
+		if ( 'create' === $action ) {
+			$live_id = self::find_live_episode_id( $series_id, $plan, $options );
+			if ( is_wp_error( $live_id ) ) {
+				$insert_ms = (int) round( ( microtime( true ) - $insert_snap['t'] ) * 1000 );
+				Movies_WP_Series_Import_Profiler::phase_end( 'episode_insert', $insert_snap, 0, 'identity_conflict' );
+				$mark();
+				return self::episode_failure( $plan, self::err( $live_id->get_error_code(), $live_id->get_error_message() ) );
+			}
+			if ( $live_id > 0 ) {
+				$action                     = 'update';
+				$plan['action']             = 'update';
+				$plan['existing_episode_id'] = $live_id;
+				$plan['match_by']           = $plan['match_by'] ?? 'live_identity';
+			}
+		}
 		if ( 'create' === $action ) {
 			$row                = self::new_row( $title, (string) $plan['overview'], 'episode', $options );
 			$row['menu_order']  = $episode_number;
@@ -549,10 +756,34 @@ class Movies_WP_Streamit_TV_Adapter {
 			$created = isset( $options['create_episode'] ) && is_callable( $options['create_episode'] )
 				? call_user_func( $options['create_episode'], $row )
 				: ( function_exists( 'streamit_add_episode' ) ? streamit_add_episode( $row ) : new WP_Error( 'missing_api', 'streamit_add_episode() is not available.' ) );
+			$insert_ms = (int) round( ( microtime( true ) - $insert_snap['t'] ) * 1000 );
 			if ( is_wp_error( $created ) || absint( $created ) <= 0 ) {
+				Movies_WP_Series_Import_Profiler::phase_end( 'episode_insert', $insert_snap, 0, 'failed' );
+				$mark();
 				return self::episode_failure( $plan, self::external_error( $created, 'series_tv_adapter_episode_create_failed', __( 'Streamit episode creation failed.', 'movies-wp' ) ) );
 			}
 			$episode_id = absint( $created );
+			if ( isset( $options['remember_created_episode'] ) && is_callable( $options['remember_created_episode'] ) ) {
+				$remembered = call_user_func( $options['remember_created_episode'], $episode_id, $plan );
+				if ( true !== $remembered ) {
+					$insert_ms = (int) round( ( microtime( true ) - $insert_snap['t'] ) * 1000 );
+					Movies_WP_Series_Import_Profiler::phase_end( 'episode_insert', $insert_snap, 0, 'remember_failed' );
+					$mark();
+					return self::episode_failure(
+						$plan,
+						self::external_error( $remembered, 'series_tv_adapter_episode_remember_failed', __( 'Failed to persist the created episode id for retry.', 'movies-wp' ) ),
+						$episode_id
+					);
+				}
+			}
+			$identity     = self::episode_identity_meta( $series_id, $plan, $season_string, $episode_number, true );
+			$identity_err = self::persist_episode_meta_keys( $episode_id, $identity, $plan, $options );
+			if ( is_array( $identity_err ) ) {
+				$insert_ms = (int) round( ( microtime( true ) - $insert_snap['t'] ) * 1000 );
+				Movies_WP_Series_Import_Profiler::phase_end( 'episode_insert', $insert_snap, 0, 'identity_meta_failed' );
+				$mark();
+				return $identity_err;
+			}
 		} else {
 			$episode_id = absint( $plan['existing_episode_id'] ?? 0 );
 			$episode    = isset( $options['get_episode'] ) && is_callable( $options['get_episode'] )
@@ -560,12 +791,19 @@ class Movies_WP_Streamit_TV_Adapter {
 				: ( function_exists( 'streamit_get_episode' ) ? streamit_get_episode( $episode_id ) : null );
 			$row        = self::row_from_object( $episode, $episode_id, 'episode' );
 			if ( is_wp_error( $row ) ) {
+				$insert_ms = (int) round( ( microtime( true ) - $insert_snap['t'] ) * 1000 );
+				Movies_WP_Series_Import_Profiler::phase_end( 'episode_insert', $insert_snap, 0, 'failed' );
+				$mark();
 				return self::episode_failure( $plan, self::err( $row->get_error_code(), $row->get_error_message() ) );
 			}
 
 			$existing_tvshow_id = self::load_episode_meta( $episode_id, 'tvshow_id', $options );
-			if ( is_wp_error( $existing_tvshow_id ) || absint( $existing_tvshow_id ) !== (int) $series_id ) {
-				$owner_id = is_wp_error( $existing_tvshow_id ) ? 0 : absint( $existing_tvshow_id );
+			$allow_parent       = 'retry_created_id' === ( $plan['match_by'] ?? '' );
+			if ( ! self::episode_belongs_to_series( $episode_id, $series_id, $row, $existing_tvshow_id, $allow_parent ) ) {
+				$owner_id  = is_wp_error( $existing_tvshow_id ) ? absint( $row['post_parent'] ?? 0 ) : absint( $existing_tvshow_id );
+				$insert_ms = (int) round( ( microtime( true ) - $insert_snap['t'] ) * 1000 );
+				Movies_WP_Series_Import_Profiler::phase_end( 'episode_insert', $insert_snap, 0, 'ownership_conflict' );
+				$mark();
 				return self::episode_failure(
 					$plan,
 					self::err(
@@ -589,18 +827,24 @@ class Movies_WP_Streamit_TV_Adapter {
 			$updated = isset( $options['update_episode_row'] ) && is_callable( $options['update_episode_row'] )
 				? call_user_func( $options['update_episode_row'], $episode_id, $row )
 				: ( class_exists( 'Streamit_Episode' ) ? ( new Streamit_Episode() )->update( $episode_id, $row ) : new WP_Error( 'missing_api', 'Streamit_Episode is not available.' ) );
+			$insert_ms = (int) round( ( microtime( true ) - $insert_snap['t'] ) * 1000 );
 			if ( is_wp_error( $updated ) || false === $updated || null === $updated ) {
+				Movies_WP_Series_Import_Profiler::phase_end( 'episode_insert', $insert_snap, 0, 'failed' );
+				$mark();
 				return self::episode_failure( $plan, self::external_error( $updated, 'series_tv_adapter_episode_update_failed', __( 'Streamit episode update failed.', 'movies-wp' ) ), $episode_id );
 			}
 		}
+		$insert_ms = (int) round( ( microtime( true ) - $insert_snap['t'] ) * 1000 );
+		Movies_WP_Series_Import_Profiler::phase_end( 'episode_insert', $insert_snap, 1, $action );
 
-		$meta = array(
-			'_season_number'  => $season_string,
-			'_episode_number' => sprintf( 'E%02d', $episode_number ),
-			'_tmdb_id'        => (string) absint( $plan['tmdb_id'] ?? 0 ),
-		);
-		if ( 'create' === $action ) {
-			$meta = array( 'tvshow_id' => (string) $series_id ) + $meta;
+		$meta = array();
+		if ( 'create' !== $action ) {
+			$meta = self::episode_identity_meta( $series_id, $plan, $season_string, $episode_number, false );
+			if ( ! isset( $meta['_tmdb_id'] ) ) {
+				$meta['_tmdb_id'] = (string) absint( $plan['tmdb_id'] ?? 0 );
+			}
+		} elseif ( absint( $plan['tmdb_id'] ?? 0 ) <= 0 ) {
+			$meta['_tmdb_id'] = '0';
 		}
 		$air_date = trim( (string) ( $plan['air_date'] ?? '' ) );
 		if ( '' !== $air_date ) {
@@ -611,17 +855,23 @@ class Movies_WP_Streamit_TV_Adapter {
 			$meta['_episode_run_time'] = sprintf( '%d:%02d', intdiv( $runtime, 60 ), $runtime % 60 );
 		}
 
-		foreach ( $meta as $key => $value ) {
-			if ( true !== self::write_episode_meta( $episode_id, $key, $value, $options ) ) {
-				return self::episode_failure(
-					$plan,
-					self::err( 'series_tv_adapter_episode_meta_failed', sprintf( __( 'Failed to save episode metadata %s.', 'movies-wp' ), $key ) ),
-					$episode_id
-				);
-			}
+		$meta_snap = Movies_WP_Series_Import_Profiler::phase_start( 'episode_meta' );
+		$meta_err  = self::persist_episode_meta_keys( $episode_id, $meta, $plan, $options );
+		if ( is_array( $meta_err ) ) {
+			$meta_ms = (int) round( ( microtime( true ) - $meta_snap['t'] ) * 1000 );
+			Movies_WP_Series_Import_Profiler::phase_end( 'episode_meta', $meta_snap, 0, 'failed' );
+			$mark();
+			return $meta_err;
 		}
+		$meta_ms = (int) round( ( microtime( true ) - $meta_snap['t'] ) * 1000 );
+		Movies_WP_Series_Import_Profiler::phase_end( 'episode_meta', $meta_snap, count( $meta ), 'episode_meta' );
 
-		$image = self::persist_image( 'episode', $episode_id, 'still', 'thumbnail_id', $plan['image'], $options );
+		$still_snap = Movies_WP_Series_Import_Profiler::phase_start( 'episode_still' );
+		$image      = self::persist_image( 'episode', $episode_id, 'still', 'thumbnail_id', $plan['image'], $options );
+		$still_ms   = (int) round( ( microtime( true ) - $still_snap['t'] ) * 1000 );
+		Movies_WP_Series_Import_Profiler::phase_end( 'episode_still', $still_snap, 1, (string) ( $plan['image']['action'] ?? '' ) );
+		Movies_WP_Series_Import_Profiler::mark_still( $season_string, $episode_number, (string) ( $plan['image']['action'] ?? '' ) );
+		$mark();
 		if ( empty( $image['ok'] ) ) {
 			return self::episode_failure( $plan, $image['error'], $episode_id, $image );
 		}
@@ -684,9 +934,12 @@ class Movies_WP_Streamit_TV_Adapter {
 		$row['season_upcoming_datetime'] = $row['season_upcoming_datetime'] ?? '';
 		$row['season_number']            = $number;
 
-		$image = isset( $plan['image'] ) && is_array( $plan['image'] ) ? $plan['image'] : array( 'action' => 'skip_missing' );
+		$season_snap = Movies_WP_Series_Import_Profiler::phase_start( 'season_image' );
+		$image       = isset( $plan['image'] ) && is_array( $plan['image'] ) ? $plan['image'] : array( 'action' => 'skip_missing' );
 		if ( 'set' === ( $image['action'] ?? '' ) ) {
 			$download = self::download_image( $image, 'season_poster', $options );
+			Movies_WP_Series_Import_Profiler::phase_end( 'season_image', $season_snap, 1, 'season_poster' );
+			Movies_WP_Series_Import_Profiler::progress( 'IMAGE season_poster action=set' );
 			if ( is_wp_error( $download ) ) {
 				return array(
 					'ok'            => false,
@@ -696,8 +949,11 @@ class Movies_WP_Streamit_TV_Adapter {
 				);
 			}
 			$row['image_id'] = (int) $download;
-		} elseif ( ! array_key_exists( 'image_id', $row ) ) {
-			$row['image_id'] = '';
+		} else {
+			Movies_WP_Series_Import_Profiler::phase_end( 'season_image', $season_snap, 0, (string) ( $image['action'] ?? 'skip_missing' ) );
+			if ( ! array_key_exists( 'image_id', $row ) ) {
+				$row['image_id'] = '';
+			}
 		}
 
 		if ( null === $slot ) {
@@ -723,7 +979,10 @@ class Movies_WP_Streamit_TV_Adapter {
 		if ( 'set' !== $action ) {
 			return array( 'ok' => true, 'role' => $role, 'action' => $action, 'target' => $target, 'attachment_id' => null );
 		}
-		$attachment = self::download_image( $image, $role, $options );
+		$download_started = Movies_WP_Series_Import_Profiler::begin( 'image_sideload.' . $role );
+		$attachment       = self::download_image( $image, $role, $options );
+		Movies_WP_Series_Import_Profiler::end( 'image_sideload.' . $role, $download_started, (string) ( $image['url'] ?? $image['path'] ?? $role ) );
+		Movies_WP_Series_Import_Profiler::progress( 'IMAGE ' . $role . ' action=set' );
 		if ( is_wp_error( $attachment ) ) {
 			return array(
 				'ok'     => false,
@@ -775,7 +1034,7 @@ class Movies_WP_Streamit_TV_Adapter {
 		if ( absint( $found ) > 0 ) {
 			return absint( $found );
 		}
-		$path = wp_basename( (string) parse_url( $source_url, PHP_URL_PATH ) );
+		$path = self::image_sideload_name( $image, $source_url );
 
 		if ( isset( $options['sideload_image'] ) && is_callable( $options['sideload_image'] ) ) {
 			$id = call_user_func( $options['sideload_image'], $source_url, $path, $role );
@@ -792,7 +1051,7 @@ class Movies_WP_Streamit_TV_Adapter {
 				return $tmp;
 			}
 			$file = array(
-				'name'     => sanitize_file_name( '' !== $path ? $path : 'tmdb-image.jpg' ),
+				'name'     => $path,
 				'tmp_name' => $tmp,
 			);
 			$id = media_handle_sideload( $file, 0 );
@@ -820,6 +1079,32 @@ class Movies_WP_Streamit_TV_Adapter {
 		return absint( $id );
 	}
 
+	/**
+	 * TMDb images are often proxied through admin-ajax.php; WordPress rejects a .php upload name.
+	 */
+	private static function image_sideload_name( array $image, $source_url ) {
+		$candidates = array();
+		if ( ! empty( $image['path'] ) ) {
+			$candidates[] = wp_basename( (string) $image['path'] );
+		}
+		$query = array();
+		parse_str( (string) parse_url( (string) $source_url, PHP_URL_QUERY ), $query );
+		if ( ! empty( $query['path'] ) ) {
+			$candidates[] = wp_basename( (string) $query['path'] );
+		}
+		$candidates[] = wp_basename( (string) parse_url( (string) $source_url, PHP_URL_PATH ) );
+		foreach ( $candidates as $name ) {
+			$name = function_exists( 'sanitize_file_name' ) ? sanitize_file_name( (string) $name ) : preg_replace( '/[^A-Za-z0-9._-]/', '', (string) $name );
+			if ( '' === $name || preg_match( '/\.php[0-9]*$/i', $name ) ) {
+				continue;
+			}
+			if ( preg_match( '/\.(jpe?g|png|gif|webp|bmp)$/i', $name ) ) {
+				return $name;
+			}
+		}
+		return 'tmdb-image.jpg';
+	}
+
 	private static function write_tvshow_meta( $id, $key, $value, array $options ) {
 		$result = isset( $options['update_tvshow_meta'] ) && is_callable( $options['update_tvshow_meta'] )
 			? call_user_func( $options['update_tvshow_meta'], (int) $id, $key, $value )
@@ -828,6 +1113,61 @@ class Movies_WP_Streamit_TV_Adapter {
 			return false;
 		}
 		return false !== $result || self::values_equal( self::load_tvshow_meta( $id, $key, $options ), $value );
+	}
+
+	/**
+	 * Identity keys used to find a live episode after a crash: tvshow_id, season, episode, TMDb id.
+	 *
+	 * @param array<string, mixed> $plan
+	 * @return array<string, string>
+	 */
+	private static function episode_identity_meta( $series_id, array $plan, $season_string, $episode_number, $include_tvshow ) {
+		$meta = array();
+		if ( $include_tvshow ) {
+			$meta['tvshow_id'] = (string) (int) $series_id;
+		}
+		$meta['_season_number']  = (string) $season_string;
+		$meta['_episode_number'] = sprintf( 'E%02d', (int) $episode_number );
+		$tmdb                    = absint( $plan['tmdb_id'] ?? 0 );
+		if ( $tmdb > 0 ) {
+			$meta['_tmdb_id'] = (string) $tmdb;
+		}
+		return $meta;
+	}
+
+	/**
+	 * Ownership for updates: tvshow_id must match. A job-scoped retry of an ID we just
+	 * created may use post_parent when tvshow_id has not been written yet.
+	 *
+	 * @param array<string, mixed> $row
+	 * @param mixed                $existing_tvshow_id
+	 */
+	private static function episode_belongs_to_series( $episode_id, $series_id, array $row, $existing_tvshow_id, $allow_parent_if_meta_empty ) {
+		unset( $episode_id );
+		$series_id = (int) $series_id;
+		if ( ! is_wp_error( $existing_tvshow_id ) && absint( $existing_tvshow_id ) === $series_id ) {
+			return true;
+		}
+		if ( ! is_wp_error( $existing_tvshow_id ) && absint( $existing_tvshow_id ) > 0 ) {
+			return false;
+		}
+		if ( $allow_parent_if_meta_empty && self::empty_meta_value( is_wp_error( $existing_tvshow_id ) ? null : $existing_tvshow_id ) ) {
+			return absint( $row['post_parent'] ?? 0 ) === $series_id;
+		}
+		return false;
+	}
+
+	private static function persist_episode_meta_keys( $episode_id, array $meta, array $plan, array $options ) {
+		foreach ( $meta as $key => $value ) {
+			if ( true !== self::write_episode_meta( $episode_id, $key, $value, $options ) ) {
+				return self::episode_failure(
+					$plan,
+					self::err( 'series_tv_adapter_episode_meta_failed', sprintf( __( 'Failed to save episode metadata %s.', 'movies-wp' ), $key ) ),
+					$episode_id
+				);
+			}
+		}
+		return null;
 	}
 
 	private static function write_episode_meta( $id, $key, $value, array $options ) {
@@ -975,6 +1315,142 @@ class Movies_WP_Streamit_TV_Adapter {
 
 	private static function year( $date ) {
 		return preg_match( '/^(\d{4})-/', (string) $date, $matches ) ? $matches[1] : '';
+	}
+
+	/**
+	 * Live episode identity: tvshow_id + TMDb episode ID, then season + episode number.
+	 * Uses the same Streamit listing primitive as the import plan (`streamit_get_episodes` / find_episodes).
+	 *
+	 * @param array<string, mixed> $plan
+	 * @param array<string, mixed> $options
+	 * @return int|WP_Error
+	 */
+	public static function find_live_episode_id( $series_id, array $plan, array $options = array() ) {
+		$series_id = (int) $series_id;
+		if ( $series_id <= 0 ) {
+			return 0;
+		}
+		$rows = null;
+		if ( isset( $options['find_episodes'] ) && is_callable( $options['find_episodes'] ) ) {
+			$rows = call_user_func( $options['find_episodes'], $series_id );
+			if ( is_wp_error( $rows ) ) {
+				return $rows;
+			}
+			if ( is_array( $rows ) && isset( $rows['episodes'] ) && is_array( $rows['episodes'] ) ) {
+				$rows = $rows['episodes'];
+			}
+		} elseif ( function_exists( 'streamit_get_episodes' ) ) {
+			$result = streamit_get_episodes(
+				array(
+					'per_page'    => -1,
+					'post_status' => array( 'all' ),
+					'meta_query'  => array(
+						array(
+							'key'     => 'tvshow_id',
+							'value'   => (string) $series_id,
+							'compare' => '=',
+						),
+					),
+				)
+			);
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
+			$rows = array();
+			if ( is_object( $result ) && isset( $result->results ) && is_array( $result->results ) ) {
+				foreach ( $result->results as $episode ) {
+					if ( ! is_object( $episode ) || ! method_exists( $episode, 'get_id' ) ) {
+						continue;
+					}
+					$id = absint( $episode->get_id() );
+					if ( $id <= 0 ) {
+						continue;
+					}
+					$tmdb = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_tmdb_id' ) : 0;
+					$sn   = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_season_number' ) : null;
+					$en   = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_episode_number' ) : null;
+					$show = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( 'tvshow_id' ) : 0;
+					$rows[] = array(
+						'id'             => $id,
+						'tvshow_id'      => absint( $show ),
+						'tmdb_id'        => absint( $tmdb ),
+						'season_number'  => $sn,
+						'episode_number' => $en,
+					);
+				}
+			}
+		} else {
+			return 0;
+		}
+		if ( ! is_array( $rows ) ) {
+			return 0;
+		}
+
+		$want_tmdb = absint( $plan['tmdb_id'] ?? 0 );
+		$want_se   = self::season_number_string( $plan['season_number'] ?? null );
+		$want_ep   = self::canonical_episode_int( $plan['episode_number'] ?? null );
+		$by_tmdb   = array();
+		$by_se     = array();
+		foreach ( $rows as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$id = absint( $row['id'] ?? 0 );
+			if ( $id <= 0 ) {
+				continue;
+			}
+			$row_show = array_key_exists( 'tvshow_id', $row ) ? absint( $row['tvshow_id'] ) : 0;
+			if ( $row_show <= 0 ) {
+				$loaded = self::load_episode_meta( $id, 'tvshow_id', $options );
+				$row_show = is_wp_error( $loaded ) ? 0 : absint( $loaded );
+			}
+			if ( $row_show !== $series_id ) {
+				continue;
+			}
+			$tmdb = absint( $row['tmdb_id'] ?? 0 );
+			$se   = self::season_number_string( $row['season_number'] ?? null );
+			$ep   = self::canonical_episode_int( $row['episode_number'] ?? null );
+			if ( $want_tmdb > 0 && $tmdb === $want_tmdb ) {
+				$by_tmdb[] = $id;
+			}
+			if ( null !== $want_se && null !== $want_ep && $se === $want_se && $ep === $want_ep ) {
+				$by_se[] = $id;
+			}
+		}
+		$by_tmdb = array_values( array_unique( $by_tmdb ) );
+		$by_se   = array_values( array_unique( $by_se ) );
+		if ( count( $by_tmdb ) > 1 || count( $by_se ) > 1 ) {
+			return new WP_Error(
+				'series_tv_adapter_duplicate_episode_identity',
+				__( 'Multiple Streamit episodes match the same Series episode identity.', 'movies-wp' )
+			);
+		}
+		if ( 1 === count( $by_tmdb ) ) {
+			if ( 1 === count( $by_se ) && $by_se[0] !== $by_tmdb[0] ) {
+				return new WP_Error(
+					'series_tv_adapter_episode_identity_conflict',
+					__( 'TMDb and season/episode identity point to different Streamit episodes.', 'movies-wp' )
+				);
+			}
+			return (int) $by_tmdb[0];
+		}
+		if ( 1 === count( $by_se ) ) {
+			return (int) $by_se[0];
+		}
+		return 0;
+	}
+
+	private static function canonical_episode_int( $value ) {
+		if ( is_int( $value ) && $value > 0 ) {
+			return $value;
+		}
+		if ( is_string( $value ) && preg_match( '/^(?:E)?0*([1-9]\d*)$/i', $value, $matches ) ) {
+			return (int) $matches[1];
+		}
+		if ( is_numeric( $value ) && (int) $value > 0 ) {
+			return (int) $value;
+		}
+		return null;
 	}
 
 	private static function season_number_string( $value ) {

@@ -472,6 +472,443 @@ tv_adapter_same( true, $result['episodes'][0]['ok'], 'earlier episode remains su
 tv_adapter_same( false, $result['episodes'][1]['ok'], 'failed episode is reported independently' );
 tv_adapter_same( array( 70 ), tv_adapter_season_episodes( $state['seasons'], 0 ), 'season retains earlier successful episode' );
 
+echo "\n[live-identity-retry-does-not-duplicate-episode]\n";
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$fail_meta = true;
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	$id = 70;
+	$state['episode_meta'][ $id ]['tvshow_id'] = '100';
+	return $id;
+};
+$options['find_episodes'] = static function () use ( &$state ) {
+	$episodes = array();
+	foreach ( $state['created_episode_rows'] as $idx => $row ) {
+		unset( $idx, $row );
+		$episodes[] = array(
+			'id'             => 70,
+			'tvshow_id'      => 100,
+			'tmdb_id'        => 900,
+			'season_number'  => '0',
+			'episode_number' => 1,
+		);
+	}
+	return $episodes;
+};
+$options['update_episode_meta'] = static function ( $id, $key, $value ) use ( &$state, &$fail_meta ) {
+	if ( $fail_meta && '_tmdb_id' === $key ) {
+		$fail_meta = false;
+		return false;
+	}
+	$state['episode_meta'][ $id ][ $key ] = $value;
+	return true;
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$first = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $first['ok'] ), 'first persist fails after the Streamit row exists' );
+$second = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( ! empty( $second['ok'] ), 'retry completes against the existing episode' );
+tv_adapter_same( 1, $creates, 'retry does not call streamit_add_episode again' );
+tv_adapter_same( 70, (int) $second['episode_id'], 'retry reuses the live episode id' );
+
+echo "\n[find-live-wrong-show-season-episode-fallback]\n";
+$wrong_show = Movies_WP_Streamit_TV_Adapter::find_live_episode_id(
+	100,
+	array(
+		'season_number'  => '1',
+		'episode_number' => 1,
+	),
+	array(
+		'find_episodes' => static function () {
+			return array(
+				array(
+					'id'             => 9901,
+					'tvshow_id'      => 99,
+					'tmdb_id'        => 0,
+					'season_number'  => '1',
+					'episode_number' => 1,
+				),
+				array(
+					'id'             => 10001,
+					'tvshow_id'      => 100,
+					'tmdb_id'        => 0,
+					'season_number'  => '1',
+					'episode_number' => 1,
+				),
+			);
+		},
+	)
+);
+tv_adapter_same( 10001, $wrong_show, 'SxxExx fallback matches only the requested TV show' );
+
+echo "\n[create-without-identity-meta-then-retry]\n";
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$fail_secondary = true;
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	return $state['next_episode_id']++;
+};
+$options['find_episodes'] = static function ( $series_id ) use ( &$state ) {
+	$episodes = array();
+	foreach ( $state['episode_meta'] as $id => $meta ) {
+		if ( ! is_array( $meta ) ) {
+			continue;
+		}
+		$show = absint( $meta['tvshow_id'] ?? 0 );
+		if ( $show !== (int) $series_id ) {
+			continue;
+		}
+		$episodes[] = array(
+			'id'             => (int) $id,
+			'tvshow_id'      => $show,
+			'tmdb_id'        => absint( $meta['_tmdb_id'] ?? 0 ),
+			'season_number'  => $meta['_season_number'] ?? null,
+			'episode_number' => $meta['_episode_number'] ?? null,
+		);
+	}
+	return $episodes;
+};
+$options['update_episode_meta'] = static function ( $id, $key, $value ) use ( &$state, &$fail_secondary ) {
+	if ( $fail_secondary && '_episode_run_time' === $key ) {
+		$fail_secondary = false;
+		return false;
+	}
+	$state['episode_meta'][ $id ][ $key ] = $value;
+	$state['episode_meta_writes'][] = $key;
+	return true;
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$first = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $first['ok'] ), 'persist fails after identity meta and before secondary work' );
+tv_adapter_same( 1, $creates, 'create_episode runs once on the first attempt' );
+tv_adapter_same(
+	array( 'tvshow_id', '_season_number', '_episode_number', '_tmdb_id' ),
+	array_slice( $state['episode_meta_writes'], 0, 4 ),
+	'identity metadata is written before secondary metadata'
+);
+tv_adapter_same( '100', (string) ( $state['episode_meta'][70]['tvshow_id'] ?? '' ), 'tvshow_id is persisted immediately after create' );
+$second = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( ! empty( $second['ok'] ), 'retry completes after identity meta exists' );
+tv_adapter_same( 1, $creates, 'retry does not create a second Streamit episode' );
+tv_adapter_same( 70, (int) $second['episode_id'], 'retry reuses the created episode id' );
+tv_adapter_same( 'update', (string) ( $second['action'] ?? '' ), 'retry updates the existing episode' );
+
+echo "\n[identity-meta-write-failure-then-recover]\n";
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$fail_tmdb = true;
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	return $state['next_episode_id']++;
+};
+$options['find_episodes'] = static function ( $series_id ) use ( &$state ) {
+	$episodes = array();
+	foreach ( $state['episode_meta'] as $id => $meta ) {
+		if ( ! is_array( $meta ) ) {
+			continue;
+		}
+		$show = absint( $meta['tvshow_id'] ?? 0 );
+		if ( $show !== (int) $series_id ) {
+			continue;
+		}
+		$episodes[] = array(
+			'id'             => (int) $id,
+			'tvshow_id'      => $show,
+			'tmdb_id'        => absint( $meta['_tmdb_id'] ?? 0 ),
+			'season_number'  => $meta['_season_number'] ?? null,
+			'episode_number' => $meta['_episode_number'] ?? null,
+		);
+	}
+	return $episodes;
+};
+$options['update_episode_meta'] = static function ( $id, $key, $value ) use ( &$state, &$fail_tmdb ) {
+	if ( $fail_tmdb && '_tmdb_id' === $key ) {
+		$fail_tmdb = false;
+		return false;
+	}
+	$state['episode_meta'][ $id ][ $key ] = $value;
+	return true;
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$first = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $first['ok'] ), 'identity TMDb write failure returns ok=false' );
+tv_adapter_same( 'series_tv_adapter_episode_meta_failed', (string) ( $first['error']['code'] ?? '' ), 'identity write failure uses episode meta error' );
+tv_adapter_same( 1, $creates, 'failed identity write does not retry create in the same call' );
+tv_adapter_same( '100', (string) ( $state['episode_meta'][70]['tvshow_id'] ?? '' ), 'tvshow_id survived the failed TMDb identity write' );
+tv_adapter_same( '0', (string) ( $state['episode_meta'][70]['_season_number'] ?? '' ), 'season identity survived the failed TMDb identity write' );
+$second = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( ! empty( $second['ok'] ), 'retry recovers using season and episode identity' );
+tv_adapter_same( 1, $creates, 'retry after partial identity write does not duplicate' );
+tv_adapter_same( 70, (int) $second['episode_id'], 'retry reuses the episode after partial identity write' );
+
+echo "\n[crash-after-tvshow-id-only-uses-remembered-id]\n";
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$remembered = 0;
+$fail_key = '_season_number';
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	$id = $state['next_episode_id']++;
+	$state['episode_parent'][ $id ] = absint( $row['post_parent'] ?? 0 );
+	return $id;
+};
+$options['remember_created_episode'] = static function ( $id ) use ( &$remembered ) {
+	$remembered = absint( $id );
+	return true;
+};
+$options['find_episodes'] = static function ( $series_id ) use ( &$state ) {
+	$episodes = array();
+	foreach ( $state['episode_meta'] as $id => $meta ) {
+		if ( ! is_array( $meta ) ) {
+			continue;
+		}
+		$show = absint( $meta['tvshow_id'] ?? 0 );
+		if ( $show !== (int) $series_id ) {
+			continue;
+		}
+		$episodes[] = array(
+			'id'             => (int) $id,
+			'tvshow_id'      => $show,
+			'tmdb_id'        => absint( $meta['_tmdb_id'] ?? 0 ),
+			'season_number'  => $meta['_season_number'] ?? null,
+			'episode_number' => $meta['_episode_number'] ?? null,
+		);
+	}
+	return $episodes;
+};
+$options['get_episode'] = static function ( $id ) use ( &$state ) {
+	$fields = tv_adapter_fields( 'episode', 'Retry ' . $id );
+	$fields['post_parent'] = (int) ( $state['episode_parent'][ $id ] ?? 0 );
+	return new TV_Adapter_Object( $fields );
+};
+$options['update_episode_meta'] = static function ( $id, $key, $value ) use ( &$state, &$fail_key ) {
+	if ( $fail_key === $key ) {
+		$fail_key = '';
+		return false;
+	}
+	$state['episode_meta'][ $id ][ $key ] = $value;
+	return true;
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$first = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $first['ok'] ), 'crash after tvshow_id fails the episode' );
+tv_adapter_same( 1, $creates, 'create ran once before the identity crash' );
+tv_adapter_same( 70, $remembered, 'created episode id was remembered before remaining identity writes' );
+tv_adapter_same( '100', (string) ( $state['episode_meta'][70]['tvshow_id'] ?? '' ), 'only tvshow_id identity was stored' );
+tv_adapter_assert( ! isset( $state['episode_meta'][70]['_season_number'] ), 'season identity was not stored' );
+$retry_plan = $episode_plan;
+$retry_plan['retry_created_episode_id'] = $remembered;
+$second = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $retry_plan, $options );
+tv_adapter_assert( ! empty( $second['ok'] ), 'retry after tvshow_id-only crash completes' );
+tv_adapter_same( 1, $creates, 'retry after tvshow_id-only crash does not create' );
+tv_adapter_same( 70, (int) $second['episode_id'], 'retry after tvshow_id-only crash reuses remembered id' );
+
+echo "\n[crash-after-season-before-episode-number]\n";
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$remembered = 0;
+$fail_key = '_episode_number';
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	$id = $state['next_episode_id']++;
+	$state['episode_parent'][ $id ] = absint( $row['post_parent'] ?? 0 );
+	return $id;
+};
+$options['remember_created_episode'] = static function ( $id ) use ( &$remembered ) {
+	$remembered = absint( $id );
+	return true;
+};
+$options['find_episodes'] = static function () {
+	return array();
+};
+$options['get_episode'] = static function ( $id ) use ( &$state ) {
+	$fields = tv_adapter_fields( 'episode', 'Retry ' . $id );
+	$fields['post_parent'] = (int) ( $state['episode_parent'][ $id ] ?? 0 );
+	return new TV_Adapter_Object( $fields );
+};
+$options['update_episode_meta'] = static function ( $id, $key, $value ) use ( &$state, &$fail_key ) {
+	if ( $fail_key === $key ) {
+		$fail_key = '';
+		return false;
+	}
+	$state['episode_meta'][ $id ][ $key ] = $value;
+	return true;
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$first = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $first['ok'] ), 'crash after season identity fails the episode' );
+tv_adapter_same( '0', (string) ( $state['episode_meta'][70]['_season_number'] ?? '' ), 'season identity was stored' );
+tv_adapter_assert( ! isset( $state['episode_meta'][70]['_episode_number'] ), 'episode number identity was not stored' );
+$retry_plan = $episode_plan;
+$retry_plan['retry_created_episode_id'] = $remembered;
+$second = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $retry_plan, $options );
+tv_adapter_assert( ! empty( $second['ok'] ), 'retry after season-only identity completes' );
+tv_adapter_same( 1, $creates, 'retry after season-only crash does not create' );
+tv_adapter_same( 70, (int) $second['episode_id'], 'retry after season-only crash reuses remembered id' );
+
+echo "\n[crash-after-episode-number-before-tmdb]\n";
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$remembered = 0;
+$fail_key = '_tmdb_id';
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	$id = $state['next_episode_id']++;
+	$state['episode_parent'][ $id ] = absint( $row['post_parent'] ?? 0 );
+	return $id;
+};
+$options['remember_created_episode'] = static function ( $id ) use ( &$remembered ) {
+	$remembered = absint( $id );
+	return true;
+};
+$options['find_episodes'] = static function () {
+	return array();
+};
+$options['get_episode'] = static function ( $id ) use ( &$state ) {
+	$fields = tv_adapter_fields( 'episode', 'Retry ' . $id );
+	$fields['post_parent'] = (int) ( $state['episode_parent'][ $id ] ?? 0 );
+	return new TV_Adapter_Object( $fields );
+};
+$options['update_episode_meta'] = static function ( $id, $key, $value ) use ( &$state, &$fail_key ) {
+	if ( $fail_key === $key ) {
+		$fail_key = '';
+		return false;
+	}
+	$state['episode_meta'][ $id ][ $key ] = $value;
+	return true;
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$first = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $first['ok'] ), 'crash before TMDb identity fails the episode' );
+tv_adapter_same( 'E01', (string) ( $state['episode_meta'][70]['_episode_number'] ?? '' ), 'episode number identity was stored' );
+tv_adapter_assert( ! isset( $state['episode_meta'][70]['_tmdb_id'] ), 'TMDb identity was not stored' );
+$retry_plan = $episode_plan;
+$retry_plan['retry_created_episode_id'] = $remembered;
+$second = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $retry_plan, $options );
+tv_adapter_assert( ! empty( $second['ok'] ), 'retry after episode-number crash completes' );
+tv_adapter_same( 1, $creates, 'retry after episode-number crash does not create' );
+tv_adapter_same( 70, (int) $second['episode_id'], 'retry after episode-number crash reuses remembered id' );
+
+echo "\n[incomplete-foreign-episode-is-not-adopted]\n";
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	return $state['next_episode_id']++;
+};
+$options['find_episodes'] = static function () {
+	return array(
+		array(
+			'id'             => 9901,
+			'tvshow_id'      => 99,
+			'tmdb_id'        => 0,
+			'season_number'  => null,
+			'episode_number' => null,
+		),
+	);
+};
+$options['get_episode'] = static function ( $id ) {
+	$fields = tv_adapter_fields( 'episode', 'Foreign ' . $id );
+	$fields['post_parent'] = 99;
+	return new TV_Adapter_Object( $fields );
+};
+$state['episode_meta'][9901]['tvshow_id'] = '99';
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$episode_plan['retry_created_episode_id'] = 9901;
+$foreign = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $foreign['ok'] ), 'incomplete episode from another TV show is not adopted' );
+tv_adapter_same( 'series_tv_adapter_episode_ownership_conflict', (string) ( $foreign['error']['code'] ?? '' ), 'foreign incomplete episode is an ownership conflict' );
+tv_adapter_same( 0, $creates, 'foreign incomplete episode does not trigger create' );
+tv_adapter_same( array(), $state['episode_rows'], 'foreign incomplete episode row is not updated' );
+
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	return $state['next_episode_id']++;
+};
+$options['find_episodes'] = static function () {
+	return array();
+};
+$options['get_episode'] = static function ( $id ) {
+	$fields = tv_adapter_fields( 'episode', 'Foreign parent ' . $id );
+	$fields['post_parent'] = 99;
+	return new TV_Adapter_Object( $fields );
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$episode_plan['retry_created_episode_id'] = 9902;
+$parent_foreign = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $parent_foreign['ok'] ), 'post_parent of another TV show is not adopted' );
+tv_adapter_same( 0, $creates, 'foreign post_parent retry does not create' );
+
+echo "\n[remember-created-episode-must-succeed-before-identity]\n";
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	return $state['next_episode_id']++;
+};
+$options['remember_created_episode'] = static function ( $id ) {
+	unset( $id );
+	return true;
+};
+$options['find_episodes'] = static function () {
+	return array();
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$ok_remember = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( ! empty( $ok_remember['ok'] ), 'successful remember allows identity metadata to proceed' );
+tv_adapter_same( '100', (string) ( $state['episode_meta'][70]['tvshow_id'] ?? '' ), 'identity metadata is written after a successful remember' );
+tv_adapter_same( 1, $creates, 'successful remember still creates once' );
+
+$state = array();
+$options = tv_adapter_harness( $state );
+$creates = 0;
+$options['create_episode'] = static function ( $row ) use ( &$state, &$creates ) {
+	++$creates;
+	$state['created_episode_rows'][] = $row;
+	return $state['next_episode_id']++;
+};
+$options['remember_created_episode'] = static function ( $id ) {
+	unset( $id );
+	return false;
+};
+$options['find_episodes'] = static function () {
+	return array();
+};
+$options['update_episode_meta'] = static function ( $id, $key, $value ) use ( &$state ) {
+	$state['episode_meta'][ $id ][ $key ] = $value;
+	$state['episode_meta_writes'][] = $key;
+	return true;
+};
+$episode_plan = tv_adapter_plan()['seasons'][0]['episodes'][0];
+$failed_remember = Movies_WP_Streamit_TV_Adapter::apply_episode_phase( 100, $episode_plan, $options );
+tv_adapter_assert( empty( $failed_remember['ok'] ), 'failed remember does not complete the episode' );
+tv_adapter_same( 'series_tv_adapter_episode_remember_failed', (string) ( $failed_remember['error']['code'] ?? '' ), 'failed remember uses the episode remember error' );
+tv_adapter_same( 1, $creates, 'failed remember does not call create_episode again' );
+tv_adapter_assert( empty( $state['episode_meta'][70] ?? array() ), 'failed remember does not write identity metadata' );
+tv_adapter_same( array(), $state['episode_meta_writes'], 'failed remember writes no episode meta keys' );
+
 echo "\n";
 if ( $failures > 0 ) {
 	fwrite( STDERR, "{$failures} assertion(s) failed.\n" );
