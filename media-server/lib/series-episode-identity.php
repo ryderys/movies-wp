@@ -1,9 +1,9 @@
 <?php
 /**
- * Dedicated SxxExx / EPxx / Episode N identity parser for Series filenames.
+ * Dedicated SxxExx / EPxx / bare E## / Episode N identity parser for Series filenames.
  *
- * Runs before the generic filename parser. EPxx and Episode N remain seasonless
- * until the WordPress layer resolves them against authoritative episode metadata.
+ * Runs before the generic filename parser. EPxx, bare E##, and Episode N remain
+ * seasonless until the WordPress layer resolves them against authoritative episode metadata.
  *
  * @package movies-wp
  */
@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 const MEDIA_SERIES_EPISODE_IDENTITY_PATTERN = '/(?<![A-Za-z0-9])S([0-9]{1,3})E([0-9]{1,4})(?![0-9])/i';
 const MEDIA_SERIES_EPISODE_ONLY_PATTERN = '/(?<![A-Za-z0-9])EP([0-9]{1,4})(?![A-Za-z0-9])/i';
+/** Bare E## (e.g. .E04.); lookbehind prevents matching the E inside S01E04. */
+const MEDIA_SERIES_BARE_E_PATTERN = '/(?<![A-Za-z0-9])E([0-9]{1,4})(?![0-9])/i';
 const MEDIA_SERIES_EPISODE_WORD_PATTERN = '/(?<![A-Za-z0-9])Episode\s+([0-9]{1,4})(?![A-Za-z0-9])/i';
 
 /**
@@ -40,8 +42,9 @@ function media_parse_series_episode_identity( string $filename ): array {
 
 	$season_match_count = preg_match_all( MEDIA_SERIES_EPISODE_IDENTITY_PATTERN, $basename, $matches, PREG_SET_ORDER );
 	preg_match_all( MEDIA_SERIES_EPISODE_ONLY_PATTERN, $basename, $ep_matches, PREG_SET_ORDER );
+	preg_match_all( MEDIA_SERIES_BARE_E_PATTERN, $basename, $bare_e_matches, PREG_SET_ORDER );
 	preg_match_all( MEDIA_SERIES_EPISODE_WORD_PATTERN, $basename, $word_matches, PREG_SET_ORDER );
-	$episode_only_matches = array_merge( $ep_matches, $word_matches );
+	$episode_only_matches = array_merge( $ep_matches, $bare_e_matches, $word_matches );
 	$episode_match_count  = count( $episode_only_matches );
 
 	if ( $season_match_count > 0 && $episode_match_count > 0 ) {
@@ -64,7 +67,7 @@ function media_parse_series_episode_identity( string $filename ): array {
 		return array(
 			'ok'      => false,
 			'code'    => 'missing_episode_identity',
-			'message' => 'No SxxExx, EPxx, or Episode N identity found in filename.',
+			'message' => 'No SxxExx, EPxx, E##, or Episode N identity found in filename.',
 		);
 	}
 
