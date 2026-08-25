@@ -73,9 +73,10 @@ class Movies_WP_Series_Import_Job_Runner {
 				'snapshot_id'   => (int) $snapshot['id'],
 				'episode_total' => count( $episodes ),
 				'result'        => array(
-					'snapshot_token_hash' => (string) $snapshot['token_hash'],
-					'fingerprint'         => (string) $snapshot['fingerprint'],
+					'snapshot_token_hash'   => (string) $snapshot['token_hash'],
+					'fingerprint'           => (string) $snapshot['fingerprint'],
 					'episode_ids_by_season' => array(),
+					'display_title'         => trim( (string) ( $payload['input']['title'] ?? '' ) ),
 				),
 			),
 			$context
@@ -202,6 +203,9 @@ class Movies_WP_Series_Import_Job_Runner {
 
 		$claim_token = (string) ( $job['claim_token'] ?? '' );
 		$options['_claim_token'] = $claim_token;
+		$options['lease_heartbeat'] = static function () use ( $raw_token, &$options ) {
+			return self::heartbeat( $raw_token, $options );
+		};
 		$user_id     = (int) ( $job['user_id'] ?? 0 );
 		if ( $user_id > 0 && function_exists( 'wp_set_current_user' ) ) {
 			wp_set_current_user( $user_id );
@@ -287,6 +291,13 @@ class Movies_WP_Series_Import_Job_Runner {
 		}
 		if ( 'completed' === (string) $job['status'] ) {
 			return $job;
+		}
+		// Refuse reclaim while a running job still shows recent worker activity.
+		if ( 'running' === (string) $job['status'] && ! Movies_WP_Series_Import_Job_Store::is_resume_eligible_stall( $job, $options ) ) {
+			return new WP_Error(
+				'series_import_job_busy',
+				__( 'This Series import job still shows recent worker activity and cannot be resumed yet.', 'movies-wp' )
+			);
 		}
 		Movies_WP_Series_Import_Job_Store::update(
 			$raw_token,
@@ -634,6 +645,9 @@ class Movies_WP_Series_Import_Job_Runner {
 			? $options['media_preview_build']
 			: array( 'Movies_WP_Series_Media_Preview_Service', 'build' );
 		$media_preview = call_user_func( $build, $input, $preview_opts );
+		if ( ! self::heartbeat( $token, $options ) ) {
+			return;
+		}
 		if ( is_wp_error( $media_preview ) ) {
 			self::fail( $token, $media_preview->get_error_message(), $job, $options );
 			return;
@@ -646,6 +660,9 @@ class Movies_WP_Series_Import_Job_Runner {
 			? $options['media_plan_build']
 			: array( 'Movies_WP_Series_Media_Import_Plan', 'build' );
 		$media_plan = call_user_func( $plan_build, $media_preview, $options );
+		if ( ! self::heartbeat( $token, $options ) ) {
+			return;
+		}
 		if ( is_wp_error( $media_plan ) ) {
 			self::fail( $token, $media_plan->get_error_message(), $job, $options );
 			return;

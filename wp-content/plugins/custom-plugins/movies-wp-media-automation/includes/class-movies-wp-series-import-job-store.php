@@ -12,6 +12,13 @@ class Movies_WP_Series_Import_Job_Store {
 	const LEASE_SECONDS_DEFAULT = 180;
 	const LEASE_SECONDS_MIN     = 60;
 	const LEASE_SECONDS_MAX     = 600;
+	const RECENT_LIMIT_DEFAULT  = 10;
+	const RECENT_LIMIT_MAX      = 50;
+	/**
+	 * Extra inactivity beyond one lease before Resume may reclaim a running job.
+	 * Recovery threshold = lease_seconds() + stall_grace_seconds() (default 2× lease).
+	 */
+	const STALL_GRACE_SECONDS_DEFAULT = 180;
 
 	/**
 	 * @var array<string, array<string, mixed>>
@@ -43,13 +50,42 @@ class Movies_WP_Series_Import_Job_Store {
 	}
 
 	/**
+	 * Additional inactivity required (after lease expiry) before Resume may reclaim.
+	 * Chosen as one lease window so recovery waits ~2× lease after last worker activity,
+	 * matching the longest pre-heartbeat opaque ticks once mid-phase heartbeats are in place.
+	 */
+	public static function stall_grace_seconds() {
+		$size = self::STALL_GRACE_SECONDS_DEFAULT;
+		if ( function_exists( 'apply_filters' ) ) {
+			$size = (int) apply_filters( 'movies_wp_series_import_stall_grace_seconds', $size );
+		}
+		if ( $size < self::LEASE_SECONDS_MIN ) {
+			$size = self::LEASE_SECONDS_MIN;
+		}
+		if ( $size > self::LEASE_SECONDS_MAX ) {
+			$size = self::LEASE_SECONDS_MAX;
+		}
+		return $size;
+	}
+
+	/**
+	 * Inactivity age required for hard stall / Resume eligibility.
+	 */
+	public static function stall_recovery_seconds() {
+		return self::lease_seconds() + self::stall_grace_seconds();
+	}
+
+	/**
 	 * @param array<string, mixed> $fields
 	 * @return array{id:int,token:string}|WP_Error
 	 */
 	public static function create( array $fields, array $context = array() ) {
-		$token = self::generate_token();
-		$now   = self::now( $context );
-		$row   = array(
+		$token  = self::generate_token();
+		$now    = self::now( $context );
+		$result = is_array( $fields['result'] ?? null ) ? $fields['result'] : array();
+		// Persist the opaque access token so Recent Imports can reopen Progress after the admin leaves.
+		$result['access_token'] = $token;
+		$row                    = array(
 			'token_hash'      => Movies_WP_Series_Import_Snapshot_Store::hash_token( $token ),
 			'user_id'         => (int) ( $fields['user_id'] ?? 0 ),
 			'blog_id'         => (int) ( $fields['blog_id'] ?? 1 ),
@@ -64,7 +100,7 @@ class Movies_WP_Series_Import_Job_Store {
 			'last_episode_id' => null,
 			'last_error'      => null,
 			'warnings_json'   => self::encode( array() ),
-			'result_json'     => self::encode( is_array( $fields['result'] ?? null ) ? $fields['result'] : array() ),
+			'result_json'     => self::encode( $result ),
 			'claimed_until'   => null,
 			'claim_token'     => null,
 			'active_slot'     => 1,
@@ -79,8 +115,10 @@ class Movies_WP_Series_Import_Job_Store {
 		if ( $id <= 0 ) {
 			return new WP_Error( 'series_import_job_persist_failed', __( 'Could not create the Series import job.', 'movies-wp' ) );
 		}
-		$row['id']    = $id;
-		$row['token'] = $token;
+		$row['id']       = $id;
+		$row['token']    = $token;
+		$row['result']   = $result;
+		$row['warnings'] = array();
 		return $row;
 	}
 
@@ -204,6 +242,15 @@ class Movies_WP_Series_Import_Job_Store {
 			return false;
 		}
 		if ( isset( $fields['result'] ) && is_array( $fields['result'] ) ) {
+			$existing_access = '';
+			if ( isset( $row['result']['access_token'] ) && is_string( $row['result']['access_token'] ) ) {
+				$existing_access = $row['result']['access_token'];
+			} elseif ( isset( $row['token'] ) && is_string( $row['token'] ) ) {
+				$existing_access = $row['token'];
+			}
+			if ( '' !== $existing_access && empty( $fields['result']['access_token'] ) ) {
+				$fields['result']['access_token'] = $existing_access;
+			}
 			$fields['result_json'] = self::encode( $fields['result'] );
 			unset( $fields['result'] );
 		}
@@ -250,6 +297,175 @@ class Movies_WP_Series_Import_Job_Store {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Newest jobs for one owner, ordered by updated_at DESC.
+	 *
+	 * @return list<array<string, mixed>>
+	 */
+	public static function list_for_owner( $user_id, $blog_id, $limit = self::RECENT_LIMIT_DEFAULT ) {
+		$user_id = (int) $user_id;
+		$blog_id = (int) $blog_id;
+		$limit   = (int) $limit;
+		if ( $limit < 1 ) {
+			$limit = self::RECENT_LIMIT_DEFAULT;
+		}
+		if ( $limit > self::RECENT_LIMIT_MAX ) {
+			$limit = self::RECENT_LIMIT_MAX;
+		}
+		if ( $user_id <= 0 ) {
+			return array();
+		}
+
+		$rows = array();
+		if ( self::use_memory() ) {
+			foreach ( self::$memory as $row ) {
+				if ( (int) ( $row['user_id'] ?? 0 ) !== $user_id || (int) ( $row['blog_id'] ?? 0 ) !== $blog_id ) {
+					continue;
+				}
+				$rows[] = $row;
+			}
+		} else {
+			global $wpdb;
+			if ( ! isset( $wpdb ) || ! is_object( $wpdb ) || ! method_exists( $wpdb, 'get_results' ) ) {
+				return array();
+			}
+			if ( class_exists( 'Movies_WP_Series_Import_Schema' ) && ! Movies_WP_Series_Import_Schema::tables_exist() ) {
+				return array();
+			}
+			$table = $wpdb->prefix . 'movies_wp_series_import_jobs';
+			$found = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM {$table} WHERE user_id = %d AND blog_id = %d ORDER BY updated_at DESC, id DESC LIMIT %d",
+					$user_id,
+					$blog_id,
+					$limit
+				),
+				ARRAY_A
+			);
+			$rows = is_array( $found ) ? $found : array();
+		}
+
+		usort(
+			$rows,
+			static function ( $a, $b ) {
+				$ua = (string) ( $a['updated_at'] ?? '' );
+				$ub = (string) ( $b['updated_at'] ?? '' );
+				if ( $ua === $ub ) {
+					return (int) ( $b['id'] ?? 0 ) <=> (int) ( $a['id'] ?? 0 );
+				}
+				return strcmp( $ub, $ua );
+			}
+		);
+		$rows = array_slice( $rows, 0, $limit );
+
+		$out = array();
+		foreach ( $rows as $row ) {
+			$hydrated = self::hydrate_row( $row );
+			if ( is_array( $hydrated ) ) {
+				$out[] = $hydrated;
+			}
+		}
+		return $out;
+	}
+
+	/**
+	 * Soft stall signal for display. Never mutates job status.
+	 *
+	 * Running: lease expired (worker may still be alive if updated_at is recent).
+	 * Queued: no recent activity within one lease window.
+	 *
+	 * @param array<string, mixed> $job
+	 * @param array<string, mixed> $context Optional `now` unix timestamp.
+	 */
+	public static function is_possibly_stalled( array $job, array $context = array() ) {
+		$status = (string) ( $job['status'] ?? '' );
+		if ( ! in_array( $status, array( 'queued', 'running' ), true ) ) {
+			return false;
+		}
+		$now = self::now( $context );
+		if ( 'running' === $status ) {
+			return self::lease_is_expired( $job, $now ) || self::updated_at_is_older_than( $job, $now, self::lease_seconds() );
+		}
+		return self::updated_at_is_older_than( $job, $now, self::lease_seconds() );
+	}
+
+	/**
+	 * Hard stall: safe to offer Resume / allow resume() reclaim.
+	 *
+	 * Running requires an expired lease AND updated_at older than lease+grace so a
+	 * slow healthy worker that still heartbeats/updates cannot be reclaimed.
+	 *
+	 * @param array<string, mixed> $job
+	 * @param array<string, mixed> $context Optional `now` unix timestamp.
+	 */
+	public static function is_resume_eligible_stall( array $job, array $context = array() ) {
+		$status = (string) ( $job['status'] ?? '' );
+		if ( ! in_array( $status, array( 'queued', 'running' ), true ) ) {
+			return false;
+		}
+		$now        = self::now( $context );
+		$inactivity = self::stall_recovery_seconds();
+		if ( 'running' === $status ) {
+			return self::lease_is_expired( $job, $now ) && self::updated_at_is_older_than( $job, $now, $inactivity );
+		}
+		return self::updated_at_is_older_than( $job, $now, $inactivity );
+	}
+
+	/**
+	 * @param array<string, mixed> $job
+	 */
+	private static function lease_is_expired( array $job, $now ) {
+		$until = (string) ( $job['claimed_until'] ?? '' );
+		if ( '' === $until ) {
+			return true;
+		}
+		$until_ts = strtotime( $until . ' UTC' );
+		return false !== $until_ts && $until_ts < $now;
+	}
+
+	/**
+	 * @param array<string, mixed> $job
+	 */
+	private static function updated_at_is_older_than( array $job, $now, $seconds ) {
+		$updated = (string) ( $job['updated_at'] ?? '' );
+		if ( '' === $updated ) {
+			return false;
+		}
+		$updated_ts = strtotime( $updated . ' UTC' );
+		if ( false === $updated_ts ) {
+			return false;
+		}
+		return ( $now - $updated_ts ) > (int) $seconds;
+	}
+
+	/**
+	 * @param array<string, mixed> $row
+	 * @return array<string, mixed>|null
+	 */
+	private static function hydrate_row( array $row ) {
+		$row['result']   = self::decode( (string) ( $row['result_json'] ?? '' ) );
+		$row['warnings'] = self::decode( (string) ( $row['warnings_json'] ?? '' ) );
+		if ( ! is_array( $row['result'] ) ) {
+			$row['result'] = array();
+		}
+		if ( ! is_array( $row['warnings'] ) ) {
+			$row['warnings'] = array();
+		}
+		$token = '';
+		if ( isset( $row['token'] ) && is_string( $row['token'] ) && '' !== $row['token'] ) {
+			$token = $row['token'];
+		} elseif ( ! empty( $row['result']['access_token'] ) && is_string( $row['result']['access_token'] ) ) {
+			$token = $row['result']['access_token'];
+		}
+		if ( '' !== $token ) {
+			$row['token'] = $token;
+		} else {
+			unset( $row['token'] );
+		}
+		// Never expose hash/claim material to list consumers as primary identifiers.
+		return $row;
 	}
 
 	private static function sql_claim( $hash, $now_sql, $until_sql, $claim_token ) {
@@ -326,7 +542,8 @@ class Movies_WP_Series_Import_Job_Store {
 				}
 			}
 			++self::$memory_seq;
-			$row['id'] = self::$memory_seq;
+			$row['id']    = self::$memory_seq;
+			$row['token'] = isset( $row['result_json'] ) ? ( self::decode( (string) $row['result_json'] )['access_token'] ?? '' ) : '';
 			self::$memory[ $row['token_hash'] ] = $row;
 			return self::$memory_seq;
 		}

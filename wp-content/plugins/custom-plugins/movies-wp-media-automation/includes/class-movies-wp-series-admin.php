@@ -117,6 +117,7 @@ class Movies_WP_Series_Admin {
 		$notice         = self::$pending_notice;
 		$job            = null;
 		$snapshot_token = '';
+		$recent_jobs    = array();
 		self::$pending_notice = null;
 
 		$job_token = isset( $_GET['job_token'] ) ? sanitize_text_field( wp_unslash( (string) $_GET['job_token'] ) ) : '';
@@ -124,6 +125,9 @@ class Movies_WP_Series_Admin {
 			$loaded = Movies_WP_Series_Import_Job_Store::find_by_token( $job_token );
 			if ( is_array( $loaded ) && self::job_owned_by_current_user( $loaded ) ) {
 				$job = $loaded;
+				if ( ! is_array( $notice ) ) {
+					$notice = self::notice_from_resume_query();
+				}
 				include MOVIES_WP_MEDIA_AUTOMATION_DIR . '/includes/views/series-import-progress.php';
 				return;
 			}
@@ -150,6 +154,12 @@ class Movies_WP_Series_Admin {
 				}
 			}
 		}
+
+		$recent_jobs = Movies_WP_Series_Import_Job_Store::list_for_owner(
+			self::current_user_id( array() ),
+			self::current_blog_id( array() ),
+			Movies_WP_Series_Import_Job_Store::RECENT_LIMIT_DEFAULT
+		);
 
 		include MOVIES_WP_MEDIA_AUTOMATION_DIR . '/includes/views/series-preview.php';
 	}
@@ -307,6 +317,16 @@ class Movies_WP_Series_Admin {
 	 */
 	public static function redirect_to_progress( $job_token, array $options = array() ) {
 		$url = self::progress_url( $job_token );
+		if ( isset( $options['resume_notice'] ) && is_string( $options['resume_notice'] ) && '' !== $options['resume_notice'] ) {
+			$key = sanitize_key( $options['resume_notice'] );
+			if ( '' !== $key ) {
+				if ( function_exists( 'add_query_arg' ) ) {
+					$url = (string) add_query_arg( 'resume_notice', $key, $url );
+				} else {
+					$url .= ( false === strpos( $url, '?' ) ? '?' : '&' ) . 'resume_notice=' . rawurlencode( $key );
+				}
+			}
+		}
 		if ( isset( $options['redirect'] ) && is_callable( $options['redirect'] ) ) {
 			call_user_func( $options['redirect'], $url, 302 );
 			return;
@@ -358,7 +378,25 @@ class Movies_WP_Series_Admin {
 			$resume = isset( $options['resume_job'] ) && is_callable( $options['resume_job'] )
 				? $options['resume_job']
 				: array( 'Movies_WP_Series_Import_Job_Runner', 'resume' );
-			call_user_func( $resume, $token );
+			$result = call_user_func( $resume, $token, $options );
+			if ( is_wp_error( $result ) ) {
+				// Job state is unchanged by a refused resume(); only surface the refusal.
+				$notice = self::notice_for_resume_error( $result );
+				self::$pending_notice = $notice;
+				if ( isset( $options['on_notice'] ) && is_callable( $options['on_notice'] ) ) {
+					call_user_func( $options['on_notice'], $notice, $result );
+				}
+				self::redirect_to_progress(
+					$token,
+					array_merge(
+						$options,
+						array(
+							'resume_notice' => self::resume_notice_query_key( $result ),
+						)
+					)
+				);
+				return;
+			}
 		} else {
 			$cancel = isset( $options['cancel_job'] ) && is_callable( $options['cancel_job'] )
 				? $options['cancel_job']
@@ -471,6 +509,67 @@ class Movies_WP_Series_Admin {
 			'type'    => 'error',
 			'message' => $map[ $code ] ?? $error->get_error_message(),
 		);
+	}
+
+	/**
+	 * User-safe notice when Resume is refused (or cannot start). Does not mutate the job.
+	 *
+	 * @param WP_Error $error
+	 * @return array{type:string,message:string}
+	 */
+	private static function notice_for_resume_error( $error ) {
+		$code = (string) $error->get_error_code();
+		$map  = array(
+			'series_import_job_busy' => __( 'Import is still running or has not been confirmed stalled. Resume was not started.', 'movies-wp' ),
+			'series_import_schedule_failed' => __( 'Could not schedule the next Series import step.', 'movies-wp' ),
+			'series_import_job_not_found'   => __( 'Series import job was not found.', 'movies-wp' ),
+		);
+		return array(
+			'type'    => 'error',
+			'message' => $map[ $code ] ?? __( 'Resume was not started.', 'movies-wp' ),
+		);
+	}
+
+	/**
+	 * Opaque query key for progress redirect after a refused Resume (no internal details).
+	 *
+	 * @param WP_Error $error
+	 */
+	private static function resume_notice_query_key( $error ) {
+		$code = (string) $error->get_error_code();
+		if ( 'series_import_job_busy' === $code ) {
+			return 'busy';
+		}
+		if ( 'series_import_schedule_failed' === $code ) {
+			return 'schedule';
+		}
+		if ( 'series_import_job_not_found' === $code ) {
+			return 'missing';
+		}
+		return 'refused';
+	}
+
+	/**
+	 * Resolve a refused-Resume notice from the progress URL after redirect.
+	 *
+	 * @return array{type:string,message:string}|null
+	 */
+	private static function notice_from_resume_query() {
+		$key = isset( $_GET['resume_notice'] ) ? sanitize_key( wp_unslash( (string) $_GET['resume_notice'] ) ) : '';
+		if ( '' === $key ) {
+			return null;
+		}
+		$map = array(
+			'busy'     => 'series_import_job_busy',
+			'schedule' => 'series_import_schedule_failed',
+			'missing'  => 'series_import_job_not_found',
+			'refused'  => 'series_import_resume_refused',
+		);
+		$code = $map[ $key ] ?? '';
+		if ( '' === $code ) {
+			return null;
+		}
+		return self::notice_for_resume_error( new WP_Error( $code, '' ) );
 	}
 
 	private static function notice_for_import_result( array $result ) {
@@ -624,6 +723,180 @@ class Movies_WP_Series_Admin {
 			'media_without_tmdb' => __( 'Media without TMDb episode', 'movies-wp' ),
 		);
 		return $map[ (string) $status ] ?? (string) $status;
+	}
+
+	public static function job_status_label( $status ) {
+		$map = array(
+			'preparing' => __( 'Preparing', 'movies-wp' ),
+			'queued'    => __( 'Queued', 'movies-wp' ),
+			'running'   => __( 'Running', 'movies-wp' ),
+			'completed' => __( 'Completed', 'movies-wp' ),
+			'failed'    => __( 'Failed', 'movies-wp' ),
+			'paused'    => __( 'Paused', 'movies-wp' ),
+		);
+		return $map[ (string) $status ] ?? (string) $status;
+	}
+
+	public static function job_phase_label( $phase ) {
+		$map = array(
+			'series'    => __( 'Series metadata', 'movies-wp' ),
+			'people'    => __( 'Cast and crew', 'movies-wp' ),
+			'images'    => __( 'Images', 'movies-wp' ),
+			'episodes'  => __( 'Episodes', 'movies-wp' ),
+			'season'    => __( 'Seasons', 'movies-wp' ),
+			'rematch'   => __( 'Episode rematch', 'movies-wp' ),
+			'media'     => __( 'Episode media', 'movies-wp' ),
+			'finalize'  => __( 'Finalize', 'movies-wp' ),
+			'completed' => __( 'Completed', 'movies-wp' ),
+		);
+		return $map[ (string) $phase ] ?? (string) $phase;
+	}
+
+	/**
+	 * @param array<string, mixed> $job
+	 */
+	public static function job_display_title( array $job ) {
+		$result = isset( $job['result'] ) && is_array( $job['result'] ) ? $job['result'] : array();
+		$title  = trim( (string) ( $result['display_title'] ?? '' ) );
+		if ( '' !== $title ) {
+			return $title;
+		}
+		$directory = trim( (string) ( $job['directory'] ?? '' ) );
+		if ( '' !== $directory ) {
+			$base = basename( str_replace( '\\', '/', $directory ) );
+			if ( '' !== $base ) {
+				return $base;
+			}
+		}
+		$tmdb = (int) ( $job['tmdb_id'] ?? 0 );
+		if ( $tmdb > 0 ) {
+			return sprintf(
+				/* translators: %d: TMDb series ID */
+				__( 'TMDb #%d', 'movies-wp' ),
+				$tmdb
+			);
+		}
+		return __( 'Series import', 'movies-wp' );
+	}
+
+	/**
+	 * @param array<string, mixed> $job
+	 */
+	public static function job_progress_label( array $job ) {
+		$phase = (string) ( $job['phase'] ?? '' );
+		$done  = (int) ( $job['episode_done'] ?? 0 );
+		$total = (int) ( $job['episode_total'] ?? 0 );
+		if ( $total > 0 && in_array( $phase, array( 'episodes', 'season', 'rematch', 'media', 'finalize', 'completed' ), true ) ) {
+			return sprintf(
+				/* translators: 1: completed episodes, 2: total episodes */
+				__( '%1$d / %2$d episodes', 'movies-wp' ),
+				$done,
+				$total
+			);
+		}
+		if ( $total > 0 && 'failed' === (string) ( $job['status'] ?? '' ) && $done > 0 ) {
+			return sprintf(
+				/* translators: 1: completed episodes, 2: total episodes */
+				__( '%1$d / %2$d episodes', 'movies-wp' ),
+				$done,
+				$total
+			);
+		}
+		return self::job_phase_label( $phase );
+	}
+
+	/**
+	 * @param array<string, mixed> $job
+	 * @param array<string, mixed> $context Optional `now`.
+	 */
+	public static function job_activity_label( array $job, array $context = array() ) {
+		$updated = (string) ( $job['updated_at'] ?? '' );
+		if ( '' === $updated ) {
+			return __( 'Last activity: unknown', 'movies-wp' );
+		}
+		$ts = strtotime( $updated . ' UTC' );
+		if ( false === $ts ) {
+			return sprintf(
+				/* translators: %s: timestamp */
+				__( 'Last activity: %s', 'movies-wp' ),
+				$updated
+			);
+		}
+		$now = isset( $context['now'] ) ? (int) $context['now'] : time();
+		if ( function_exists( 'human_time_diff' ) ) {
+			return sprintf(
+				/* translators: %s: relative time */
+				__( 'Last activity: %s ago', 'movies-wp' ),
+				human_time_diff( $ts, $now )
+			);
+		}
+		return sprintf(
+			/* translators: %s: timestamp */
+			__( 'Last activity: %s', 'movies-wp' ),
+			$updated
+		);
+	}
+
+	/**
+	 * Compact error for Recent Imports; full text remains on Progress.
+	 *
+	 * @param array<string, mixed> $job
+	 */
+	public static function job_error_summary( array $job, $max_chars = 120 ) {
+		$error = trim( (string) ( $job['last_error'] ?? '' ) );
+		if ( '' === $error ) {
+			return '';
+		}
+		$max = max( 40, (int) $max_chars );
+		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
+			if ( mb_strlen( $error ) > $max ) {
+				return mb_substr( $error, 0, $max - 1 ) . '…';
+			}
+			return $error;
+		}
+		if ( strlen( $error ) > $max ) {
+			return substr( $error, 0, $max - 1 ) . '…';
+		}
+		return $error;
+	}
+
+	/**
+	 * @param array<string, mixed> $job
+	 * @param array<string, mixed> $context
+	 */
+	public static function job_can_resume( array $job, array $context = array() ) {
+		$status = (string) ( $job['status'] ?? '' );
+		if ( in_array( $status, array( 'paused', 'failed' ), true ) ) {
+			return true;
+		}
+		return Movies_WP_Series_Import_Job_Store::is_resume_eligible_stall( $job, $context );
+	}
+
+	/**
+	 * Soft stall without Resume eligibility (lease expired, worker may still be alive).
+	 *
+	 * @param array<string, mixed> $job
+	 * @param array<string, mixed> $context
+	 */
+	public static function job_is_soft_stalled( array $job, array $context = array() ) {
+		return Movies_WP_Series_Import_Job_Store::is_possibly_stalled( $job, $context )
+			&& ! Movies_WP_Series_Import_Job_Store::is_resume_eligible_stall( $job, $context )
+			&& ! in_array( (string) ( $job['status'] ?? '' ), array( 'paused', 'failed' ), true );
+	}
+
+	/**
+	 * @param array<string, mixed> $job
+	 */
+	public static function job_row_css_class( array $job, array $context = array() ) {
+		$status       = (string) ( $job['status'] ?? '' );
+		$status_class = function_exists( 'sanitize_html_class' )
+			? sanitize_html_class( $status )
+			: preg_replace( '/[^A-Za-z0-9_-]/', '', $status );
+		$classes      = array( 'movies-wp-series-job-row', 'is-' . $status_class );
+		if ( Movies_WP_Series_Import_Job_Store::is_possibly_stalled( $job, $context ) ) {
+			$classes[] = 'is-possibly-stalled';
+		}
+		return implode( ' ', $classes );
 	}
 
 	public static function action_label( $action ) {

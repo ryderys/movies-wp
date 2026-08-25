@@ -347,6 +347,10 @@ class Movies_WP_Streamit_TV_Adapter {
 				continue;
 			}
 			$seasons = $season_result['seasons'];
+			if ( ! self::lease_heartbeat( $options ) ) {
+				$errors[] = self::err( 'series_import_job_busy', __( 'This Series import job is already running.', 'movies-wp' ) );
+				break;
+			}
 		}
 		if ( array() !== $season_rows ) {
 			$written = self::write_tvshow_meta( $series_id, '_seasons', $seasons, $options );
@@ -684,6 +688,14 @@ class Movies_WP_Streamit_TV_Adapter {
 		foreach ( array( 'poster' => '_portrait_thumbmail', 'backdrop' => 'thumbnail_id' ) as $role => $target ) {
 			$image = isset( $images[ $role ] ) && is_array( $images[ $role ] ) ? $images[ $role ] : array( 'action' => 'skip_missing' );
 			$results[] = self::persist_image( 'tvshow', $series_id, $role, $target, $image, $options );
+			if ( ! self::lease_heartbeat( $options ) ) {
+				return array(
+					array(
+						'ok'    => false,
+						'error' => self::err( 'series_import_job_busy', __( 'This Series import job is already running.', 'movies-wp' ) ),
+					),
+				);
+			}
 		}
 		return $results;
 	}
@@ -1468,5 +1480,17 @@ class Movies_WP_Streamit_TV_Adapter {
 		return function_exists( 'sanitize_text_field' )
 			? sanitize_text_field( (string) $value )
 			: trim( (string) $value );
+	}
+
+	/**
+	 * Optional lease renewal for long Series import ticks.
+	 *
+	 * @param array<string, mixed> $options
+	 */
+	private static function lease_heartbeat( array $options ) {
+		if ( ! isset( $options['lease_heartbeat'] ) || ! is_callable( $options['lease_heartbeat'] ) ) {
+			return true;
+		}
+		return (bool) call_user_func( $options['lease_heartbeat'] );
 	}
 }

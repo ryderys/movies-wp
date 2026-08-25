@@ -193,3 +193,37 @@
 .movies-wp-series-preview .movies-wp-issue-details {
 	margin-block-start: 8px;
 }
+
+.movies-wp-series-recent-imports-table .movies-wp-series-job-actions {
+	white-space: nowrap;
+}
+
+.movies-wp-series-recent-imports-table .movies-wp-series-job-resume-form {
+	display: inline-block;
+	margin-inline-start: 4px;
+	vertical-align: middle;
+}
+
+.movies-wp-series-recent-imports-table .movies-wp-series-job-row.is-running .movies-wp-series-job-status,
+.movies-wp-series-recent-imports-table .movies-wp-series-job-row.is-queued .movies-wp-series-job-status,
+.movies-wp-series-recent-imports-table .movies-wp-series-job-row.is-preparing .movies-wp-series-job-status {
+	font-weight: 600;
+}
+
+.movies-wp-series-recent-imports-table .movies-wp-series-job-row.is-possibly-stalled {
+	outline: 1px dashed #dba617;
+	outline-offset: -1px;
+}
+
+.movies-wp-series-recent-imports-table .movies-wp-series-job-stalled {
+	font-weight: 600;
+}
+
+.movies-wp-series-recent-imports-table .movies-wp-series-job-row.is-failed .movies-wp-series-job-error {
+	color: #b32d2e;
+}
+
+.movies-wp-series-import-background-note {
+	margin: 12px 0 16px;
+}
+

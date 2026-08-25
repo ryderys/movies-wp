@@ -50,6 +50,16 @@ class Movies_WP_Streamit_Episode_Media_Adapter {
 			if ( ! empty( $result['warnings'] ) && is_array( $result['warnings'] ) ) {
 				$warnings = array_merge( $warnings, $result['warnings'] );
 			}
+			if ( isset( $options['lease_heartbeat'] ) && is_callable( $options['lease_heartbeat'] ) ) {
+				if ( ! call_user_func( $options['lease_heartbeat'] ) ) {
+					$partial  = true;
+					$errors[] = array(
+						'code'    => 'series_import_job_busy',
+						'message' => __( 'This Series import job is already running.', 'movies-wp' ),
+					);
+					break;
+				}
+			}
 		}
 
 		return array(

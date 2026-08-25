@@ -79,6 +79,12 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 		<?php esc_html_e( 'Scan TMDb and the Series directory, preview metadata and episode media together, then import only after explicit confirmation.', 'movies-wp' ); ?>
 	</p>
 
+	<?php
+	if ( isset( $recent_jobs ) && is_array( $recent_jobs ) ) {
+		include MOVIES_WP_MEDIA_AUTOMATION_DIR . '/includes/views/series-recent-imports.php';
+	}
+	?>
+
 	<?php if ( is_array( $notice ) ) : ?>
 		<div class="notice notice-<?php echo esc_attr( $notice['type'] ); ?> is-dismissible">
 			<p><?php echo esc_html( $notice['message'] ); ?></p>
