@@ -171,6 +171,27 @@
 }
 
 /* Subscribe-required modal (play / download gate) */
+.st-subscribe-required-modal {
+	z-index: 1060 !important;
+	pointer-events: none;
+}
+
+.st-subscribe-required-modal .modal-dialog {
+	position: relative;
+	z-index: 1061;
+	pointer-events: auto;
+}
+
+.st-subscribe-required-modal .modal-content {
+	position: relative;
+	z-index: 1062;
+	pointer-events: auto;
+}
+
+.modal-backdrop {
+	z-index: 1050 !important;
+}
+
 .st-subscribe-required-modal .modal-content {
 	direction: rtl;
 	text-align: right;

@@ -90,7 +90,13 @@ function streamit_child_render_subscribe_required_modal( $st_data = null, $post_
 	$rendered = true;
 
 	$subscribe_url = streamit_child_get_subscribe_url( $st_data, $post_type );
+	$current_url   = function_exists( 'get_permalink' ) ? get_permalink() : home_url( '/' );
 	$login_url     = function_exists( 'streamit_login_page_url' ) ? streamit_login_page_url() : wp_login_url();
+	$signup_url    = function_exists( 'streamit_signup_page_url' ) ? streamit_signup_page_url() : wp_registration_url();
+	if ( $current_url ) {
+		$login_url  = add_query_arg( 'redirect_to', rawurlencode( $current_url ), $login_url );
+		$signup_url = add_query_arg( 'redirect_to', rawurlencode( $current_url ), $signup_url );
+	}
 
 	$template = locate_template( 'template-parts/common/html-subscribe-required-modal.php' );
 	if ( ! $template ) {
