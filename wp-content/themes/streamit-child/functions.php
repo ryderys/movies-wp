@@ -912,6 +912,20 @@ function remove_default_post_type() {
 add_action( 'admin_menu', 'remove_default_post_type' );
 
 function streamit_enqueue_fontawesome() {
+	// Prefer local vendored Font Awesome (avoids CDN/CSP/network issues).
+	$rel = '/assets/vendor/fontawesome/css/all.min.css';
+	$abs = get_stylesheet_directory() . $rel;
+	if ( file_exists( $abs ) ) {
+		wp_enqueue_style(
+			'fontawesome',
+			get_stylesheet_directory_uri() . $rel,
+			array(),
+			(string) filemtime( $abs )
+		);
+		return;
+	}
+
+	// Fallback to CDN when local assets are missing.
 	wp_enqueue_style( 'fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css', array(), '6.5.2' );
 }
 add_action( 'wp_enqueue_scripts', 'streamit_enqueue_fontawesome' );
