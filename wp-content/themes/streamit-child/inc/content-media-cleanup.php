@@ -201,6 +201,29 @@ add_action( 'streamit_before_delete_tvshow', 'streamit_child_purge_content_media
 add_action( 'streamit_before_delete_episode', 'streamit_child_purge_content_media_on_episode_delete', 10, 1 );
 
 /**
+ * Fallback cleanup for installs where Streamit does not fire streamit_before_delete_* hooks.
+ *
+ * Streamit content is stored as WP posts (post_type: movie|tvshow|episode in templates),
+ * so we hook into WordPress' permanent delete lifecycle to purge owned attachments.
+ * This intentionally does NOT run on trash; it runs when the post is actually deleted.
+ *
+ * @param int $post_id Post ID.
+ */
+function streamit_child_purge_content_media_on_wp_delete_post( $post_id ) {
+	$post_id = absint( $post_id );
+	if ( $post_id <= 0 || ! function_exists( 'get_post_type' ) ) {
+		return;
+	}
+	$type = sanitize_key( (string) get_post_type( $post_id ) );
+	if ( ! in_array( $type, array( 'movie', 'tvshow', 'episode' ), true ) ) {
+		return;
+	}
+	streamit_child_purge_content_media( $type, $post_id );
+}
+
+add_action( 'before_delete_post', 'streamit_child_purge_content_media_on_wp_delete_post', 10, 1 );
+
+/**
  * @param int $movie_id Movie ID.
  */
 function streamit_child_purge_content_media_on_movie_delete( $movie_id ) {
