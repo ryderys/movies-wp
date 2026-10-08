@@ -162,9 +162,21 @@ class streamit_dropdown_menu_arrow
      */
     public function save_menu_item_icon($menu_id, $menu_item_db_id, $args)
     {
-        if (isset($_POST['menu-item-icon'][$menu_item_db_id])) {
-            update_post_meta($menu_item_db_id, '_menu_item_icon', sanitize_text_field($_POST['menu-item-icon'][$menu_item_db_id]));
+        if (!isset($_POST['menu-item-icon'][$menu_item_db_id])) {
+            return;
         }
+
+        // Normalize/clean URL so accidental quotes/whitespace don't break rendering.
+        $raw = wp_unslash($_POST['menu-item-icon'][$menu_item_db_id]);
+        $raw = is_string($raw) ? trim($raw) : '';
+        $url = esc_url_raw($raw);
+
+        if ('' === $url) {
+            delete_post_meta($menu_item_db_id, '_menu_item_icon');
+            return;
+        }
+
+        update_post_meta($menu_item_db_id, '_menu_item_icon', $url);
     }
 
     /**
