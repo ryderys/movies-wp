@@ -57,3 +57,37 @@
 	width: 1.125em;
 	height: 1.125em;
 }
+
+/* Header navbar: Font Awesome icons via Menu Item CSS Classes (e.g. menu-icon-series). */
+.header-default #site-navigation li[class^="menu-icon-"] > a .menu-title::before,
+.header-default #site-navigation li[class*=" menu-icon-"] > a .menu-title::before {
+	display: inline-block;
+	font-family: "Font Awesome 6 Free";
+	font-weight: 900;
+	font-style: normal;
+	font-variant: normal;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	line-height: 1;
+}
+
+.header-default #site-navigation li.menu-icon-home > a .menu-title::before {
+	content: "\f015";
+}
+.header-default #site-navigation li.menu-icon-movie > a .menu-title::before,
+.header-default #site-navigation li.menu-icon-movies > a .menu-title::before {
+	content: "\f008";
+}
+.header-default #site-navigation li.menu-icon-series > a .menu-title::before,
+.header-default #site-navigation li.menu-icon-tvshow > a .menu-title::before,
+.header-default #site-navigation li.menu-icon-tvshows > a .menu-title::before {
+	content: "\f26c";
+}
+.header-default #site-navigation li.menu-icon-search > a .menu-title::before {
+	content: "\f002";
+}
+.header-default #site-navigation li.menu-icon-user > a .menu-title::before,
+.header-default #site-navigation li.menu-icon-profile > a .menu-title::before,
+.header-default #site-navigation li.menu-icon-account > a .menu-title::before {
+	content: "\f007";
+}

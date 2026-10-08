@@ -76,7 +76,12 @@ class streamit_dropdown_menu_arrow
 
             $icon_url  = esc_url($icon);
             $icon_html = $this->render_menu_icon_html($icon_url);
-            $title     = '<span class="css_prefix-menu-item-text has-icon">' . esc_html($title) . '</span>';
+            // For the mobile footer menu, Streamit uses a custom title wrapper.
+            // For header menus, keep existing wp_nav_menu() link_before/link_after markup intact.
+            if ('streamit-footer-menu-link' === $args->theme_location) {
+                $title = '<span class="css_prefix-menu-item-text has-icon">' . esc_html(wp_strip_all_tags($title)) . '</span>';
+                return $icon_html . $title;
+            }
 
             return $icon_html . $title;
         }
