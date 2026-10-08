@@ -945,3 +945,33 @@ function streamit_child_enqueue_header_nav_icons() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_header_nav_icons', 20 );
+
+/**
+ * Last-resort: print header nav icon CSS inline.
+ *
+ * Some cache/minify stacks rewrite or drop individual enqueued stylesheet links,
+ * which makes debugging hard and can prevent our small icon rules from applying.
+ * Inline CSS avoids that. Safe because it only activates when menu-icon-* classes exist.
+ */
+function streamit_child_print_header_nav_icons_inline() {
+	if ( is_admin() ) {
+		return;
+	}
+	?>
+	<style id="streamit-child-header-nav-icons-inline">
+		#site-navigation .menu-title,
+		#site-navigation .css_prefix-menu-item-text.has-icon,
+		.menu-title{display:inline-flex;align-items:center;gap:.5rem}
+		#site-navigation li[class^="menu-icon-"]>a .menu-title::before,
+		#site-navigation li[class*=" menu-icon-"]>a .menu-title::before,
+		li[class^="menu-icon-"]>a .menu-title::before,
+		li[class*=" menu-icon-"]>a .menu-title::before{display:inline-block;font-family:"Font Awesome 6 Free";font-weight:900;font-style:normal;font-variant:normal;text-rendering:auto;-webkit-font-smoothing:antialiased;line-height:1;margin-inline-end:.5rem}
+		#site-navigation li.menu-icon-home>a .menu-title::before,li.menu-icon-home>a .menu-title::before{content:"\f015"}
+		#site-navigation li.menu-icon-movie>a .menu-title::before,#site-navigation li.menu-icon-movies>a .menu-title::before,li.menu-icon-movie>a .menu-title::before,li.menu-icon-movies>a .menu-title::before{content:"\f008"}
+		#site-navigation li.menu-icon-series>a .menu-title::before,#site-navigation li.menu-icon-tvshow>a .menu-title::before,#site-navigation li.menu-icon-tvshows>a .menu-title::before,li.menu-icon-series>a .menu-title::before,li.menu-icon-tvshow>a .menu-title::before,li.menu-icon-tvshows>a .menu-title::before{content:"\f26c"}
+		#site-navigation li.menu-icon-search>a .menu-title::before,li.menu-icon-search>a .menu-title::before{content:"\f002"}
+		#site-navigation li.menu-icon-user>a .menu-title::before,#site-navigation li.menu-icon-profile>a .menu-title::before,#site-navigation li.menu-icon-account>a .menu-title::before,li.menu-icon-user>a .menu-title::before,li.menu-icon-profile>a .menu-title::before,li.menu-icon-account>a .menu-title::before{content:"\f007"}
+	</style>
+	<?php
+}
+add_action( 'wp_head', 'streamit_child_print_header_nav_icons_inline', 99 );
