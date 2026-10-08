@@ -59,11 +59,13 @@ class streamit_dropdown_menu_arrow
     {
 
         $icon = get_post_meta($item->ID, '_menu_item_icon', true);
+        $loc  = isset($args->theme_location) ? (string) $args->theme_location : '';
 
+        // Render icons when they are configured. Prefer limiting to known theme locations,
+        // but allow a missing theme_location (some menus are rendered by explicit menu ID).
         if (
-            isset($args->theme_location)
-            && in_array($args->theme_location, array('streamit-footer-menu-link', 'primary', 'secondary'), true)
-            && !empty($icon)
+            !empty($icon)
+            && ('' === $loc || in_array($loc, array('streamit-footer-menu-link', 'primary', 'secondary'), true))
         ) {
 
             // Add a class only for this item's link
@@ -78,7 +80,7 @@ class streamit_dropdown_menu_arrow
             $icon_html = $this->render_menu_icon_html($icon_url);
             // For the mobile footer menu, Streamit uses a custom title wrapper.
             // For header menus, keep existing wp_nav_menu() link_before/link_after markup intact.
-            if ('streamit-footer-menu-link' === $args->theme_location) {
+            if ('streamit-footer-menu-link' === $loc) {
                 $title = '<span class="css_prefix-menu-item-text has-icon">' . esc_html(wp_strip_all_tags($title)) . '</span>';
                 return $icon_html . $title;
             }
