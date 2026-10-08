@@ -324,6 +324,62 @@ $missing_ep = Movies_WP_Series_Media_Preview_Service::build(
 sm_preview_same( false, $missing_ep['ready_to_import'], 'EP01 without authoritative episode blocks import' );
 sm_preview_same( 'episode_only_without_authoritative_match', $missing_ep['validation']['errors'][0]['code'], 'missing EP match never creates an episode' );
 
+echo "Series media preview bare E## resolution\n";
+
+$bare_e04_scan = array(
+	'ok'       => true,
+	'kind'     => 'series',
+	'ready'    => true,
+	'warnings' => array(),
+	'errors'   => array(),
+	'episodes' => array(
+		array(
+			'identity_type'  => 'episode_only',
+			'season_number'  => null,
+			'episode_number' => '4',
+			'token'          => 'E04',
+			'sources'        => array(
+				array( 'media_path' => 'series/korea/2022/Behind.Every.Star/720p SOFT SUB/Behind.Every.Star.E04.221115.720p.SS.mkv' ),
+			),
+			'subtitles'      => array(),
+		),
+	),
+);
+$bare_e04_preview = Movies_WP_Series_Media_Preview_Service::build(
+	array(
+		'tvshow_id'        => 50,
+		'series_directory' => 'series/korea/2022/Behind.Every.Star',
+	),
+	sm_preview_options(
+		array(
+			array( 'id' => 104, 'tvshow_id' => 50, 'tmdb_id' => 904, 'season_number' => '1', 'episode_number' => '4' ),
+		),
+		null,
+		$bare_e04_scan
+	)
+);
+sm_preview_same( true, $bare_e04_preview['ready_to_import'], 'bare E04 is ready when one authoritative season matches' );
+sm_preview_same( '1', $bare_e04_preview['episodes'][0]['season_number'], 'bare E04 resolves to authoritative season 1' );
+sm_preview_same( '4', $bare_e04_preview['episodes'][0]['episode_number'], 'bare E04 remains episode 4' );
+sm_preview_same( 'matched', $bare_e04_preview['episodes'][0]['status'], 'resolved bare E04 matches existing episode' );
+
+$bare_ambiguous = Movies_WP_Series_Media_Preview_Service::build(
+	array(
+		'tvshow_id'        => 50,
+		'series_directory' => 'series/korea/2022/Behind.Every.Star',
+	),
+	sm_preview_options(
+		array(
+			array( 'id' => 104, 'tvshow_id' => 50, 'season_number' => '1', 'episode_number' => '4' ),
+			array( 'id' => 204, 'tvshow_id' => 50, 'season_number' => '2', 'episode_number' => '4' ),
+		),
+		null,
+		$bare_e04_scan
+	)
+);
+sm_preview_same( false, $bare_ambiguous['ready_to_import'], 'bare E04 blocks when multiple authoritative seasons match' );
+sm_preview_same( 'episode_only_ambiguous_season', $bare_ambiguous['validation']['errors'][0]['code'], 'ambiguous bare-E season error is explicit' );
+
 echo "Series media preview canonical identity\n";
 
 sm_preview_same( '0', Movies_WP_Series_Media_Preview_Service::canonical_season_string( 0 ), 'season zero canonicalizes' );

@@ -495,6 +495,17 @@ orch_same( true, $episode_only['ready_to_import'], 'EP01 resolves against author
 orch_same( '1', $episode_only['episodes'][0]['season_number'], 'EP01 resolves to TMDb season 1' );
 orch_same( 'metadata_and_media', $episode_only['episodes'][0]['status'], 'resolved EP01 joins TMDb episode' );
 
+$bare_e01_scan = orch_scan_episode_only( 1 );
+$bare_e01_scan['token'] = 'E01';
+$bare_e01_scan['sources'][0]['media_path'] = 'series/korea/2022/Behind.Every.Star/720p SOFT SUB/Behind.Every.Star.E01.221109.720p.SS.mkv';
+$bare_e01 = Movies_WP_Series_Orchestrator::build_preview(
+	orch_input(),
+	orch_options( $calls, array( $bare_e01_scan ) )
+);
+orch_same( true, $bare_e01['ready_to_import'], 'bare E01 resolves against authoritative TMDb context' );
+orch_same( '1', $bare_e01['episodes'][0]['season_number'], 'bare E01 resolves to TMDb season 1' );
+orch_same( 'metadata_and_media', $bare_e01['episodes'][0]['status'], 'resolved bare E01 joins TMDb episode' );
+
 $mixed = Movies_WP_Series_Orchestrator::build_preview(
 	orch_input(),
 	orch_options( $calls, array( orch_scan_episode( 1, 1 ), orch_scan_episode_only( 1 ) ) )

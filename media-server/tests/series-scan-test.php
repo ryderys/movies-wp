@@ -247,6 +247,60 @@ series_scan_assert_true( null !== $episode_only1, 'EP01 coexists with explicit S
 series_scan_assert_true( count( $episode_only1['sources'] ?? array() ) === 1, 'EP01 video grouped without season' );
 series_scan_assert_true( count( $episode_only1['subtitles'] ?? array() ) === 1, 'EP01 subtitle associates with EP01 video' );
 
+echo "\nbare E## scan grouping\n";
+$bare_tmp   = sys_get_temp_dir() . '/series-scan-bare-e-' . bin2hex( random_bytes( 4 ) );
+$bare_root  = $bare_tmp . '/series';
+$bare_show  = $bare_root . '/korea/2022/Behind.Every.Star';
+$bare_cat   = $bare_show . '/720p SOFT SUB';
+if ( ! is_dir( $bare_cat ) && ! mkdir( $bare_cat, 0777, true ) ) {
+	fwrite( STDERR, "Could not create {$bare_cat}\n" );
+	exit( 1 );
+}
+$bare_files = array(
+	'Behind.Every.Star.E01.221109.720p.SS.mkv',
+	'Behind.Every.Star.E02.221110.720p.SS.mkv',
+	'Behind.Every.Star.E04.221115.720p.SS.mkv',
+);
+foreach ( $bare_files as $name ) {
+	file_put_contents( $bare_cat . '/' . $name, str_repeat( 'x', 1024 ) );
+}
+$bare_cleanup = static function () use ( $bare_tmp ): void {
+	if ( ! is_dir( $bare_tmp ) ) {
+		return;
+	}
+	$it = new RecursiveIteratorIterator(
+		new RecursiveDirectoryIterator( $bare_tmp, FilesystemIterator::SKIP_DOTS ),
+		RecursiveIteratorIterator::CHILD_FIRST
+	);
+	foreach ( $it as $f ) {
+		$f->isDir() ? rmdir( $f->getPathname() ) : unlink( $f->getPathname() );
+	}
+	rmdir( $bare_tmp );
+};
+$bare_scan = media_scan_series_dir(
+	'series/korea/2022/Behind.Every.Star',
+	$bare_tmp,
+	$bare_root,
+	array( 'ffprobe_runner' => series_scan_ffprobe_runner() )
+);
+series_scan_assert_true( ( $bare_scan['ok'] ?? false ) === true, 'bare-E scan succeeds' );
+series_scan_assert_true( empty( $bare_scan['errors'] ), 'bare-E scan has no identity errors' );
+$bare_e04 = series_scan_find_file( $bare_scan['files'], 'Behind.Every.Star.E04.221115.720p.SS.mkv' );
+series_scan_assert_true( is_array( $bare_e04 ), 'bare E04 file enriched' );
+series_scan_assert_true( ( $bare_e04['episode']['identity_type'] ?? '' ) === 'episode_only', 'bare E04 stays episode_only in scan' );
+series_scan_assert_true( null === ( $bare_e04['episode']['season_number'] ?? null ), 'bare E04 scan does not invent season' );
+series_scan_assert_true( ( $bare_e04['episode']['episode_number'] ?? '' ) === '4', 'bare E04 scan episode number' );
+$bare_group4 = null;
+foreach ( $bare_scan['episodes'] as $episode ) {
+	if ( null === ( $episode['season_number'] ?? null ) && ( $episode['episode_number'] ?? '' ) === '4' ) {
+		$bare_group4 = $episode;
+		break;
+	}
+}
+series_scan_assert_true( null !== $bare_group4, 'bare E04 groups via existing episode_only key' );
+series_scan_assert_true( count( $bare_group4['sources'] ?? array() ) === 1, 'bare E04 source grouped' );
+$bare_cleanup();
+
 $has_ost = false;
 foreach ( $result['files'] as $file ) {
 	if ( str_contains( (string) ( $file['media_path'] ?? '' ), '/OST/' ) ) {

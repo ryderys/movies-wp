@@ -35,6 +35,12 @@ if ( ! function_exists( 'absint' ) ) {
 if ( ! function_exists( 'sanitize_text_field' ) ) {
 	function sanitize_text_field( $value ) { return trim( strip_tags( (string) $value ) ); }
 }
+if ( ! function_exists( 'sanitize_key' ) ) {
+	function sanitize_key( $value ) {
+		$value = strtolower( (string) $value );
+		return preg_replace( '/[^a-z0-9_\-]/', '', $value );
+	}
+}
 if ( ! function_exists( 'sanitize_textarea_field' ) ) {
 	function sanitize_textarea_field( $value ) { return trim( strip_tags( (string) $value ) ); }
 }
@@ -416,6 +422,62 @@ series_admin_same( 1, $calls['resume'], 'Resume mutation invokes resume once' );
 series_admin_same( 0, $calls['cancel'], 'Resume mutation does not cancel' );
 series_admin_same( 302, $redirect['status'], 'Resume redirect uses HTTP 302' );
 series_admin_assert( str_contains( (string) $redirect['url'], 'job_token=job-resume-token' ), 'Resume Location keeps job token' );
+
+echo "Series admin Resume refusal notice\n";
+
+$calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'import' => 0, 'snapshot' => 0, 'resume' => 0, 'cancel' => 0 );
+$redirect = null;
+$noticed = null;
+$options = series_admin_options( $calls, $received_values );
+$options['redirect'] = static function ( $url, $status ) use ( &$redirect ): void {
+	$redirect = array( 'url' => (string) $url, 'status' => (int) $status );
+};
+$options['find_job'] = static function ( $token ): array {
+	return array(
+		'token'   => (string) $token,
+		'user_id' => 7,
+		'blog_id' => 1,
+		'status'  => 'running',
+		'phase'   => 'media',
+	);
+};
+$options['resume_job'] = static function ( $token ) use ( &$calls ) {
+	++$calls['resume'];
+	series_admin_same( 'job-busy-token', $token, 'refused resume still receives job token' );
+	return new WP_Error(
+		'series_import_job_busy',
+		'This Series import job still shows recent worker activity and cannot be resumed yet.'
+	);
+};
+$options['on_notice'] = static function ( $notice, $error ) use ( &$noticed ): void {
+	$noticed = array(
+		'notice' => $notice,
+		'code'   => is_wp_error( $error ) ? $error->get_error_code() : '',
+	);
+};
+$options['cancel_job'] = static function () use ( &$calls ): void {
+	++$calls['cancel'];
+};
+$busy_post = array(
+	'_wpnonce' => 'valid',
+	Movies_WP_Series_Admin::ACTION_FIELD => Movies_WP_Series_Admin::RESUME_ACTION,
+	'job_token' => 'job-busy-token',
+);
+Movies_WP_Series_Admin::handle_mutation_request( $busy_post, $options );
+series_admin_same( 1, $calls['resume'], 'busy Resume invokes resume once' );
+series_admin_same( 0, $calls['cancel'], 'busy Resume does not cancel' );
+series_admin_assert( is_array( $noticed ), 'busy Resume surfaces an admin notice' );
+series_admin_same( 'error', $noticed['notice']['type'] ?? null, 'busy Resume notice is an error' );
+series_admin_same(
+	'Import is still running or has not been confirmed stalled. Resume was not started.',
+	$noticed['notice']['message'] ?? null,
+	'busy Resume notice explains refusal without internals'
+);
+series_admin_same( 'series_import_job_busy', $noticed['code'] ?? null, 'busy Resume notice keeps WP_Error code' );
+series_admin_same( 302, $redirect['status'] ?? null, 'busy Resume still redirects to progress' );
+series_admin_assert( str_contains( (string) ( $redirect['url'] ?? '' ), 'job_token=job-busy-token' ), 'busy Resume Location keeps job token' );
+series_admin_assert( str_contains( (string) ( $redirect['url'] ?? '' ), 'resume_notice=busy' ), 'busy Resume Location carries opaque notice key' );
+series_admin_assert( ! str_contains( (string) ( $redirect['url'] ?? '' ), 'claim' ), 'busy Resume Location omits claim details' );
 
 $calls = array( 'capability' => 0, 'nonce' => 0, 'preview' => 0, 'import' => 0, 'snapshot' => 0, 'resume' => 0, 'cancel' => 0 );
 $redirect = null;

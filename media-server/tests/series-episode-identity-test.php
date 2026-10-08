@@ -77,6 +77,53 @@ $episode_padded = series_identity_parse( 'Show.episode 01.WEB-DL.srt' );
 series_identity_assert_true( ( $episode_padded['ok'] ?? false ) === true && ( $episode_padded['episode_number'] ?? '' ) === '1', 'Episode 01 is case-insensitive and canonicalizes to 1' );
 series_identity_assert_true( null === ( $episode_padded['season_number'] ?? null ), 'Episode 01 remains seasonless' );
 
+echo "\nbare E## identities\n";
+$bare_real = series_identity_parse( 'Behind.Every.Star.E04.221115.720p.SS.mkv' );
+series_identity_assert_true( ( $bare_real['ok'] ?? false ) === true, 'Behind.Every.Star.E04 accepted' );
+series_identity_assert_true( ( $bare_real['identity_type'] ?? '' ) === 'episode_only', 'bare E04 is episode_only' );
+series_identity_assert_true( null === ( $bare_real['season_number'] ?? null ), 'bare E04 does not invent a season' );
+series_identity_assert_true( ( $bare_real['episode_number'] ?? '' ) === '4', 'bare E04 means episode 4' );
+series_identity_assert_true( ( $bare_real['token'] ?? '' ) === 'E04', 'bare E04 token preserved' );
+series_identity_assert_true(
+	( $bare_real['sanitized_filename'] ?? '' ) === 'Behind.Every.Star.221115.720p.SS.mkv',
+	'bare E04 removed before generic parsing'
+);
+
+$bare_e01 = series_identity_parse( 'Show.E01.720p.mkv' );
+series_identity_assert_true( ( $bare_e01['ok'] ?? false ) === true && ( $bare_e01['episode_number'] ?? '' ) === '1', 'bare E01 accepted' );
+series_identity_assert_true( null === ( $bare_e01['season_number'] ?? null ), 'bare E01 remains seasonless' );
+
+$bare_e12 = series_identity_parse( 'Show.Title.E12.221124.720p.SS.mkv' );
+series_identity_assert_true( ( $bare_e12['ok'] ?? false ) === true && ( $bare_e12['episode_number'] ?? '' ) === '12', 'bare E12 accepted' );
+
+$bare_e100 = series_identity_parse( 'Show.E100.WEB-DL.mkv' );
+series_identity_assert_true( ( $bare_e100['ok'] ?? false ) === true && ( $bare_e100['episode_number'] ?? '' ) === '100', 'bare E100 accepted' );
+
+$bare_lower = series_identity_parse( 'show.e04.720p.mkv' );
+series_identity_assert_true( ( $bare_lower['ok'] ?? false ) === true && ( $bare_lower['episode_number'] ?? '' ) === '4', 'bare e04 case-insensitive' );
+
+$sxx_only = series_identity_parse( 'Show.S01E04.720p.mkv' );
+series_identity_assert_true( ( $sxx_only['ok'] ?? false ) === true, 'S01E04 still accepted with bare-E support' );
+series_identity_assert_true( ( $sxx_only['identity_type'] ?? '' ) === 'season_episode', 'S01E04 remains season_episode' );
+series_identity_assert_true( ( $sxx_only['season_number'] ?? '' ) === '1' && ( $sxx_only['episode_number'] ?? '' ) === '4', 'S01E04 season/episode unchanged' );
+series_identity_assert_true( ( $sxx_only['token'] ?? '' ) === 'S01E04', 'S01E04 does not also emit bare E04' );
+
+$ep_still = series_identity_parse( 'Show.EP04.720p.mkv' );
+series_identity_assert_true( ( $ep_still['ok'] ?? false ) === true && ( $ep_still['identity_type'] ?? '' ) === 'episode_only', 'EP04 still episode_only' );
+series_identity_assert_true( ( $ep_still['episode_number'] ?? '' ) === '4', 'EP04 still episode 4' );
+
+$word_still = series_identity_parse( 'Show.Episode 4.720p.mkv' );
+series_identity_assert_true( ( $word_still['ok'] ?? false ) === true && ( $word_still['episode_number'] ?? '' ) === '4', 'Episode 4 with space still works' );
+
+series_identity_assert_true( ( series_identity_parse( 'Movie.Title.REMASTERED.720p.mkv' )['code'] ?? '' ) === 'missing_episode_identity', 'REMASTERED is not bare E' );
+series_identity_assert_true( ( series_identity_parse( 'Movie.Title.Encoder.720p.mkv' )['code'] ?? '' ) === 'missing_episode_identity', 'Encoder is not bare E' );
+series_identity_assert_true( ( series_identity_parse( 'Movie.Title.English.720p.mkv' )['code'] ?? '' ) === 'missing_episode_identity', 'English is not bare E' );
+series_identity_assert_true( ( series_identity_parse( 'Movie.Title.WEB.720p.mkv' )['code'] ?? '' ) === 'missing_episode_identity', 'WEB is not bare E' );
+series_identity_assert_true( ( series_identity_parse( 'Movie.Title.2022.1080p.mkv' )['code'] ?? '' ) === 'missing_episode_identity', 'year alone is not bare E' );
+
+series_identity_assert_true( ( series_identity_parse( 'Show.E00.720p.mkv' )['code'] ?? '' ) === 'malformed_episode_identity', 'E00 rejected like EP00' );
+series_identity_assert_true( ( series_identity_parse( 'Show.S01E01.E02.720p.mkv' )['code'] ?? '' ) === 'conflicting_episode_identity', 'S01E01 + bare E02 conflicts' );
+
 $zero = series_identity_parse( 'Show.S00E01.mkv' );
 series_identity_assert_true( ( $zero['season_number'] ?? '' ) === '0', 'Season 0 preserved as string zero' );
 
@@ -97,7 +144,6 @@ series_identity_assert_true( ( series_identity_parse( 'Show.EP00.mkv' )['code'] 
 series_identity_assert_true( ( series_identity_parse( 'Show.EP.mkv' )['code'] ?? '' ) === 'malformed_episode_identity', 'EP without digits rejected' );
 series_identity_assert_true( ( series_identity_parse( 'Show.EP01.EP02.mkv' )['code'] ?? '' ) === 'conflicting_episode_identity', 'conflicting EP identities rejected' );
 series_identity_assert_true( ( series_identity_parse( 'Show.S01E01.EP01.mkv' )['code'] ?? '' ) === 'conflicting_episode_identity', 'mixed identity tokens in one filename rejected' );
-series_identity_assert_true( ( series_identity_parse( 'Show.E01.mkv' )['code'] ?? '' ) === 'missing_episode_identity', 'E01 remains unsupported' );
 series_identity_assert_true( ( series_identity_parse( 'Show.Episode.mkv' )['code'] ?? '' ) === 'missing_episode_identity', 'Episode alone is not a valid identity' );
 series_identity_assert_true( ( series_identity_parse( 'Show.Episode.mkv' )['code'] ?? '' ) !== 'malformed_episode_identity', 'Episode alone is not a malformed EP token' );
 series_identity_assert_true( ! media_series_episode_identity_has_malformed_token( 'Spring Burning Episode 1 kisskh.srt' ), 'malformed detector does not flag Episode 1' );
