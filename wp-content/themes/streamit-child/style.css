@@ -37,3 +37,23 @@
 	opacity: 0.72;
 	text-transform: none;
 }
+
+/* Header navbar: menu item icons (Menu Icon URL / _menu_item_icon). */
+.header-default #site-navigation .menu-title,
+.header-default #site-navigation .css_prefix-menu-item-text.has-icon {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.header-default #site-navigation .streamit-menu-icon {
+	display: inline-flex;
+	align-items: center;
+	line-height: 1;
+}
+
+.header-default #site-navigation .streamit-menu-icon img,
+.header-default #site-navigation .streamit-menu-icon svg {
+	width: 1.125em;
+	height: 1.125em;
+}

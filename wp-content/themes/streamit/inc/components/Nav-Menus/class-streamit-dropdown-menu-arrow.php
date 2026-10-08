@@ -60,7 +60,11 @@ class streamit_dropdown_menu_arrow
 
         $icon = get_post_meta($item->ID, '_menu_item_icon', true);
 
-        if (isset($args->theme_location) && $args->theme_location === 'streamit-footer-menu-link' && !empty($icon)) {
+        if (
+            isset($args->theme_location)
+            && in_array($args->theme_location, array('streamit-footer-menu-link', 'primary', 'secondary'), true)
+            && !empty($icon)
+        ) {
 
             // Add a class only for this item's link
             add_filter('nav_menu_link_attributes', function ($atts, $item_filter) use ($item) {
@@ -69,15 +73,9 @@ class streamit_dropdown_menu_arrow
                 }
                 return $atts;
             }, 10, 2);
-                $icon_url = esc_url($icon);
-           $icon_html = '';
-            if ( $icon_url && 'svg' === pathinfo($icon_url, PATHINFO_EXTENSION) ) {
-    // Get SVG content from file
-                $icon_html = file_get_contents( $icon_url );
-                if ( $icon_html ) {
-                    $icon_html = sprintf('<span class="streamit-menu-icon">%s</span>', $icon_html);
-                }
-            }
+
+            $icon_url  = esc_url($icon);
+            $icon_html = $this->render_menu_icon_html($icon_url);
             $title     = '<span class="css_prefix-menu-item-text has-icon">' . esc_html($title) . '</span>';
 
             return $icon_html . $title;
@@ -91,6 +89,49 @@ class streamit_dropdown_menu_arrow
         }
 
         return $title;
+    }
+
+    /**
+     * Render menu icon HTML for footer mobile menu items.
+     *
+     * Supports SVG (inlined when local + readable) and raster formats (img tag).
+     * Avoids file_get_contents() on arbitrary URLs (often disabled and slow).
+     *
+     * @param string $icon_url
+     * @return string
+     */
+    private function render_menu_icon_html($icon_url)
+    {
+        $icon_url = is_string($icon_url) ? trim($icon_url) : '';
+        if ('' === $icon_url) {
+            return '';
+        }
+
+        $path = (string) wp_parse_url($icon_url, PHP_URL_PATH);
+        $ext  = strtolower((string) pathinfo($path, PATHINFO_EXTENSION));
+
+        // Inline SVG only when it's a local uploads file we can read from disk.
+        if ('svg' === $ext && function_exists('wp_get_upload_dir')) {
+            $uploads = wp_get_upload_dir();
+            $baseurl = isset($uploads['baseurl']) ? (string) $uploads['baseurl'] : '';
+            $basedir = isset($uploads['basedir']) ? (string) $uploads['basedir'] : '';
+            if ('' !== $baseurl && '' !== $basedir && str_starts_with($icon_url, $baseurl)) {
+                $relative = ltrim(substr($icon_url, strlen($baseurl)), '/');
+                $file     = rtrim($basedir, '/\\') . '/' . str_replace('\\', '/', $relative);
+                if (is_readable($file)) {
+                    $svg = file_get_contents($file);
+                    if (is_string($svg) && '' !== trim($svg)) {
+                        return sprintf('<span class="streamit-menu-icon">%s</span>', $svg);
+                    }
+                }
+            }
+        }
+
+        // Fallback: let the browser fetch the asset (works for svg/png/webp/jpg).
+        return sprintf(
+            '<span class="streamit-menu-icon"><img src="%s" alt="" width="24" height="24" loading="lazy" decoding="async" /></span>',
+            esc_url($icon_url)
+        );
     }
 
     /**

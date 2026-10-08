@@ -192,7 +192,15 @@ function streamit_child_purge_content_media( $type, $id ) {
 			continue;
 		}
 
+		// Bypass the Media Library delete guard for attachments we determined are not shared.
+		// The post/meta rows are still present at this point, so a pure ref-count based guard
+		// would otherwise block this safe delete.
+		if ( ! isset( $GLOBALS['streamit_child_allow_delete_attachments'] ) || ! is_array( $GLOBALS['streamit_child_allow_delete_attachments'] ) ) {
+			$GLOBALS['streamit_child_allow_delete_attachments'] = array();
+		}
+		$GLOBALS['streamit_child_allow_delete_attachments'][ $attachment_id ] = true;
 		wp_delete_attachment( $attachment_id, true );
+		unset( $GLOBALS['streamit_child_allow_delete_attachments'][ $attachment_id ] );
 	}
 }
 
@@ -222,6 +230,115 @@ function streamit_child_purge_content_media_on_wp_delete_post( $post_id ) {
 }
 
 add_action( 'before_delete_post', 'streamit_child_purge_content_media_on_wp_delete_post', 10, 1 );
+
+/**
+ * Prevent accidental Media Library deletes of attachments still referenced by Streamit content.
+ *
+ * This blocks orphaned MinIO deletes and broken posters when an operator deletes an attachment
+ * directly from the Media Library while movies/tvshows/episodes still reference its ID.
+ *
+ * Safe, intentional deletes performed by streamit_child_purge_content_media() are allowed via
+ * $GLOBALS['streamit_child_allow_delete_attachments'].
+ *
+ * @param null|bool $delete      Short-circuit value. Default null.
+ * @param WP_Post   $post        Attachment post object.
+ * @param bool      $force_delete Whether to bypass trash.
+ * @return null|bool False blocks deletion.
+ */
+function streamit_child_block_delete_referenced_attachment( $delete, $post, $force_delete ) {
+	unset( $force_delete );
+	if ( ! is_object( $post ) || empty( $post->ID ) ) {
+		return $delete;
+	}
+	if ( 'attachment' !== (string) ( $post->post_type ?? '' ) ) {
+		return $delete;
+	}
+
+	$attachment_id = absint( $post->ID );
+	if ( $attachment_id <= 0 ) {
+		return $delete;
+	}
+
+	// Allow explicit safe deletes from our content purge path.
+	if (
+		isset( $GLOBALS['streamit_child_allow_delete_attachments'] )
+		&& is_array( $GLOBALS['streamit_child_allow_delete_attachments'] )
+		&& ! empty( $GLOBALS['streamit_child_allow_delete_attachments'][ $attachment_id ] )
+	) {
+		return $delete;
+	}
+
+	// Allow override via constant / filter.
+	if ( defined( 'STREAMIT_CHILD_ALLOW_DELETE_REFERENCED_ATTACHMENTS' ) && STREAMIT_CHILD_ALLOW_DELETE_REFERENCED_ATTACHMENTS ) {
+		return $delete;
+	}
+
+	$refs = streamit_child_attachment_ref_count( $attachment_id );
+	if ( $refs <= 0 ) {
+		return $delete;
+	}
+
+	$allow = apply_filters( 'streamit_child_allow_delete_referenced_attachment', false, $attachment_id, $refs, $post );
+	if ( $allow ) {
+		return $delete;
+	}
+
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+		error_log( sprintf( 'Blocked Media Library delete of attachment %d (still referenced by Streamit meta rows: %d).', $attachment_id, $refs ) );
+	}
+
+	// Show an admin notice to the operator.
+	if ( function_exists( 'set_transient' ) && function_exists( 'get_current_user_id' ) ) {
+		$user_id = (int) get_current_user_id();
+		if ( $user_id > 0 ) {
+			set_transient(
+				'streamit_child_attachment_delete_blocked_' . $user_id,
+				array(
+					'attachment_id' => $attachment_id,
+					'refs'          => $refs,
+				),
+				60
+			);
+		}
+	}
+
+	return false;
+}
+
+add_filter( 'pre_delete_attachment', 'streamit_child_block_delete_referenced_attachment', 10, 3 );
+
+add_action(
+	'admin_notices',
+	static function () {
+		if ( ! function_exists( 'get_current_user_id' ) || ! function_exists( 'get_transient' ) || ! function_exists( 'delete_transient' ) ) {
+			return;
+		}
+		$user_id = (int) get_current_user_id();
+		if ( $user_id <= 0 ) {
+			return;
+		}
+		$key  = 'streamit_child_attachment_delete_blocked_' . $user_id;
+		$data = get_transient( $key );
+		if ( ! is_array( $data ) ) {
+			return;
+		}
+		delete_transient( $key );
+
+		$attachment_id = isset( $data['attachment_id'] ) ? absint( $data['attachment_id'] ) : 0;
+		$refs          = isset( $data['refs'] ) ? absint( $data['refs'] ) : 0;
+		if ( $attachment_id <= 0 ) {
+			return;
+		}
+
+		$message = sprintf(
+			/* translators: 1: attachment id 2: reference count */
+			__( 'Delete blocked: media attachment %1$d is still referenced by Streamit content metadata (%2$d reference(s)). Remove it from the movie/series first, or enable the override.', 'streamit' ),
+			$attachment_id,
+			$refs
+		);
+		echo '<div class="notice notice-error"><p>' . esc_html( $message ) . '</p></div>';
+	}
+);
 
 /**
  * @param int $movie_id Movie ID.
