@@ -109,4 +109,9 @@ wordpress/
 metadata/
 volumes/
 *.tar.gz
+*.tgz
 *.mp4
+
+# Local vendor artifacts (do not commit)
+/package/
+/wp-content/themes/streamit-child/assets/vendor/fontawesome/
