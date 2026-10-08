@@ -66,7 +66,18 @@ class Movies_WP_Media_Import_Service {
 			return self::fail_from_wp_error( $recheck, $recheck->get_error_code() );
 		}
 
-		$adapter_result = self::apply_adapter( $plan, $options );
+		// Coalesce expensive Streamit-child invalidations during Movie import execution.
+		// Series import does this per worker tick; Movie import does it per adapter apply.
+		if ( class_exists( 'Movies_WP_Series_Import_Invalidation_Coalesce' ) ) {
+			Movies_WP_Series_Import_Invalidation_Coalesce::begin();
+			try {
+				$adapter_result = self::apply_adapter( $plan, $options );
+			} finally {
+				Movies_WP_Series_Import_Invalidation_Coalesce::finish();
+			}
+		} else {
+			$adapter_result = self::apply_adapter( $plan, $options );
+		}
 		if ( ! is_array( $adapter_result ) ) {
 			return self::fail(
 				'media_import_execution_failed',

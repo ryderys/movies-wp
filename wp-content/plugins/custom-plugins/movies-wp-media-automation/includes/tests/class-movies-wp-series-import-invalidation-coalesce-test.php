@@ -108,6 +108,25 @@ add_action(
 	2
 );
 
+add_action(
+	'updated_streamit_movie_meta',
+	static function () {
+		global $live_invalidations;
+		++$live_invalidations;
+	},
+	10,
+	2
+);
+add_action(
+	'added_streamit_movie_meta',
+	static function () {
+		global $live_invalidations;
+		++$live_invalidations;
+	},
+	10,
+	2
+);
+
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-import-invalidation-coalesce.php';
 
 $failures = 0;
@@ -190,6 +209,22 @@ add_action(
 );
 do_action( 'streamit_after_update_movie', 9, array() );
 coalesce_assert( $movie_live > 0, 'movie import/update hooks are not removed outside a Series worker' );
+
+$flush_count        = 0;
+$invalidate_count   = 0;
+$live_invalidations = 0;
+Movies_WP_Series_Import_Invalidation_Coalesce::begin();
+do_action( 'streamit_after_update_movie', 501, array( 'post_name' => 'movie-501' ) );
+do_action( 'updated_streamit_movie_meta', 1, 501 );
+do_action( 'updated_streamit_movie_meta', 2, 501 );
+do_action( 'added_streamit_movie_meta', 3, 501 );
+coalesce_assert( 0 === $live_invalidations, 'movie import row/meta writes are deferred during coalescing' );
+Movies_WP_Series_Import_Invalidation_Coalesce::finish();
+coalesce_assert( 1 === $flush_count, 'movie import flushes once at the end of the chunk' );
+coalesce_assert( 0 === $invalidate_count, 'movie import row-update chunks skip per-object meta invalidation after a full flush' );
+$live_invalidations = 0;
+do_action( 'updated_streamit_movie_meta', 4, 501 );
+coalesce_assert( 1 === $live_invalidations, 'after finish, movie meta updates invalidate immediately again' );
 
 $flush_count        = 0;
 $invalidate_count   = 0;

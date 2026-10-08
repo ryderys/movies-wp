@@ -7,6 +7,7 @@
  * @var array<string, mixed>|null $plan
  * @var array{type: string, message: string, details?: array}|null $notice
  * @var array<string, mixed>|null $import_result
+ * @var list<array<string, mixed>> $recent_jobs
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -66,6 +67,49 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 	<?php if ( is_array( $notice ) ) : ?>
 		<div class="notice notice-<?php echo esc_attr( $notice['type'] ); ?> is-dismissible">
 			<p><?php echo esc_html( $notice['message'] ); ?></p>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( isset( $recent_jobs ) && is_array( $recent_jobs ) && array() !== $recent_jobs ) : ?>
+		<div class="movies-wp-panel">
+			<h2><?php esc_html_e( 'Recent Movie Imports', 'movies-wp' ); ?></h2>
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Status', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'TMDb ID', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'Directory', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'Updated', 'movies-wp' ); ?></th>
+						<th><?php esc_html_e( 'Progress', 'movies-wp' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $recent_jobs as $job ) : ?>
+						<?php
+						$job    = is_array( $job ) ? $job : array();
+						$status = (string) ( $job['status'] ?? '' );
+						$tmdb_id = (string) ( $job['tmdb_id'] ?? '' );
+						$dir    = (string) ( $job['directory'] ?? '' );
+						$updated = (string) ( $job['updated_at'] ?? '' );
+						$result = isset( $job['result'] ) && is_array( $job['result'] ) ? $job['result'] : array();
+						$token  = isset( $result['access_token'] ) && is_string( $result['access_token'] ) ? (string) $result['access_token'] : '';
+						?>
+						<tr>
+							<td><?php echo esc_html( Movies_WP_Media_Admin::job_status_label( $status ) ); ?></td>
+							<td><code dir="ltr"><?php echo esc_html( $tmdb_id ); ?></code></td>
+							<td><code dir="ltr"><?php echo esc_html( $dir ); ?></code></td>
+							<td><?php echo esc_html( $updated ); ?></td>
+							<td>
+								<?php if ( '' !== $token ) : ?>
+									<a class="button button-small" href="<?php echo esc_url( Movies_WP_Media_Admin::progress_url( $token ) ); ?>"><?php esc_html_e( 'View', 'movies-wp' ); ?></a>
+								<?php else : ?>
+									<?php esc_html_e( 'Unavailable', 'movies-wp' ); ?>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
 		</div>
 	<?php endif; ?>
 
