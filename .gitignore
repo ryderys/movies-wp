@@ -103,3 +103,10 @@ cloudflare-worker-updated.js
 graphify-out
 *.txt
 *.md
+wordpress/
+wordpress/
+
+metadata/
+volumes/
+*.tar.gz
+*.mp4

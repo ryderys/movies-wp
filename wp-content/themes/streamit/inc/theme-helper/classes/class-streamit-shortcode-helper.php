@@ -122,8 +122,6 @@ if (! class_exists('streamit_shortcode_Helper')) {
 
             // Get access data
             $access_type  = $post->get_meta('_access_type') ?? '';
-            $ppv_price    = $post->get_meta('_ppv_price') ?? 0;
-            $discount     = $post->get_meta('_ppv_discount') ?? 0;
             $pmp_levels   = $post->get_meta('_pmp_level') ?? [];
 
             if (!$access_type && !empty($pmp_levels)) {
@@ -132,14 +130,6 @@ if (! class_exists('streamit_shortcode_Helper')) {
 
             $st_premium_lvl = method_exists($post, 'get_meta') && $post->get_meta('_pmp_level') ? maybe_unserialize($post->get_meta('_pmp_level')) : '';
             $has_access = function_exists('streamit_user_has_stream_access') ? streamit_user_has_stream_access($post_id, $post_type, $user_id) : false;
-            $final_price = function_exists('streamit_calculate_final_ppv_price') ? streamit_calculate_final_ppv_price($post_id, $post_type) : $ppv_price;
-
-            $currency_code   = get_option('pmpro_currency', 'USD');
-            global $pmpro_currencies;
-            $currency_symbol = isset($pmpro_currencies[$currency_code]['symbol']) ? $pmpro_currencies[$currency_code]['symbol'] : '$';
-            $original_price   = floatval($ppv_price);
-            $discounted_price = floatval($final_price);
-
             $pricing_page = streamit_subscribe_page_url();
             if (!empty($st_premium_lvl) && is_array($st_premium_lvl)) {
                 $pricing_page = add_query_arg(
@@ -149,19 +139,6 @@ if (! class_exists('streamit_shortcode_Helper')) {
                 );
             }
 
-            $purchase_label = sprintf(
-                '%s %s <strong>%s%s</strong>',
-                esc_html__('Rent For', 'streamit'),
-                $discounted_price < $original_price
-                    ? '<del class="rent-price">' .
-                    esc_html($currency_symbol . number_format($original_price, 2)) .
-                    '</del>'
-                    : '',
-                esc_html($currency_symbol),
-                esc_html(number_format($discounted_price, 2))
-            );
-
-            $purchase_icon = 'rent';
             $subscribe_icon = 'premium';
             $subscribe_label = esc_html__('Subscribe to Watch', 'streamit');
             $media_player_url = streamit_get_permalink($atts['post_type'], $post->get_post_name() . '/player');
@@ -173,17 +150,8 @@ if (! class_exists('streamit_shortcode_Helper')) {
             } else {
                 if ($access_type === 'plan') {
                     echo $this->streamit_generate_button($pricing_page, $subscribe_icon, $subscribe_label);
-                } elseif ($access_type === 'ppv') {
-                    echo $this->streamit_generate_button('#', $purchase_icon, $purchase_label, 'data-bs-toggle="modal" data-bs-target="#PpvSubscriptionDataModal"', 'btn btn-warning-subtle');
                 } elseif ($access_type === 'anyone') {
                     echo $this->streamit_generate_button($pricing_page, $subscribe_icon, $subscribe_label);
-                    echo $this->streamit_generate_button(
-                        '#',
-                        $purchase_icon,
-                        $purchase_label,
-                        'data-bs-toggle="modal" data-bs-target="#PpvSubscriptionDataModal"',
-                        'd-flex align-items-center gap-lg-3 gap-2 flex-md-nowrap flex-wrap btn btn-warning-subtle'
-                    );
                 }
             }
 

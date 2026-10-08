@@ -24,6 +24,12 @@ class Streamit_Profile_Tabs_Manager
             10,
             1
         );
+        add_filter(
+            'st_user_profile_tabs',
+            [$this, 'remove_disabled_profile_tabs'],
+            PHP_INT_MAX,
+            1
+        );
     }
 
     /**
@@ -97,6 +103,21 @@ class Streamit_Profile_Tabs_Manager
          * @since 1.0.0
          */
         return apply_filters('st_user_profile_tabs', $tabs);
+    }
+
+    /**
+     * Remove disabled legacy PPV profile tabs after all tab customizations.
+     *
+     * @param array $tabs Profile tabs.
+     * @return array
+     */
+    public function remove_disabled_profile_tabs($tabs)
+    {
+        if (is_array($tabs)) {
+            unset($tabs['ppv'], $tabs['unlocked_content']);
+        }
+
+        return $tabs;
     }
 }    
 

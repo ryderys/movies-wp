@@ -34,13 +34,6 @@ $player_url = streamit_get_permalink( $post_type, $st_data->get_post_name() . '/
 				<span><?php echo esc_html( $play_label ); ?></span>
 			</span>
 		</a>
-	<?php elseif ( 'ppv' === $access_type && ! function_exists( 'movies_wp_user_can_access_media' ) ) : ?>
-		<a class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#PpvSubscriptionDataModal">
-			<span class="d-flex align-items-center justify-content-center gap-2">
-				<span><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-				<span><?php echo esc_html( $play_label ); ?></span>
-			</span>
-		</a>
 	<?php else : ?>
 		<?php streamit_child_render_subscribe_required_modal( $st_data, $post_type, 'play' ); ?>
 		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subscribeRequiredModal">

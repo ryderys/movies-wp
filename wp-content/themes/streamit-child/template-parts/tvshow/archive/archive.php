@@ -115,22 +115,6 @@ $loader_gif_url  = isset($streamit_options['streamit_loader_gif']['url']) ? esc_
                                             </span>
                                         </label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input streamit-filter" type="radio" name="access_type" id="rent" value="ppv">
-                                        <label class="form-check-label" for="rent">
-                                            <span class="d-flex align-items-center gap-2">
-                                                <span><?php echo esc_html__('اجاره', 'streamit'); ?></span>
-                                            </span>
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input streamit-filter" type="radio" name="access_type" id="premium_or_rent" value="anyone">
-                                        <label class="form-check-label" for="premium_or_rent">
-                                            <span class="d-flex align-items-center gap-2">
-                                                <span><?php echo esc_html__('پیشرفته یا اجاره', 'streamit'); ?></span>
-                                            </span>
-                                        </label>
-                                    </div>
                                 </div>
                             </div>
                         </div>

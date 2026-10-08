@@ -32,12 +32,6 @@ $render_badges = function ($badge, $is_upcoming = false) use ($enable_upcoming_b
     if (!empty($badge['is_premium_icon'])) {
         echo '<span class="product-premium border-0 right-icon" data-bs-toggle="tooltip" title="' . esc_attr($badge['premium_title']) . '">' . st_get_icon('premium') . '</span>';
     }
-    if (!empty($badge['is_rent_icon'])) {
-        echo '<span class="product-ppv border-0 left-icon" data-bs-toggle="tooltip" title="' . esc_attr($badge['rent_title']) . '">' . st_get_icon('rent') . '</span>';
-    }
-    if (!empty($badge['is_rented_icon'])) {
-        echo '<span class="product-ppv-rented border-0 right-icon" data-bs-toggle="tooltip" title="' . esc_attr($badge['rent_title']) . '">' . st_get_icon('rented') . '</span>';
-    }
 };
 ?>
 

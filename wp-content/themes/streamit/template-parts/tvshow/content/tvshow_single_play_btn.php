@@ -62,52 +62,17 @@ if ($access_type === 'free' || $has_access) {
     return;
 }
 
-// User is logged in but does not have access, show subscription/purchase options
-// Calculate final price after discount
-$final_price = function_exists('streamit_calculate_final_ppv_price')
-    ? streamit_calculate_final_ppv_price($post_id, $post_type)
-    : $ppv_price;
-
-$currency_code = get_option('pmpro_currency', 'USD');
-global $pmpro_currencies;
-$currency_symbol = isset($pmpro_currencies[$currency_code]['symbol']) ? $pmpro_currencies[$currency_code]['symbol'] : '$';
-
-$original_price = floatval($ppv_price);
-$discounted_price = floatval($final_price);
-
-$purchase_label = sprintf(
-    '%s %s<strong>%s%s</strong>',
-    esc_html__('Rent For', 'streamit'),
-    $discounted_price < $original_price
-        ? '<del class="rent-price">' . esc_html($currency_symbol . number_format($original_price, 2)) . '</del> '
-        : '',
-    esc_html($currency_symbol),
-    esc_html(number_format($discounted_price, 2))
-);
-$purchase_icon = 'rent';
+// User is logged in but does not have access, show the subscription option.
 $subscribe_label = esc_html__('Subscribe to Watch', 'streamit');
 $subscribe_icon = 'premium';
 $subscribe_url = function_exists('streamit_subscribe_page_url') ? streamit_subscribe_page_url() : '#';
-
-$show_subscribe_button = ($access_type !== 'ppv');
-$show_purchase_button = in_array($access_type, ['ppv', 'anyone']);
 ?>
 
 <div class="play-button-wrapper">
-    <?php if ($show_subscribe_button) : ?>
-        <a class="btn btn-primary <?php echo ($show_purchase_button) ? 'me-2' : '' ?>" href="<?php echo esc_url($subscribe_url); ?>">
-            <span class="d-flex align-items-center justify-content-center gap-2">
-                <span><?php echo st_get_icon($subscribe_icon); ?></span>
-                <span><?php echo $subscribe_label; ?></span>
-            </span>
-        </a>
-    <?php endif; ?> 
-    <?php if ($show_purchase_button) : ?>
-        <a class="btn btn-warning-subtle" data-bs-toggle="modal" data-bs-target="#PpvSubscriptionDataModal">
-            <span class="d-flex align-items-center justify-content-center gap-2">
-                <span><?php echo st_get_icon($purchase_icon); ?></span>
-                <span><?php echo $purchase_label; ?></span>
-            </span>
-        </a>
-    <?php endif; ?>
+    <a class="btn btn-primary" href="<?php echo esc_url($subscribe_url); ?>">
+        <span class="d-flex align-items-center justify-content-center gap-2">
+            <span><?php echo st_get_icon($subscribe_icon); ?></span>
+            <span><?php echo $subscribe_label; ?></span>
+        </span>
+    </a>
 </div>

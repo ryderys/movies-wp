@@ -1324,13 +1324,6 @@ function streamit_display_restricted_content($post, $post_type = '')
                         esc_html__('Subscribe', 'streamit')
                     );
                 }
-                // Add PPV link
-                $ppv_purchase_page = function_exists('streamit_get_ppv_checkout_url') ? streamit_get_ppv_checkout_url($post_id, $post_type) : '#';
-                $links[] = sprintf(
-                    '<a class="btn btn-link" href="%s"><span>%s</span></a>',
-                    esc_url($ppv_purchase_page),
-                    esc_html__('Pay Per View', 'streamit')
-                );
                 // Join links with 'or'
                 $action_link = implode(sprintf('<span> %s </span>', esc_html__('or', 'streamit')), array_filter($links));
             } elseif ($access_type === 'plan' && !empty($pmp_levels)) {
@@ -1338,13 +1331,6 @@ function streamit_display_restricted_content($post, $post_type = '')
                     '<a class="btn btn-link" href="%s"><span>%s</span></a>',
                     esc_url($pricing_page),
                     esc_html__('Subscribe', 'streamit')
-                );
-            } elseif ($access_type === 'ppv') {
-                $ppv_purchase_page = function_exists('streamit_get_ppv_checkout_url') ? streamit_get_ppv_checkout_url($post_id, $post_type) : '#';
-                $action_link = sprintf(
-                    '<a class="btn btn-link" href="%s"><span>%s</span></a>',
-                    esc_url($ppv_purchase_page),
-                    esc_html__('Pay Per View', 'streamit')
                 );
             }
         }
@@ -1601,13 +1587,8 @@ function streamit_get_access_badge_for_user($post)
         $has_ppv = function_exists('streamit_user_has_ppv_access') ? streamit_user_has_ppv_access($user_id, $post->get_id()) : false;
 
         // If it's rented (PPV), show "Rented" badge
-        if ($access_type === 'ppv' || $access_type === 'anyone' && $has_ppv) {
-            return [
-                'is_premium_icon' => false,
-                'is_rent_icon'    => false,
-                'is_rented_icon'  => true,
-                'rent_title'      => esc_attr__('Rented', 'streamit'),
-            ];
+        if ($access_type === 'ppv' || ('anyone' === $access_type && $has_ppv)) {
+            return [];
         }
 
         // For admins: show badges even if they have access 
@@ -1619,18 +1600,11 @@ function streamit_get_access_badge_for_user($post)
                     'is_rented_icon'  => false,
                     'premium_title'   => esc_attr__('Premium (Admin Access)', 'streamit'),
                 ],
-                'ppv'    => [
-                    'is_premium_icon' => false,
-                    'is_rent_icon'    => true,
-                    'is_rented_icon'  => false,
-                    'rent_title'      => esc_attr__('Pay Per View (Admin Access)', 'streamit'),
-                ],
                 'anyone' => [
                     'is_premium_icon' => true,
-                    'is_rent_icon'    => true,
+                    'is_rent_icon'    => false,
                     'is_rented_icon'  => false,
                     'premium_title'   => esc_attr__('Premium (Admin Access)', 'streamit'),
-                    'rent_title'      => esc_attr__('Pay Per View (Admin Access)', 'streamit'),
                 ],
                 default  => [
                     'is_premium_icon' => false,
@@ -1651,18 +1625,11 @@ function streamit_get_access_badge_for_user($post)
             'is_rented_icon'  => false,
             'premium_title'   => esc_attr__('Premium', 'streamit'),
         ],
-        'ppv'    => [
-            'is_premium_icon' => false,
-            'is_rent_icon'    => true,
-            'is_rented_icon'  => false,
-            'rent_title'      => esc_attr__('Pay Per View', 'streamit'),
-        ],
         'anyone' => [
             'is_premium_icon' => true,
-            'is_rent_icon'    => true,
+            'is_rent_icon'    => false,
             'is_rented_icon'  => false,
             'premium_title'   => esc_attr__('Premium', 'streamit'),
-            'rent_title'      => esc_attr__('Pay Per View', 'streamit'),
         ],
         default  => [
             'is_premium_icon' => false,

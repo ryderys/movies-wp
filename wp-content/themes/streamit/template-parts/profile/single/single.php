@@ -31,6 +31,12 @@ $profile_tab = get_query_var('profile_tab', $default_tab);
 if ($profile_tab == 'profile') {
     $profile_tab = $default_tab;
 }
+
+if (in_array(sanitize_title($profile_tab), ['ppv', 'unlocked_content'], true)) {
+    wp_safe_redirect(trailingslashit(streamit_get_permalink('profile')));
+    exit;
+}
+
 // Define user details FIRST - before using it anywhere
 $user_details = [
     'id'           => $current_user->ID,

@@ -62,11 +62,6 @@ if (!empty((array) $content_data)) : ?>
     streamit_get_template('tvshow/content/tvshow_single_discription_model.php', ['st_data' => $content_data]);
     ?>
 
-    <!-- PPV-Subscription Model Section: Display more detailed information in a modal -->
-    <?php
-    streamit_get_template('common/html-ppv-subscription-details-model.php', ['st_data' => $content_data]);
-    ?>
-
 <?php else : ?>
     <div class="container no-data-here">
         <!-- If no content data is found, display a fallback message -->

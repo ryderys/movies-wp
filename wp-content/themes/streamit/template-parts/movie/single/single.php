@@ -93,9 +93,6 @@ if (!empty($content_data)) : ?>
     streamit_get_template('movie/content/movie_single_download_model.php', [
         'st_data' => $content_data
     ]);
-    streamit_get_template('common/html-ppv-subscription-details-model.php', [
-        'st_data' => $content_data
-    ]);
     ?>
 
 <?php else : ?>
