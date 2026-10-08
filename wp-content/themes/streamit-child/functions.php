@@ -915,3 +915,19 @@ function streamit_enqueue_fontawesome() {
 	wp_enqueue_style( 'fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css', array(), '6.5.2' );
 }
 add_action( 'wp_enqueue_scripts', 'streamit_enqueue_fontawesome' );
+
+/**
+ * Header navbar icons (menu-icon-*) need stable CSS that isn't cached forever by theme version.
+ */
+function streamit_child_enqueue_header_nav_icons() {
+	$rel = '/assets/css/header-nav-icons.css';
+	$abs = get_stylesheet_directory() . $rel;
+	$ver = file_exists( $abs ) ? (string) filemtime( $abs ) : null;
+	wp_enqueue_style(
+		'streamit-child-header-nav-icons',
+		get_stylesheet_directory_uri() . $rel,
+		array( 'fontawesome' ),
+		$ver
+	);
+}
+add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_header_nav_icons', 20 );
