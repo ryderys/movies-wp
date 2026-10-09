@@ -11,6 +11,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$values        = isset( $values ) && is_array( $values ) ? $values : array();
+$preview        = isset( $preview ) && is_array( $preview ) ? $preview : null;
+$plan           = isset( $plan ) && is_array( $plan ) ? $plan : null;
+$notice         = isset( $notice ) && is_array( $notice ) ? $notice : null;
+$import_result  = isset( $import_result ) && is_array( $import_result ) ? $import_result : null;
+$snapshot_token = isset( $snapshot_token ) ? (string) $snapshot_token : '';
+$recent_jobs    = isset( $recent_jobs ) && is_array( $recent_jobs ) ? $recent_jobs : array();
+
 $series  = is_array( $preview ) && is_array( $preview['series'] ?? null ) ? $preview['series'] : array();
 $seasons = is_array( $series['seasons'] ?? null ) ? $series['seasons'] : array();
 $media    = is_array( $preview ) && is_array( $preview['media'] ?? null ) ? $preview['media'] : array();
