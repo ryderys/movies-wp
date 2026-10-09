@@ -465,6 +465,80 @@ mon_same( 1, (int) ( $soft_admin_after['episode_done'] ?? 0 ), 'admin soft-stall
 mon_same( 0, $admin_scheduled, 'admin soft-stall Resume schedules no AS action' );
 mon_assert( str_contains( (string) ( $admin_redirect['url'] ?? '' ), 'resume_notice=busy' ), 'admin soft-stall redirects with busy notice key' );
 
+echo "\nclear finished Recent Imports\n";
+Movies_WP_Series_Import_Job_Store::reset_memory();
+$clear_jobs = array();
+foreach ( array( 'completed', 'failed', 'running', 'queued', 'paused' ) as $i => $clear_status ) {
+	$clear_jobs[ $clear_status ] = mon_create_job(
+		array( 'user_id' => 7, 'blog_id' => 1, 'tmdb_id' => 300 + $i, 'directory' => 'series/c' . $i, 'snapshot_id' => 300 + $i, 'episode_total' => 1 ),
+		array( 'now' => 1000 + $i )
+	);
+	Movies_WP_Series_Import_Job_Store::update( $clear_jobs[ $clear_status ]['token'], array( 'status' => $clear_status ), array( 'now' => 1000 + $i ) );
+}
+$foreign_done = mon_create_job(
+	array( 'user_id' => 99, 'blog_id' => 1, 'tmdb_id' => 399, 'directory' => 'series/other', 'snapshot_id' => 399, 'episode_total' => 1 ),
+	array( 'now' => 1000 )
+);
+Movies_WP_Series_Import_Job_Store::update( $foreign_done['token'], array( 'status' => 'completed' ), array( 'now' => 1000 ) );
+
+$clear_redirect = null;
+Movies_WP_Series_Admin::handle_mutation_request(
+	array(
+		'_wpnonce'                           => 'valid',
+		Movies_WP_Series_Admin::ACTION_FIELD => Movies_WP_Series_Admin::CLEAR_RECENT_ACTION,
+	),
+	array(
+		'user_id'          => 7,
+		'blog_id'          => 1,
+		'current_user_can' => static function () {
+			return true;
+		},
+		'verify_nonce'     => static function () {
+			return true;
+		},
+		'redirect'         => static function ( $url ) use ( &$clear_redirect ): void {
+			$clear_redirect = (string) $url;
+		},
+	)
+);
+$remaining = array_map(
+	static function ( $row ) {
+		return (string) $row['status'];
+	},
+	Movies_WP_Series_Import_Job_Store::list_for_owner( 7, 1, 10 )
+);
+sort( $remaining );
+mon_same( array( 'paused', 'queued', 'running' ), $remaining, 'clear removes only completed/failed jobs' );
+mon_assert( is_array( Movies_WP_Series_Import_Job_Store::find_by_token( $foreign_done['token'] ) ), 'clear keeps other users\' jobs' );
+mon_assert( str_contains( (string) $clear_redirect, 'recent_cleared=2' ), 'clear redirects back with removed count' );
+
+$denied_redirect = null;
+$denied_message  = null;
+Movies_WP_Series_Admin::handle_mutation_request(
+	array(
+		'_wpnonce'                           => 'bad',
+		Movies_WP_Series_Admin::ACTION_FIELD => Movies_WP_Series_Admin::CLEAR_RECENT_ACTION,
+	),
+	array(
+		'user_id'          => 99,
+		'blog_id'          => 1,
+		'current_user_can' => static function () {
+			return true;
+		},
+		'verify_nonce'     => static function () {
+			return false;
+		},
+		'wp_die'           => static function ( $message ) use ( &$denied_message ): void {
+			$denied_message = (string) $message;
+		},
+		'redirect'         => static function ( $url ) use ( &$denied_redirect ): void {
+			$denied_redirect = (string) $url;
+		},
+	)
+);
+mon_assert( null !== $denied_message && null === $denied_redirect, 'clear with invalid nonce is refused' );
+mon_assert( is_array( Movies_WP_Series_Import_Job_Store::find_by_token( $foreign_done['token'] ) ), 'refused clear deletes nothing' );
+
 echo "\nactivity label\n";
 $activity = Movies_WP_Series_Admin::job_activity_label(
 	array( 'updated_at' => gmdate( 'Y-m-d H:i:s', $now - 120 ) ),

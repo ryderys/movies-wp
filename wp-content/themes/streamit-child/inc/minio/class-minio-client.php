@@ -10,6 +10,83 @@ defined( 'ABSPATH' ) || exit;
 class Streamit_Child_Minio_Client {
 
 	/**
+	 * Retry count for transient network failures.
+	 *
+	 * Can be overridden via STREAMIT_MINIO_RETRY_MAX in wp-config.php.
+	 *
+	 * @return int
+	 */
+	private function retry_max() {
+		$max = defined( 'STREAMIT_MINIO_RETRY_MAX' ) ? (int) STREAMIT_MINIO_RETRY_MAX : 3;
+		return max( 1, min( 10, $max ) );
+	}
+
+	/**
+	 * Sleep between retries using exponential backoff (with small jitter).
+	 *
+	 * @param int $attempt 1..N
+	 * @return void
+	 */
+	private function retry_sleep( $attempt ) {
+		$attempt = max( 1, (int) $attempt );
+		$base_ms = defined( 'STREAMIT_MINIO_RETRY_BASE_MS' ) ? (int) STREAMIT_MINIO_RETRY_BASE_MS : 250;
+		$base_ms = max( 50, min( 5000, $base_ms ) );
+
+		$max_ms = $base_ms * ( 2 ** ( $attempt - 1 ) );
+		$jitter = random_int( 0, (int) floor( $base_ms / 2 ) );
+		$ms     = min( 10_000, $max_ms + $jitter );
+
+		usleep( $ms * 1000 );
+	}
+
+	/**
+	 * Whether an HTTP response code should be retried.
+	 *
+	 * @param int $code
+	 * @return bool
+	 */
+	private function should_retry_http_code( $code ) {
+		$code = (int) $code;
+		if ( 408 === $code || 429 === $code ) {
+			return true;
+		}
+		return $code >= 500 && $code <= 599;
+	}
+
+	/**
+	 * Perform a remote request with small retries for transient failures.
+	 *
+	 * @param string               $url
+	 * @param array<string, mixed> $args
+	 * @return array<string, mixed>|\WP_Error
+	 */
+	private function remote_request_retry( $url, array $args ) {
+		$max      = $this->retry_max();
+		$last_err = null;
+		for ( $attempt = 1; $attempt <= $max; $attempt++ ) {
+			$response = wp_remote_request( $url, $args );
+			if ( is_wp_error( $response ) ) {
+				$last_err = $response;
+				if ( $attempt < $max ) {
+					$this->retry_sleep( $attempt );
+					continue;
+				}
+				return $response;
+			}
+
+			$code = (int) wp_remote_retrieve_response_code( $response );
+			if ( $this->should_retry_http_code( $code ) && $attempt < $max ) {
+				$this->retry_sleep( $attempt );
+				continue;
+			}
+
+			return $response;
+		}
+
+		return $last_err instanceof WP_Error ? $last_err : new WP_Error( 'minio_request_failed', 'MinIO request failed.' );
+	}
+
+	/**
 	 * Upload raw bytes to the configured bucket.
 	 *
 	 * @param string $key          Object key (e.g. smoke/wp-put.txt).
@@ -83,7 +160,7 @@ class Streamit_Child_Minio_Client {
 			$signature
 		);
 
-		$response = wp_remote_request(
+		$response = $this->remote_request_retry(
 			$url,
 			array(
 				'method'  => 'PUT',
@@ -191,7 +268,7 @@ class Streamit_Child_Minio_Client {
 			$signature
 		);
 
-		$response = wp_remote_request(
+		$response = $this->remote_request_retry(
 			$url,
 			array(
 				'method'  => 'DELETE',

@@ -23,6 +23,7 @@ class Movies_WP_Series_Admin {
 	const PROGRESS_NONCE = 'movies_wp_series_import_progress';
 	const RESUME_ACTION  = 'movies_wp_series_resume';
 	const CANCEL_ACTION  = 'movies_wp_series_cancel';
+	const CLEAR_RECENT_ACTION = 'movies_wp_series_clear_recent';
 
 	/**
 	 * @var string|false
@@ -89,6 +90,10 @@ class Movies_WP_Series_Admin {
 		}
 		if ( self::CANCEL_ACTION === $action ) {
 			self::process_job_command( $post, 'cancel', $options );
+			return;
+		}
+		if ( self::CLEAR_RECENT_ACTION === $action ) {
+			self::process_clear_recent( $post, $options );
 		}
 	}
 
@@ -153,6 +158,17 @@ class Movies_WP_Series_Admin {
 					$snapshot_token = (string) ( $context['snapshot_token'] ?? '' );
 				}
 			}
+		}
+
+		if ( ! is_array( $notice ) && isset( $_GET['recent_cleared'] ) ) {
+			$notice = array(
+				'type'    => 'success',
+				'message' => sprintf(
+					/* translators: %d: number of removed import jobs */
+					__( 'Cleared %d finished imports from Recent Imports.', 'movies-wp' ),
+					absint( wp_unslash( $_GET['recent_cleared'] ) )
+				),
+			);
 		}
 
 		$recent_jobs = Movies_WP_Series_Import_Job_Store::list_for_owner(
@@ -404,6 +420,39 @@ class Movies_WP_Series_Admin {
 			call_user_func( $cancel, $token );
 		}
 		self::redirect_to_progress( $token, $options );
+	}
+
+	/**
+	 * Delete the current user's finished jobs from Recent Imports, then redirect back.
+	 *
+	 * @param array<string, mixed> $post
+	 * @param array<string, mixed> $options Test hooks.
+	 * @return void
+	 */
+	private static function process_clear_recent( array $post, array $options = array() ) {
+		$gate = self::request_gate( $post, self::PROGRESS_NONCE, 'series_import_forbidden', 'series_import_invalid_nonce', $options );
+		if ( is_wp_error( $gate ) ) {
+			if ( 'series_import_forbidden' === $gate->get_error_code() ) {
+				self::die_forbidden( $options );
+				return;
+			}
+			self::die_message( $gate->get_error_message(), $options );
+			return;
+		}
+		$deleted = Movies_WP_Series_Import_Job_Store::delete_finished_for_owner(
+			self::current_user_id( $options ),
+			self::current_blog_id( $options )
+		);
+		$url = function_exists( 'admin_url' )
+			? admin_url( 'admin.php?page=' . self::SLUG . '&recent_cleared=' . (int) $deleted )
+			: '';
+		if ( isset( $options['redirect'] ) && is_callable( $options['redirect'] ) ) {
+			call_user_func( $options['redirect'], $url, 302 );
+			return;
+		}
+		if ( '' !== $url && function_exists( 'wp_safe_redirect' ) && false !== wp_safe_redirect( $url ) ) {
+			exit;
+		}
 	}
 
 	/**

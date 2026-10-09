@@ -371,6 +371,45 @@ class Movies_WP_Series_Import_Job_Store {
 	}
 
 	/**
+	 * Delete one owner's finished (completed/failed) jobs. Active and paused jobs are kept.
+	 *
+	 * @return int Number of deleted jobs.
+	 */
+	public static function delete_finished_for_owner( $user_id, $blog_id ) {
+		$user_id = (int) $user_id;
+		$blog_id = (int) $blog_id;
+		if ( $user_id <= 0 ) {
+			return 0;
+		}
+
+		if ( self::use_memory() ) {
+			$deleted = 0;
+			foreach ( self::$memory as $hash => $row ) {
+				if ( (int) ( $row['user_id'] ?? 0 ) !== $user_id || (int) ( $row['blog_id'] ?? 0 ) !== $blog_id ) {
+					continue;
+				}
+				if ( ! in_array( (string) ( $row['status'] ?? '' ), array( 'completed', 'failed' ), true ) ) {
+					continue;
+				}
+				unset( self::$memory[ $hash ] );
+				++$deleted;
+			}
+			return $deleted;
+		}
+
+		global $wpdb;
+		$table   = $wpdb->prefix . 'movies_wp_series_import_jobs';
+		$deleted = $wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$table} WHERE user_id = %d AND blog_id = %d AND status IN ('completed','failed')",
+				$user_id,
+				$blog_id
+			)
+		);
+		return false === $deleted ? 0 : (int) $deleted;
+	}
+
+	/**
 	 * Soft stall signal for display. Never mutates job status.
 	 *
 	 * Running: lease expired (worker may still be alive if updated_at is recent).
