@@ -103,5 +103,21 @@ $recent_jobs = isset( $recent_jobs ) && is_array( $recent_jobs ) ? $recent_jobs 
 				<?php endforeach; ?>
 			</tbody>
 		</table>
+		<?php
+		$has_finished = false;
+		foreach ( $recent_jobs as $recent_job ) {
+			if ( is_array( $recent_job ) && in_array( (string) ( $recent_job['status'] ?? '' ), array( 'completed', 'failed' ), true ) ) {
+				$has_finished = true;
+				break;
+			}
+		}
+		?>
+		<?php if ( $has_finished ) : ?>
+			<form method="post" class="movies-wp-series-recent-imports-clear" onsubmit="return window.confirm('<?php echo esc_js( __( 'Remove all completed and failed imports from this list? Running, queued and paused imports are kept.', 'movies-wp' ) ); ?>');">
+				<?php wp_nonce_field( Movies_WP_Series_Admin::PROGRESS_NONCE ); ?>
+				<input type="hidden" name="<?php echo esc_attr( Movies_WP_Series_Admin::ACTION_FIELD ); ?>" value="<?php echo esc_attr( Movies_WP_Series_Admin::CLEAR_RECENT_ACTION ); ?>">
+				<?php submit_button( __( 'Clear finished imports', 'movies-wp' ), 'secondary', 'submit', false ); ?>
+			</form>
+		<?php endif; ?>
 	<?php endif; ?>
 </section>

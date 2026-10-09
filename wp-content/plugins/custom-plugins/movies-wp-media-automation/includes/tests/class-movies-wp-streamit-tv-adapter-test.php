@@ -494,6 +494,24 @@ tv_adapter_assert( ! empty( $result['ok'] ), 'source-URL miss creates an attachm
 tv_adapter_same( 911, $state['tv_meta']['_portrait_thumbmail'], 'new poster attachment is assigned' );
 tv_adapter_same( array( 911, 'https://image.tmdb.org/t/p/w500/poster.jpg' ), $source_writes[0], 'new attachment records _streamit_tmdb_source_url value' );
 
+echo "\n[reimport-same-image-noop-meta-write]\n";
+$state   = array( 'tv_meta' => array( '_portrait_thumbmail' => '910' ) );
+$options = tv_adapter_harness( $state );
+unset( $options['download_image'] );
+$options['find_attachment_by_source_url'] = static function () { return 910; };
+$options['update_tvshow_meta']            = static function ( $id, $key, $value ) use ( &$state ) {
+	unset( $id );
+	// WordPress update_metadata() returns false when the stored value is unchanged.
+	if ( isset( $state['tv_meta'][ $key ] ) && (string) $state['tv_meta'][ $key ] === (string) $value ) {
+		return false;
+	}
+	$state['tv_meta'][ $key ] = is_scalar( $value ) ? (string) $value : $value;
+	return true;
+};
+$result = Movies_WP_Streamit_TV_Adapter::apply( $plan, $options );
+tv_adapter_assert( ! empty( $result['ok'] ), 're-import with unchanged image attachment succeeds' );
+tv_adapter_same( '910', $state['tv_meta']['_portrait_thumbmail'], 'unchanged poster attachment stays linked' );
+
 echo "\n[episode-failure-does-not-rollback]\n";
 $plan = tv_adapter_plan();
 $second = $plan['seasons'][0]['episodes'][0];

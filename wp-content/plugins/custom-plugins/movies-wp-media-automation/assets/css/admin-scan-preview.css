@@ -204,6 +204,10 @@
 	vertical-align: middle;
 }
 
+.movies-wp-series-recent-imports-clear {
+	margin-top: 10px;
+}
+
 .movies-wp-series-recent-imports-table .movies-wp-series-job-row.is-running .movies-wp-series-job-status,
 .movies-wp-series-recent-imports-table .movies-wp-series-job-row.is-queued .movies-wp-series-job-status,
 .movies-wp-series-recent-imports-table .movies-wp-series-job-row.is-preparing .movies-wp-series-job-status {

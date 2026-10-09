@@ -27,9 +27,13 @@ services:
       STREAMIT_MINIO_REMOVE_LOCAL: ${STREAMIT_MINIO_REMOVE_LOCAL:-0}
       MEDIA_URL_SECRET: ${MEDIA_URL_SECRET:-}
       MEDIA_BASE_URL: ${MEDIA_BASE_URL:-https://media.asiastarx.ir}
+      MEDIA_SCAN_API_URL: ${MEDIA_SCAN_API_URL:-https://media.asiastarx.ir}
+      MEDIA_SCAN_API_KEY: ${MEDIA_SCAN_API_KEY:-}
+      MEDIA_SCAN_HMAC_SECRET: ${MEDIA_SCAN_HMAC_SECRET:-}
     volumes:
       - wp_content:/var/www/html/wp-content
       - ./php.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro
+      - ./media-server:/var/www/html/media-server:ro
     restart: unless-stopped
     depends_on:
       - redis

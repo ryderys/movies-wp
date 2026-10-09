@@ -1306,6 +1306,10 @@ class Movies_WP_Streamit_TV_Adapter {
 	}
 
 	private static function values_equal( $left, $right ) {
+		// get_metadata() returns scalars as strings, so int 123 must equal stored "123".
+		if ( is_scalar( $left ) && is_scalar( $right ) ) {
+			return (string) $left === (string) $right;
+		}
 		$serialize = function_exists( 'maybe_serialize' ) ? 'maybe_serialize' : 'serialize';
 		return call_user_func( $serialize, $left ) === call_user_func( $serialize, $right );
 	}
