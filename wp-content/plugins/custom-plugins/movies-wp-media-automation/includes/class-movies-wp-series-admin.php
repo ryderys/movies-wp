@@ -119,6 +119,7 @@ class Movies_WP_Series_Admin {
 		$values         = self::empty_values();
 		$preview        = null;
 		$plan           = null;
+		$import_result  = null;
 		$notice         = self::$pending_notice;
 		$job            = null;
 		$snapshot_token = '';

@@ -91,7 +91,7 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 		</div>
 	<?php endif; ?>
 
-	<?php if ( is_array( $import_result ) ) : ?>
+	<?php if ( isset( $import_result ) && is_array( $import_result ) ) : ?>
 		<div class="movies-wp-panel movies-wp-import-result <?php echo ! empty( $import_result['ok'] ) ? 'movies-wp-panel-success' : ( ! empty( $import_result['partial'] ) ? 'movies-wp-panel-warning' : 'movies-wp-panel-error' ); ?>">
 			<h2><?php esc_html_e( 'Series import result', 'movies-wp' ); ?></h2>
 			<ul class="movies-wp-import-result-list">
