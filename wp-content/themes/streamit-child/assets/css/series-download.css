@@ -467,10 +467,10 @@
 
 .stc-dl-series-subs__panel {
 	border-top: 1px solid var(--stc-dl-border);
-	padding: 14px;
+	padding: 10px 12px;
 	display: flex;
 	flex-direction: column;
-	gap: 18px;
+	gap: 12px;
 }
 
 .stc-dl-series-subs__panel[hidden] {
@@ -480,14 +480,14 @@
 .stc-dl-series-subs__group {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 8px;
 }
 
 .stc-dl-series-subs__group-head {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding-bottom: 6px;
+	padding-bottom: 4px;
 	border-bottom: 1px dashed var(--stc-dl-border);
 }
 
@@ -504,8 +504,10 @@
 
 .stc-dl-series-subs__grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
-	gap: 10px;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+	gap: 12px;
+	align-items: stretch;
+	justify-items: stretch;
 }
 
 .stc-dl-series-subs-card {
@@ -513,6 +515,7 @@
 	flex-direction: column;
 	gap: 8px;
 	min-width: 0;
+	min-height: 120px;
 	padding: 10px;
 	border: 1px solid var(--stc-dl-border);
 	border-radius: 6px;
@@ -522,8 +525,10 @@
 .stc-dl-series-subs-card__label {
 	font-size: 0.95rem;
 	font-weight: 700;
-	line-height: 1.4;
+	line-height: 1.5;
 	font-variant-numeric: tabular-nums;
+	overflow-wrap: anywhere;
+	word-break: break-word;
 }
 
 .stc-dl-series-subs-card__actions {
@@ -535,10 +540,17 @@
 .stc-dl-series-subs-card__btn {
 	width: 100%;
 	font-size: 0.8rem;
-	padding: 4px 8px;
+	padding: 6px 10px;
 	white-space: normal;
 	text-align: center;
-	line-height: 1.3;
+	line-height: 1.5;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	overflow-wrap: anywhere;
+	word-break: break-all;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
 }
 
 @media (max-width: 768px) {
