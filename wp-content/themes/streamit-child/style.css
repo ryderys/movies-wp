@@ -79,56 +79,12 @@
 	content: "\f008";
 }
 
-/* --- Header/Navbar floating glass card (site-wide) --- */
+/* --- Header/Navbar subtle separation (no layout changes) --- */
 #default-header.header-default {
-	/* create breathing room from the viewport top, even when header is sticky/fixed */
-	padding-top: 1rem;
-	padding-left: 0;
-	padding-right: 0;
-}
-
-#default-header.header-default > .container-fluid {
-	/* prevent Bootstrap container padding from pushing the card off-center */
-	padding-left: 0;
-	padding-right: 0;
-}
-
-/* Floating inner card that wraps logo + nav + search/profile */
-#default-header .stc-header-card {
-	width: min(92%, 1280px);
-	margin: 0 auto;
-	border-radius: 16px;
-	padding: 0.75rem 1.5rem;
-	background: rgba(18, 18, 20, 0.5);
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	backdrop-filter: blur(12px);
-	-webkit-backdrop-filter: blur(12px);
-	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-
-/* Keep the navigation centered between branding (RTL right) and rightside tools (RTL left). */
-#default-header .stc-header-card > .d-flex > #site-navigation {
-	flex: 1 1 auto;
-	display: flex;
-	justify-content: center;
-	min-width: 0;
-}
-
-/* Avoid offcanvas container forcing unexpected widths */
-#default-header .stc-header-card .offcanvas {
-	max-width: 100%;
-}
-
-@media (max-width: 768px) {
-	#default-header.header-default {
-		padding-top: 0.75rem;
-	}
-
-	#default-header .stc-header-card {
-		width: min(94%, 1280px);
-		padding: 0.65rem 1rem;
-		border-radius: 14px;
-	}
+	background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .header-default #site-navigation li.menu-icon-series > a .menu-title::before,
 .header-default #site-navigation li.menu-icon-tvshow > a .menu-title::before,
