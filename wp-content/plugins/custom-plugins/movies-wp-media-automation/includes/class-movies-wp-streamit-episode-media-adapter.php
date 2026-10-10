@@ -335,6 +335,12 @@ class Movies_WP_Streamit_Episode_Media_Adapter {
 				$rows[] = $row;
 				continue;
 			}
+			if ( ! isset( $row['source_type'] ) || $row['source_type'] === null || $row['source_type'] === '' ) {
+				$inferred = Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( $path );
+				if ( null !== $inferred ) {
+					$row['source_type'] = $inferred;
+				}
+			}
 			$index[ $path ] = count( $rows );
 			$rows[] = $row;
 		}
@@ -352,6 +358,12 @@ class Movies_WP_Streamit_Episode_Media_Adapter {
 			if ( 'preserve' === $action ) {
 				if ( ! isset( $index[ $path ] ) ) {
 					$row = isset( $operation['row'] ) && is_array( $operation['row'] ) ? $operation['row'] : array();
+					if ( ! isset( $row['source_type'] ) || $row['source_type'] === null || $row['source_type'] === '' ) {
+						$inferred = Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( $path );
+						if ( null !== $inferred ) {
+							$row['source_type'] = $inferred;
+						}
+					}
 					$index[ $path ] = count( $rows );
 					$rows[] = $row;
 				}
@@ -366,8 +378,20 @@ class Movies_WP_Streamit_Episode_Media_Adapter {
 				if ( ! empty( $rows[ $index[ $path ] ]['default'] ) ) {
 					$merged['default'] = $rows[ $index[ $path ] ]['default'];
 				}
+				if ( ! isset( $merged['source_type'] ) || $merged['source_type'] === null || $merged['source_type'] === '' ) {
+					$inferred = Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( $path );
+					if ( null !== $inferred ) {
+						$merged['source_type'] = $inferred;
+					}
+				}
 				$rows[ $index[ $path ] ] = $merged;
 			} else {
+				if ( ! isset( $new_row['source_type'] ) || $new_row['source_type'] === null || $new_row['source_type'] === '' ) {
+					$inferred = Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( $path );
+					if ( null !== $inferred ) {
+						$new_row['source_type'] = $inferred;
+					}
+				}
 				$index[ $path ] = count( $rows );
 				$rows[] = $new_row;
 			}

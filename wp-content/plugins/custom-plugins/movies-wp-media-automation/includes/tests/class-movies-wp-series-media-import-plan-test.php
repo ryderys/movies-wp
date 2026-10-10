@@ -123,9 +123,10 @@ function sm_plan_preview(): array {
 						'media_path' => 'series/korea/2024/Show/SUB.ENG/S01E01.srt',
 						'extension'  => 'srt',
 						'subtitle'     => array(
-							'label'   => 'ENG',
-							'srclang' => 'en',
-							'format'  => 'SRT',
+							'label'       => 'ENG',
+							'srclang'     => 'en',
+							'format'      => 'SRT',
+							'source_type' => 'WEB-DL',
 						),
 					),
 					array(
@@ -155,6 +156,14 @@ $valid = Movies_WP_Series_Media_Import_Plan::normalize_series_path( 'series/kore
 sm_plan_same( 'series/korea/2024/Show/file.mkv', $valid, 'lowercase relative series path accepted' );
 $uppercase = Movies_WP_Series_Media_Import_Plan::normalize_series_path( 'Series/korea/2024/Show/file.mkv' );
 sm_plan_assert( is_wp_error( $uppercase ), 'uppercase Series path rejected as non-canonical' );
+
+echo "Series media import plan subtitle source_type resolution\n";
+
+sm_plan_same( 'WEB-DL', Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( 'series/korea/2024/Show/SUB.ENG/WEB-DL/S01E01.srt' ), 'infer from directory WEB-DL' );
+sm_plan_same( 'HDTV', Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( 'series/korea/2024/Show/SUB/HDTV/S01E01.srt' ), 'infer from directory HDTV' );
+sm_plan_same( 'WEB-DL', Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( 'series/korea/2024/Show/SUB/Show.S01E01.WEB-DL.fa.srt' ), 'infer from filename WEB-DL' );
+sm_plan_same( 'HDTV', Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( 'series/korea/2024/Show/SUB/Show.S01E01.HDTV.fa.srt' ), 'infer from filename HDTV' );
+sm_plan_same( null, Movies_WP_Series_Media_Import_Plan::infer_source_type_from_path( 'series/korea/2024/Show/SUB.FA/S01E01.srt' ), 'unclassified path returns null' );
 
 echo "Series media import plan operations\n";
 
@@ -213,6 +222,21 @@ $subtitle_warnings = array_filter(
 	}
 );
 sm_plan_assert( count( $subtitle_warnings ) >= 1, 'unsupported subtitle extension warns' );
+
+$sub_upsert   = null;
+$sub_preserve = null;
+foreach ( $ops['_subtitles'] as $sub_op ) {
+	if ( 'upsert' === $sub_op['action'] && str_contains( (string) $sub_op['path'], 'S01E01.srt' ) ) {
+		$sub_upsert = $sub_op;
+	}
+	if ( 'preserve' === $sub_op['action'] ) {
+		$sub_preserve = $sub_op;
+	}
+}
+sm_plan_assert( is_array( $sub_upsert ), 'subtitle upsert operation found' );
+sm_plan_same( 'WEB-DL', $sub_upsert['row']['source_type'] ?? null, 'subtitle upsert preserves detected source_type' );
+sm_plan_assert( is_array( $sub_preserve ), 'existing subtitle preserve operation found' );
+sm_plan_same( null, $sub_preserve['row']['source_type'] ?? null, 'unclassified existing subtitle stays null source_type' );
 
 $missing = Movies_WP_Series_Media_Import_Plan::build(
 	array_merge(

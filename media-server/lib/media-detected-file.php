@@ -217,6 +217,7 @@ function media_normalize_detected_subtitle( array $file ): array {
 		'video' => null,
 
 		'release' => array(
+			'source_type'   => media_normalize_string_or_null( $file['source_type'] ?? null ),
 			'encoder'       => media_normalize_string_or_null( $file['encoder'] ?? null ),
 			'release_group' => media_normalize_string_or_null( $file['release_group'] ?? null ),
 			'group_hint'    => media_normalize_string_or_null( $file['group_hint'] ?? null ),

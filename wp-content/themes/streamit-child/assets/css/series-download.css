@@ -390,6 +390,144 @@
 	color: var(--stc-dl-muted);
 }
 
+/* --- Series Subtitles Collapsible Section --- */
+.stc-dl-series-subs {
+	margin-top: 14px;
+	border: 1px solid var(--stc-dl-border);
+	border-radius: var(--stc-dl-radius);
+	background: rgba(0, 0, 0, 0.22);
+	overflow: hidden;
+}
+
+.stc-dl-series-subs__toggle {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 12px 14px;
+	background: transparent;
+	border: none;
+	color: inherit;
+	cursor: pointer;
+	text-align: right;
+	gap: 12px;
+}
+
+.stc-dl-series-subs__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+	min-width: 0;
+}
+
+.stc-dl-series-subs__title {
+	font-weight: 700;
+	font-size: 0.95rem;
+}
+
+.stc-dl-series-subs__badges {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.stc-dl-series-subs__badge {
+	font-size: 0.75rem;
+	padding: 2px 8px;
+	border-radius: 4px;
+	background: var(--stc-dl-surface-2);
+	border: 1px solid var(--stc-dl-border);
+	color: var(--stc-dl-accent);
+	font-weight: 600;
+}
+
+.stc-dl-series-subs__count {
+	font-size: 0.85rem;
+	color: var(--stc-dl-muted);
+}
+
+.stc-dl-series-subs.is-open > .stc-dl-series-subs__toggle .stc-dl-chevron--sm::before {
+	transform: rotate(-135deg);
+	margin-top: 3px;
+}
+
+.stc-dl-series-subs__panel {
+	border-top: 1px solid var(--stc-dl-border);
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+
+.stc-dl-series-subs__panel[hidden] {
+	display: none !important;
+}
+
+.stc-dl-series-subs__group {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.stc-dl-series-subs__group-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-bottom: 6px;
+	border-bottom: 1px dashed var(--stc-dl-border);
+}
+
+.stc-dl-series-subs__group-title {
+	font-weight: 700;
+	font-size: 0.9rem;
+	color: #fff;
+}
+
+.stc-dl-series-subs__group-count {
+	font-size: 0.8rem;
+	color: var(--stc-dl-muted);
+}
+
+.stc-dl-series-subs__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+	gap: 10px;
+}
+
+.stc-dl-series-subs-card {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+	padding: 10px;
+	border: 1px solid var(--stc-dl-border);
+	border-radius: 6px;
+	background: var(--stc-dl-surface-2);
+}
+
+.stc-dl-series-subs-card__label {
+	font-size: 0.95rem;
+	font-weight: 700;
+	line-height: 1.4;
+	font-variant-numeric: tabular-nums;
+}
+
+.stc-dl-series-subs-card__actions {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.stc-dl-series-subs-card__btn {
+	width: 100%;
+	font-size: 0.8rem;
+	padding: 4px 8px;
+	white-space: normal;
+	text-align: center;
+	line-height: 1.3;
+}
+
 @media (max-width: 768px) {
 	.stc-dl__box {
 		padding: 12px;

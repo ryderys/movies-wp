@@ -40,6 +40,7 @@
 				label: ( ( rowEl.querySelector( '.stc-sub-label' ) || {} ).value || '' ).trim(),
 				srclang: ( ( rowEl.querySelector( '.stc-sub-srclang' ) || {} ).value || '' ).trim(),
 				format: ( ( rowEl.querySelector( '.stc-sub-format-input' ) || {} ).value || '' ).trim(),
+				source_type: ( ( rowEl.querySelector( '.stc-sub-source-type' ) || {} ).value || '' ).trim(),
 				url: url,
 				'default': !! ( rowEl.querySelector( '.stc-sub-default' ) || {} ).checked
 			} );

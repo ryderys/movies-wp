@@ -151,7 +151,6 @@ function streamit_child_series_download_quality_groups( array $episodes ) {
 		$label = isset( $episode['label'] ) ? (string) $episode['label'] : '';
 
 		$subtitles   = array();
-		$label_count = array();
 		if ( ! empty( $episode['subtitles'] ) && is_array( $episode['subtitles'] ) ) {
 			foreach ( $episode['subtitles'] as $sub ) {
 				if ( ! is_array( $sub ) ) {
@@ -161,13 +160,11 @@ function streamit_child_series_download_quality_groups( array $episodes ) {
 					isset( $sub['label'] ) ? $sub['label'] : '',
 					isset( $sub['srclang'] ) ? $sub['srclang'] : ''
 				);
-				$label_count[ $sub_label ] = isset( $label_count[ $sub_label ] ) ? $label_count[ $sub_label ] + 1 : 1;
-				if ( $label_count[ $sub_label ] > 1 ) {
-					$sub_label .= ' ' . $label_count[ $sub_label ];
-				}
 				$subtitles[] = array(
-					'label' => $sub_label,
-					'href'  => isset( $sub['href'] ) ? (string) $sub['href'] : '',
+					'label'       => $sub_label,
+					'srclang'     => isset( $sub['srclang'] ) ? (string) $sub['srclang'] : '',
+					'source_type' => isset( $sub['source_type'] ) ? (string) $sub['source_type'] : '',
+					'href'        => isset( $sub['href'] ) ? (string) $sub['href'] : '',
 				);
 			}
 		}
@@ -235,6 +232,153 @@ function streamit_child_series_download_quality_groups( array $episodes ) {
 	}
 
 	return $out;
+}
+
+/**
+ * Regroup one catalog season's subtitles by release type (source_type),
+ * then by episode, then by language.
+ *
+ * Safe release types: WEB-DL, WEBRip, HDTV, BluRay, BDRip, BRRip, HDRip, DVDRip, etc.
+ * Subtitles with unestablished release types are placed into an unclassified group.
+ * Language labels never use duplicate numbering.
+ *
+ * @param array<int, mixed> $episodes Catalog season `episodes`.
+ * @return array<int, array{
+ *   source_type: string,
+ *   label: string,
+ *   count: int,
+ *   episodes: array<int, array{
+ *     id: int,
+ *     ordinal: int,
+ *     label: string,
+ *     title: string,
+ *     subtitles: array<int, array{label: string, srclang: string, href: string, format: string, source_type: string}>
+ *   }>
+ * }>
+ */
+function streamit_child_series_download_subtitle_groups( array $episodes ) {
+	$unclassified_label = __( 'سایر نسخه‌ها', 'streamit' );
+
+	$known_priority = array(
+		'WEB-DL' => 10,
+		'WEBRip' => 20,
+		'HDTV'   => 30,
+		'BluRay' => 40,
+		'BDRip'  => 50,
+		'BRRip'  => 60,
+		'HDRip'  => 70,
+		'DVDRip' => 80,
+	);
+
+	// Collect by source_type -> episode_id
+	$by_source = array();
+
+	foreach ( array_values( $episodes ) as $i => $episode ) {
+		if ( ! is_array( $episode ) || empty( $episode['subtitles'] ) || ! is_array( $episode['subtitles'] ) ) {
+			continue;
+		}
+
+		$ep_id    = isset( $episode['id'] ) ? (int) $episode['id'] : $i + 1;
+		$ep_label = isset( $episode['label'] ) ? (string) $episode['label'] : '';
+		$ep_ord   = streamit_child_series_download_episode_ordinal( $ep_label, $i + 1 );
+		$ep_title = isset( $episode['title'] ) ? (string) $episode['title'] : '';
+
+		foreach ( $episode['subtitles'] as $sub ) {
+			if ( ! is_array( $sub ) ) {
+				continue;
+			}
+			$href = isset( $sub['href'] ) ? trim( (string) $sub['href'] ) : '';
+			// Even if href is empty (e.g. locked access), the subtitle exists in the catalog.
+			$source_type = isset( $sub['source_type'] ) && is_string( $sub['source_type'] ) ? trim( $sub['source_type'] ) : '';
+			if ( '' === $source_type && ! empty( $sub['url'] ) && function_exists( 'streamit_child_infer_subtitle_source_type' ) ) {
+				$source_type = streamit_child_infer_subtitle_source_type( $sub['url'] );
+			}
+
+			$group_key   = '' !== $source_type ? $source_type : '__unclassified__';
+			$group_label = '' !== $source_type ? $source_type : $unclassified_label;
+
+			if ( ! isset( $by_source[ $group_key ] ) ) {
+				$by_source[ $group_key ] = array(
+					'source_type' => '' !== $source_type ? $source_type : '',
+					'label'       => $group_label,
+					'count'       => 0,
+					'episodes'    => array(),
+				);
+			}
+
+			$by_source[ $group_key ]['count']++;
+
+			if ( ! isset( $by_source[ $group_key ]['episodes'][ $ep_id ] ) ) {
+				$by_source[ $group_key ]['episodes'][ $ep_id ] = array(
+					'id'        => $ep_id,
+					'ordinal'   => $ep_ord,
+					'label'     => $ep_label,
+					'title'     => $ep_title,
+					'subtitles' => array(),
+				);
+			}
+
+			$lang_label = streamit_child_subtitle_language_label(
+				isset( $sub['label'] ) ? $sub['label'] : '',
+				isset( $sub['srclang'] ) ? $sub['srclang'] : ''
+			);
+
+			$format = isset( $sub['format'] ) ? trim( (string) $sub['format'] ) : '';
+			if ( '' === $format && ! empty( $sub['meta']['format'] ) ) {
+				$format = trim( (string) $sub['meta']['format'] );
+			}
+
+			$by_source[ $group_key ]['episodes'][ $ep_id ]['subtitles'][] = array(
+				'label'       => $lang_label,
+				'srclang'     => isset( $sub['srclang'] ) ? (string) $sub['srclang'] : '',
+				'href'        => $href,
+				'format'      => $format,
+				'source_type' => $source_type,
+			);
+		}
+	}
+
+	if ( empty( $by_source ) ) {
+		return array();
+	}
+
+	// Sort episodes within each group by ordinal
+	foreach ( $by_source as &$group ) {
+		$eps = array_values( $group['episodes'] );
+		usort(
+			$eps,
+			static function ( array $a, array $b ): int {
+				$ord_cmp = (int) $a['ordinal'] <=> (int) $b['ordinal'];
+				if ( 0 !== $ord_cmp ) {
+					return $ord_cmp;
+				}
+				return (int) $a['id'] <=> (int) $b['id'];
+			}
+		);
+		$group['episodes'] = $eps;
+	}
+	unset( $group );
+
+	// Sort release groups: WEB-DL first, HDTV next, etc., unclassified last
+	$group_list = array_values( $by_source );
+	usort(
+		$group_list,
+		static function ( array $a, array $b ) use ( $known_priority ): int {
+			$a_type = (string) ( $a['source_type'] ?? '' );
+			$b_type = (string) ( $b['source_type'] ?? '' );
+
+			$a_weight = '' === $a_type ? 999 : ( $known_priority[ $a_type ] ?? 100 );
+			$b_weight = '' === $b_type ? 999 : ( $known_priority[ $b_type ] ?? 100 );
+
+			if ( $a_weight !== $b_weight ) {
+				return $a_weight <=> $b_weight;
+			}
+
+			return strcasecmp( $a['label'], $b['label'] );
+		}
+	);
+
+	return $group_list;
 }
 
 /**
@@ -340,11 +484,19 @@ function streamit_child_build_series_download_catalog_from_data( array $seasons,
 					continue;
 				}
 
+				$source_type = isset( $sub['source_type'] ) && is_string( $sub['source_type'] ) ? trim( $sub['source_type'] ) : '';
+				if ( '' === $source_type && ! empty( $sub['url'] ) && function_exists( 'streamit_child_infer_subtitle_source_type' ) ) {
+					$source_type = streamit_child_infer_subtitle_source_type( $sub['url'] );
+				}
+
 				$subtitle_rows[] = array(
-					'label'   => isset( $sub['label'] ) ? (string) $sub['label'] : '',
-					'srclang' => isset( $sub['srclang'] ) ? (string) $sub['srclang'] : '',
-					'href'    => $href,
-					'meta'    => function_exists( 'streamit_child_subtitle_download_meta_values' )
+					'label'       => isset( $sub['label'] ) ? (string) $sub['label'] : '',
+					'srclang'     => isset( $sub['srclang'] ) ? (string) $sub['srclang'] : '',
+					'url'         => isset( $sub['url'] ) ? (string) $sub['url'] : '',
+					'format'      => isset( $sub['format'] ) ? (string) $sub['format'] : '',
+					'source_type' => $source_type,
+					'href'        => $href,
+					'meta'        => function_exists( 'streamit_child_subtitle_download_meta_values' )
 						? streamit_child_subtitle_download_meta_values( $sub )
 						: array(),
 				);

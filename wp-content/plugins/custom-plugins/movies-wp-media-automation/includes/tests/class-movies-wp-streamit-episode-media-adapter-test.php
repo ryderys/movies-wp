@@ -161,14 +161,24 @@ function ema_plan(): array {
 							),
 						),
 						array(
+							'action' => 'preserve',
+							'path'   => 'series/korea/2024/Show/SUB/HDTV/S01E01.fa.srt',
+							'row'    => array(
+								'label'   => 'FA',
+								'url'     => 'series/korea/2024/Show/SUB/HDTV/S01E01.fa.srt',
+								'default' => 0,
+							),
+						),
+						array(
 							'action' => 'upsert',
 							'path'   => 'series/korea/2024/Show/SUB.ENG/S01E01.srt',
 							'row'    => array(
-								'label'   => 'ENG',
-								'srclang' => 'en',
-								'url'     => 'series/korea/2024/Show/SUB.ENG/S01E01.srt',
-								'default' => 0,
-								'format'  => 'SRT',
+								'label'       => 'ENG',
+								'srclang'     => 'en',
+								'url'         => 'series/korea/2024/Show/SUB.ENG/S01E01.srt',
+								'default'     => 0,
+								'format'      => 'SRT',
+								'source_type' => 'WEB-DL',
 							),
 						),
 					),
@@ -216,6 +226,11 @@ function ema_options( bool $readback_fail = false, bool $with_duplicate_sources 
 				'label'   => 'FA',
 				'url'     => 'series/korea/2024/Show/SUB.FA/S01E01.srt',
 				'default' => 1,
+			),
+			array(
+				'label'   => 'FA',
+				'url'     => 'series/korea/2024/Show/SUB/HDTV/S01E01.fa.srt',
+				'default' => 0,
 			),
 		),
 	);
@@ -273,8 +288,11 @@ ema_same( '2026-08-17 10:00:00', $sources[1]['date_added'], 'import date placeho
 ema_assert( ! str_contains( (string) $sources[1]['link'], 'https://' ), 'no signed URL persisted in sources' );
 
 $subtitles = $GLOBALS['episode_meta_store'][101]['_subtitles'];
-ema_same( 2, count( $subtitles ), 'subtitles merged with preserve + upsert' );
+ema_same( 3, count( $subtitles ), 'subtitles merged with preserve + upsert' );
 ema_same( 1, $subtitles[0]['default'], 'existing default subtitle preserved on upsert' );
+ema_same( null, $subtitles[0]['source_type'] ?? null, 'unclassified existing subtitle keeps null source_type' );
+ema_same( 'HDTV', $subtitles[1]['source_type'] ?? null, 'legacy HDTV subtitle has source_type backfilled from path' );
+ema_same( 'WEB-DL', $subtitles[2]['source_type'] ?? null, 'upserted subtitle has detected source_type persisted' );
 
 ema_same( 0, $GLOBALS['forbidden_writes']['_player'], 'adapter never writes player meta' );
 ema_same( 0, $GLOBALS['forbidden_writes']['title'], 'adapter never writes unrelated meta' );

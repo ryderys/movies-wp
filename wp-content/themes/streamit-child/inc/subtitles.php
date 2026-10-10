@@ -16,10 +16,79 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Safely infers subtitle release source type from a stored path or URL.
+ * Only recognizes known release types (WEB-DL, WEBRip, HDTV, BluRay, BDRip, BRRip, HDRip, DVDRip).
+ * Returns empty string if unestablished.
+ *
+ * @param string $path Stored path or URL.
+ * @return string Canonical release name or empty string.
+ */
+function streamit_child_infer_subtitle_source_type( $path ) {
+	$path = trim( (string) $path );
+	if ( '' === $path ) {
+		return '';
+	}
+
+	$map = array(
+		'webdl'   => 'WEB-DL',
+		'webrip'  => 'WEBRip',
+		'bluray'  => 'BluRay',
+		'bdrip'   => 'BDRip',
+		'brrip'   => 'BRRip',
+		'hdtv'    => 'HDTV',
+		'hdrip'   => 'HDRip',
+		'dvdrip'  => 'DVDRip',
+	);
+
+	$normalized = str_replace( '\\', '/', $path );
+	$segments   = explode( '/', $normalized );
+
+	$filename = end( $segments );
+	if ( is_string( $filename ) && '' !== $filename ) {
+		$name_base = pathinfo( $filename, PATHINFO_FILENAME );
+		if ( preg_match( '/(?:^|[\.\-_])(web[\.\-_]?dl|web[\.\-_]?rip|blu[\.\-_]?ray|bd[\.\-_]?rip|br[\.\-_]?rip|hdtv|hd[\.\-_]?rip|dvd[\.\-_]?rip)(?:$|[\.\-_])/i', $name_base, $m ) ) {
+			$norm = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', $m[1] ) );
+			if ( isset( $map[ $norm ] ) ) {
+				return $map[ $norm ];
+			}
+		}
+
+		$tokens = preg_split( '/[\.\-_\s+]+/', $name_base );
+		if ( is_array( $tokens ) ) {
+			foreach ( $tokens as $t ) {
+				$key = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', trim( $t ) ) );
+				if ( isset( $map[ $key ] ) ) {
+					return $map[ $key ];
+				}
+			}
+		}
+	}
+
+	array_pop( $segments );
+	foreach ( array_reverse( $segments ) as $seg ) {
+		$norm_seg = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', trim( $seg ) ) );
+		if ( isset( $map[ $norm_seg ] ) ) {
+			return $map[ $norm_seg ];
+		}
+		$subparts = preg_split( '/[\.\-_\s+]+/', $seg );
+		if ( is_array( $subparts ) ) {
+			foreach ( $subparts as $sp ) {
+				$sp_norm = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', trim( $sp ) ) );
+				if ( isset( $map[ $sp_norm ] ) ) {
+					return $map[ $sp_norm ];
+				}
+			}
+		}
+	}
+
+	return '';
+}
+
+/**
  * Normalize raw `_subtitles` meta into a clean list for output.
  *
  * @param mixed $raw Meta value (array or serialized).
- * @return array<int, array{label: string, srclang: string, url: string, default: bool, format: string}>
+ * @return array<int, array{label: string, srclang: string, url: string, default: bool, format: string, source_type: string}>
  */
 function streamit_child_normalize_subtitles( $raw ) {
 	if ( is_string( $raw ) ) {
@@ -51,6 +120,11 @@ function streamit_child_normalize_subtitles( $raw ) {
 			$label = '' !== $srclang ? strtoupper( $srclang ) : __( 'زیرنویس', 'streamit' );
 		}
 
+		$source_type = isset( $row['source_type'] ) && is_string( $row['source_type'] ) ? trim( $row['source_type'] ) : '';
+		if ( '' === $source_type ) {
+			$source_type = streamit_child_infer_subtitle_source_type( $url );
+		}
+
 		$is_default = ! empty( $row['default'] ) && 'false' !== $row['default'];
 		if ( $is_default && $has_default ) {
 			$is_default = false; // Only one default track is allowed.
@@ -60,11 +134,12 @@ function streamit_child_normalize_subtitles( $raw ) {
 		}
 
 		$out[] = array(
-			'label'   => $label,
-			'srclang' => $srclang,
-			'url'     => $url,
-			'default' => $is_default,
-			'format'  => $format,
+			'label'       => $label,
+			'srclang'     => $srclang,
+			'url'         => $url,
+			'default'     => $is_default,
+			'format'      => $format,
+			'source_type' => $source_type,
 		);
 	}
 
@@ -75,7 +150,7 @@ function streamit_child_normalize_subtitles( $raw ) {
  * Sanitize a raw subtitles payload received on save.
  *
  * @param mixed $raw Payload from the save request.
- * @return array<int, array{label: string, srclang: string, url: string, default: int, format: string}>
+ * @return array<int, array{label: string, srclang: string, url: string, default: int, format: string, source_type: string}>
  */
 function streamit_child_sanitize_subtitles( $raw ) {
 	if ( ! is_array( $raw ) ) {
@@ -97,15 +172,20 @@ function streamit_child_sanitize_subtitles( $raw ) {
 		$srclang = isset( $row['srclang'] ) ? preg_replace( '/[^a-zA-Z-]/', '', (string) $row['srclang'] ) : '';
 		$srclang = strtolower( substr( (string) $srclang, 0, 10 ) );
 
-		$default = ( ! empty( $row['default'] ) && 'false' !== $row['default'] ) ? 1 : 0;
-		$format  = isset( $row['format'] ) ? sanitize_text_field( trim( (string) $row['format'] ) ) : '';
+		$default     = ( ! empty( $row['default'] ) && 'false' !== $row['default'] ) ? 1 : 0;
+		$format      = isset( $row['format'] ) ? sanitize_text_field( trim( (string) $row['format'] ) ) : '';
+		$source_type = isset( $row['source_type'] ) ? sanitize_text_field( trim( (string) $row['source_type'] ) ) : '';
+		if ( '' === $source_type ) {
+			$source_type = streamit_child_infer_subtitle_source_type( $url );
+		}
 
 		$out[] = array(
-			'label'   => isset( $row['label'] ) ? sanitize_text_field( (string) $row['label'] ) : '',
-			'srclang' => $srclang,
-			'url'     => $url,
-			'default' => $default,
-			'format'  => $format,
+			'label'       => isset( $row['label'] ) ? sanitize_text_field( (string) $row['label'] ) : '',
+			'srclang'     => $srclang,
+			'url'         => $url,
+			'default'     => $default,
+			'format'      => $format,
+			'source_type' => $source_type,
 		);
 	}
 
@@ -450,6 +530,7 @@ function streamit_child_render_subtitles_admin( $post_type ) {
 						</div>
 					</div>
 					<div class="stc-sub-field stc-sub-default-field">
+						<input type="hidden" class="stc-sub-source-type" value="<?php echo esc_attr( isset( $row['source_type'] ) ? $row['source_type'] : '' ); ?>" />
 						<label class="stc-sub-default-label">
 							<input type="checkbox" class="stc-sub-default" <?php checked( ! empty( $row['default'] ) ); ?> />
 							<?php esc_html_e( 'پیش‌فرض', 'streamit' ); ?>
@@ -484,6 +565,7 @@ function streamit_child_render_subtitles_admin( $post_type ) {
 					</div>
 				</div>
 				<div class="stc-sub-field stc-sub-default-field">
+					<input type="hidden" class="stc-sub-source-type" value="" />
 					<label class="stc-sub-default-label">
 						<input type="checkbox" class="stc-sub-default" />
 						<?php esc_html_e( 'پیش‌فرض', 'streamit' ); ?>

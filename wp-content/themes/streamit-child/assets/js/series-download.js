@@ -99,23 +99,6 @@
 			));
 		}
 
-		(Array.isArray(ep.subtitles) ? ep.subtitles : []).forEach(function (sub) {
-			if (!sub.label || (state.canDownload && !sub.href)) {
-				return;
-			}
-			var el = actionEl(
-				state,
-				sub.href,
-				'btn btn-sm btn-secondary border stc-dl-ep__btn stc-dl-ep__btn--sub',
-				sub.label,
-				sub.label + ' — ' + name
-			);
-			if (state.canDownload) {
-				el.setAttribute('download', '');
-			}
-			actions.appendChild(el);
-		});
-
 		if (!actions.childNodes.length) {
 			item.classList.add('is-empty');
 			var empty = document.createElement('span');
@@ -256,6 +239,14 @@
 		if (seasonToggle) {
 			event.preventDefault();
 			toggleSection(seasonToggle.closest('[data-stc-season]'), seasonToggle);
+			return;
+		}
+
+		var subsToggle = event.target.closest('[data-stc-subs-toggle]');
+		if (subsToggle) {
+			event.preventDefault();
+			var subs = subsToggle.closest('[data-stc-subs]');
+			toggleSection(subs, subsToggle);
 			return;
 		}
 

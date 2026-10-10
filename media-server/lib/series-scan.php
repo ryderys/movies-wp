@@ -184,6 +184,10 @@ function media_series_scan_enrich_file( array $file, ?string $abs_dir, array $ff
 	}
 
 	if ( ( $file['kind'] ?? '' ) === 'subtitle' ) {
+		$source_type = media_series_scan_resolve_source_type( $file );
+		if ( $source_type !== null && ( ! isset( $file['source_type'] ) || $file['source_type'] === null || $file['source_type'] === '' ) ) {
+			$file['source_type'] = $source_type;
+		}
 		$file['subtitle'] = media_series_scan_subtitle_meta( $file );
 		$subtitle_extension = isset( $file['extension'] ) ? strtolower( (string) $file['extension'] ) : '';
 		if ( ! media_series_subtitle_playback_supported( $subtitle_extension ) ) {
@@ -243,6 +247,50 @@ function media_series_scan_resolve_quality( string $original_name, array $file )
 }
 
 /**
+ * Resolves the canonical subtitle source type from parsed filename metadata
+ * or parent category folder tokens.
+ *
+ * @param array<string, mixed> $file
+ * @return string|null
+ */
+function media_series_scan_resolve_source_type( array $file ): ?string {
+	if ( isset( $file['source_type'] ) && is_string( $file['source_type'] ) && $file['source_type'] !== '' ) {
+		return $file['source_type'];
+	}
+
+	$map = array(
+		'webdl'   => 'WEB-DL',
+		'webrip'  => 'WEBRip',
+		'bluray'  => 'BluRay',
+		'bdrip'   => 'BDRip',
+		'brrip'   => 'BRRip',
+		'hdtv'    => 'HDTV',
+		'hdrip'   => 'HDRip',
+		'dvdrip'  => 'DVDRip',
+	);
+
+	$candidates = array();
+	if ( isset( $file['category'] ) && is_string( $file['category'] ) && $file['category'] !== '' ) {
+		$candidates[] = $file['category'];
+	}
+	if ( isset( $file['category_path'] ) && is_string( $file['category_path'] ) && $file['category_path'] !== '' ) {
+		$parts = explode( '/', str_replace( '\\', '/', $file['category_path'] ) );
+		foreach ( $parts as $p ) {
+			$candidates[] = $p;
+		}
+	}
+
+	foreach ( $candidates as $candidate ) {
+		$norm = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', $candidate ) );
+		if ( isset( $map[ $norm ] ) ) {
+			return $map[ $norm ];
+		}
+	}
+
+	return null;
+}
+
+/**
  * @param array<string, mixed> $file
  * @return array<string, mixed>
  */
@@ -256,13 +304,15 @@ function media_series_scan_subtitle_meta( array $file ): array {
 		$srclang = strtolower( $file['language_hint'] );
 	}
 
-	$format = media_series_subtitle_format_from_extension( $extension );
+	$format      = media_series_subtitle_format_from_extension( $extension );
+	$source_type = media_series_scan_resolve_source_type( $file );
 	return array(
-		'label'   => media_series_subtitle_format_label( $srclang ),
-		'srclang' => $srclang,
-		'url'     => (string) ( $file['media_path'] ?? '' ),
-		'default' => 0,
-		'format'  => $format,
+		'label'       => media_series_subtitle_format_label( $srclang ),
+		'srclang'     => $srclang,
+		'url'         => (string) ( $file['media_path'] ?? '' ),
+		'default'     => 0,
+		'format'      => $format,
+		'source_type' => $source_type,
 	);
 }
 

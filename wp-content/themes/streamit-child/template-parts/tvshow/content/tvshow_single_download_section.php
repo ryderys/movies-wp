@@ -77,8 +77,19 @@ $json_flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | J
 				<?php $rendered_seasons = 0; ?>
 				<?php foreach ( $catalog['seasons'] as $season ) : ?>
 					<?php
-					$groups = streamit_child_series_download_quality_groups( $season['episodes'] );
-					if ( empty( $groups ) ) {
+					$all_groups = streamit_child_series_download_quality_groups( $season['episodes'] );
+					$groups     = array();
+					foreach ( $all_groups as $g ) {
+						if ( '' !== ( $g['quality'] ?? '' ) ) {
+							$groups[] = $g;
+						}
+					}
+
+					$sub_groups = function_exists( 'streamit_child_series_download_subtitle_groups' )
+						? streamit_child_series_download_subtitle_groups( $season['episodes'] )
+						: array();
+
+					if ( empty( $groups ) && empty( $sub_groups ) ) {
 						continue;
 					}
 
@@ -123,76 +134,166 @@ $json_flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | J
 						</button>
 
 						<div id="<?php echo esc_attr( $panel_id ); ?>" class="stc-dl-season__panel" <?php echo $is_open ? '' : 'hidden'; ?>>
-							<script type="application/json" data-stc-season-data>
-								<?php echo wp_json_encode( $groups_json, $json_flags ); ?>
-							</script>
+							<?php if ( ! empty( $groups ) ) : ?>
+								<script type="application/json" data-stc-season-data>
+									<?php echo wp_json_encode( $groups_json, $json_flags ); ?>
+								</script>
 
-							<ul class="stc-dl__rows">
-								<?php foreach ( $groups as $group_i => $group ) : ?>
-									<?php
-									$episodes_id = $panel_id . '-q' . (int) $group_i;
-									$is_subs     = '' === $group['quality'];
-									$show_copy   = ! $is_subs && ( ! $can_download || $group['link_count'] > 0 );
-									?>
-									<li class="stc-dl-group" data-stc-group="<?php echo esc_attr( (string) (int) $group_i ); ?>" data-quality="<?php echo esc_attr( $group['quality'] ); ?>">
-										<div class="stc-dl-row stc-dl-row--series">
-											<div class="stc-dl-row__cell stc-dl-row__cell--count">
-												<span class="stc-dl-row__label"><?php esc_html_e( 'تعداد قسمت‌ها:', 'streamit' ); ?></span>
-												<bdi class="stc-dl-row__value"><?php echo esc_html( (string) count( $group['episodes'] ) ); ?></bdi>
-											</div>
+								<ul class="stc-dl__rows">
+									<?php foreach ( $groups as $group_i => $group ) : ?>
+										<?php
+										$episodes_id = $panel_id . '-q' . (int) $group_i;
+										$show_copy   = ( ! $can_download || $group['link_count'] > 0 );
+										?>
+										<li class="stc-dl-group" data-stc-group="<?php echo esc_attr( (string) (int) $group_i ); ?>" data-quality="<?php echo esc_attr( $group['quality'] ); ?>">
+											<div class="stc-dl-row stc-dl-row--series">
+												<div class="stc-dl-row__cell stc-dl-row__cell--count">
+													<span class="stc-dl-row__label"><?php esc_html_e( 'تعداد قسمت‌ها:', 'streamit' ); ?></span>
+													<bdi class="stc-dl-row__value"><?php echo esc_html( (string) count( $group['episodes'] ) ); ?></bdi>
+												</div>
 
-											<div class="stc-dl-row__cell stc-dl-row__cell--quality">
-												<?php if ( $is_subs ) : ?>
-													<span class="stc-dl-row__value"><?php esc_html_e( 'فقط زیرنویس', 'streamit' ); ?></span>
-												<?php else : ?>
+												<div class="stc-dl-row__cell stc-dl-row__cell--quality">
 													<span class="stc-dl-row__label"><?php esc_html_e( 'کیفیت:', 'streamit' ); ?></span>
 													<bdi class="stc-dl-row__quality"><?php echo esc_html( $group['quality'] ); ?></bdi>
-												<?php endif; ?>
-											</div>
+												</div>
 
-											<div class="stc-dl-row__cell stc-dl-row__cell--meta">
-												<?php if ( '' !== $group['encoder'] ) : ?>
-													<span class="stc-dl-row__field">
-														<span class="stc-dl-row__label"><?php esc_html_e( 'انکودر:', 'streamit' ); ?></span>
-														<bdi class="stc-dl-row__value"><?php echo esc_html( $group['encoder'] ); ?></bdi>
-													</span>
-												<?php endif; ?>
-											</div>
-
-											<div class="stc-dl-row__actions">
-												<button
-													type="button"
-													class="btn btn-primary stc-dl-btn"
-													data-stc-quality-toggle
-													aria-expanded="false"
-													aria-controls="<?php echo esc_attr( $episodes_id ); ?>"
-												>
-													<span><?php esc_html_e( 'مشاهده لینک‌ها', 'streamit' ); ?></span>
-													<span class="stc-dl-chevron stc-dl-chevron--sm" aria-hidden="true"></span>
-												</button>
-											</div>
-										</div>
-
-										<div id="<?php echo esc_attr( $episodes_id ); ?>" class="stc-dl-episodes" hidden>
-											<?php if ( $show_copy ) : ?>
-												<div class="stc-dl-episodes__tools">
-													<?php if ( $can_download ) : ?>
-														<button type="button" class="btn btn-sm btn-secondary border stc-dl__util-btn" data-stc-copy>
-															<?php esc_html_e( 'کپی تمام لینک‌ها', 'streamit' ); ?>
-														</button>
-														<span class="stc-dl-episodes__status" data-stc-copy-status role="status" aria-live="polite"></span>
-													<?php else : ?>
-														<button type="button" class="btn btn-sm btn-secondary border stc-dl__util-btn" data-bs-toggle="modal" data-bs-target="#subscribeRequiredModal">
-															<?php esc_html_e( 'کپی تمام لینک‌ها', 'streamit' ); ?>
-														</button>
+												<div class="stc-dl-row__cell stc-dl-row__cell--meta">
+													<?php if ( '' !== $group['encoder'] ) : ?>
+														<span class="stc-dl-row__field">
+															<span class="stc-dl-row__label"><?php esc_html_e( 'انکودر:', 'streamit' ); ?></span>
+															<bdi class="stc-dl-row__value"><?php echo esc_html( $group['encoder'] ); ?></bdi>
+														</span>
 													<?php endif; ?>
 												</div>
-											<?php endif; ?>
-											<div class="stc-dl-episodes__grid" data-stc-episode-grid role="list"></div>
-										</div>
-									</li>
-								<?php endforeach; ?>
-							</ul>
+
+												<div class="stc-dl-row__actions">
+													<button
+														type="button"
+														class="btn btn-primary stc-dl-btn"
+														data-stc-quality-toggle
+														aria-expanded="false"
+														aria-controls="<?php echo esc_attr( $episodes_id ); ?>"
+													>
+														<span><?php esc_html_e( 'مشاهده لینک‌ها', 'streamit' ); ?></span>
+														<span class="stc-dl-chevron stc-dl-chevron--sm" aria-hidden="true"></span>
+													</button>
+												</div>
+											</div>
+
+											<div id="<?php echo esc_attr( $episodes_id ); ?>" class="stc-dl-episodes" hidden>
+												<?php if ( $show_copy ) : ?>
+													<div class="stc-dl-episodes__tools">
+														<?php if ( $can_download ) : ?>
+															<button type="button" class="btn btn-sm btn-secondary border stc-dl__util-btn" data-stc-copy>
+																<?php esc_html_e( 'کپی تمام لینک‌ها', 'streamit' ); ?>
+															</button>
+															<span class="stc-dl-episodes__status" data-stc-copy-status role="status" aria-live="polite"></span>
+														<?php else : ?>
+															<button type="button" class="btn btn-sm btn-secondary border stc-dl__util-btn" data-bs-toggle="modal" data-bs-target="#subscribeRequiredModal">
+																<?php esc_html_e( 'کپی تمام لینک‌ها', 'streamit' ); ?>
+															</button>
+														<?php endif; ?>
+													</div>
+												<?php endif; ?>
+												<div class="stc-dl-episodes__grid" data-stc-episode-grid role="list"></div>
+											</div>
+										</li>
+									<?php endforeach; ?>
+								</ul>
+							<?php endif; ?>
+
+							<?php if ( ! empty( $sub_groups ) ) : ?>
+								<?php
+								$sub_panel_id     = $panel_id . '-subtitles';
+								$total_subs_count = 0;
+								foreach ( $sub_groups as $sg ) {
+									$total_subs_count += (int) $sg['count'];
+								}
+								?>
+								<div class="stc-dl-series-subs" data-stc-subs>
+									<button
+										type="button"
+										class="stc-dl-series-subs__toggle"
+										data-stc-subs-toggle
+										aria-expanded="false"
+										aria-controls="<?php echo esc_attr( $sub_panel_id ); ?>"
+									>
+										<span class="stc-dl-series-subs__meta">
+											<span class="stc-dl-series-subs__title">
+												<?php esc_html_e( 'زیرنویس‌های این فصل', 'streamit' ); ?>
+											</span>
+											<span class="stc-dl-series-subs__badges">
+												<?php foreach ( $sub_groups as $sg ) : ?>
+													<span class="stc-dl-series-subs__badge"><?php echo esc_html( $sg['label'] ); ?></span>
+												<?php endforeach; ?>
+											</span>
+											<span class="stc-dl-series-subs__count">
+												<?php
+												/* translators: %d: number of subtitle files */
+												echo esc_html( sprintf( _n( '%d فایل زیرنویس', '%d فایل زیرنویس', $total_subs_count, 'streamit' ), $total_subs_count ) );
+												?>
+											</span>
+										</span>
+										<span class="stc-dl-chevron stc-dl-chevron--sm" aria-hidden="true"></span>
+									</button>
+
+									<div id="<?php echo esc_attr( $sub_panel_id ); ?>" class="stc-dl-series-subs__panel" hidden>
+										<?php foreach ( $sub_groups as $sg ) : ?>
+											<div class="stc-dl-series-subs__group">
+												<div class="stc-dl-series-subs__group-head">
+													<span class="stc-dl-series-subs__group-title">
+														<?php
+														/* translators: %s: release type e.g. WEB-DL or HDTV */
+														printf( esc_html__( 'زیرنویس‌های نسخه %s', 'streamit' ), esc_html( $sg['label'] ) );
+														?>
+													</span>
+													<span class="stc-dl-series-subs__group-count">
+														<?php
+														/* translators: %d: number of episodes */
+														echo esc_html( sprintf( _n( '%d قسمت', '%d قسمت', count( $sg['episodes'] ), 'streamit' ), count( $sg['episodes'] ) ) );
+														?>
+													</span>
+												</div>
+
+												<div class="stc-dl-series-subs__grid">
+													<?php foreach ( $sg['episodes'] as $sub_ep ) : ?>
+														<div class="stc-dl-series-subs-card">
+															<span class="stc-dl-series-subs-card__label">
+																<?php
+																$ep_ord = $sub_ep['ordinal'];
+																printf( esc_html( $ui_i18n['episode'] ), esc_html( sprintf( '%02d', $ep_ord ) ) );
+																?>
+															</span>
+															<div class="stc-dl-series-subs-card__actions">
+																<?php foreach ( $sub_ep['subtitles'] as $sub_item ) : ?>
+																	<?php if ( $can_download && ! empty( $sub_item['href'] ) ) : ?>
+																		<a
+																			href="<?php echo esc_url( $sub_item['href'] ); ?>"
+																			class="btn btn-sm btn-outline-light stc-dl-series-subs-card__btn"
+																			download
+																		>
+																			<span><?php echo esc_html( $sub_item['label'] ); ?></span>
+																		</a>
+																	<?php else : ?>
+																		<button
+																			type="button"
+																			class="btn btn-sm btn-outline-light stc-dl-series-subs-card__btn"
+																			data-bs-toggle="modal"
+																			data-bs-target="#subscribeRequiredModal"
+																		>
+																			<span><?php echo esc_html( $sub_item['label'] ); ?></span>
+																		</button>
+																	<?php endif; ?>
+																<?php endforeach; ?>
+															</div>
+														</div>
+													<?php endforeach; ?>
+												</div>
+											</div>
+										<?php endforeach; ?>
+									</div>
+								</div>
+							<?php endif; ?>
 						</div>
 					</div>
 				<?php endforeach; ?>

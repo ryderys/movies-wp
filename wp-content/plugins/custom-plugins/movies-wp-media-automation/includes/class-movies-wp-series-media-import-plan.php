@@ -223,13 +223,15 @@ class Movies_WP_Series_Media_Import_Plan {
 			}
 			$seen[ $path ] = true;
 
-			$meta = isset( $subtitle['subtitle'] ) && is_array( $subtitle['subtitle'] ) ? $subtitle['subtitle'] : array();
-			$row  = array(
-				'label'   => (string) ( $meta['label'] ?? 'SUB' ),
-				'srclang' => (string) ( $meta['srclang'] ?? '' ),
-				'url'     => $path,
-				'default' => 0,
-				'format'  => (string) ( $meta['format'] ?? 'SRT' ),
+			$meta        = isset( $subtitle['subtitle'] ) && is_array( $subtitle['subtitle'] ) ? $subtitle['subtitle'] : array();
+			$source_type = self::resolve_subtitle_source_type( $subtitle, $path );
+			$row         = array(
+				'label'       => (string) ( $meta['label'] ?? 'SUB' ),
+				'srclang'     => (string) ( $meta['srclang'] ?? '' ),
+				'url'         => $path,
+				'default'     => 0,
+				'format'      => (string) ( $meta['format'] ?? 'SRT' ),
+				'source_type' => $source_type,
 			);
 
 			$extension = strtolower( (string) ( $subtitle['extension'] ?? pathinfo( $path, PATHINFO_EXTENSION ) ) );
@@ -253,6 +255,9 @@ class Movies_WP_Series_Media_Import_Plan {
 				continue;
 			}
 			if ( ! isset( $seen[ $path ] ) ) {
+				if ( ! isset( $row['source_type'] ) || $row['source_type'] === null || $row['source_type'] === '' ) {
+					$row['source_type'] = self::infer_source_type_from_path( $path );
+				}
 				$operations[] = array(
 					'action' => 'preserve',
 					'path'   => $path,
@@ -320,6 +325,120 @@ class Movies_WP_Series_Media_Import_Plan {
 			return new WP_Error( 'invalid_media_path', __( 'Signed or absolute paths are not allowed.', 'movies-wp' ) );
 		}
 		return $path;
+	}
+
+	/**
+	 * Resolves subtitle release source type from detected metadata or path.
+	 *
+	 * @param array<string, mixed> $subtitle
+	 * @param string $path
+	 * @return string|null
+	 */
+	public static function resolve_subtitle_source_type( array $subtitle, string $path = '' ): ?string {
+		if ( isset( $subtitle['source_type'] ) && is_string( $subtitle['source_type'] ) && $subtitle['source_type'] !== '' ) {
+			return self::canonicalize_source_type( $subtitle['source_type'] );
+		}
+		if ( isset( $subtitle['subtitle']['source_type'] ) && is_string( $subtitle['subtitle']['source_type'] ) && $subtitle['subtitle']['source_type'] !== '' ) {
+			return self::canonicalize_source_type( $subtitle['subtitle']['source_type'] );
+		}
+		if ( isset( $subtitle['detected']['release']['source_type'] ) && is_string( $subtitle['detected']['release']['source_type'] ) && $subtitle['detected']['release']['source_type'] !== '' ) {
+			return self::canonicalize_source_type( $subtitle['detected']['release']['source_type'] );
+		}
+		if ( $path !== '' ) {
+			return self::infer_source_type_from_path( $path );
+		}
+		return null;
+	}
+
+	/**
+	 * Canonicalizes recognized source types.
+	 *
+	 * @param string $source
+	 * @return string|null
+	 */
+	public static function canonicalize_source_type( string $source ): ?string {
+		$map = array(
+			'webdl'   => 'WEB-DL',
+			'webrip'  => 'WEBRip',
+			'bluray'  => 'BluRay',
+			'bdrip'   => 'BDRip',
+			'brrip'   => 'BRRip',
+			'hdtv'    => 'HDTV',
+			'hdrip'   => 'HDRip',
+			'dvdrip'  => 'DVDRip',
+		);
+		$norm = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', trim( $source ) ) );
+		return $map[ $norm ] ?? null;
+	}
+
+	/**
+	 * Safely infers release source type from a path (filename or directory tokens).
+	 * Does not invent values or guess. If unestablished, returns null.
+	 *
+	 * @param string $path
+	 * @return string|null
+	 */
+	public static function infer_source_type_from_path( string $path ): ?string {
+		if ( '' === trim( $path ) ) {
+			return null;
+		}
+
+		$map = array(
+			'webdl'   => 'WEB-DL',
+			'webrip'  => 'WEBRip',
+			'bluray'  => 'BluRay',
+			'bdrip'   => 'BDRip',
+			'brrip'   => 'BRRip',
+			'hdtv'    => 'HDTV',
+			'hdrip'   => 'HDRip',
+			'dvdrip'  => 'DVDRip',
+		);
+
+		$normalized = str_replace( '\\', '/', $path );
+		$segments   = explode( '/', $normalized );
+
+		// Check filename first for release tokens
+		$filename = end( $segments );
+		if ( is_string( $filename ) && '' !== $filename ) {
+			$name_base = pathinfo( $filename, PATHINFO_FILENAME );
+			// Check compound token normalized e.g. web-dl, web.dl, web_dl
+			if ( preg_match( '/(?:^|[\.\-_])(web[\.\-_]?dl|web[\.\-_]?rip|blu[\.\-_]?ray|bd[\.\-_]?rip|br[\.\-_]?rip|hdtv|hd[\.\-_]?rip|dvd[\.\-_]?rip)(?:$|[\.\-_])/i', $name_base, $m ) ) {
+				$norm = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', $m[1] ) );
+				if ( isset( $map[ $norm ] ) ) {
+					return $map[ $norm ];
+				}
+			}
+
+			$tokens = preg_split( '/[\.\-_\s+]+/', $name_base );
+			if ( is_array( $tokens ) ) {
+				foreach ( $tokens as $t ) {
+					$key = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', trim( $t ) ) );
+					if ( isset( $map[ $key ] ) ) {
+						return $map[ $key ];
+					}
+				}
+			}
+		}
+
+		// Then check parent directory segments
+		array_pop( $segments );
+		foreach ( array_reverse( $segments ) as $seg ) {
+			$norm_seg = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', trim( $seg ) ) );
+			if ( isset( $map[ $norm_seg ] ) ) {
+				return $map[ $norm_seg ];
+			}
+			$subparts = preg_split( '/[\.\-_\s+]+/', $seg );
+			if ( is_array( $subparts ) ) {
+				foreach ( $subparts as $sp ) {
+					$sp_norm = strtolower( str_replace( array( '-', '_', '.', ' ' ), '', trim( $sp ) ) );
+					if ( isset( $map[ $sp_norm ] ) ) {
+						return $map[ $sp_norm ];
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	/**

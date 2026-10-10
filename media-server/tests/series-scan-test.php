@@ -182,14 +182,18 @@ $bluray = series_scan_find_file( $result['files'], 'Show.S01E04.srt' );
 series_scan_assert_true( is_array( $bluray ), 'SUB/BluRay nested subtitle is listed' );
 series_scan_assert_true( ( $bluray['episode']['season_number'] ?? '' ) === '1', 'nested BluRay S01E04 keeps season from filename' );
 series_scan_assert_true( ( $bluray['language_hint'] ?? null ) === null, 'SUB/BluRay inherits no language hint' );
+series_scan_assert_true( ( $bluray['subtitle']['source_type'] ?? '' ) === 'BluRay', 'nested BluRay subtitle gets BluRay source_type' );
 
 $hdtv = series_scan_find_file( $result['files'], 'Show.EP05.srt' );
 series_scan_assert_true( is_array( $hdtv ), 'SUB/HDTV nested subtitle is listed' );
 series_scan_assert_true( ( $hdtv['episode']['identity_type'] ?? '' ) === 'episode_only', 'nested HDTV EP05 stays episode-only' );
+series_scan_assert_true( ( $hdtv['subtitle']['source_type'] ?? '' ) === 'HDTV', 'nested HDTV subtitle gets HDTV source_type' );
+series_scan_assert_true( ( $nested_eng['subtitle']['source_type'] ?? '' ) === 'WEB-DL', 'nested WEB-DL subtitle gets WEB-DL source_type' );
 
 $other = series_scan_find_file( $result['files'], 'Show.EP06.srt' );
 series_scan_assert_true( is_array( $other ), 'arbitrary nested subtitle folder is listed' );
 series_scan_assert_true( str_contains( (string) ( $other['media_path'] ?? '' ), '/SUB/Any-Other-Name/' ), 'arbitrary nested folder keeps its path' );
+series_scan_assert_true( ( $other['subtitle']['source_type'] ?? null ) === null, 'arbitrary nested folder subtitle has null source_type' );
 
 $random_nested = series_scan_find_file( $result['files'], 'Show.EP03.srt' );
 series_scan_assert_true( is_array( $random_nested ), 'non-source nested subtitle folder is listed' );
