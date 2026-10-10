@@ -52,7 +52,6 @@ require_once __DIR__ . '/includes/class-movies-wp-series-import-job-runner.php';
 require_once __DIR__ . '/includes/class-movies-wp-movie-import-job-runner.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-orchestrator.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-admin.php';
-require_once __DIR__ . '/includes/class-movies-wp-series-media-admin.php';
 
 add_action( 'init', array( 'Movies_WP_Series_Import_Schema', 'maybe_install' ), 1 );
 Movies_WP_Series_Import_Job_Runner::init();

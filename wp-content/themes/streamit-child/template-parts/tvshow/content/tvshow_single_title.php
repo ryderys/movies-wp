@@ -45,6 +45,6 @@ $status_label = '' !== $tmdb_status
 <?php endif; ?>
 <?php if ( '' !== $status_label ) : ?>
 	<p class="streamit-child-tmdb-status mt-0 mb-3" dir="auto">
-		<?php echo esc_html( $status_label ); ?>
+		<?php echo esc_html( __( 'Status:', 'streamit' ) . ' ' . $status_label ); ?>
 	</p>
 <?php endif; ?>

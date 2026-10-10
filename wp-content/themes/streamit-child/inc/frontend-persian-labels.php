@@ -41,6 +41,7 @@ function streamit_child_get_frontend_persian_labels() {
 		'TV Shows'                           => 'سریال‌ها',
 		'No TV shows or Movies found.'       => 'فیلم یا سریالی یافت نشد.',
 		'No movies or TV shows available in this category.' => 'در این دسته فیلم یا سریالی موجود نیست.',
+		'Status:'                            => 'وضعیت:',
 		'Returning Series'                   => 'در حال پخش',
 		'Ended'                              => 'پایان یافته',
 		'Canceled'                           => 'لغو شده',

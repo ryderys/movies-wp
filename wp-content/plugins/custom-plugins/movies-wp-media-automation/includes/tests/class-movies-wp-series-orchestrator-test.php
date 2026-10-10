@@ -738,7 +738,7 @@ echo "Series orchestrator bootstrap contract\n";
 
 $bootstrap = (string) file_get_contents( dirname( __DIR__, 2 ) . '/movies-wp-media-automation.php' );
 orch_assert( str_contains( $bootstrap, 'Movies_WP_Series_Admin::init();' ), 'Series Automation remains registered' );
-orch_assert( ! str_contains( $bootstrap, 'Movies_WP_Series_Media_Admin::init();' ), 'Series Media Automation submenu is no longer registered' );
+orch_assert( ! str_contains( $bootstrap, 'class-movies-wp-series-media-admin.php' ), 'Series Media Automation admin page is not loaded' );
 orch_assert( str_contains( $bootstrap, 'class-movies-wp-series-orchestrator.php' ), 'orchestrator is loaded' );
 
 echo $failures ? "\n{$failures} failure(s)\n" : "\nAll Series orchestrator tests passed.\n";
