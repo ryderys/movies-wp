@@ -425,6 +425,7 @@ class Movies_WP_Streamit_TV_Adapter {
 			'_tmdb_title'           => trim( (string) ( $data['tmdb_title'] ?? '' ) ),
 			'_tmdb_original_title'  => trim( (string) ( $data['tmdb_original_title'] ?? '' ) ),
 			'_imdb_id'              => trim( (string) ( $data['imdb_id'] ?? '' ) ),
+			'_tmdb_status'          => trim( (string) ( $data['status'] ?? '' ) ),
 			'name_custom_imdb_rating' => self::rating( $data['rating'] ?? null ),
 		);
 		$meta_snap = Movies_WP_Series_Import_Profiler::phase_start( 'series_meta' );

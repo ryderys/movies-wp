@@ -199,6 +199,7 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 			'original_name'      => isset( $body['original_name'] ) ? trim( (string) $body['original_name'] ) : '',
 			'overview'           => isset( $body['overview'] ) ? (string) $body['overview'] : '',
 			'first_air_date'     => isset( $body['first_air_date'] ) ? trim( (string) $body['first_air_date'] ) : '',
+			'status'             => isset( $body['status'] ) ? trim( (string) $body['status'] ) : '',
 			'rating'             => isset( $body['vote_average'] ) && is_numeric( $body['vote_average'] ) ? (float) $body['vote_average'] : null,
 			'poster_path'        => $poster_path,
 			'poster_url'         => self::image_url( $poster_path, 'w500' ),

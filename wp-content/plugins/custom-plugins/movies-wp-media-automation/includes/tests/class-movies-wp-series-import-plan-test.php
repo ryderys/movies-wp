@@ -101,6 +101,7 @@ function series_plan_preview(): array {
 			'original_name'     => 'Original Name',
 			'overview'          => 'TMDb overview',
 			'first_air_date'    => '2020-01-01',
+			'status'            => 'Returning Series',
 			'poster_path'       => '/poster.jpg',
 			'poster_url'        => 'https://image.tmdb.org/t/p/w500/poster.jpg',
 			'backdrop_path'     => '/backdrop.jpg',
@@ -258,6 +259,7 @@ series_plan_same( 'set', $create['seasons'][1]['episodes'][0]['image']['action']
 series_plan_same( 'still', $create['seasons'][1]['episodes'][0]['image']['role'], 'episode still role is explicit' );
 series_plan_same( 'skip_missing', $create['seasons'][1]['episodes'][1]['image']['action'], 'missing new still is explicit skip' );
 series_plan_same( 'tmdb', $create['series']['summary_source'], 'empty admin summary falls back to TMDb' );
+series_plan_same( 'Returning Series', $create['series']['status'], 'TMDb series status is carried into the plan' );
 series_plan_same( 1, count( $create['warnings'] ), 'preview warnings are retained' );
 
 echo "\nSeries, season, and episode update identity\n";

@@ -70,6 +70,7 @@ function series_service_plan( string $action = 'create' ): array {
 			'tmdb_original_title' => 'Original Series',
 			'imdb_id'             => 'tt100',
 			'first_air_date'      => '2020-01-01',
+			'status'              => 'Returning Series',
 			'rating'              => 8.5,
 			'original_language'   => 'ko',
 			'origin_country'      => array( 'KR' ),

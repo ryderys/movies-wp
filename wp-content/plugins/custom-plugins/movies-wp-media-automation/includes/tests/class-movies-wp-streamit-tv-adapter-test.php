@@ -129,6 +129,7 @@ function tv_adapter_plan( string $action = 'create' ): array {
 			'rating' => 8.5, 'original_language' => 'ko', 'origin_country' => array( 'KR' ),
 			'genres' => array( array( 'id' => 18, 'name' => 'Drama' ) ),
 			'first_air_date' => '2020-01-01',
+			'status' => 'Returning Series',
 			'cast' => array(
 				array( 'tmdb_id' => 201, 'name' => 'Existing Actor', 'character' => 'Lead', 'order' => 0 ),
 				array( 'tmdb_id' => 202, 'name' => 'New Actor', 'character' => 'Support', 'order' => 1 ),
@@ -274,6 +275,7 @@ tv_adapter_same( 504, $state['seasons'][0]['image_id'], 'season poster is stored
 tv_adapter_assert( array_key_exists( 'season_year', $state['seasons'][0] ), 'season row has admin year key' );
 tv_adapter_assert( array_key_exists( 'sesion_upcoming_status', $state['seasons'][0] ), 'season row has admin upcoming key' );
 tv_adapter_same( 'TMDb Name', $state['tv_meta']['_tmdb_title'], 'TMDb title metadata is saved' );
+tv_adapter_same( 'Returning Series', $state['tv_meta']['_tmdb_status'], 'TMDb status metadata is saved' );
 tv_adapter_same( 'Original Name', $state['tv_meta']['_tmdb_original_title'], 'TMDb original title metadata is saved' );
 tv_adapter_same( 'tt100', $state['tv_meta']['_imdb_id'], 'IMDb metadata is saved' );
 tv_adapter_same( '8.5', $state['tv_meta']['name_custom_imdb_rating'], 'rating metadata is saved' );

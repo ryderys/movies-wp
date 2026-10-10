@@ -217,6 +217,7 @@ class Movies_WP_Series_Import_Plan {
 				'tmdb_original_title' => isset( $series['original_name'] ) ? (string) $series['original_name'] : '',
 				'imdb_id'             => isset( $series['imdb_id'] ) ? (string) $series['imdb_id'] : '',
 				'first_air_date'      => isset( $series['first_air_date'] ) ? (string) $series['first_air_date'] : '',
+				'status'              => isset( $series['status'] ) ? (string) $series['status'] : '',
 				'rating'              => $series['rating'] ?? null,
 				'original_language'   => isset( $series['original_language'] ) ? (string) $series['original_language'] : '',
 				'origin_country'      => isset( $series['origin_country'] ) && is_array( $series['origin_country'] ) ? $series['origin_country'] : array(),

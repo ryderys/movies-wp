@@ -88,6 +88,7 @@ function valid_series_fixture(): array {
 		'original_name'      => 'Breaking Bad',
 		'overview'           => 'Overview',
 		'first_air_date'     => '2008-01-20',
+		'status'             => 'Ended',
 		'vote_average'       => 8.91,
 		'poster_path'        => '/poster.jpg',
 		'backdrop_path'      => '/backdrop.jpg',
@@ -139,6 +140,7 @@ $valid = Movies_WP_Tmdb_TV_Preview_Client::normalize_series( valid_series_fixtur
 series_assert_true( ! is_wp_error( $valid ), 'valid series normalizes' );
 series_assert_same( 1396, $valid['tmdb_id'], 'series TMDb ID is normalized' );
 series_assert_same( 'tt0903747', $valid['imdb_id'], 'external IMDb ID is normalized' );
+series_assert_same( 'Ended', $valid['status'], 'TMDb series status is normalized' );
 series_assert_same( '/poster.jpg', $valid['poster_path'], 'poster path is retained' );
 series_assert_same( '/backdrop.jpg', $valid['backdrop_path'], 'backdrop path is retained' );
 series_assert_same( 1, $valid['seasons'][0]['episodes'][0]['season_number'], 'episode season identity is retained' );

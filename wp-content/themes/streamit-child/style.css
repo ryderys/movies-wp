@@ -28,13 +28,23 @@
 	margin-left: auto;
 }
 
-/* Movie single: TMDb-localized title remains secondary to the local post title. */
+/* Movie/TV single: TMDb-localized title remains secondary to the local post title. */
 .streamit-child-tmdb-title {
 	color: var(--bs-body-color);
 	font-size: clamp(0.875rem, 1.5vw, 1.05rem);
 	font-weight: 400;
 	line-height: 1.4;
 	opacity: 0.72;
+	text-transform: none;
+}
+
+/* TV show single: TMDb series status under the title. */
+.streamit-child-tmdb-status {
+	color: var(--bs-body-color);
+	font-size: clamp(0.8125rem, 1.35vw, 0.95rem);
+	font-weight: 500;
+	line-height: 1.35;
+	opacity: 0.85;
 	text-transform: none;
 }
 
