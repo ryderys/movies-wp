@@ -81,10 +81,15 @@
 
 /* --- Header/Navbar subtle separation (no layout changes) --- */
 #default-header.header-default {
-	background-color: rgba(15, 15, 20, 0.65);
-	backdrop-filter: blur(16px);
-	-webkit-backdrop-filter: blur(16px);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	background: linear-gradient(
+		180deg,
+		rgba(12, 12, 15, 0.85) 0%,
+		rgba(18, 18, 24, 0.5) 70%,
+		rgba(12, 12, 15, 0.2) 100%
+	);
+	backdrop-filter: blur(16px) saturate(180%);
+	-webkit-backdrop-filter: blur(16px) saturate(180%);
+	border-bottom: 1px solid rgba(229, 9, 20, 0.25);
 }
 
 /* Header dropdown stacking: ensure menus render above hero/media containers. */
@@ -113,6 +118,39 @@
 .header-default #site-navigation ul.sub-menu a,
 .header-default #site-navigation .sub-menu a {
 	line-height: 1.6;
+}
+
+/* Header nav hover/active states (no spacing changes). */
+.header-default #site-navigation .sf-menu > li > a,
+.header-default #site-navigation .navbar-nav > li > a {
+	border-radius: 8px;
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.header-default #site-navigation .sf-menu > li > a:hover,
+.header-default #site-navigation .sf-menu > li > a:focus,
+.header-default #site-navigation .navbar-nav > li > a:hover,
+.header-default #site-navigation .navbar-nav > li > a:focus {
+	background-color: rgba(255, 255, 255, 0.06);
+}
+
+.header-default #site-navigation .sf-menu > li.current-menu-item > a,
+.header-default #site-navigation .sf-menu > li.current_page_item > a,
+.header-default #site-navigation .sf-menu > li.current-menu-ancestor > a,
+.header-default #site-navigation .sf-menu > li > a[aria-current="page"],
+.header-default #site-navigation .navbar-nav > li.current-menu-item > a,
+.header-default #site-navigation .navbar-nav > li.current_page_item > a,
+.header-default #site-navigation .navbar-nav > li.current-menu-ancestor > a,
+.header-default #site-navigation .navbar-nav > li > a[aria-current="page"] {
+	background-color: rgba(229, 9, 20, 0.15);
+	color: #e50914;
+}
+
+.header-default #site-navigation .sf-menu > li.current-menu-item > a .menu-title,
+.header-default #site-navigation .sf-menu > li.current_page_item > a .menu-title,
+.header-default #site-navigation .sf-menu > li.current-menu-ancestor > a .menu-title,
+.header-default #site-navigation .sf-menu > li > a[aria-current="page"] .menu-title {
+	color: #e50914;
 }
 .header-default #site-navigation li.menu-icon-series > a .menu-title::before,
 .header-default #site-navigation li.menu-icon-tvshow > a .menu-title::before,
