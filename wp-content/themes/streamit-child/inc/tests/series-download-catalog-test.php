@@ -114,35 +114,6 @@ assert_eq( 7, streamit_child_series_download_episode_ordinal( '', 7 ), 'ordinal 
 
 $path = 'Series/Show/S01/E01.1080p.mkv';
 
-$ui_payload = streamit_child_series_download_episode_ui_payload(
-	array(
-		'id'           => 10,
-		'label'        => 'S01E01',
-		'title'        => 'Pilot One',
-		'has_download' => true,
-		'sources'      => array(
-			array(
-				'quality'          => '1080p',
-				'download_content' => $path,
-				'href'             => 'https://example.test/dl?post=10&i=0',
-				'name'             => 'TeamA',
-				'file_size'        => '1 GB',
-			),
-		),
-		'subtitles'    => array(
-			array(
-				'label' => 'فارسی',
-				'href'  => 'https://example.test/sub/fa',
-			),
-		),
-	),
-	99
-);
-assert_eq( 1, $ui_payload['ordinal'] ?? null, 'ui payload ordinal from label' );
-assert_eq( '1080p', $ui_payload['sources'][0]['quality'] ?? null, 'ui payload keeps quality' );
-assert_eq( 'https://example.test/dl?post=10&i=0', $ui_payload['sources'][0]['href'] ?? null, 'ui payload keeps gateway href' );
-assert_eq( 'فارسی', $ui_payload['subtitles'][0]['label'] ?? null, 'ui payload keeps subtitle label' );
-
 $seasons = array(
 	array(
 		'name'          => 'فصل ۱',
@@ -252,6 +223,122 @@ $empty_all = streamit_child_build_series_download_catalog_from_data(
 	true
 );
 assert_eq( 0, count( $empty_all['seasons'] ), 'fully empty seasons → empty catalog' );
+
+echo "\nstreamit_child_series_download_quality_groups tests\n\n";
+
+$group_episodes = array(
+	array(
+		'id'           => 10,
+		'label'        => 'S01E01',
+		'title'        => 'Pilot',
+		'permalink'    => 'https://example.test/ep/10',
+		'has_download' => true,
+		'sources'      => array(
+			array(
+				'quality'          => '1080p',
+				'name'             => 'TeamA',
+				'link'             => $path,
+				'download_content' => $path,
+				'file_size'        => '1 GB',
+				'href'             => 'https://example.test/dl?post=10&i=0',
+			),
+			array(
+				'quality'          => '720p',
+				'name'             => '',
+				'link'             => '',
+				'download_content' => $path,
+				'href'             => 'https://example.test/dl?post=10&i=1',
+			),
+		),
+		'subtitles'    => array(
+			array(
+				'label' => 'فارسی',
+				'href'  => 'https://example.test/sub/fa',
+			),
+		),
+	),
+	array(
+		'id'           => 11,
+		'label'        => 'S01E02',
+		'title'        => 'Two',
+		'permalink'    => 'https://example.test/ep/11',
+		'has_download' => true,
+		'sources'      => array(
+			array(
+				'quality'          => '1080p',
+				'name'             => 'TeamA',
+				'link'             => $path,
+				'download_content' => $path,
+				'href'             => 'https://example.test/dl?post=11&i=0',
+			),
+		),
+		'subtitles'    => array(),
+	),
+	array(
+		'id'           => 12,
+		'label'        => 'S01E03',
+		'title'        => 'Subs only',
+		'permalink'    => 'https://example.test/ep/12',
+		'has_download' => true,
+		'sources'      => array(),
+		'subtitles'    => array(
+			array(
+				'label' => 'EN',
+				'href'  => 'https://example.test/sub/en',
+			),
+		),
+	),
+	array(
+		'id'           => 13,
+		'label'        => 'S01E04',
+		'title'        => 'Empty',
+		'has_download' => false,
+		'sources'      => array(),
+		'subtitles'    => array(),
+	),
+);
+
+$groups = streamit_child_series_download_quality_groups( $group_episodes );
+assert_eq( 3, count( $groups ), '1080p + 720p + subs-only groups' );
+assert_eq( '1080p', $groups[0]['quality'] ?? null, 'first group is 1080p' );
+assert_eq( 'TeamA', $groups[0]['encoder'] ?? null, 'encoder from name' );
+assert_eq( 2, count( $groups[0]['episodes'] ?? array() ), '1080p has E01+E02 only' );
+assert_eq( 2, $groups[0]['link_count'] ?? null, '1080p link_count' );
+assert_eq( 'https://example.test/ep/10', $groups[0]['episodes'][0]['play'] ?? null, 'play URL when link present' );
+assert_eq( '720p', $groups[1]['quality'] ?? null, 'second group is 720p' );
+assert_eq( 1, count( $groups[1]['episodes'] ?? array() ), '720p has only E01' );
+assert_eq( '', $groups[1]['episodes'][0]['play'] ?? 'x', 'no play when link empty' );
+assert_eq( '', $groups[2]['quality'] ?? 'x', 'subs-only group has empty quality' );
+assert_eq( 1, count( $groups[2]['episodes'] ?? array() ), 'subs-only episode included once' );
+assert_eq( 'EN', $groups[2]['episodes'][0]['subtitles'][0]['label'] ?? null, 'subs label kept' );
+
+$mixed_encoder = streamit_child_series_download_quality_groups(
+	array(
+		array(
+			'id'           => 1,
+			'label'        => 'S01E01',
+			'has_download' => true,
+			'sources'      => array(
+				array(
+					'quality' => '1080p',
+					'name'    => 'A',
+					'link'    => $path,
+					'href'    => 'https://example.test/a',
+				),
+				array(
+					'quality' => '1080p',
+					'name'    => 'B',
+					'link'    => $path,
+					'href'    => 'https://example.test/b',
+				),
+			),
+			'subtitles'    => array(),
+		),
+	)
+);
+assert_eq( 2, count( $mixed_encoder ), 'same quality different encoders stay separate' );
+assert_eq( 'A', $mixed_encoder[0]['encoder'] ?? null, 'encoder A group' );
+assert_eq( 'B', $mixed_encoder[1]['encoder'] ?? null, 'encoder B group' );
 
 echo "\n";
 if ( $failures > 0 ) {

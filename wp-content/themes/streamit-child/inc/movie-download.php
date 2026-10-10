@@ -10,6 +10,9 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Build the Movie download section from Streamit source and subtitle metadata.
  *
+ * Each source row: quality, encoder ('' when unknown), file_size, has_playback
+ * (row has a player link), title (tooltip meta) and href (gateway URL, '' when locked).
+ *
  * @param object $st_data Movie Streamit object.
  * @return array{sources: array<int, array<string, mixed>>, subtitles: array<int, array<string, mixed>>, can_download: bool}
  */
@@ -30,9 +33,12 @@ function streamit_child_build_movie_download_catalog( $st_data ) {
 	foreach ( streamit_child_get_downloadable_sources( $st_data->get_meta( '_source' ) ) as $source ) {
 		$meta = streamit_child_download_source_meta_values( $source );
 		$catalog['sources'][] = array(
-			'quality' => $source['quality'],
-			'title'   => $source['quality'] . ( empty( $meta ) ? '' : ' · ' . implode( ' · ', $meta ) ),
-			'href'    => $catalog['can_download'] && function_exists( 'streamit_child_resolve_download_href' )
+			'quality'      => $source['quality'],
+			'encoder'      => streamit_child_download_source_encoder( $source ),
+			'file_size'    => $source['file_size'],
+			'has_playback' => '' !== $source['link'],
+			'title'        => $source['quality'] . ( empty( $meta ) ? '' : ' · ' . implode( ' · ', $meta ) ),
+			'href'         => $catalog['can_download'] && function_exists( 'streamit_child_resolve_download_href' )
 				? streamit_child_resolve_download_href( $source['download_content'], $movie_id, $source['source_index'] )
 				: '',
 		);

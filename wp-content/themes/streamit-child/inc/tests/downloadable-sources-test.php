@@ -77,6 +77,8 @@ assert_eq( 1, count( $empty_lang ), 'quality + download + empty language → inc
 assert_eq( '1080p', $empty_lang[0]['quality'] ?? null, 'empty-language row keeps quality' );
 assert_eq( '', $empty_lang[0]['language'] ?? null, 'empty language preserved (not invented)' );
 assert_eq( $path, $empty_lang[0]['download_content'] ?? null, 'empty-language row keeps download_content' );
+assert_eq( '', $empty_lang[0]['link'] ?? null, 'download-only row keeps empty playback link' );
+assert_eq( '', streamit_child_download_source_encoder( $empty_lang[0] ), 'empty name → empty encoder' );
 
 $known_lang = streamit_child_get_downloadable_sources(
 	array(
@@ -127,6 +129,7 @@ $link_fallback = streamit_child_get_downloadable_sources(
 );
 assert_eq( 1, count( $link_fallback ), 'empty download_content falls back to link' );
 assert_eq( $path, $link_fallback[0]['download_content'] ?? null, 'link used as download_content' );
+assert_eq( $path, $link_fallback[0]['link'] ?? null, 'playback link preserved alongside download fallback' );
 assert_eq( '', $link_fallback[0]['language'] ?? null, 'link-fallback keeps empty language' );
 
 echo "\nstreamit_child_download_source_meta_values tests\n\n";

@@ -1,5 +1,5 @@
 /**
- * Series download UI: season accordion, episode grid, load-more, shared detail panel.
+ * Series download UI: season accordion, quality rows, lazy episode grids, copy-all-links.
  */
 (function () {
 	'use strict';
@@ -15,307 +15,253 @@
 		}
 	}
 
-	function pageSize(root) {
-		var desktop = parseInt(root.getAttribute('data-page-size-desktop') || '24', 10);
-		var mobile = parseInt(root.getAttribute('data-page-size-mobile') || '12', 10);
-		if (!desktop || desktop < 1) {
-			desktop = 24;
-		}
-		if (!mobile || mobile < 1) {
-			mobile = 12;
-		}
-		return window.matchMedia('(max-width: 576px)').matches ? mobile : desktop;
+	function format(tpl, value) {
+		return String(tpl || '').replace(/%[sd]/, String(value));
 	}
 
-	function formatEpisodeLabel(i18n, ordinal) {
-		var tpl = (i18n && i18n.downloadEpisode) || 'دانلود قسمت %d';
-		return tpl.replace('%d', String(ordinal));
+	function pad2(n) {
+		n = parseInt(n, 10) || 0;
+		return n < 10 ? '0' + n : String(n);
 	}
 
-	function createEpisodeButton(ep, i18n, detailId) {
-		var btn = document.createElement('button');
-		btn.type = 'button';
-		btn.className = 'stc-series-download-ep-btn' + (ep.has_download ? '' : ' is-empty');
-		btn.setAttribute('role', 'listitem');
-		btn.setAttribute('data-stc-episode-btn', '');
-		btn.setAttribute('data-episode-id', String(ep.id));
-		btn.setAttribute('aria-expanded', 'false');
-		if (detailId) {
-			btn.setAttribute('aria-controls', detailId);
-		}
-
-		var icon = document.createElement('span');
-		icon.className = 'stc-series-download-ep-btn__icon';
-		icon.setAttribute('aria-hidden', 'true');
-		icon.textContent = '↓';
-
-		var text = document.createElement('span');
-		text.className = 'stc-series-download-ep-btn__text';
-		text.textContent = formatEpisodeLabel(i18n, ep.ordinal || 0);
-
-		btn.appendChild(icon);
-		btn.appendChild(text);
-		return btn;
-	}
-
-	function clearDetail(detail) {
-		detail.hidden = true;
-		detail.innerHTML = '';
-		detail.removeAttribute('data-active-episode');
-	}
-
-	function renderDetail(root, detail, ep, i18n) {
-		detail.innerHTML = '';
-		detail.setAttribute('data-active-episode', String(ep.id));
-
-		var head = document.createElement('div');
-		head.className = 'stc-series-download-detail__head';
-
-		if (ep.label) {
-			var code = document.createElement('span');
-			code.className = 'stc-series-download-detail__code';
-			code.textContent = ep.label;
-			head.appendChild(code);
-		}
-
-		if (ep.title) {
-			var title = document.createElement('span');
-			title.className = 'stc-series-download-detail__title';
-			title.textContent = ep.title;
-			head.appendChild(title);
-		}
-
-		detail.appendChild(head);
-
-		var canDownload = root.getAttribute('data-can-download') === '1';
-		var hasSources = ep.sources && ep.sources.length;
-		var hasSubs = ep.subtitles && ep.subtitles.length;
-
-		if (!ep.has_download || (!hasSources && !hasSubs)) {
-			var empty = document.createElement('p');
-			empty.className = 'stc-series-download-detail__empty';
-			empty.textContent = (i18n && i18n.emptyMedia) || '';
-			detail.appendChild(empty);
-			detail.hidden = false;
-			return;
-		}
-
-		if (hasSources) {
-			var quals = document.createElement('div');
-			quals.className = 'stc-series-download-qualities';
-			quals.setAttribute('role', 'list');
-
-			ep.sources.forEach(function (source) {
-				var quality = source.quality || '';
-				if (!quality) {
-					return;
-				}
-				var chipTitle = source.title || quality;
-
-				if (canDownload && source.href) {
-					var a = document.createElement('a');
-					a.className = 'stc-series-download-chip';
-					a.setAttribute('role', 'listitem');
-					a.href = source.href;
-					a.title = chipTitle;
-					a.textContent = quality;
-					quals.appendChild(a);
-				} else {
-					var b = document.createElement('button');
-					b.type = 'button';
-					b.className = 'stc-series-download-chip';
-					b.setAttribute('role', 'listitem');
-					b.title = chipTitle;
-					b.textContent = quality;
-					b.setAttribute('data-bs-toggle', 'modal');
-					b.setAttribute('data-bs-target', '#subscribeRequiredModal');
-					quals.appendChild(b);
-				}
+	function rootState(root) {
+		if (!root._stcDl) {
+			var icons = {};
+			root.querySelectorAll('template[data-stc-icon]').forEach(function (tpl) {
+				icons[tpl.getAttribute('data-stc-icon')] = tpl;
 			});
-
-			detail.appendChild(quals);
+			root._stcDl = {
+				i18n: parseJson(root.querySelector('.stc-dl-i18n')) || {},
+				canDownload: root.getAttribute('data-can-download') === '1',
+				icons: icons
+			};
 		}
-
-		if (hasSubs) {
-			var subs = document.createElement('div');
-			subs.className = 'stc-series-download-subs';
-
-			var label = document.createElement('span');
-			label.className = 'stc-series-download-subs__label';
-			label.textContent = (i18n && i18n.subtitles) || '';
-			subs.appendChild(label);
-
-			var links = document.createElement('div');
-			links.className = 'stc-series-download-subs__links';
-
-			ep.subtitles.forEach(function (sub) {
-				var subLabel = sub.label || '';
-				if (canDownload && sub.href) {
-					var sa = document.createElement('a');
-					sa.className = 'stc-series-download-sub-link';
-					sa.href = sub.href;
-					sa.setAttribute('download', '');
-					sa.textContent = subLabel;
-					links.appendChild(sa);
-				} else {
-					var sb = document.createElement('button');
-					sb.type = 'button';
-					sb.className = 'stc-series-download-sub-link';
-					sb.textContent = subLabel;
-					sb.setAttribute('data-bs-toggle', 'modal');
-					sb.setAttribute('data-bs-target', '#subscribeRequiredModal');
-					links.appendChild(sb);
-				}
-			});
-
-			subs.appendChild(links);
-			detail.appendChild(subs);
-		}
-
-		detail.hidden = false;
+		return root._stcDl;
 	}
 
-	function setSeasonExpanded(season, expanded) {
-		var panel = season.querySelector('.stc-series-download-season__panel');
-		var toggle = season.querySelector('[data-stc-season-toggle]');
-		if (!panel || !toggle) {
-			return;
+	function groupEpisodes(group) {
+		var season = group.closest('[data-stc-season]');
+		if (!season) {
+			return [];
+		}
+		if (!season._stcGroups) {
+			var data = parseJson(season.querySelector('[data-stc-season-data]'));
+			season._stcGroups = Array.isArray(data) ? data : [];
+		}
+		var list = season._stcGroups[parseInt(group.getAttribute('data-stc-group'), 10)];
+		return Array.isArray(list) ? list : [];
+	}
+
+	function icon(state, name) {
+		var span = document.createElement('span');
+		span.className = 'stc-dl__icon';
+		span.setAttribute('aria-hidden', 'true');
+		var tpl = state.icons[name];
+		if (tpl && tpl.content) {
+			span.appendChild(tpl.content.cloneNode(true));
+		}
+		return span;
+	}
+
+	// Unlocked users get a real link; locked users get the subscribe modal (site convention).
+	function actionEl(state, href, className, label, title) {
+		var el;
+		if (state.canDownload) {
+			el = document.createElement('a');
+			el.href = href;
+		} else {
+			el = document.createElement('button');
+			el.type = 'button';
+			el.setAttribute('data-bs-toggle', 'modal');
+			el.setAttribute('data-bs-target', '#subscribeRequiredModal');
+		}
+		el.className = className;
+		el.setAttribute('aria-label', label);
+		el.title = title || label;
+		return el;
+	}
+
+	function createEpisodeItem(state, ep, quality) {
+		var i18n = state.i18n;
+		var name = format(i18n.episode || 'قسمت %s', pad2(ep.ordinal));
+		var suffix = name + (quality ? ' — ' + quality : '');
+
+		var item = document.createElement('div');
+		item.className = 'stc-dl-ep';
+		item.setAttribute('role', 'listitem');
+
+		var label = document.createElement('span');
+		label.className = 'stc-dl-ep__label';
+		label.textContent = name;
+		var hint = [ep.label, ep.title].filter(Boolean).join(' — ');
+		if (hint) {
+			label.title = hint;
+		}
+		item.appendChild(label);
+
+		var actions = document.createElement('div');
+		actions.className = 'stc-dl-ep__actions';
+
+		if (quality && (ep.href || !state.canDownload)) {
+			var dlLabel = (i18n.download || '') + ' ' + suffix;
+			var dl = actionEl(
+				state,
+				ep.href,
+				'btn btn-primary stc-dl-ep__btn',
+				dlLabel,
+				dlLabel + (ep.file_size ? ' · ' + ep.file_size : '')
+			);
+			dl.appendChild(icon(state, 'download'));
+			actions.appendChild(dl);
 		}
 
-		season.classList.toggle('is-open', expanded);
-		panel.hidden = !expanded;
-		toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+		if (ep.play) {
+			var play = actionEl(state, ep.play, 'btn btn-secondary border stc-dl-ep__btn', (i18n.play || '') + ' ' + name);
+			play.appendChild(icon(state, 'play'));
+			actions.appendChild(play);
+		}
 
-		if (!expanded) {
-			var detail = season.querySelector('[data-stc-episode-detail]');
-			if (detail) {
-				clearDetail(detail);
+		(Array.isArray(ep.subtitles) ? ep.subtitles : []).forEach(function (sub) {
+			if (state.canDownload && !sub.href) {
+				return;
 			}
-			season.querySelectorAll('[data-stc-episode-btn].is-active').forEach(function (btn) {
-				btn.classList.remove('is-active');
-				btn.setAttribute('aria-expanded', 'false');
-			});
+			var subLabel = format(i18n.subtitle || '%s', sub.label || '') + ' — ' + name;
+			var el = actionEl(state, sub.href, 'btn btn-secondary border stc-dl-ep__sub', subLabel);
+			if (state.canDownload) {
+				el.setAttribute('download', '');
+			}
+			el.textContent = sub.label || 'CC';
+			actions.appendChild(el);
+		});
+
+		if (!actions.childNodes.length) {
+			item.classList.add('is-empty');
+			var empty = document.createElement('span');
+			empty.className = 'stc-dl-ep__empty';
+			empty.textContent = i18n.noMedia || '';
+			actions.appendChild(empty);
 		}
+
+		item.appendChild(actions);
+		return item;
 	}
 
-	function updateMoreButton(season) {
-		var state = season._stcDl;
-		if (!state) {
+	function buildGrid(root, group) {
+		if (group._stcBuilt) {
 			return;
 		}
-		var wrap = season.querySelector('[data-stc-more-wrap]');
-		if (!wrap) {
-			return;
-		}
-		wrap.hidden = state.visible >= state.episodes.length;
-	}
-
-	function renderMoreEpisodes(season, count) {
-		var state = season._stcDl;
-		if (!state) {
-			return;
-		}
-		var grid = season.querySelector('[data-stc-episode-grid]');
+		var grid = group.querySelector('[data-stc-episode-grid]');
 		if (!grid) {
 			return;
 		}
-
-		var end = Math.min(state.visible + count, state.episodes.length);
-		var detailId = state.detailId || '';
-		for (var i = state.visible; i < end; i++) {
-			grid.appendChild(createEpisodeButton(state.episodes[i], state.i18n, detailId));
-		}
-		state.visible = end;
-		updateMoreButton(season);
-	}
-
-	function initSeason(root, season, i18n) {
-		var dataEl = season.querySelector('.stc-series-download-season-data');
-		var episodes = parseJson(dataEl);
-		if (!Array.isArray(episodes)) {
-			episodes = [];
-		}
-
-		season._stcDl = {
-			episodes: episodes,
-			visible: 0,
-			i18n: i18n,
-			byId: {},
-			detailId: ''
-		};
-
-		episodes.forEach(function (ep) {
-			season._stcDl.byId[String(ep.id)] = ep;
+		var state = rootState(root);
+		var quality = group.getAttribute('data-quality') || '';
+		var frag = document.createDocumentFragment();
+		groupEpisodes(group).forEach(function (ep) {
+			frag.appendChild(createEpisodeItem(state, ep, quality));
 		});
-
-		var detail = season.querySelector('[data-stc-episode-detail]');
-		var toggle = season.querySelector('[data-stc-season-toggle]');
-		if (detail && toggle) {
-			var detailId = (toggle.getAttribute('aria-controls') || '') + '-detail';
-			detail.id = detailId;
-			season._stcDl.detailId = detailId;
-		}
-
-		var initial = pageSize(root);
-		renderMoreEpisodes(season, initial);
+		grid.appendChild(frag);
+		group._stcBuilt = true;
 	}
 
-	function onSeasonToggle(root, season) {
-		var willOpen = !season.classList.contains('is-open');
-		root.querySelectorAll('.stc-series-download-season.is-open').forEach(function (openSeason) {
-			if (openSeason !== season) {
-				setSeasonExpanded(openSeason, false);
+	function toggleSection(container, toggle, beforeOpen) {
+		var panel = document.getElementById(toggle.getAttribute('aria-controls') || '');
+		if (!panel) {
+			return;
+		}
+		var expand = toggle.getAttribute('aria-expanded') !== 'true';
+		if (expand && beforeOpen) {
+			beforeOpen();
+		}
+		toggle.setAttribute('aria-expanded', expand ? 'true' : 'false');
+		panel.hidden = !expand;
+		container.classList.toggle('is-open', expand);
+	}
+
+	function legacyCopy(text, restoreFocus) {
+		var ta = document.createElement('textarea');
+		ta.value = text;
+		ta.setAttribute('readonly', '');
+		ta.style.position = 'fixed';
+		ta.style.top = '-1000px';
+		ta.style.opacity = '0';
+		document.body.appendChild(ta);
+		ta.select();
+		var ok = false;
+		try {
+			ok = document.execCommand('copy');
+		} catch (e) {
+			ok = false;
+		}
+		document.body.removeChild(ta);
+		if (restoreFocus) {
+			restoreFocus.focus();
+		}
+		return ok;
+	}
+
+	function copyText(text, button) {
+		if (navigator.clipboard && window.isSecureContext) {
+			return navigator.clipboard.writeText(text).then(
+				function () {
+					return true;
+				},
+				function () {
+					return legacyCopy(text, button);
+				}
+			);
+		}
+		return Promise.resolve(legacyCopy(text, button));
+	}
+
+	// Site toast (#stToastMessage in the header) when present, inline status otherwise.
+	function notify(group, message, ok) {
+		var toast = document.getElementById('stToastMessage');
+		var body = toast ? (document.getElementById('toastMessage') || toast.querySelector('.toast-body')) : null;
+		if (toast && body) {
+			body.textContent = message;
+			toast.classList.add('show');
+			clearTimeout(toast._stcTimer);
+			toast._stcTimer = setTimeout(function () {
+				toast.classList.remove('show');
+			}, 4000);
+			return;
+		}
+		var status = group.querySelector('[data-stc-copy-status]');
+		if (status) {
+			status.textContent = message;
+			status.classList.toggle('is-error', !ok);
+		}
+	}
+
+	function onCopy(root, group, button) {
+		var i18n = rootState(root).i18n;
+		var urls = [];
+		var seen = {};
+		groupEpisodes(group).forEach(function (ep) {
+			var href = String(ep.href || '').trim();
+			if (/^https?:\/\/\S+$/i.test(href) && !seen[href]) {
+				seen[href] = true;
+				urls.push(href);
 			}
 		});
-		setSeasonExpanded(season, willOpen);
-	}
 
-	function onEpisodeClick(root, season, btn) {
-		var state = season._stcDl;
-		var detail = season.querySelector('[data-stc-episode-detail]');
-		if (!state || !detail) {
+		if (!urls.length) {
+			notify(group, i18n.noLinks || '', false);
 			return;
 		}
 
-		var id = btn.getAttribute('data-episode-id');
-		var ep = state.byId[id];
-		if (!ep) {
-			return;
-		}
-
-		var isActive = btn.classList.contains('is-active');
-		season.querySelectorAll('[data-stc-episode-btn].is-active').forEach(function (other) {
-			other.classList.remove('is-active');
-			other.setAttribute('aria-expanded', 'false');
-		});
-
-		if (isActive) {
-			clearDetail(detail);
-			return;
-		}
-
-		btn.classList.add('is-active');
-		btn.setAttribute('aria-expanded', 'true');
-		btn.setAttribute('aria-controls', detail.id || '');
-		renderDetail(root, detail, ep, state.i18n);
-	}
-
-	function onShowMore(season) {
-		var state = season._stcDl;
-		var root = season.closest('[data-stc-series-download]');
-		if (!state || !root) {
-			return;
-		}
-		renderMoreEpisodes(season, pageSize(root));
-	}
-
-	function initRoot(root) {
-		var i18nEl = root.querySelector('.stc-series-download-i18n');
-		var i18n = parseJson(i18nEl) || {};
-
-		root.querySelectorAll('.stc-series-download-season').forEach(function (season) {
-			initSeason(root, season, i18n);
-		});
+		button.disabled = true;
+		copyText(urls.join('\n'), button).then(
+			function (ok) {
+				button.disabled = false;
+				notify(group, ok ? format(i18n.copied, urls.length) : i18n.copyFailed || '', ok);
+			},
+			function () {
+				button.disabled = false;
+				notify(group, i18n.copyFailed || '', false);
+			}
+		);
 	}
 
 	function onClick(event) {
@@ -325,27 +271,28 @@
 		}
 
 		var seasonToggle = event.target.closest('[data-stc-season-toggle]');
-		if (seasonToggle && root.contains(seasonToggle)) {
+		if (seasonToggle) {
 			event.preventDefault();
-			onSeasonToggle(root, seasonToggle.closest('.stc-series-download-season'));
+			toggleSection(seasonToggle.closest('[data-stc-season]'), seasonToggle);
 			return;
 		}
 
-		var epBtn = event.target.closest('[data-stc-episode-btn]');
-		if (epBtn && root.contains(epBtn)) {
+		var qualityToggle = event.target.closest('[data-stc-quality-toggle]');
+		if (qualityToggle) {
 			event.preventDefault();
-			onEpisodeClick(root, epBtn.closest('.stc-series-download-season'), epBtn);
+			var group = qualityToggle.closest('[data-stc-group]');
+			toggleSection(group, qualityToggle, function () {
+				buildGrid(root, group);
+			});
 			return;
 		}
 
-		var moreBtn = event.target.closest('[data-stc-show-more]');
-		if (moreBtn && root.contains(moreBtn)) {
+		var copyBtn = event.target.closest('[data-stc-copy]');
+		if (copyBtn) {
 			event.preventDefault();
-			onShowMore(moreBtn.closest('.stc-series-download-season'));
+			onCopy(root, copyBtn.closest('[data-stc-group]'), copyBtn);
 		}
 	}
 
 	document.addEventListener('click', onClick);
-
-	document.querySelectorAll('[data-stc-series-download]').forEach(initRoot);
 })();

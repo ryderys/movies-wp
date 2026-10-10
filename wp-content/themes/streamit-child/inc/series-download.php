@@ -65,65 +65,111 @@ function streamit_child_series_download_episode_ordinal( $label, $fallback = 0 )
 }
 
 /**
- * Lean episode payload for the Series download UI (JSON → shared detail panel).
+ * Regroup one catalog season's episodes into quality variants for the UI.
  *
- * Does not change gateway URLs; only reshapes catalog rows for the frontend.
+ * A variant is quality + encoder. Each episode appears at most once per variant
+ * (first matching source wins), so a variant only lists episodes that really
+ * have that file. Episodes with subtitles but no video source are collected in
+ * a trailing group whose quality is ''.
  *
- * @param array<string, mixed> $episode      Catalog episode row.
- * @param int                  $fallback_ord 1-based fallback ordinal.
- * @return array<string, mixed>
+ * Episode rows: ordinal, label (S01E03), title, href (gateway, '' when locked),
+ * play (episode page URL when the source has a player link, else ''),
+ * file_size, subtitles [{label, href}].
+ *
+ * @param array<int, mixed> $episodes Catalog season `episodes`.
+ * @return array<int, array{quality: string, encoder: string, link_count: int, episodes: array<int, array<string, mixed>>}>
  */
-function streamit_child_series_download_episode_ui_payload( array $episode, $fallback_ord = 0 ) {
-	$label   = isset( $episode['label'] ) ? (string) $episode['label'] : '';
-	$ordinal = streamit_child_series_download_episode_ordinal( $label, $fallback_ord );
+function streamit_child_series_download_quality_groups( array $episodes ) {
+	$groups    = array();
+	$subs_only = array();
 
-	$sources = array();
-	if ( ! empty( $episode['sources'] ) && is_array( $episode['sources'] ) ) {
-		foreach ( $episode['sources'] as $source ) {
+	foreach ( array_values( $episodes ) as $i => $episode ) {
+		if ( ! is_array( $episode ) || empty( $episode['has_download'] ) ) {
+			continue;
+		}
+
+		$label     = isset( $episode['label'] ) ? (string) $episode['label'] : '';
+		$permalink = isset( $episode['permalink'] ) ? (string) $episode['permalink'] : '';
+
+		$subtitles = array();
+		if ( ! empty( $episode['subtitles'] ) && is_array( $episode['subtitles'] ) ) {
+			foreach ( $episode['subtitles'] as $sub ) {
+				if ( ! is_array( $sub ) ) {
+					continue;
+				}
+				$subtitles[] = array(
+					'label' => isset( $sub['label'] ) ? (string) $sub['label'] : '',
+					'href'  => isset( $sub['href'] ) ? (string) $sub['href'] : '',
+				);
+			}
+		}
+
+		$base = array(
+			'ordinal'   => streamit_child_series_download_episode_ordinal( $label, $i + 1 ),
+			'label'     => $label,
+			'title'     => isset( $episode['title'] ) ? (string) $episode['title'] : '',
+			'subtitles' => $subtitles,
+		);
+
+		$seen    = array();
+		$sources = ( ! empty( $episode['sources'] ) && is_array( $episode['sources'] ) ) ? $episode['sources'] : array();
+		foreach ( $sources as $source ) {
 			if ( ! is_array( $source ) ) {
 				continue;
 			}
-			$quality = isset( $source['quality'] ) ? (string) $source['quality'] : '';
+			$quality = isset( $source['quality'] ) ? trim( (string) $source['quality'] ) : '';
 			if ( '' === $quality ) {
 				continue;
 			}
-			$meta  = function_exists( 'streamit_child_download_source_meta_values' )
-				? streamit_child_download_source_meta_values( $source )
-				: array();
-			$title = $quality;
-			if ( ! empty( $meta ) ) {
-				$title .= ' · ' . implode( ' · ', $meta );
-			}
-			$sources[] = array(
-				'quality' => $quality,
-				'href'    => isset( $source['href'] ) ? (string) $source['href'] : '',
-				'title'   => $title,
-			);
-		}
-	}
-
-	$subtitles = array();
-	if ( ! empty( $episode['subtitles'] ) && is_array( $episode['subtitles'] ) ) {
-		foreach ( $episode['subtitles'] as $sub ) {
-			if ( ! is_array( $sub ) ) {
+			$encoder = streamit_child_download_source_encoder( $source );
+			$key     = $quality . "\0" . $encoder;
+			if ( isset( $seen[ $key ] ) ) {
 				continue;
 			}
-			$subtitles[] = array(
-				'label' => isset( $sub['label'] ) ? (string) $sub['label'] : '',
-				'href'  => isset( $sub['href'] ) ? (string) $sub['href'] : '',
+			$seen[ $key ] = true;
+
+			if ( ! isset( $groups[ $key ] ) ) {
+				$groups[ $key ] = array(
+					'quality'    => $quality,
+					'encoder'    => $encoder,
+					'link_count' => 0,
+					'episodes'   => array(),
+				);
+			}
+
+			$href = isset( $source['href'] ) ? (string) $source['href'] : '';
+			$link = isset( $source['link'] ) ? trim( (string) $source['link'] ) : '';
+
+			$groups[ $key ]['episodes'][] = $base + array(
+				'href'      => $href,
+				'play'      => '' !== $link ? $permalink : '',
+				'file_size' => isset( $source['file_size'] ) ? (string) $source['file_size'] : '',
+			);
+			if ( '' !== $href ) {
+				$groups[ $key ]['link_count']++;
+			}
+		}
+
+		if ( empty( $seen ) && ! empty( $subtitles ) ) {
+			$subs_only[] = $base + array(
+				'href'      => '',
+				'play'      => '',
+				'file_size' => '',
 			);
 		}
 	}
 
-	return array(
-		'id'           => isset( $episode['id'] ) ? (int) $episode['id'] : 0,
-		'ordinal'      => $ordinal,
-		'label'        => $label,
-		'title'        => isset( $episode['title'] ) ? (string) $episode['title'] : '',
-		'has_download' => ! empty( $episode['has_download'] ),
-		'sources'      => $sources,
-		'subtitles'    => $subtitles,
-	);
+	$out = array_values( $groups );
+	if ( ! empty( $subs_only ) ) {
+		$out[] = array(
+			'quality'    => '',
+			'encoder'    => '',
+			'link_count' => 0,
+			'episodes'   => $subs_only,
+		);
+	}
+
+	return $out;
 }
 
 /**
@@ -179,6 +225,8 @@ function streamit_child_build_series_download_catalog_from_data( array $seasons,
 
 		$name          = isset( $season['name'] ) ? trim( (string) $season['name'] ) : '';
 		$season_number = isset( $season['season_number'] ) ? trim( (string) $season['season_number'] ) : '';
+		// Streamit stores this key as "sesion_" (typo retained for compatibility).
+		$is_upcoming   = ! empty( $season['sesion_upcoming_status'] ) && '0' !== (string) $season['sesion_upcoming_status'];
 		$episode_ids   = ( isset( $season['episodes'] ) && is_array( $season['episodes'] ) ) ? $season['episodes'] : array();
 
 		$episode_rows         = array();
@@ -263,6 +311,7 @@ function streamit_child_build_series_download_catalog_from_data( array $seasons,
 			'index'                      => (int) $index,
 			'name'                       => $name,
 			'season_number'              => $season_number,
+			'is_upcoming'                => $is_upcoming,
 			'episode_count'              => count( $episode_rows ),
 			'downloadable_episode_count' => $downloadable_count,
 			'episodes'                   => $episode_rows,

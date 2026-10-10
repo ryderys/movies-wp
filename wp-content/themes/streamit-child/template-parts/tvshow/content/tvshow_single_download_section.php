@@ -1,10 +1,10 @@
 <?php
 /**
- * Series single: season download links section (compact episode grid).
+ * Series single: season accordion → quality rows → episode link grid.
  *
- * Season toggle shows episodes (no ZIP). Episode click reveals qualities/subs
- * in a shared panel populated from JSON — qualities are not pre-rendered for
- * every episode.
+ * Each season embeds its quality groups as JSON; the episode grid of a quality
+ * row is built on first expand so large seasons are not pre-rendered for every
+ * quality.
  *
  * @package streamit-child
  */
@@ -31,110 +31,177 @@ if ( ! $can_download ) {
 	streamit_child_render_subscribe_required_modal( $st_data, 'tvshow', 'download' );
 }
 
+global $streamit_options;
+$show_share = ! ( isset( $streamit_options['streamit_display_social_icons'] ) && 'no' === $streamit_options['streamit_display_social_icons'] );
+
 $ui_i18n = array(
-	'downloadEpisode' => __( 'دانلود قسمت %d', 'streamit' ),
-	'emptyMedia'      => __( 'رسانه دانلودی موجود نیست', 'streamit' ),
-	'subtitles'       => __( 'زیرنویس', 'streamit' ),
-	'download'        => __( 'دانلود', 'streamit' ),
-	'showMore'        => __( 'نمایش قسمت‌های بیشتر', 'streamit' ),
+	/* translators: %s: zero-padded episode number */
+	'episode'    => __( 'قسمت %s', 'streamit' ),
+	'download'   => __( 'دانلود مستقیم', 'streamit' ),
+	'play'       => __( 'پخش آنلاین', 'streamit' ),
+	/* translators: %s: subtitle language label */
+	'subtitle'   => __( 'زیرنویس %s', 'streamit' ),
+	'noMedia'    => __( 'لینکی موجود نیست', 'streamit' ),
+	/* translators: %d: number of copied links */
+	'copied'     => __( '%d لینک کپی شد.', 'streamit' ),
+	'copyFailed' => __( 'کپی لینک‌ها انجام نشد. مرورگر شما اجازه دسترسی به کلیپ‌بورد را نداد.', 'streamit' ),
+	'noLinks'    => __( 'لینک دانلودی برای کپی وجود ندارد.', 'streamit' ),
 );
+$json_flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP;
 ?>
-<div
-	class="section-spacing-top stc-series-download"
+<section
+	class="section-spacing-top stc-dl stc-dl--series"
 	data-stc-series-download
 	data-can-download="<?php echo $can_download ? '1' : '0'; ?>"
-	data-page-size-desktop="24"
-	data-page-size-mobile="12"
+	aria-labelledby="series-download-title"
 >
 	<div class="container-fluid">
-		<div class="d-flex align-items-center justify-content-between mb-md-4 mb-3">
-			<h5 class="main-title text-capitalize mb-0">
-				<?php esc_html_e( 'لینک‌های دانلود', 'streamit' ); ?>
-			</h5>
-		</div>
+		<div class="stc-dl__box">
+			<div class="stc-dl__head">
+				<h5 class="main-title text-capitalize mb-0" id="series-download-title">
+					<?php esc_html_e( 'لینک‌های دانلود', 'streamit' ); ?>
+				</h5>
 
-		<script type="application/json" class="stc-series-download-i18n">
-			<?php echo wp_json_encode( $ui_i18n, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?>
-		</script>
-
-		<div class="stc-series-download-list">
-			<?php foreach ( $catalog['seasons'] as $season_i => $season ) : ?>
-				<?php
-				$panel_id   = 'stc-series-dl-panel-' . (int) $season['index'];
-				$detail_id  = 'stc-series-dl-detail-' . (int) $season['index'];
-				$count      = (int) $season['downloadable_episode_count'];
-				$is_first   = ( 0 === (int) $season_i );
-				/* translators: %d: number of episodes with downloads */
-				$count_label = sprintf(
-					_n( '%d قسمت قابل دانلود', '%d قسمت قابل دانلود', $count, 'streamit' ),
-					$count
-				);
-
-				$episodes_ui = array();
-				foreach ( array_values( $season['episodes'] ) as $ep_i => $episode ) {
-					$episodes_ui[] = streamit_child_series_download_episode_ui_payload(
-						$episode,
-						$ep_i + 1
-					);
-				}
-				?>
-				<div
-					class="stc-series-download-season<?php echo $is_first ? ' is-open' : ''; ?>"
-					data-season-index="<?php echo esc_attr( (string) (int) $season['index'] ); ?>"
-				>
-					<div class="stc-series-download-season__header">
-						<button
-							type="button"
-							class="stc-series-download-season__toggle"
-							data-stc-season-toggle
-							aria-expanded="<?php echo $is_first ? 'true' : 'false'; ?>"
-							aria-controls="<?php echo esc_attr( $panel_id ); ?>"
-						>
-							<span class="stc-series-download-season__meta">
-								<span class="stc-series-download-season__title"><?php echo esc_html( $season['name'] ); ?></span>
-								<span class="stc-series-download-season__count"><?php echo esc_html( $count_label ); ?></span>
-							</span>
-							<span class="stc-series-download-season__actions">
-								<span class="btn btn-primary stc-series-download-season__action-label">
-									<?php esc_html_e( 'نمایش قسمت‌ها', 'streamit' ); ?>
-								</span>
-								<span class="stc-series-download-chevron" aria-hidden="true">
-									<span class="stc-series-download-chevron__icon"></span>
-								</span>
-							</span>
+				<?php if ( $show_share ) : ?>
+					<div class="stc-dl__utils">
+						<button type="button" class="btn btn-sm btn-secondary border stc-dl__util-btn" data-bs-toggle="modal" data-bs-target="#shareModal">
+							<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'share-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+							<span><?php esc_html_e( 'اشتراک‌گذاری', 'streamit' ); ?></span>
 						</button>
 					</div>
+				<?php endif; ?>
+			</div>
 
-					<div
-						id="<?php echo esc_attr( $panel_id ); ?>"
-						class="stc-series-download-season__panel"
-						<?php echo $is_first ? '' : 'hidden'; ?>
-					>
-						<script type="application/json" class="stc-series-download-season-data">
-							<?php echo wp_json_encode( $episodes_ui, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?>
-						</script>
+			<script type="application/json" class="stc-dl-i18n">
+				<?php echo wp_json_encode( $ui_i18n, $json_flags ); ?>
+			</script>
+			<template data-stc-icon="download"><?php echo st_get_icon( 'download-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></template>
+			<template data-stc-icon="play"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></template>
 
-						<div
-							class="stc-series-download-grid"
-							data-stc-episode-grid
-							role="list"
-						></div>
+			<div class="stc-dl__seasons">
+				<?php $rendered_seasons = 0; ?>
+				<?php foreach ( $catalog['seasons'] as $season ) : ?>
+					<?php
+					$groups = streamit_child_series_download_quality_groups( $season['episodes'] );
+					if ( empty( $groups ) ) {
+						continue;
+					}
 
-						<div
-							id="<?php echo esc_attr( $detail_id ); ?>"
-							class="stc-series-download-detail"
-							data-stc-episode-detail
-							hidden
-						></div>
+					$panel_id = 'stc-dl-season-' . (int) $season['index'];
+					$is_open  = ( 0 === $rendered_seasons++ );
+					$count    = (int) $season['downloadable_episode_count'];
 
-						<div class="stc-series-download-more-wrap" data-stc-more-wrap hidden>
-							<button type="button" class="btn btn-secondary stc-series-download-more" data-stc-show-more>
-								<?php esc_html_e( 'نمایش قسمت‌های بیشتر', 'streamit' ); ?>
-							</button>
+					$season_title = trim( (string) $season['name'] );
+					if ( '' === $season_title && '' !== (string) $season['season_number'] ) {
+						/* translators: %s: season number */
+						$season_title = sprintf( __( 'فصل %s', 'streamit' ), $season['season_number'] );
+					}
+
+					$groups_json = array();
+					foreach ( $groups as $group ) {
+						$groups_json[] = $group['episodes'];
+					}
+					?>
+					<div class="stc-dl-season<?php echo $is_open ? ' is-open' : ''; ?>" data-stc-season>
+						<button
+							type="button"
+							class="stc-dl-season__toggle"
+							data-stc-season-toggle
+							aria-expanded="<?php echo $is_open ? 'true' : 'false'; ?>"
+							aria-controls="<?php echo esc_attr( $panel_id ); ?>"
+						>
+							<span class="stc-dl-season__meta">
+								<span class="stc-dl-season__title-row">
+									<span class="stc-dl-season__title"><?php echo esc_html( $season_title ); ?></span>
+									<?php if ( ! empty( $season['is_upcoming'] ) ) : ?>
+										<span class="stc-dl-season__badge"><?php esc_html_e( 'به‌زودی', 'streamit' ); ?></span>
+									<?php endif; ?>
+								</span>
+								<span class="stc-dl-season__count">
+									<?php
+									/* translators: %d: number of episodes with downloads */
+									echo esc_html( sprintf( _n( '%d قسمت قابل دانلود', '%d قسمت قابل دانلود', $count, 'streamit' ), $count ) );
+									?>
+								</span>
+							</span>
+							<span class="stc-dl-chevron" aria-hidden="true"></span>
+						</button>
+
+						<div id="<?php echo esc_attr( $panel_id ); ?>" class="stc-dl-season__panel" <?php echo $is_open ? '' : 'hidden'; ?>>
+							<script type="application/json" data-stc-season-data>
+								<?php echo wp_json_encode( $groups_json, $json_flags ); ?>
+							</script>
+
+							<ul class="stc-dl__rows">
+								<?php foreach ( $groups as $group_i => $group ) : ?>
+									<?php
+									$episodes_id = $panel_id . '-q' . (int) $group_i;
+									$is_subs     = '' === $group['quality'];
+									$show_copy   = ! $is_subs && ( ! $can_download || $group['link_count'] > 0 );
+									?>
+									<li class="stc-dl-group" data-stc-group="<?php echo esc_attr( (string) (int) $group_i ); ?>" data-quality="<?php echo esc_attr( $group['quality'] ); ?>">
+										<div class="stc-dl-row stc-dl-row--series">
+											<div class="stc-dl-row__cell stc-dl-row__cell--count">
+												<span class="stc-dl-row__label"><?php esc_html_e( 'تعداد قسمت‌ها:', 'streamit' ); ?></span>
+												<bdi class="stc-dl-row__value"><?php echo esc_html( (string) count( $group['episodes'] ) ); ?></bdi>
+											</div>
+
+											<div class="stc-dl-row__cell stc-dl-row__cell--quality">
+												<?php if ( $is_subs ) : ?>
+													<span class="stc-dl-row__value"><?php esc_html_e( 'فقط زیرنویس', 'streamit' ); ?></span>
+												<?php else : ?>
+													<span class="stc-dl-row__label"><?php esc_html_e( 'کیفیت:', 'streamit' ); ?></span>
+													<bdi class="stc-dl-row__quality"><?php echo esc_html( $group['quality'] ); ?></bdi>
+												<?php endif; ?>
+											</div>
+
+											<div class="stc-dl-row__cell stc-dl-row__cell--meta">
+												<?php if ( '' !== $group['encoder'] ) : ?>
+													<span class="stc-dl-row__field">
+														<span class="stc-dl-row__label"><?php esc_html_e( 'انکودر:', 'streamit' ); ?></span>
+														<bdi class="stc-dl-row__value"><?php echo esc_html( $group['encoder'] ); ?></bdi>
+													</span>
+												<?php endif; ?>
+											</div>
+
+											<div class="stc-dl-row__actions">
+												<button
+													type="button"
+													class="btn btn-primary stc-dl-btn"
+													data-stc-quality-toggle
+													aria-expanded="false"
+													aria-controls="<?php echo esc_attr( $episodes_id ); ?>"
+												>
+													<span><?php esc_html_e( 'مشاهده لینک‌ها', 'streamit' ); ?></span>
+													<span class="stc-dl-chevron stc-dl-chevron--sm" aria-hidden="true"></span>
+												</button>
+											</div>
+										</div>
+
+										<div id="<?php echo esc_attr( $episodes_id ); ?>" class="stc-dl-episodes" hidden>
+											<?php if ( $show_copy ) : ?>
+												<div class="stc-dl-episodes__tools">
+													<?php if ( $can_download ) : ?>
+														<button type="button" class="btn btn-sm btn-secondary border stc-dl__util-btn" data-stc-copy>
+															<?php esc_html_e( 'کپی تمام لینک‌ها', 'streamit' ); ?>
+														</button>
+														<span class="stc-dl-episodes__status" data-stc-copy-status role="status" aria-live="polite"></span>
+													<?php else : ?>
+														<button type="button" class="btn btn-sm btn-secondary border stc-dl__util-btn" data-bs-toggle="modal" data-bs-target="#subscribeRequiredModal">
+															<?php esc_html_e( 'کپی تمام لینک‌ها', 'streamit' ); ?>
+														</button>
+													<?php endif; ?>
+												</div>
+											<?php endif; ?>
+											<div class="stc-dl-episodes__grid" data-stc-episode-grid role="list"></div>
+										</div>
+									</li>
+								<?php endforeach; ?>
+							</ul>
 						</div>
 					</div>
-				</div>
-			<?php endforeach; ?>
+				<?php endforeach; ?>
+			</div>
 		</div>
 	</div>
-</div>
+</section>
