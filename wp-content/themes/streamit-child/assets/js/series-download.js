@@ -26,14 +26,9 @@
 
 	function rootState(root) {
 		if (!root._stcDl) {
-			var icons = {};
-			root.querySelectorAll('template[data-stc-icon]').forEach(function (tpl) {
-				icons[tpl.getAttribute('data-stc-icon')] = tpl;
-			});
 			root._stcDl = {
 				i18n: parseJson(root.querySelector('.stc-dl-i18n')) || {},
-				canDownload: root.getAttribute('data-can-download') === '1',
-				icons: icons
+				canDownload: root.getAttribute('data-can-download') === '1'
 			};
 		}
 		return root._stcDl;
@@ -52,19 +47,8 @@
 		return Array.isArray(list) ? list : [];
 	}
 
-	function icon(state, name) {
-		var span = document.createElement('span');
-		span.className = 'stc-dl__icon';
-		span.setAttribute('aria-hidden', 'true');
-		var tpl = state.icons[name];
-		if (tpl && tpl.content) {
-			span.appendChild(tpl.content.cloneNode(true));
-		}
-		return span;
-	}
-
 	// Unlocked users get a real link; locked users get the subscribe modal (site convention).
-	function actionEl(state, href, className, label, title) {
+	function actionEl(state, href, className, text, label, title) {
 		var el;
 		if (state.canDownload) {
 			el = document.createElement('a');
@@ -76,6 +60,7 @@
 			el.setAttribute('data-bs-target', '#subscribeRequiredModal');
 		}
 		el.className = className;
+		el.textContent = text;
 		el.setAttribute('aria-label', label);
 		el.title = title || label;
 		return el;
@@ -84,7 +69,6 @@
 	function createEpisodeItem(state, ep, quality) {
 		var i18n = state.i18n;
 		var name = format(i18n.episode || 'قسمت %s', pad2(ep.ordinal));
-		var suffix = name + (quality ? ' — ' + quality : '');
 
 		var item = document.createElement('div');
 		item.className = 'stc-dl-ep';
@@ -103,34 +87,32 @@
 		actions.className = 'stc-dl-ep__actions';
 
 		if (quality && (ep.href || !state.canDownload)) {
-			var dlLabel = (i18n.download || '') + ' ' + suffix;
-			var dl = actionEl(
+			var dlText = i18n.download || 'دانلود';
+			var dlLabel = dlText + ' ' + name + ' — ' + quality;
+			actions.appendChild(actionEl(
 				state,
 				ep.href,
-				'btn btn-primary stc-dl-ep__btn',
+				'btn btn-sm btn-primary stc-dl-ep__btn stc-dl-ep__btn--main',
+				dlText,
 				dlLabel,
 				dlLabel + (ep.file_size ? ' · ' + ep.file_size : '')
-			);
-			dl.appendChild(icon(state, 'download'));
-			actions.appendChild(dl);
-		}
-
-		if (ep.play) {
-			var play = actionEl(state, ep.play, 'btn btn-secondary border stc-dl-ep__btn', (i18n.play || '') + ' ' + name);
-			play.appendChild(icon(state, 'play'));
-			actions.appendChild(play);
+			));
 		}
 
 		(Array.isArray(ep.subtitles) ? ep.subtitles : []).forEach(function (sub) {
-			if (state.canDownload && !sub.href) {
+			if (!sub.label || (state.canDownload && !sub.href)) {
 				return;
 			}
-			var subLabel = format(i18n.subtitle || '%s', sub.label || '') + ' — ' + name;
-			var el = actionEl(state, sub.href, 'btn btn-secondary border stc-dl-ep__sub', subLabel);
+			var el = actionEl(
+				state,
+				sub.href,
+				'btn btn-sm btn-secondary border stc-dl-ep__btn stc-dl-ep__btn--sub',
+				sub.label,
+				sub.label + ' — ' + name
+			);
 			if (state.canDownload) {
 				el.setAttribute('download', '');
 			}
-			el.textContent = sub.label || 'CC';
 			actions.appendChild(el);
 		});
 

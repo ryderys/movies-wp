@@ -167,8 +167,7 @@
 .stc-dl-btn:focus-visible,
 .stc-dl__util-btn:focus-visible,
 .stc-dl-season__toggle:focus-visible,
-.stc-dl-ep__btn:focus-visible,
-.stc-dl-ep__sub:focus-visible {
+.stc-dl-ep__btn:focus-visible {
 	outline: 2px solid var(--stc-dl-accent);
 	outline-offset: 2px;
 }
@@ -332,18 +331,17 @@
 
 .stc-dl-episodes__grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-	gap: 8px;
-	min-width: 0;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+	gap: 10px;
 }
 
+/* Card stacks label above a wrapping action row so actions never widen the grid column. */
 .stc-dl-ep {
 	display: flex;
-	align-items: center;
+	flex-direction: column;
 	gap: 8px;
 	min-width: 0;
-	min-height: 44px;
-	padding: 6px;
+	padding: 10px;
 	border: 1px solid var(--stc-dl-border);
 	border-radius: 6px;
 	background: var(--stc-dl-surface-2);
@@ -354,60 +352,42 @@
 }
 
 .stc-dl-ep__label {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	flex: 1 1 auto;
-	min-width: 0;
-	min-height: 36px;
-	padding: 0 10px;
-	border-radius: 4px;
-	background: rgba(255, 255, 255, 0.06);
-	font-size: 0.9rem;
-	font-weight: 600;
+	font-size: 0.95rem;
+	font-weight: 700;
+	line-height: 1.4;
 	font-variant-numeric: tabular-nums;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 
 .stc-dl-ep__actions {
 	display: flex;
-	align-items: center;
+	flex-wrap: wrap;
 	gap: 6px;
-	flex: 0 0 auto;
+	min-width: 0;
 }
 
 .stc-dl-ep__btn {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 36px;
-	height: 36px;
-	padding: 0;
-	flex: 0 0 36px;
-	border-radius: 4px;
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 34px;
+	white-space: normal;
+	text-align: center;
+	line-height: 1.3;
 }
 
-.stc-dl-ep__btn .stc-dl__icon {
-	font-size: 1rem;
+.stc-dl-ep__btn--main {
+	flex-basis: 100%;
 }
 
-.stc-dl-ep__sub {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-width: 36px;
-	height: 36px;
-	padding: 0 8px;
-	font-size: 0.75rem;
-	font-weight: 600;
+.stc-dl-ep__btn--sub {
+	font-size: 0.8rem;
 }
 
 .stc-dl-ep__empty {
 	font-size: 0.8rem;
 	color: var(--stc-dl-muted);
-	padding-inline: 4px;
 }
 
 @media (max-width: 768px) {
@@ -428,8 +408,8 @@
 		flex: 1 1 auto;
 	}
 
-	.stc-dl-episodes__grid {
-		grid-template-columns: 1fr;
+	.stc-dl-episodes {
+		padding: 10px;
 	}
 }
 

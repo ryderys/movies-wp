@@ -37,10 +37,7 @@ $show_share = ! ( isset( $streamit_options['streamit_display_social_icons'] ) &&
 $ui_i18n = array(
 	/* translators: %s: zero-padded episode number */
 	'episode'    => __( 'قسمت %s', 'streamit' ),
-	'download'   => __( 'دانلود مستقیم', 'streamit' ),
-	'play'       => __( 'پخش آنلاین', 'streamit' ),
-	/* translators: %s: subtitle language label */
-	'subtitle'   => __( 'زیرنویس %s', 'streamit' ),
+	'download'   => __( 'دانلود', 'streamit' ),
 	'noMedia'    => __( 'لینکی موجود نیست', 'streamit' ),
 	/* translators: %d: number of copied links */
 	'copied'     => __( '%d لینک کپی شد.', 'streamit' ),
@@ -75,8 +72,6 @@ $json_flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | J
 			<script type="application/json" class="stc-dl-i18n">
 				<?php echo wp_json_encode( $ui_i18n, $json_flags ); ?>
 			</script>
-			<template data-stc-icon="download"><?php echo st_get_icon( 'download-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></template>
-			<template data-stc-icon="play"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></template>
 
 			<div class="stc-dl__seasons">
 				<?php $rendered_seasons = 0; ?>

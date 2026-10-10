@@ -25,12 +25,6 @@ if ( ! $can_download ) {
 
 global $streamit_options;
 $show_share = ! ( isset( $streamit_options['streamit_display_social_icons'] ) && 'no' === $streamit_options['streamit_display_social_icons'] );
-
-// Same gate as the main play button: future releases only play for admins.
-$upcoming   = function_exists( 'streamit_is_upcoming' ) ? streamit_is_upcoming( $st_data, 'movie' ) : array();
-$can_play   = empty( $upcoming['is_future_release'] ) || current_user_can( 'administrator' );
-$player_url = streamit_get_permalink( $st_data->get_post_type(), $st_data->get_post_name() . '/player' );
-$play_title = __( 'پخش آنلاین — کیفیت را از منوی پخش‌کننده انتخاب کنید', 'streamit' );
 ?>
 <section class="section-spacing-top stc-dl stc-dl--movie" id="movie-download" aria-labelledby="movie-download-title">
 	<div class="container-fluid">
@@ -110,20 +104,6 @@ $play_title = __( 'پخش آنلاین — کیفیت را از منوی پخش�
 										<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'download-2' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 										<span><?php esc_html_e( 'دانلود مستقیم', 'streamit' ); ?></span>
 									</button>
-								<?php endif; ?>
-
-								<?php if ( $source['has_playback'] && $can_play ) : ?>
-									<?php if ( $can_download ) : ?>
-										<a class="btn btn-secondary border stc-dl-btn" href="<?php echo esc_url( $player_url ); ?>" title="<?php echo esc_attr( $play_title ); ?>">
-											<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-											<span><?php esc_html_e( 'پخش آنلاین', 'streamit' ); ?></span>
-										</a>
-									<?php else : ?>
-										<button type="button" class="btn btn-secondary border stc-dl-btn" title="<?php echo esc_attr( $play_title ); ?>" data-bs-toggle="modal" data-bs-target="#subscribeRequiredModal">
-											<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-											<span><?php esc_html_e( 'پخش آنلاین', 'streamit' ); ?></span>
-										</button>
-									<?php endif; ?>
 								<?php endif; ?>
 							</div>
 						</li>

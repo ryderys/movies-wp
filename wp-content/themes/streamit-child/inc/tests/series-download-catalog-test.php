@@ -28,6 +28,13 @@ if ( ! function_exists( 'add_action' ) ) {
 	}
 }
 
+if ( ! function_exists( '__' ) ) {
+	function __( $text, $domain = 'default' ) {
+		unset( $domain );
+		return $text;
+	}
+}
+
 if ( ! function_exists( 'streamit_child_normalize_subtitles' ) ) {
 	/**
 	 * Minimal stub matching production gate (url required).
@@ -304,13 +311,57 @@ assert_eq( '1080p', $groups[0]['quality'] ?? null, 'first group is 1080p' );
 assert_eq( 'TeamA', $groups[0]['encoder'] ?? null, 'encoder from name' );
 assert_eq( 2, count( $groups[0]['episodes'] ?? array() ), '1080p has E01+E02 only' );
 assert_eq( 2, $groups[0]['link_count'] ?? null, '1080p link_count' );
-assert_eq( 'https://example.test/ep/10', $groups[0]['episodes'][0]['play'] ?? null, 'play URL when link present' );
+assert_eq( 'https://example.test/dl?post=10&i=0', $groups[0]['episodes'][0]['href'] ?? null, '1080p E01 keeps its own href' );
+assert_true( ! array_key_exists( 'play', $groups[0]['episodes'][0] ?? array() ), 'no playback URL in episode payload' );
+assert_eq( 'زیرنویس فارسی', $groups[0]['episodes'][0]['subtitles'][0]['label'] ?? null, 'free Persian label prefixed once' );
 assert_eq( '720p', $groups[1]['quality'] ?? null, 'second group is 720p' );
 assert_eq( 1, count( $groups[1]['episodes'] ?? array() ), '720p has only E01' );
-assert_eq( '', $groups[1]['episodes'][0]['play'] ?? 'x', 'no play when link empty' );
+assert_eq( 'https://example.test/dl?post=10&i=1', $groups[1]['episodes'][0]['href'] ?? null, '720p E01 keeps its own href' );
 assert_eq( '', $groups[2]['quality'] ?? 'x', 'subs-only group has empty quality' );
 assert_eq( 1, count( $groups[2]['episodes'] ?? array() ), 'subs-only episode included once' );
-assert_eq( 'EN', $groups[2]['episodes'][0]['subtitles'][0]['label'] ?? null, 'subs label kept' );
+assert_eq( 'زیرنویس انگلیسی', $groups[2]['episodes'][0]['subtitles'][0]['label'] ?? null, 'EN code label → Persian language name' );
+
+echo "\nstreamit_child_subtitle_language_label tests\n\n";
+
+assert_eq( 'زیرنویس انگلیسی', streamit_child_subtitle_language_label( 'ENG', 'eng' ), 'ENG/eng → English' );
+assert_eq( 'زیرنویس فارسی', streamit_child_subtitle_language_label( 'FA', 'fa' ), 'FA/fa → Persian' );
+assert_eq( 'زیرنویس', streamit_child_subtitle_language_label( 'SUB', '' ), 'SUB with no language → generic' );
+assert_eq( 'زیرنویس', streamit_child_subtitle_language_label( '', '' ), 'empty → generic' );
+assert_eq( 'زیرنویس انگلیسی', streamit_child_subtitle_language_label( 'ENG', '' ), 'code-like label without srclang still mapped' );
+assert_eq( 'زیرنویس XYZ', streamit_child_subtitle_language_label( 'XYZ', 'xyz' ), 'unknown code kept, not invented' );
+assert_eq( 'زیرنویس هماهنگ', streamit_child_subtitle_language_label( 'هماهنگ', 'fa' ), 'admin free label kept' );
+
+$dup_subs = streamit_child_series_download_quality_groups(
+	array(
+		array(
+			'label'        => 'S01E01',
+			'has_download' => true,
+			'sources'      => array(
+				array(
+					'quality' => '1080p',
+					'href'    => 'https://example.test/v',
+				),
+			),
+			'subtitles'    => array(
+				array(
+					'label' => 'SUB',
+					'href'  => 'https://example.test/s1',
+				),
+				array(
+					'label' => 'SUB',
+					'href'  => 'https://example.test/s2',
+				),
+				array(
+					'label'   => 'ENG',
+					'srclang' => 'eng',
+					'href'    => 'https://example.test/s3',
+				),
+			),
+		),
+	)
+);
+$dup_labels = array_column( $dup_subs[0]['episodes'][0]['subtitles'] ?? array(), 'label' );
+assert_eq( array( 'زیرنویس', 'زیرنویس 2', 'زیرنویس انگلیسی' ), $dup_labels, 'repeated unknown subtitles get distinct labels' );
 
 $mixed_encoder = streamit_child_series_download_quality_groups(
 	array(

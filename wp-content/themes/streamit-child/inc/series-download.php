@@ -65,6 +65,67 @@ function streamit_child_series_download_episode_ordinal( $label, $fallback = 0 )
 }
 
 /**
+ * Persian button label for one subtitle file.
+ *
+ * Automation stores the uppercased language code as the label ("ENG", "FA")
+ * and "SUB" when the language is unknown; admins may type a free label.
+ * Free labels are kept; code-like labels become a language name.
+ *
+ * @param string $label   Stored `_subtitles[].label`.
+ * @param string $srclang Stored `_subtitles[].srclang`.
+ * @return string
+ */
+function streamit_child_subtitle_language_label( $label, $srclang ) {
+	$names = array(
+		'fa'  => 'فارسی',
+		'fas' => 'فارسی',
+		'per' => 'فارسی',
+		'en'  => 'انگلیسی',
+		'eng' => 'انگلیسی',
+		'ar'  => 'عربی',
+		'ara' => 'عربی',
+		'tr'  => 'ترکی',
+		'tur' => 'ترکی',
+		'ko'  => 'کره‌ای',
+		'kor' => 'کره‌ای',
+		'ja'  => 'ژاپنی',
+		'jpn' => 'ژاپنی',
+		'zh'  => 'چینی',
+		'zho' => 'چینی',
+		'chi' => 'چینی',
+		'fr'  => 'فرانسوی',
+		'fra' => 'فرانسوی',
+		'fre' => 'فرانسوی',
+		'de'  => 'آلمانی',
+		'deu' => 'آلمانی',
+		'ger' => 'آلمانی',
+		'es'  => 'اسپانیایی',
+		'spa' => 'اسپانیایی',
+		'ru'  => 'روسی',
+		'rus' => 'روسی',
+	);
+	$prefix  = __( 'زیرنویس', 'streamit' );
+	$label   = trim( (string) $label );
+	$lower   = strtolower( $label );
+	$code    = strtolower( trim( (string) $srclang ) );
+	$generic = array( '', 'sub', 'subs', 'subtitle', 'subtitles', strtolower( $prefix ) );
+
+	$code_like = in_array( $lower, $generic, true ) || $lower === $code || preg_match( '/^[a-z]{2,3}$/', $lower );
+	if ( ! $code_like ) {
+		return false !== strpos( $label, $prefix ) ? $label : $prefix . ' ' . $label;
+	}
+
+	if ( '' === $code && ! in_array( $lower, $generic, true ) ) {
+		$code = $lower;
+	}
+	if ( isset( $names[ $code ] ) ) {
+		return $prefix . ' ' . $names[ $code ];
+	}
+
+	return '' !== $code ? $prefix . ' ' . strtoupper( $code ) : $prefix;
+}
+
+/**
  * Regroup one catalog season's episodes into quality variants for the UI.
  *
  * A variant is quality + encoder. Each episode appears at most once per variant
@@ -73,8 +134,7 @@ function streamit_child_series_download_episode_ordinal( $label, $fallback = 0 )
  * a trailing group whose quality is ''.
  *
  * Episode rows: ordinal, label (S01E03), title, href (gateway, '' when locked),
- * play (episode page URL when the source has a player link, else ''),
- * file_size, subtitles [{label, href}].
+ * file_size, subtitles [{label (Persian, unique per episode), href}].
  *
  * @param array<int, mixed> $episodes Catalog season `episodes`.
  * @return array<int, array{quality: string, encoder: string, link_count: int, episodes: array<int, array<string, mixed>>}>
@@ -88,17 +148,25 @@ function streamit_child_series_download_quality_groups( array $episodes ) {
 			continue;
 		}
 
-		$label     = isset( $episode['label'] ) ? (string) $episode['label'] : '';
-		$permalink = isset( $episode['permalink'] ) ? (string) $episode['permalink'] : '';
+		$label = isset( $episode['label'] ) ? (string) $episode['label'] : '';
 
-		$subtitles = array();
+		$subtitles   = array();
+		$label_count = array();
 		if ( ! empty( $episode['subtitles'] ) && is_array( $episode['subtitles'] ) ) {
 			foreach ( $episode['subtitles'] as $sub ) {
 				if ( ! is_array( $sub ) ) {
 					continue;
 				}
+				$sub_label = streamit_child_subtitle_language_label(
+					isset( $sub['label'] ) ? $sub['label'] : '',
+					isset( $sub['srclang'] ) ? $sub['srclang'] : ''
+				);
+				$label_count[ $sub_label ] = isset( $label_count[ $sub_label ] ) ? $label_count[ $sub_label ] + 1 : 1;
+				if ( $label_count[ $sub_label ] > 1 ) {
+					$sub_label .= ' ' . $label_count[ $sub_label ];
+				}
 				$subtitles[] = array(
-					'label' => isset( $sub['label'] ) ? (string) $sub['label'] : '',
+					'label' => $sub_label,
 					'href'  => isset( $sub['href'] ) ? (string) $sub['href'] : '',
 				);
 			}
@@ -138,11 +206,9 @@ function streamit_child_series_download_quality_groups( array $episodes ) {
 			}
 
 			$href = isset( $source['href'] ) ? (string) $source['href'] : '';
-			$link = isset( $source['link'] ) ? trim( (string) $source['link'] ) : '';
 
 			$groups[ $key ]['episodes'][] = $base + array(
 				'href'      => $href,
-				'play'      => '' !== $link ? $permalink : '',
 				'file_size' => isset( $source['file_size'] ) ? (string) $source['file_size'] : '',
 			);
 			if ( '' !== $href ) {
@@ -153,7 +219,6 @@ function streamit_child_series_download_quality_groups( array $episodes ) {
 		if ( empty( $seen ) && ! empty( $subtitles ) ) {
 			$subs_only[] = $base + array(
 				'href'      => '',
-				'play'      => '',
 				'file_size' => '',
 			);
 		}
@@ -276,9 +341,10 @@ function streamit_child_build_series_download_catalog_from_data( array $seasons,
 				}
 
 				$subtitle_rows[] = array(
-					'label' => isset( $sub['label'] ) ? (string) $sub['label'] : '',
-					'href'  => $href,
-					'meta'  => function_exists( 'streamit_child_subtitle_download_meta_values' )
+					'label'   => isset( $sub['label'] ) ? (string) $sub['label'] : '',
+					'srclang' => isset( $sub['srclang'] ) ? (string) $sub['srclang'] : '',
+					'href'    => $href,
+					'meta'    => function_exists( 'streamit_child_subtitle_download_meta_values' )
 						? streamit_child_subtitle_download_meta_values( $sub )
 						: array(),
 				);

@@ -15,10 +15,9 @@ defined( 'ABSPATH' ) || exit;
  * Language is optional — empty language does not exclude a source and is never
  * invented (no Unknown / guessed locale).
  * source_index matches gateway / array_values( _source|_sources ) position.
- * link is the raw playback value (empty when the row is download-only).
  *
  * @param mixed $sources Raw _source / _sources meta.
- * @return array<int, array{quality: string, language: string, download_content: string, link: string, name: string, file_size: string, encoder: string, source_index: int}>
+ * @return array<int, array{quality: string, language: string, download_content: string, name: string, file_size: string, encoder: string, source_index: int}>
  */
 function streamit_child_get_downloadable_sources( $sources ) {
 	if ( ! is_array( $sources ) || empty( $sources ) ) {
@@ -52,7 +51,6 @@ function streamit_child_get_downloadable_sources( $sources ) {
 			'quality'          => $quality,
 			'language'         => $language,
 			'download_content' => $download,
-			'link'             => $link,
 			'name'             => $name,
 			'file_size'        => $file_size,
 			'encoder'          => $name, // Admin "Name" field doubles as Encoder.

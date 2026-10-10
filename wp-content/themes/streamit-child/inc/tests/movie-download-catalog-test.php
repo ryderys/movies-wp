@@ -115,8 +115,6 @@ assert_true( str_contains( $catalog['sources'][1]['href'] ?? '', 'index=1' ), 'l
 assert_true( ( $catalog['subtitles'][0]['href'] ?? '' ) !== '', 'Persian subtitle URL is resolved when access is granted' );
 assert_true( ( $catalog['sources'][0]['encoder'] ?? '' ) === 'YIFY', 'encoder comes from source name' );
 assert_true( ( $catalog['sources'][0]['file_size'] ?? '' ) === '2.1 GB', 'file_size is exposed for the row' );
-assert_true( ! empty( $catalog['sources'][0]['has_playback'] ), 'playback flag true when link present' );
-assert_true( ! empty( $catalog['sources'][1]['has_playback'] ), 'link-fallback row still has playback' );
 assert_true( ( $catalog['sources'][1]['encoder'] ?? 'x' ) === '', 'missing encoder stays empty' );
 
 $GLOBALS['movie_download_test_can_download'] = false;
