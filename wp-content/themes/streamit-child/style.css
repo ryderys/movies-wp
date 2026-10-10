@@ -81,9 +81,9 @@
 
 /* --- Header/Navbar subtle separation (no layout changes) --- */
 #default-header.header-default {
-	background-color: rgba(30, 30, 35, 0.75);
-	backdrop-filter: blur(12px);
-	-webkit-backdrop-filter: blur(12px);
+	background-color: rgba(15, 15, 20, 0.65);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
