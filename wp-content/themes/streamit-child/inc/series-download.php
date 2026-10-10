@@ -388,11 +388,10 @@ function streamit_child_build_series_download_catalog( $st_data ) {
 }
 
 /**
- * Enqueue Series download accordion assets (call from the section template).
+ * Enqueue styles shared by the Movie and Series download sections.
  */
-function streamit_child_enqueue_series_download_assets() {
+function streamit_child_enqueue_download_section_styles() {
 	$css_path = get_stylesheet_directory() . '/assets/css/series-download.css';
-	$js_path  = get_stylesheet_directory() . '/assets/js/series-download.js';
 
 	if ( file_exists( $css_path ) ) {
 		wp_enqueue_style(
@@ -402,6 +401,15 @@ function streamit_child_enqueue_series_download_assets() {
 			(string) filemtime( $css_path )
 		);
 	}
+}
+
+/**
+ * Enqueue Series download accordion assets (call from the section template).
+ */
+function streamit_child_enqueue_series_download_assets() {
+	streamit_child_enqueue_download_section_styles();
+
+	$js_path = get_stylesheet_directory() . '/assets/js/series-download.js';
 
 	if ( file_exists( $js_path ) ) {
 		wp_enqueue_script(

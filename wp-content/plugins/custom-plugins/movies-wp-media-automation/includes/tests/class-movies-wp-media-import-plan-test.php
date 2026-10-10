@@ -286,7 +286,8 @@ assert_true( str_starts_with( (string) ( $plan['sources'][0]['media_path'] ?? ''
 assert_true( false === strpos( (string) ( $plan['sources'][0]['media_path'] ?? '' ), '/v/' ), 'no signed /v/ URL' );
 assert_true( ( $plan['sources'][0]['language'] ?? null ) === null, 'language not defaulted' );
 assert_true( ( $plan['sources'][1]['name'] ?? null ) === '', 'SS not encoder → name empty' );
-assert_true( in_array( 'SS', $plan['sources'][1]['release']['unclassified'] ?? array(), true ), 'SS unclassified preserved' );
+assert_true( ! in_array( 'SS', $plan['sources'][1]['release']['unclassified'] ?? array(), true ), 'SS no longer unclassified' );
+assert_true( ( $plan['sources'][1]['detected']['subtitles']['soft_subtitle_languages'] ?? array() ) === array( 'fa' ), 'SS classification retained in detected source' );
 assert_true( ( $plan['ready_to_import'] ?? false ) === true, 'warnings do not block' );
 $warn_codes = array_column( $plan['warnings'], 'code' );
 assert_true( ! in_array( 'audio_unknown', $warn_codes, true ), 'no audio_unknown when probe has languages' );
@@ -692,7 +693,7 @@ $ss_plan = build_preview_plan(
 	$opts_create
 );
 assert_true( ( $ss_plan['sources'][0]['name'] ?? null ) === '', 'SS not name' );
-assert_true( in_array( 'SS', $ss_plan['sources'][0]['release']['unclassified'] ?? array(), true ), 'SS unclassified' );
+assert_true( ! in_array( 'SS', $ss_plan['sources'][0]['release']['unclassified'] ?? array(), true ), 'SS no longer unclassified' );
 
 echo "\nprobe audio / subtitle language never become source.language; Korea not ko\n";
 $fa_audio = build_preview_plan(

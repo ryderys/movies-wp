@@ -288,6 +288,7 @@ series_scan_assert_true( empty( $bare_scan['errors'] ), 'bare-E scan has no iden
 $bare_e04 = series_scan_find_file( $bare_scan['files'], 'Behind.Every.Star.E04.221115.720p.SS.mkv' );
 series_scan_assert_true( is_array( $bare_e04 ), 'bare E04 file enriched' );
 series_scan_assert_true( ( $bare_e04['episode']['identity_type'] ?? '' ) === 'episode_only', 'bare E04 stays episode_only in scan' );
+series_scan_assert_true( ( $bare_e04['soft_subtitle_languages'] ?? array() ) === array( 'fa' ), 'SS identifies Persian soft subtitles in series scan' );
 series_scan_assert_true( null === ( $bare_e04['episode']['season_number'] ?? null ), 'bare E04 scan does not invent season' );
 series_scan_assert_true( ( $bare_e04['episode']['episode_number'] ?? '' ) === '4', 'bare E04 scan episode number' );
 $bare_group4 = null;

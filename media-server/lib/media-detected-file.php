@@ -159,10 +159,11 @@ function media_normalize_detected_video( array $file ): array {
 			'codec_filename'      => media_normalize_string_or_null( $file['audio_codec'] ?? null ),
 		),
 
-		// Sidecar association is a later phase — videos only carry embedded probe subs.
+		// Keep probe-detected embedded tracks separate from filename soft-sub claims.
 		'subtitles' => array(
-			'embedded' => $embedded,
-			'sidecar'  => null,
+			'embedded'               => $embedded,
+			'soft_subtitle_languages' => media_normalize_string_list( $file['soft_subtitle_languages'] ?? array() ),
+			'sidecar'                => null,
 		),
 
 		'release' => array(

@@ -187,13 +187,13 @@ assert_true( ( $r['associations'][0]['video'] ?? null ) === $v_m['media_path'], 
 assert_true( ( $r['associations'][1]['video'] ?? null ) === $v_m['media_path'], 'second → same video' );
 assert_true( $r['unassociated_subtitles'] === array(), 'none unassociated' );
 
-echo "\nVapor / Soul fixtures: tG1R0 release_group; SS unclassified; no false assoc\n";
+echo "\nVapor / Soul fixtures: tG1R0 release_group; SS soft subtitles; no false assoc\n";
 $vapor_dir = 'Movie/Korea/2018/Vapor';
 $vapor_v = assoc_file( 'video', 'Vapor.2018.1080p.WAVVE.WEB-DL.AAC2.0.H.264-tG1R0.mkv', $vapor_dir );
 assert_true( ( $vapor_v['release_group'] ?? null ) === 'tG1R0', 'tG1R0 release_group' );
 $soul_dir = 'Movie/Korea/2018/The.Soul.Mate';
 $soul_v = assoc_file( 'video', 'The.Soul.Mate.2018.WEB-DL.720p.SS.mkv', $soul_dir );
-assert_true( in_array( 'SS', $soul_v['unclassified'] ?? array(), true ), 'SS unclassified' );
+assert_true( ( $soul_v['soft_subtitle_languages'] ?? array() ) === array( 'fa' ), 'SS identifies Persian soft subtitles' );
 $r = media_associate_movie_files( array( $vapor_v, $soul_v, $bel_fa ) );
 assert_true( $r['associations'] === array(), 'Believer fa.srt does not attach to Vapor/Soul' );
 

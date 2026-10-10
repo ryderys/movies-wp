@@ -57,7 +57,8 @@ assert_true( $b['quality'] === '720p', '2 quality 720p (after WEB-DL)' );
 assert_true( $b['source_type'] === 'WEB-DL', '2 source WEB-DL' );
 assert_true( $b['encoder'] === null, '2 SS is not encoder' );
 assert_true( $b['release_group'] === null, '2 SS is not release_group' );
-assert_true( in_array( 'SS', $b['unclassified'], true ), '2 SS unclassified' );
+assert_true( $b['soft_subtitle_languages'] === array( 'fa' ), '2 SS identifies Persian soft subtitles' );
+assert_true( ! in_array( 'SS', $b['unclassified'], true ), '2 SS classified' );
 assert_true( $b['audio_confidence'] === 'unknown', '2 audio unknown' );
 assert_true( $b['year_hint'] === 2018, '2 year_hint 2018' );
 
@@ -132,7 +133,7 @@ assert_true( $yify['encoder'] === 'YIFY', 'YIFY is a known encoder' );
 $fhd = media_parse_filename( 'Movie.2025.FHD.BluRay.mkv' );
 assert_true( $fhd['quality'] === '1080p' && $fhd['source_type'] === 'BluRay', 'FHD + BluRay' );
 
-echo "\nDecision.to.Leave leftovers: KNPSK hint vs SS unclassified\n";
+echo "\nDecision.to.Leave leftovers: KNPSK hint vs SS soft subtitles\n";
 $d1080 = media_parse_filename( 'Decision.to.Leave.2022.1080p.KNPSK.WEB-DL.DDP5.1.x264-tG1R0.mkv' );
 assert_true( $d1080['quality'] === '1080p', 'DTL 1080 quality' );
 assert_true( $d1080['source_type'] === 'WEB-DL', 'DTL 1080 source' );
@@ -144,11 +145,21 @@ assert_true( in_array( 'unconfirmed_group', warning_codes( $d1080 ), true ), 'DT
 
 $d480ss = media_parse_filename( 'Decision.to.Leave.2022.480p.KNPSK.WEB-DL.SS.mkv' );
 assert_true( $d480ss['group_hint'] === 'KNPSK', 'DTL SS: KNPSK still group_hint' );
-assert_true( in_array( 'SS', $d480ss['unclassified'], true ), 'DTL SS: SS unclassified' );
+assert_true( $d480ss['soft_subtitle_languages'] === array( 'fa' ), 'DTL SS: Persian soft subtitles' );
+assert_true( ! in_array( 'SS', $d480ss['unclassified'], true ), 'DTL SS is classified' );
 assert_true( ! in_array( 'KNPSK', $d480ss['unclassified'], true ), 'DTL SS: KNPSK not unclassified' );
 assert_true( $d480ss['encoder'] === null && $d480ss['release_group'] === null, 'DTL SS: no encoder/group' );
 assert_true( in_array( 'unconfirmed_group', warning_codes( $d480ss ), true ), 'DTL SS: unconfirmed_group' );
-assert_true( in_array( 'unclassified_tokens', warning_codes( $d480ss ), true ), 'DTL SS: unclassified_tokens for SS' );
+assert_true( ! in_array( 'unclassified_tokens', warning_codes( $d480ss ), true ), 'DTL SS: no unclassified token warning' );
+
+$softsub = media_parse_filename( 'Movie.2023.720p.WEBRip.Soft.Sub.mkv' );
+assert_true( $softsub['soft_subtitle_languages'] === array( 'fa' ), 'Soft.Sub identifies Persian soft subtitles' );
+assert_true( $softsub['unclassified'] === array(), 'Soft.Sub is not unclassified' );
+
+$brave_citizen = media_parse_filename( 'SS.Brave.Citizen.2023.720p.WEBRip.SS.mkv' );
+assert_true( $brave_citizen['soft_subtitle_languages'] === array( 'fa' ), 'prefix and suffix SS identify Persian soft subtitles' );
+assert_true( $brave_citizen['unclassified'] === array(), 'repeated SS markers are all classified' );
+assert_true( $brave_citizen['title_hint'] === 'Brave.Citizen', 'leading SS does not displace the title hint' );
 
 $dsrt = media_parse_filename( 'Decision.to.Leave.2022.WEB-DL.srt' );
 assert_true( $dsrt['kind'] === 'subtitle', 'DTL srt kind' );

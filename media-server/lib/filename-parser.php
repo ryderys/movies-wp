@@ -42,6 +42,7 @@ function media_parse_filename( string $path ): array {
 	media_parse_detect_video_codec( $work['tokens'], $result );
 	media_parse_detect_audio_codec( $work['tokens'], $result );
 	media_parse_detect_audio_language( $work['tokens'], $result );
+	media_parse_detect_soft_subtitles( $work['tokens'], $result );
 	media_parse_detect_encoder( $work['tokens'], $result );
 	media_parse_detect_year_hint( $work['tokens'], $result );
 
@@ -101,14 +102,15 @@ function media_parse_empty_result( array $normalized ): array {
 		'release_group'        => null,
 		'group_hint'           => null,
 		'encoder'              => null,
-		'audio_languages'      => array(),
-		'audio_label'          => null,
-		'audio_confidence'     => 'unknown',
-		'subtitle_lang'        => null,
-		'subtitle_confidence'  => 'unknown',
-		'unclassified'         => array(),
-		'warnings'             => array(),
-		'_consumed'            => array(),
+		'audio_languages'         => array(),
+		'audio_label'             => null,
+		'audio_confidence'        => 'unknown',
+		'soft_subtitle_languages' => array(),
+		'subtitle_lang'           => null,
+		'subtitle_confidence'     => 'unknown',
+		'unclassified'            => array(),
+		'warnings'                => array(),
+		'_consumed'               => array(),
 	);
 }
 
@@ -136,6 +138,7 @@ function media_parse_compound_map(): array {
 		'/\bpersian[\.\s_\-]?dub\b/i'    => 'PERSIANDUB',
 		'/\bfarsi[\.\s_\-]?dub\b/i'      => 'PERSIANDUB',
 		'/\bfa[\.\s_\-]?dub\b/i'         => 'PERSIANDUB',
+		'/\bsoft[\.\s_\-]?sub(?:title)?\b/i' => 'SOFTSUB',
 		'/\bdual[\.\s_\-]?audio\b/i'     => 'DUALAUDIO',
 		'/\btrue[\.\s_\-]?french\b/i'    => 'TRUEFRENCH',
 		'/\bfa[\-\.]ir\b/i'              => 'FAIR',
@@ -413,6 +416,32 @@ function media_parse_detect_audio_language( array $tokens, array &$result ): voi
 }
 
 /**
+ * SS / SoftSub is the library's marker for an embedded Persian soft subtitle.
+ *
+ * @param list<array{raw: string, key: string}> $tokens
+ * @param array<string, mixed> $result
+ */
+function media_parse_detect_soft_subtitles( array $tokens, array &$result ): void {
+	if ( ( $result['kind'] ?? '' ) !== 'video' ) {
+		return;
+	}
+
+	$found = false;
+	foreach ( $tokens as $i => $token ) {
+		if ( ! in_array( $token['key'], array( 'ss', 'softsub', 'softsubtitle' ), true ) ) {
+			continue;
+		}
+
+		$result['_consumed'][ $i ] = 'soft_subtitle';
+		$found = true;
+	}
+
+	if ( $found ) {
+		$result['soft_subtitle_languages'] = array( 'fa' );
+	}
+}
+
+/**
  * @return array{languages: list<string>, label: string}|null
  */
 function media_parse_audio_token( string $key ): ?array {
@@ -560,7 +589,9 @@ function media_parse_collect_leftovers( array $tokens, array &$result ): void {
 
 	foreach ( $tokens as $i => $token ) {
 		if ( isset( $consumed[ $i ] ) ) {
-			$hit_tech = true;
+			if ( $consumed[ $i ] !== 'soft_subtitle' ) {
+				$hit_tech = true;
+			}
 			continue;
 		}
 		if ( ! $hit_tech ) {
@@ -576,7 +607,7 @@ function media_parse_collect_leftovers( array $tokens, array &$result ): void {
 
 	/*
 	 * Prefer a single group_hint for the first group-like leftover.
-	 * Remaining tokens stay unclassified (e.g. KNPSK → hint, SS → unclassified).
+	 * Remaining tokens stay unclassified (e.g. KNPSK → hint).
 	 * Never put the same token in both group_hint and unclassified.
 	 */
 	$hint_set = false;

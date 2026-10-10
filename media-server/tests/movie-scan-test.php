@@ -228,11 +228,11 @@ $f720 = find_file( $scan['files'] ?? array(), $soul_720 );
 assert_true( is_array( $f720 ) && $f720['quality'] === '720p', '720p quality' );
 assert_true( is_array( $f720 ) && $f720['source_type'] === 'WEB-DL', '720p source' );
 assert_true( is_array( $f720 ) && $f720['encoder'] === null, 'SS is not encoder' );
-assert_true( is_array( $f720 ) && in_array( 'SS', $f720['unclassified'] ?? array(), true ), 'SS unclassified' );
+assert_true( is_array( $f720 ) && ( $f720['soft_subtitle_languages'] ?? array() ) === array( 'fa' ), 'SS identifies Persian soft subtitles' );
 assert_true( is_array( $f720 ) && isset( $f720['probe']['ok'] ), '720p has probe' );
 assert_true(
-	is_array( $f720 ) && in_array( 'SS', $f720['detected']['release']['unclassified'] ?? array(), true ),
-	'detected: SS remains unclassified'
+	is_array( $f720 ) && ( $f720['detected']['subtitles']['soft_subtitle_languages'] ?? array() ) === array( 'fa' ),
+	'detected: SS identifies Persian soft subtitles'
 );
 assert_true(
 	is_array( $f720 ) && ( $f720['detected']['release']['encoder'] ?? null ) === null,

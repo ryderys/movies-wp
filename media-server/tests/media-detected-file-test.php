@@ -204,12 +204,13 @@ assert_true( count( $vapor['subtitles']['embedded'] ) === 1, 'embedded probe sub
 assert_true( ( $vapor['subtitles']['embedded'][0]['language'] ?? null ) === 'ko', 'embedded sub lang from probe' );
 assert_true( ( $vapor['audio']['tracks'][0]['language'] ?? null ) !== 'ko', 'directory Korea does not become audio' );
 
-echo "\nSS remains unclassified\n";
+echo "\nSS identifies Persian soft subtitles\n";
 $ss = media_normalize_detected_file(
 	enrich_video( $soul_720, $dir_soul, ok_probe( 'h264', 1280, 720 ) )
 );
 assert_true( ( $ss['identity']['quality']['value'] ?? null ) === '720p', '720p quality' );
-assert_true( in_array( 'SS', $ss['release']['unclassified'] ?? array(), true ), 'SS unclassified' );
+assert_true( ( $ss['subtitles']['soft_subtitle_languages'] ?? array() ) === array( 'fa' ), 'SS identifies Persian soft subtitles' );
+assert_true( ! in_array( 'SS', $ss['release']['unclassified'] ?? array(), true ), 'SS not unclassified' );
 assert_true( ( $ss['release']['encoder'] ?? null ) === null, 'SS not encoder' );
 
 echo "\nVapor 480p WAVVE\n";
