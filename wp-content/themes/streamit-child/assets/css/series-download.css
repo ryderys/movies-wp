@@ -413,6 +413,14 @@
 	gap: 12px;
 }
 
+.stc-dl-series-subs__toggle::-webkit-details-marker {
+	display: none;
+}
+
+.stc-dl-series-subs__toggle::marker {
+	content: '';
+}
+
 .stc-dl-series-subs__meta {
 	display: flex;
 	flex-wrap: wrap;
@@ -448,6 +456,11 @@
 }
 
 .stc-dl-series-subs.is-open > .stc-dl-series-subs__toggle .stc-dl-chevron--sm::before {
+	transform: rotate(-135deg);
+	margin-top: 3px;
+}
+
+.stc-dl-series-subs[open] > .stc-dl-series-subs__toggle .stc-dl-chevron--sm::before {
 	transform: rotate(-135deg);
 	margin-top: 3px;
 }

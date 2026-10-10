@@ -48,10 +48,48 @@ if ( ! function_exists( 'streamit_child_get_subtitles' ) ) {
 		unset( $st_data );
 		return array(
 			array(
-				'label' => 'فارسی',
-				'url'   => 'Movie/Film.fa.srt',
+				'label'       => 'FA',
+				'srclang'     => 'fa',
+				'url'         => 'Movie/Film.WEB-DL.fa.srt',
+				'format'      => 'SRT',
+				'source_type' => 'WEB-DL',
+			),
+			array(
+				'label'       => 'ENG',
+				'srclang'     => 'en',
+				'url'         => 'Movie/Film.HDTV.en.srt',
+				'format'      => 'SRT',
+				'source_type' => 'HDTV',
 			),
 		);
+	}
+}
+
+if ( ! function_exists( '__' ) ) {
+	function __( $text, $domain = 'default' ) {
+		unset( $domain );
+		return $text;
+	}
+}
+
+if ( ! function_exists( '_n' ) ) {
+	function _n( $single, $plural, $number, $domain = 'default' ) {
+		unset( $domain );
+		return 1 === (int) $number ? $single : $plural;
+	}
+}
+
+if ( ! function_exists( 'streamit_child_subtitle_language_label' ) ) {
+	function streamit_child_subtitle_language_label( $label, $srclang ) {
+		$label   = strtolower( trim( (string) $label ) );
+		$srclang = strtolower( trim( (string) $srclang ) );
+		if ( in_array( $srclang, array( 'fa', 'fas', 'per' ), true ) || in_array( $label, array( 'fa', 'fas', 'per' ), true ) ) {
+			return 'زیرنویس فارسی';
+		}
+		if ( in_array( $srclang, array( 'en', 'eng' ), true ) || in_array( $label, array( 'en', 'eng' ), true ) ) {
+			return 'زیرنویس انگلیسی';
+		}
+		return 'زیرنویس';
 	}
 }
 
@@ -112,7 +150,10 @@ $catalog = streamit_child_build_movie_download_catalog( $movie );
 assert_true( count( $catalog['sources'] ) === 2, 'both downloadable qualities are included' );
 assert_true( str_contains( $catalog['sources'][0]['href'] ?? '', 'post=42&index=0' ), 'movie download URL uses post and source index' );
 assert_true( str_contains( $catalog['sources'][1]['href'] ?? '', 'index=1' ), 'link fallback gets its original source index' );
-assert_true( ( $catalog['subtitles'][0]['href'] ?? '' ) !== '', 'Persian subtitle URL is resolved when access is granted' );
+assert_true( count( $catalog['subtitles'] ) === 2, 'movie subtitles included' );
+assert_true( ( $catalog['subtitles'][0]['href'] ?? '' ) !== '', 'first subtitle URL is resolved when access is granted' );
+assert_true( ( $catalog['subtitles'][0]['source_type'] ?? '' ) === 'WEB-DL', 'subtitle source_type is exposed' );
+assert_true( ( $catalog['subtitles'][1]['source_type'] ?? '' ) === 'HDTV', 'second subtitle source_type is exposed' );
 assert_true( ( $catalog['sources'][0]['encoder'] ?? '' ) === 'YIFY', 'encoder comes from source name' );
 assert_true( ( $catalog['sources'][0]['file_size'] ?? '' ) === '2.1 GB', 'file_size is exposed for the row' );
 assert_true( ( $catalog['sources'][1]['encoder'] ?? 'x' ) === '', 'missing encoder stays empty' );
@@ -121,7 +162,12 @@ $GLOBALS['movie_download_test_can_download'] = false;
 $locked = streamit_child_build_movie_download_catalog( $movie );
 assert_true( empty( $locked['sources'][0]['href'] ), 'locked catalog does not mint video URLs' );
 assert_true( empty( $locked['subtitles'][0]['href'] ), 'locked catalog does not mint subtitle URLs' );
-assert_true( count( $locked['sources'] ) === 2 && count( $locked['subtitles'] ) === 1, 'locked catalog still exposes the available download choices' );
+assert_true( count( $locked['sources'] ) === 2 && count( $locked['subtitles'] ) === 2, 'locked catalog still exposes the available download choices' );
+
+$groups = streamit_child_movie_download_subtitle_groups( $catalog['subtitles'] );
+assert_true( count( $groups ) === 2, 'subtitle groups split by WEB-DL and HDTV' );
+assert_true( ( $groups[0]['source_type'] ?? '' ) === 'WEB-DL', 'first group is WEB-DL' );
+assert_true( ( $groups[1]['source_type'] ?? '' ) === 'HDTV', 'second group is HDTV' );
 
 if ( $failures > 0 ) {
 	exit( 1 );
