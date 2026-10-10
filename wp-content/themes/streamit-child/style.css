@@ -86,6 +86,34 @@
 	-webkit-backdrop-filter: blur(12px);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+/* Header dropdown stacking: ensure menus render above hero/media containers. */
+#default-header.header-default {
+	position: relative;
+	z-index: 9999;
+	overflow: visible; /* avoid clipping dropdowns */
+}
+
+#default-header.header-default > .container-fluid,
+#default-header.header-default .d-flex {
+	overflow: visible;
+}
+
+/* Dropdown/sub-menu styling to match the dark charcoal header. */
+.header-default #site-navigation ul.sub-menu,
+.header-default #site-navigation .sub-menu {
+	background-color: rgba(26, 26, 30, 0.95);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+	border-radius: 8px;
+	padding: 8px 0;
+	z-index: 10000; /* above header itself */
+}
+
+.header-default #site-navigation ul.sub-menu a,
+.header-default #site-navigation .sub-menu a {
+	line-height: 1.6;
+}
 .header-default #site-navigation li.menu-icon-series > a .menu-title::before,
 .header-default #site-navigation li.menu-icon-tvshow > a .menu-title::before,
 .header-default #site-navigation li.menu-icon-tvshows > a .menu-title::before {
