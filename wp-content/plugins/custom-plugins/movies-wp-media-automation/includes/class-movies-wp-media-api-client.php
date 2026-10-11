@@ -39,21 +39,25 @@ class Movies_WP_Media_Api_Client {
 		$signature = hash_hmac( 'sha256', $canonical, $config['hmac_secret'] );
 		$url       = $config['base_url'] . self::REQUEST_PATH . '?dir=' . $encoded;
 
-		$started  = microtime( true );
-		$response = wp_remote_get(
-			$url,
-			array(
-				'timeout'     => self::TIMEOUT,
-				'redirection' => 0,
-				'sslverify'   => true,
-				'headers'     => array(
-					'Accept'             => 'application/json',
-					'X-Media-Key'        => $config['api_key'],
-					'X-Media-Timestamp'  => $timestamp,
-					'X-Media-Signature'  => $signature,
-				),
-			)
+		$args = array(
+			'timeout'     => self::TIMEOUT,
+			'redirection' => 0,
+			'sslverify'   => true,
+			'headers'     => array(
+				'Accept'             => 'application/json',
+				'X-Media-Key'        => $config['api_key'],
+				'X-Media-Timestamp'  => $timestamp,
+				'X-Media-Signature'  => $signature,
+			),
 		);
+
+		$started  = microtime( true );
+		$response = wp_remote_get( $url, $args );
+		// The media server intermittently refuses connections. Scans are read-only, so retry once; timeouts are not retried.
+		if ( is_wp_error( $response ) && ! self::is_timeout( $response ) ) {
+			sleep( 1 );
+			$response = wp_remote_get( $url, $args );
+		}
 		$duration_ms = (int) round( ( microtime( true ) - $started ) * 1000 );
 
 		if ( is_wp_error( $response ) ) {
@@ -212,17 +216,21 @@ class Movies_WP_Media_Api_Client {
 
 	/**
 	 * @param WP_Error $error Transport error.
+	 * @return bool
+	 */
+	private static function is_timeout( $error ) {
+		$message = (string) $error->get_error_message();
+		return ( false !== stripos( $message, 'timed out' ) )
+			|| ( false !== stripos( $message, 'timeout' ) )
+			|| 'http_request_failed' === $error->get_error_code() && false !== stripos( $message, 'cURL error 28' );
+	}
+
+	/**
+	 * @param WP_Error $error Transport error.
 	 * @return WP_Error
 	 */
 	private static function transport_error( $error ) {
-		$message = $error->get_error_message();
-		$code    = $error->get_error_code();
-
-		$is_timeout = ( false !== stripos( (string) $message, 'timed out' ) )
-			|| ( false !== stripos( (string) $message, 'timeout' ) )
-			|| 'http_request_failed' === $code && false !== stripos( (string) $message, 'cURL error 28' );
-
-		if ( $is_timeout ) {
+		if ( self::is_timeout( $error ) ) {
 			return new WP_Error(
 				'media_api_timeout',
 				__( 'The media scan request timed out.', 'movies-wp' ),

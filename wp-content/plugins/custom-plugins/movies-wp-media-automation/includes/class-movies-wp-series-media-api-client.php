@@ -34,21 +34,25 @@ class Movies_WP_Series_Media_Api_Client {
 		$signature = hash_hmac( 'sha256', $canonical, $config['hmac_secret'] );
 		$url       = $config['base_url'] . self::REQUEST_PATH . '?dir=' . $encoded;
 
-		$started  = microtime( true );
-		$response = wp_remote_get(
-			$url,
-			array(
-				'timeout'     => self::TIMEOUT,
-				'redirection' => 0,
-				'sslverify'   => true,
-				'headers'     => array(
-					'Accept'            => 'application/json',
-					'X-Media-Key'       => $config['api_key'],
-					'X-Media-Timestamp' => $timestamp,
-					'X-Media-Signature' => $signature,
-				),
-			)
+		$args = array(
+			'timeout'     => self::TIMEOUT,
+			'redirection' => 0,
+			'sslverify'   => true,
+			'headers'     => array(
+				'Accept'            => 'application/json',
+				'X-Media-Key'       => $config['api_key'],
+				'X-Media-Timestamp' => $timestamp,
+				'X-Media-Signature' => $signature,
+			),
 		);
+
+		$started  = microtime( true );
+		$response = wp_remote_get( $url, $args );
+		// The media server intermittently refuses connections. Scans are read-only, so retry once; timeouts are not retried.
+		if ( is_wp_error( $response ) && ! self::is_timeout( $response ) ) {
+			sleep( 1 );
+			$response = wp_remote_get( $url, $args );
+		}
 		$duration_ms = (int) round( ( microtime( true ) - $started ) * 1000 );
 
 		if ( is_wp_error( $response ) ) {
@@ -183,11 +187,21 @@ class Movies_WP_Series_Media_Api_Client {
 
 	/**
 	 * @param WP_Error $error
+	 * @return bool
+	 */
+	private static function is_timeout( $error ) {
+		$message = (string) $error->get_error_message();
+		return false !== stripos( $message, 'timeout' )
+			|| false !== stripos( $message, 'timed out' )
+			|| false !== stripos( $message, 'cURL error 28' );
+	}
+
+	/**
+	 * @param WP_Error $error
 	 * @return WP_Error
 	 */
 	private static function transport_error( $error ) {
-		$message = $error->get_error_message();
-		$is_timeout = false !== stripos( (string) $message, 'timeout' );
+		$is_timeout = self::is_timeout( $error );
 		return new WP_Error(
 			$is_timeout ? 'series_media_api_timeout' : 'series_media_api_request_error',
 			$is_timeout
