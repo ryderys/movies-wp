@@ -26,6 +26,24 @@ li[class*=" menu-icon-"] > a .menu-title::before {
 	-webkit-font-smoothing: antialiased;
 	line-height: 1;
 	margin-inline-end: 0.5rem;
+	color: currentColor;
+}
+
+#site-navigation .streamit-menu-icon img,
+.streamit-menu-icon img {
+	width: 1.125em;
+	height: 1.125em;
+	object-fit: contain;
+	filter: brightness(0) invert(1);
+	transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+#site-navigation .streamit-menu-icon svg,
+.streamit-menu-icon svg {
+	width: 1.125em;
+	height: 1.125em;
+	fill: currentColor;
+	color: #ffffff;
 }
 
 #site-navigation li.menu-icon-home > a .menu-title::before,

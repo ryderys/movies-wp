@@ -50,27 +50,51 @@
 
 /* Header navbar: menu item icons (Menu Icon URL / _menu_item_icon). */
 .header-default #site-navigation .menu-title,
-.header-default #site-navigation .css_prefix-menu-item-text.has-icon {
+.header-default #site-navigation .css_prefix-menu-item-text.has-icon,
+#site-navigation .menu-title {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.5rem;
 }
 
-.header-default #site-navigation .streamit-menu-icon {
+.header-default #site-navigation .streamit-menu-icon,
+#site-navigation .streamit-menu-icon,
+.streamit-menu-icon {
 	display: inline-flex;
 	align-items: center;
 	line-height: 1;
 }
 
 .header-default #site-navigation .streamit-menu-icon img,
-.header-default #site-navigation .streamit-menu-icon svg {
+#site-navigation .streamit-menu-icon img,
+.streamit-menu-icon img {
 	width: 1.125em;
 	height: 1.125em;
+	object-fit: contain;
+	filter: brightness(0) invert(1);
+	transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.header-default #site-navigation .streamit-menu-icon svg,
+#site-navigation .streamit-menu-icon svg,
+.streamit-menu-icon svg {
+	width: 1.125em;
+	height: 1.125em;
+	fill: currentColor;
+	color: #ffffff;
+}
+
+.header-default #site-navigation .streamit-menu-icon svg path,
+#site-navigation .streamit-menu-icon svg path,
+.streamit-menu-icon svg path {
+	fill: currentColor;
 }
 
 /* Header navbar: Font Awesome icons via Menu Item CSS Classes (e.g. menu-icon-series). */
 .header-default #site-navigation li[class^="menu-icon-"] > a .menu-title::before,
-.header-default #site-navigation li[class*=" menu-icon-"] > a .menu-title::before {
+.header-default #site-navigation li[class*=" menu-icon-"] > a .menu-title::before,
+#site-navigation li[class^="menu-icon-"] > a .menu-title::before,
+#site-navigation li[class*=" menu-icon-"] > a .menu-title::before {
 	display: inline-block;
 	font-family: "Font Awesome 6 Free";
 	font-weight: 900;
@@ -79,6 +103,7 @@
 	text-rendering: auto;
 	-webkit-font-smoothing: antialiased;
 	line-height: 1;
+	color: currentColor;
 }
 
 .header-default #site-navigation li.menu-icon-home > a .menu-title::before {

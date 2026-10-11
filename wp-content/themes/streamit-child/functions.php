@@ -967,7 +967,9 @@ function streamit_child_print_header_nav_icons_inline() {
 		#site-navigation li[class^="menu-icon-"]>a .menu-title::before,
 		#site-navigation li[class*=" menu-icon-"]>a .menu-title::before,
 		li[class^="menu-icon-"]>a .menu-title::before,
-		li[class*=" menu-icon-"]>a .menu-title::before{display:inline-block;font-family:"Font Awesome 6 Free";font-weight:900;font-style:normal;font-variant:normal;text-rendering:auto;-webkit-font-smoothing:antialiased;line-height:1;margin-inline-end:.5rem}
+		li[class*=" menu-icon-"]>a .menu-title::before{display:inline-block;font-family:"Font Awesome 6 Free";font-weight:900;font-style:normal;font-variant:normal;text-rendering:auto;-webkit-font-smoothing:antialiased;line-height:1;margin-inline-end:.5rem;color:currentColor}
+		#site-navigation .streamit-menu-icon img,.streamit-menu-icon img{width:1.125em;height:1.125em;object-fit:contain;filter:brightness(0) invert(1)}
+		#site-navigation .streamit-menu-icon svg,.streamit-menu-icon svg{width:1.125em;height:1.125em;fill:currentColor;color:#ffffff}
 		#site-navigation li.menu-icon-home>a .menu-title::before,li.menu-icon-home>a .menu-title::before{content:"\f015"}
 		#site-navigation li.menu-icon-movie>a .menu-title::before,#site-navigation li.menu-icon-movies>a .menu-title::before,li.menu-icon-movie>a .menu-title::before,li.menu-icon-movies>a .menu-title::before{content:"\f008"}
 		#site-navigation li.menu-icon-series>a .menu-title::before,#site-navigation li.menu-icon-tvshow>a .menu-title::before,#site-navigation li.menu-icon-tvshows>a .menu-title::before,li.menu-icon-series>a .menu-title::before,li.menu-icon-tvshow>a .menu-title::before,li.menu-icon-tvshows>a .menu-title::before{content:"\f26c"}
