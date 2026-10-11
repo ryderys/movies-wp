@@ -21,6 +21,7 @@ class Movies_WP_Media_Admin {
 	const IMPORT_ACTION   = 'movies_wp_import';
 	const PROGRESS_NONCE  = 'movies_wp_movie_import_progress';
 	const CANCEL_ACTION   = 'movies_wp_movie_import_cancel';
+	const RESUME_ACTION   = 'movies_wp_movie_import_resume';
 
 	/**
 	 * @var string|false
@@ -70,7 +71,7 @@ class Movies_WP_Media_Admin {
 	}
 
 	/**
-	 * Early POST handler for mutations that redirect (Import, Cancel).
+	 * Early POST handler for mutations that redirect (Import, Cancel, Resume).
 	 */
 	public static function handle_load() {
 		if ( 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) {
@@ -87,6 +88,10 @@ class Movies_WP_Media_Admin {
 		}
 		if ( self::CANCEL_ACTION === $action ) {
 			self::handle_cancel_mutation( $post, array() );
+			return;
+		}
+		if ( self::RESUME_ACTION === $action ) {
+			self::handle_resume_mutation( $post, array() );
 		}
 	}
 
@@ -107,6 +112,12 @@ class Movies_WP_Media_Admin {
 		if ( '' !== $job_token && 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' ) && class_exists( 'Movies_WP_Movie_Import_Job_Store' ) ) {
 			$job = Movies_WP_Movie_Import_Job_Store::find_by_token( $job_token );
 			if ( is_array( $job ) && self::job_owned_by_current_user( $job ) ) {
+				if ( isset( $_GET['resume_notice'] ) && 'busy' === sanitize_key( wp_unslash( (string) $_GET['resume_notice'] ) ) ) {
+					$notice = array(
+						'type'    => 'warning',
+						'message' => __( 'Import is still running or has not been confirmed stalled. Resume was not started.', 'movies-wp' ),
+					);
+				}
 				include MOVIES_WP_MEDIA_AUTOMATION_DIR . '/includes/views/movie-import-progress.php';
 				return;
 			}
@@ -196,6 +207,44 @@ class Movies_WP_Media_Admin {
 			Movies_WP_Movie_Import_Job_Runner::cancel( $token, $options );
 		}
 		self::redirect_to_progress( $token, $options );
+	}
+
+	/**
+	 * Resume mutation. Redirects back to progress; a refused resume adds a notice key.
+	 *
+	 * @param array<string, mixed> $post
+	 * @param array<string, mixed> $options
+	 * @return void
+	 */
+	private static function handle_resume_mutation( array $post, array $options = array() ) {
+		$gate = self::request_gate( $post, self::PROGRESS_NONCE, 'media_import_forbidden', 'media_import_invalid_nonce', $options );
+		if ( is_wp_error( $gate ) ) {
+			return;
+		}
+		$token = isset( $post['job_token'] ) ? sanitize_text_field( (string) $post['job_token'] ) : '';
+		if ( '' === $token ) {
+			return;
+		}
+		$query = array();
+		if ( class_exists( 'Movies_WP_Movie_Import_Job_Runner' ) ) {
+			$result = Movies_WP_Movie_Import_Job_Runner::resume( $token, $options );
+			if ( is_wp_error( $result ) && 'movie_import_job_busy' === $result->get_error_code() ) {
+				$query['resume_notice'] = 'busy';
+			}
+		}
+		self::redirect_to_progress( $token, $options, $query );
+	}
+
+	/**
+	 * @param array<string, mixed> $job
+	 * @param array<string, mixed> $context
+	 */
+	public static function job_can_resume( array $job, array $context = array() ) {
+		$status = (string) ( $job['status'] ?? '' );
+		if ( in_array( $status, array( 'paused', 'failed' ), true ) ) {
+			return true;
+		}
+		return Movies_WP_Movie_Import_Job_Store::is_resume_eligible_stall( $job, $context );
 	}
 
 	/**
@@ -321,8 +370,11 @@ class Movies_WP_Media_Admin {
 		return admin_url( 'admin.php?page=' . self::SLUG . '&job_token=' . rawurlencode( $token ) );
 	}
 
-	private static function redirect_to_progress( $token, array $options = array() ) {
+	private static function redirect_to_progress( $token, array $options = array(), array $query = array() ) {
 		$url = self::progress_url( (string) $token );
+		foreach ( $query as $key => $value ) {
+			$url .= '&' . rawurlencode( (string) $key ) . '=' . rawurlencode( (string) $value );
+		}
 		if ( isset( $options['redirect'] ) && is_callable( $options['redirect'] ) ) {
 			call_user_func( $options['redirect'], $url );
 			return;

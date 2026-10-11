@@ -16,6 +16,8 @@ class Movies_WP_Movie_Import_Job_Store {
 	const LEASE_SECONDS_DEFAULT = 180;
 	const LEASE_SECONDS_MIN     = 60;
 	const LEASE_SECONDS_MAX     = 600;
+	// execute() does not heartbeat, so recovery must outlast one worker run (PHP / Action Scheduler cap: 300s).
+	const STALL_GRACE_SECONDS   = 180;
 	const RECENT_LIMIT_DEFAULT  = 10;
 	const RECENT_LIMIT_MAX      = 50;
  
@@ -157,7 +159,15 @@ class Movies_WP_Movie_Import_Job_Store {
 		// Never persist hydrated fields (raw token, decoded request/result arrays).
 		unset( $job['token'], $job['request'], $job['result'], $job['warnings'] );
 
-		return function_exists( 'update_option' ) ? (bool) update_option( self::job_option_key( $hash ), $job, false ) : false;
+		if ( ! function_exists( 'update_option' ) ) {
+			return false;
+		}
+		$key = self::job_option_key( $hash );
+		if ( update_option( $key, $job, false ) ) {
+			return true;
+		}
+		// update_option() returns false when the stored value is already identical (e.g. a same-second heartbeat).
+		return maybe_serialize( get_option( $key, null ) ) === maybe_serialize( $job );
 	}
  
 	/**
@@ -262,16 +272,50 @@ class Movies_WP_Movie_Import_Job_Store {
 	}
  
 	public static function is_possibly_stalled( array $job, array $context = array() ) {
-		if ( 'running' !== (string) ( $job['status'] ?? '' ) ) {
+		$status = (string) ( $job['status'] ?? '' );
+		$now    = self::now( $context );
+		if ( 'queued' === $status ) {
+			return self::updated_at_is_older_than( $job, $now, self::lease_seconds() );
+		}
+		if ( 'running' !== $status ) {
 			return false;
 		}
-		$now   = self::now( $context );
 		$until = isset( $job['claimed_until'] ) ? strtotime( (string) $job['claimed_until'] . ' UTC' ) : 0;
 		if ( ! $until ) {
 			return true;
 		}
 		// Consider stalled after one full lease without heartbeat.
 		return $until + self::lease_seconds() < $now;
+	}
+
+	public static function stall_recovery_seconds() {
+		return self::lease_seconds() + self::STALL_GRACE_SECONDS;
+	}
+
+	/**
+	 * Hard stall: safe to offer Resume. Running also requires an expired lease.
+	 */
+	public static function is_resume_eligible_stall( array $job, array $context = array() ) {
+		$status = (string) ( $job['status'] ?? '' );
+		if ( ! in_array( $status, array( 'queued', 'running' ), true ) ) {
+			return false;
+		}
+		$now = self::now( $context );
+		if ( 'running' === $status ) {
+			$until = isset( $job['claimed_until'] ) ? strtotime( (string) $job['claimed_until'] . ' UTC' ) : 0;
+			if ( $until && $until >= $now ) {
+				return false;
+			}
+		}
+		return self::updated_at_is_older_than( $job, $now, self::stall_recovery_seconds() );
+	}
+
+	private static function updated_at_is_older_than( array $job, $now, $seconds ) {
+		$updated = isset( $job['updated_at'] ) ? strtotime( (string) $job['updated_at'] . ' UTC' ) : 0;
+		if ( ! $updated ) {
+			return true;
+		}
+		return $updated + (int) $seconds < $now;
 	}
  
 	private static function record_recent( $hash, $user_id, $blog_id ) {

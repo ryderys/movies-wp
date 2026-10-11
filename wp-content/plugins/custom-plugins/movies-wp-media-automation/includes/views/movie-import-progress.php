@@ -14,6 +14,7 @@ $token      = (string) ( $job['token'] ?? '' );
 $status     = (string) ( $job['status'] ?? '' );
 $error      = (string) ( $job['last_error'] ?? '' );
 $stalled    = class_exists( 'Movies_WP_Movie_Import_Job_Store' ) ? Movies_WP_Movie_Import_Job_Store::is_possibly_stalled( $job ) : false;
+$can_resume = class_exists( 'Movies_WP_Movie_Import_Job_Store' ) ? Movies_WP_Media_Admin::job_can_resume( $job ) : false;
 $result     = isset( $job['result'] ) && is_array( $job['result'] ) ? $job['result'] : array();
 $result_msg = is_string( $result['message'] ?? null ) ? (string) $result['message'] : '';
 ?>
@@ -34,7 +35,11 @@ $result_msg = is_string( $result['message'] ?? null ) ? (string) $result['messag
 		<div class="notice notice-warning inline" role="status">
 			<p>
 				<strong><?php esc_html_e( 'Possibly stalled', 'movies-wp' ); ?></strong>
-				<?php esc_html_e( 'No recent worker activity was detected. You can Refresh to check again or Cancel and re-run the import.', 'movies-wp' ); ?>
+				<?php if ( $can_resume ) : ?>
+					<?php esc_html_e( 'No recent worker activity was detected past the recovery threshold. Resume re-runs this import; a movie already created by the earlier attempt is updated, not duplicated. Use it only if you believe the worker has stopped.', 'movies-wp' ); ?>
+				<?php else : ?>
+					<?php esc_html_e( 'No recent worker activity was detected. You can Refresh to check again or Cancel and re-run the import.', 'movies-wp' ); ?>
+				<?php endif; ?>
 			</p>
 		</div>
 	<?php endif; ?>
@@ -60,6 +65,14 @@ $result_msg = is_string( $result['message'] ?? null ) ? (string) $result['messag
 		<a class="button" href="<?php echo esc_url( Movies_WP_Media_Admin::progress_url( $token ) ); ?>"><?php esc_html_e( 'Refresh', 'movies-wp' ); ?></a>
 	</p>
  
+	<?php if ( $can_resume ) : ?>
+		<form method="post" style="display:inline;">
+			<?php wp_nonce_field( Movies_WP_Media_Admin::PROGRESS_NONCE ); ?>
+			<input type="hidden" name="movies_wp_media_action" value="<?php echo esc_attr( Movies_WP_Media_Admin::RESUME_ACTION ); ?>">
+			<input type="hidden" name="job_token" value="<?php echo esc_attr( $token ); ?>">
+			<?php submit_button( __( 'Resume', 'movies-wp' ), 'primary', 'submit', false ); ?>
+		</form>
+	<?php endif; ?>
 	<?php if ( in_array( $status, array( 'queued', 'running', 'paused' ), true ) ) : ?>
 		<form method="post" style="display:inline;">
 			<?php wp_nonce_field( Movies_WP_Media_Admin::PROGRESS_NONCE ); ?>

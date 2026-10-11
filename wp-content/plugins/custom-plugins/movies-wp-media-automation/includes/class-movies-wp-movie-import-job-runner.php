@@ -173,6 +173,58 @@ class Movies_WP_Movie_Import_Job_Runner {
 	}
  
 	/**
+	 * Re-queue a stalled, failed, or cancelled job. execute() re-plans from the stored
+	 * request, so a movie created by an earlier attempt is updated, not duplicated.
+	 *
+	 * @param string $raw_token
+	 * @param array<string, mixed> $options Test hooks.
+	 * @return array<string, mixed>|WP_Error
+	 */
+	public static function resume( $raw_token, array $options = array() ) {
+		$job = Movies_WP_Movie_Import_Job_Store::find_by_token( $raw_token );
+		if ( ! is_array( $job ) ) {
+			return new WP_Error( 'movie_import_job_not_found', __( 'Movie import job was not found.', 'movies-wp' ) );
+		}
+		$status = (string) ( $job['status'] ?? '' );
+		if ( 'completed' === $status ) {
+			return $job;
+		}
+		if ( in_array( $status, array( 'queued', 'running' ), true ) && ! Movies_WP_Movie_Import_Job_Store::is_resume_eligible_stall( $job, $options ) ) {
+			return new WP_Error(
+				'movie_import_job_busy',
+				__( 'Import is still running or has not been confirmed stalled. Resume was not started.', 'movies-wp' )
+			);
+		}
+
+		Movies_WP_Movie_Import_Job_Store::update(
+			$raw_token,
+			array(
+				'status'        => 'queued',
+				'last_error'    => null,
+				'action_id'     => null,
+				'claimed_until' => null,
+				'claim_token'   => null,
+			),
+			$options
+		);
+		$scheduled = self::schedule( (string) $raw_token, $options['schedule_action'] ?? null, $options['unschedule_action'] ?? null );
+		if ( is_wp_error( $scheduled ) ) {
+			Movies_WP_Movie_Import_Job_Store::update(
+				$raw_token,
+				array(
+					'status'     => 'failed',
+					'last_error' => $scheduled->get_error_message(),
+				),
+				$options
+			);
+			return $scheduled;
+		}
+
+		$fresh = Movies_WP_Movie_Import_Job_Store::find_by_token( $raw_token );
+		return is_array( $fresh ) ? $fresh : new WP_Error( 'movie_import_job_not_found', __( 'Movie import job was not found.', 'movies-wp' ) );
+	}
+
+	/**
 	 * @param string $raw_token
 	 * @param array<string, mixed> $options Test hooks.
 	 * @return array<string, mixed>|WP_Error
