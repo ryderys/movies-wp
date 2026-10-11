@@ -22,11 +22,26 @@ class ST_Slider_Tv_Status extends ST_Slider {
 	protected function register_controls() {
 		parent::register_controls();
 
-		$post_filter = $this->get_controls( 'st_select_post_filter' );
+		$post_filter      = $this->get_controls( 'st_select_post_filter' );
+		$existing_options = ( is_array( $post_filter ) && isset( $post_filter['options'] ) && is_array( $post_filter['options'] ) )
+			? $post_filter['options']
+			: array(
+				'selected'  => __( 'Selected', 'streamit' ),
+				'genre'     => __( 'Genre', 'streamit' ),
+				'tag'       => __( 'Tags', 'streamit' ),
+				'upcoming'  => __( 'Upcoming', 'streamit' ),
+				'latest'    => __( 'Latest', 'streamit' ),
+				'most_like' => __( 'Most Like', 'streamit' ),
+				'rent'      => __( 'Rent', 'streamit' ),
+				'plan'      => __( 'Paid', 'streamit' ),
+				'anyone'    => __( 'Rent or Paid', 'streamit' ),
+			);
+		$existing_options['status'] = __( 'TV Show Status', 'streamit' );
+
 		$this->update_control(
 			'st_select_post_filter',
 			array(
-				'options' => $post_filter['options'] + array( 'status' => __( 'TV Show Status', 'streamit' ) ),
+				'options' => $existing_options,
 			)
 		);
 
