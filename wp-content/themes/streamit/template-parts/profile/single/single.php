@@ -33,7 +33,11 @@ if ($profile_tab == 'profile') {
 }
 
 if (in_array(sanitize_title($profile_tab), ['ppv', 'unlocked_content'], true)) {
-    wp_safe_redirect(trailingslashit(streamit_get_permalink('profile')));
+    $profile_url = function_exists('streamit_get_permalink') ? streamit_get_permalink('profile') : '';
+    if (empty($profile_url)) {
+        $profile_url = home_url('/profile/');
+    }
+    wp_safe_redirect(trailingslashit($profile_url));
     exit;
 }
 

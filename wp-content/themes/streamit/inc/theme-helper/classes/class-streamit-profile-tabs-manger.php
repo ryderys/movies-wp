@@ -25,6 +25,12 @@ class Streamit_Profile_Tabs_Manager
             1
         );
         add_filter(
+            'streamit_user_tabs',
+            [$this, 'remove_disabled_profile_tabs'],
+            PHP_INT_MAX,
+            1
+        );
+        add_filter(
             'st_user_profile_tabs',
             [$this, 'remove_disabled_profile_tabs'],
             PHP_INT_MAX,

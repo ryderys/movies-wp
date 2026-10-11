@@ -13,13 +13,19 @@ if (!defined('ABSPATH')) {
 $user_id = get_current_user_id();
 $ppv_access = get_user_meta($user_id, 'streamit_ppv_access', true);
 
+// Ensure $ppv_access is an array to prevent PHP warning/error when empty.
+if (!is_array($ppv_access)) {
+    $ppv_access = [];
+}
 
 // Only keep entries where user still has access
 $valid_ppv_access = [];
 foreach ($ppv_access as $entry) {
     if (
+        is_array($entry) &&
         !empty($entry['id']) &&
         !empty($entry['type']) &&
+        function_exists('streamit_user_has_ppv_access') &&
         streamit_user_has_ppv_access($user_id, $entry['id'])
     ) {
         $valid_ppv_access[] = $entry;

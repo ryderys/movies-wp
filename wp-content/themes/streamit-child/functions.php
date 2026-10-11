@@ -895,6 +895,7 @@ require_once get_stylesheet_directory() . '/inc/person-history.php';
 require_once get_stylesheet_directory() . '/inc/admin-ajax-payload.php';
 require_once get_stylesheet_directory() . '/inc/minio.php';
 require_once get_stylesheet_directory() . '/inc/content-media-cleanup.php';
+require_once get_stylesheet_directory() . '/inc/profile-tabs.php';
 
 /**
  * Set up My Child Theme's textdomain.

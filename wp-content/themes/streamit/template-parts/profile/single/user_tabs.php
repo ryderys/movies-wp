@@ -19,6 +19,11 @@ $user_details = wp_parse_args($user_details ?? [], [
 // Retrieve available tabs from plugin.
 $tabs = function_exists('streamit_get_user_tabs') ? streamit_get_user_tabs() : [];
 
+// Remove Rental ('unlocked_content') and Pay-Per-View ('ppv') tabs
+if (is_array($tabs)) {
+    unset($tabs['unlocked_content'], $tabs['ppv']);
+}
+
 // Fallback check: ensure we have tabs.
 if (empty($tabs) || !is_array($tabs)) {
     return;
@@ -27,6 +32,11 @@ if (empty($tabs) || !is_array($tabs)) {
 // Determine default tab.
 $default_tab = isset($tabs['device_limit']) ? 'device_limit' : array_key_first($tabs);
 $active_tab  = empty($user_details['profile_tab']) ? $default_tab : $user_details['profile_tab'];
+
+// If requested tab is disabled/unsupported, fallback to default tab.
+if (!isset($tabs[$active_tab])) {
+    $active_tab = $default_tab;
+}
 ?>
 
 <div class="row mt-5">
