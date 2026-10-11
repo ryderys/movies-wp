@@ -883,6 +883,7 @@ require_once get_stylesheet_directory() . '/inc/frontend-persian-labels.php';
 require_once get_stylesheet_directory() . '/inc/admin-streamit-edit-fix.php';
 require_once get_stylesheet_directory() . '/inc/countries-pages.php';
 require_once get_stylesheet_directory() . '/inc/tmdb-genres.php';
+require_once get_stylesheet_directory() . '/inc/tvshow-status.php';
 require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/player-fix.php';
 require_once get_stylesheet_directory() . '/inc/search-modal.php';

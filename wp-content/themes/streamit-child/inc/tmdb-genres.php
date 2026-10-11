@@ -83,9 +83,32 @@ function streamit_child_save_tmdb_genres( $post_id, $genres, $taxonomy ) {
  * @return array<int, array{id:int, name:string}>
  */
 function streamit_child_fetch_tmdb_genres( $tmdb_id, $type ) {
+	$body = streamit_child_fetch_tmdb_details( $tmdb_id, $type );
+	if ( empty( $body['genres'] ) || ! is_array( $body['genres'] ) ) {
+		return array();
+	}
+
+	return $body['genres'];
+}
+
+/**
+ * Fetch the TMDB detail payload (cached per request so genre + status sync share one call).
+ *
+ * @param int    $tmdb_id TMDB content ID.
+ * @param string $type    movie|tvshow.
+ * @return array Decoded TMDB response, or empty array on failure.
+ */
+function streamit_child_fetch_tmdb_details( $tmdb_id, $type ) {
+	static $cache = array();
+
 	$tmdb_id = absint( $tmdb_id );
 	if ( ! $tmdb_id ) {
 		return array();
+	}
+
+	$cache_key = $type . ':' . $tmdb_id;
+	if ( isset( $cache[ $cache_key ] ) ) {
+		return $cache[ $cache_key ];
 	}
 
 	$import_settings = @unserialize( get_option( 'streamit_content_import_settings' ) );
@@ -121,11 +144,10 @@ function streamit_child_fetch_tmdb_genres( $tmdb_id, $type ) {
 	}
 
 	$body = json_decode( wp_remote_retrieve_body( $response ), true );
-	if ( ! is_array( $body ) || empty( $body['genres'] ) || ! is_array( $body['genres'] ) ) {
-		return array();
-	}
 
-	return $body['genres'];
+	$cache[ $cache_key ] = is_array( $body ) ? $body : array();
+
+	return $cache[ $cache_key ];
 }
 
 /**
