@@ -962,6 +962,14 @@ class Movies_WP_Streamit_Adapter {
 	 * @return true|array{code:string,message:string}
 	 */
 	private static function ensure_tmdb_movie_importer() {
+		// The importer sideloads TMDb images; wp-admin media helpers are not loaded in cron / Action Scheduler.
+		if ( ! function_exists( 'download_url' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		if ( ! function_exists( 'media_handle_sideload' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+		}
 		if ( function_exists( 'insert_movie_tmdb_to_streamit' ) ) {
 			return true;
 		}
