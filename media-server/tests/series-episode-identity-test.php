@@ -124,6 +124,16 @@ series_identity_assert_true( ( series_identity_parse( 'Movie.Title.2022.1080p.mk
 series_identity_assert_true( ( series_identity_parse( 'Show.E00.720p.mkv' )['code'] ?? '' ) === 'malformed_episode_identity', 'E00 rejected like EP00' );
 series_identity_assert_true( ( series_identity_parse( 'Show.S01E01.E02.720p.mkv' )['code'] ?? '' ) === 'conflicting_episode_identity', 'S01E01 + bare E02 conflicts' );
 
+$sxx_ep = series_identity_parse( 'Apple.of.My.Eye.S01EP100.KoreFaa.com.srt' );
+series_identity_assert_true( ( $sxx_ep['ok'] ?? false ) === true && ( $sxx_ep['identity_type'] ?? '' ) === 'season_episode', 'S01EP100 accepted as season_episode' );
+series_identity_assert_true( ( $sxx_ep['season_number'] ?? '' ) === '1' && ( $sxx_ep['episode_number'] ?? '' ) === '100', 'S01EP100 is season 1 episode 100' );
+series_identity_assert_true( ( $sxx_ep['token'] ?? '' ) === 'S01EP100', 'S01EP100 does not also emit EP100' );
+series_identity_assert_true( ( $sxx_ep['sanitized_filename'] ?? '' ) === 'Apple.of.My.Eye.KoreFaa.com.srt', 'S01EP100 token is removed from the sanitized name' );
+series_identity_assert_true( ( series_identity_parse( 'show.s01ep05.720p.mkv' )['episode_number'] ?? '' ) === '5', 's01ep05 case-insensitive' );
+series_identity_assert_true( ( series_identity_parse( 'Show.S01EP00.mkv' )['code'] ?? '' ) === 'malformed_episode_identity', 'S01EP00 rejected' );
+series_identity_assert_true( ( series_identity_parse( 'Show.S01EP.mkv' )['code'] ?? '' ) === 'malformed_episode_identity', 'S01EP without digits stays malformed' );
+series_identity_assert_true( ( series_identity_parse( 'Show.S01EP01.S01E02.mkv' )['code'] ?? '' ) === 'conflicting_episode_identity', 'S01EP01 + S01E02 conflicts' );
+
 $zero = series_identity_parse( 'Show.S00E01.mkv' );
 series_identity_assert_true( ( $zero['season_number'] ?? '' ) === '0', 'Season 0 preserved as string zero' );
 

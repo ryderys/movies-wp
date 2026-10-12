@@ -99,6 +99,7 @@ if ( $not_persian ) {
 
 $required = array(
 	'Movie Automation'                                  => 'اتوماسیون فیلم',
+	'Series Automation'                                 => 'اتوماسیون سریال ها',
 	'Scan & Preview'                                    => 'اسکن و پیش‌نمایش',
 	'Import Movie'                                      => 'درون‌ریزی فیلم',
 	'Movie imported successfully.'                      => 'فیلم با موفقیت درون‌ریزی شد.',

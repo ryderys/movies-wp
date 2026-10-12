@@ -10,7 +10,8 @@
 
 declare(strict_types=1);
 
-const MEDIA_SERIES_EPISODE_IDENTITY_PATTERN = '/(?<![A-Za-z0-9])S([0-9]{1,3})E([0-9]{1,4})(?![0-9])/i';
+/** SxxExx, plus the SxxEPxx variant some subtitle sources use (e.g. S01EP100). */
+const MEDIA_SERIES_EPISODE_IDENTITY_PATTERN = '/(?<![A-Za-z0-9])S([0-9]{1,3})EP?([0-9]{1,4})(?![0-9])/i';
 const MEDIA_SERIES_EPISODE_ONLY_PATTERN = '/(?<![A-Za-z0-9])EP([0-9]{1,4})(?![A-Za-z0-9])/i';
 /** Bare E## (e.g. .E04.); lookbehind prevents matching the E inside S01E04. */
 const MEDIA_SERIES_BARE_E_PATTERN = '/(?<![A-Za-z0-9])E([0-9]{1,4})(?![0-9])/i';

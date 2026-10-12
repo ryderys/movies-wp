@@ -905,7 +905,7 @@ class Movies_WP_Series_Admin {
 			return $error;
 		}
 		if ( strlen( $error ) > $max ) {
-			return substr( $error, 0, $max - 1 ) . '…';
+			return substr( $error, 0, $max - strlen( '…' ) ) . '…';
 		}
 		return $error;
 	}
