@@ -98,6 +98,7 @@ if ( $not_persian ) {
 }
 
 $required = array(
+	'Content Automation'                                => 'اتوماسیون محتوا',
 	'Movie Automation'                                  => 'اتوماسیون فیلم',
 	'Series Automation'                                 => 'اتوماسیون سریال ها',
 	'Scan & Preview'                                    => 'اسکن و پیش‌نمایش',

@@ -43,12 +43,20 @@ class Movies_WP_Media_Admin {
 	public static function register_menu() {
 		self::$page_hook = add_menu_page(
 			__( 'Movie Automation', 'movies-wp' ),
-			__( 'Movie Automation', 'movies-wp' ),
+			__( 'Content Automation', 'movies-wp' ),
 			self::CAP,
 			self::SLUG,
 			array( __CLASS__, 'render_page' ),
 			'dashicons-video-alt3',
 			58
+		);
+		add_submenu_page(
+			self::SLUG,
+			__( 'Movie Automation', 'movies-wp' ),
+			__( 'Movie Automation', 'movies-wp' ),
+			self::CAP,
+			self::SLUG,
+			array( __CLASS__, 'render_page' )
 		);
 		// Import / Cancel should run before HTML output so redirects work.
 		if ( is_string( self::$page_hook ) && '' !== self::$page_hook ) {

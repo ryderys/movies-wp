@@ -21,6 +21,7 @@ return array(
 		'Movies WP Media Automation'                                                                                          => 'اتوماسیون رسانه Movies WP',
 		'Media automation: scan/preview, import plan, Streamit adapter, and admin import.'                                   => 'اتوماسیون رسانه برای اسکن و پیش‌نمایش، برنامه درون‌ریزی، اتصال به Streamit و درون‌ریزی مدیریتی.',
 		'Media Automation'                                                                                                    => 'اتوماسیون رسانه',
+		'Content Automation'                                                                                                  => 'اتوماسیون محتوا',
 		'Movie Automation'                                                                                                    => 'اتوماسیون فیلم',
 		'Movie Import Automation'                                                                                             => 'اتوماسیون درون‌ریزی فیلم',
 		'Scan TMDb and the media directory, then import only after explicit confirmation. Subtitle rows store relative media paths; signed URLs are minted at render time.' => 'اطلاعات TMDb و پوشه رسانه را اسکن کنید و فقط پس از تأیید صریح، درون‌ریزی را انجام دهید. مسیر زیرنویس‌ها به‌صورت نسبی ذخیره می‌شود و نشانی‌های امضاشده هنگام نمایش ساخته می‌شوند.',
