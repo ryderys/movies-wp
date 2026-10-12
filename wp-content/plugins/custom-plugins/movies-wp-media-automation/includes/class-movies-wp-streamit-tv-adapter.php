@@ -15,6 +15,12 @@ require_once __DIR__ . '/class-movies-wp-series-import-profiler.php';
 class Movies_WP_Streamit_TV_Adapter {
 
 	/**
+	 * Each profile photo costs ~10s (download, 13 resized WebP copies, MinIO upload);
+	 * the people phase must stay well under PHP's 300s max_execution_time.
+	 */
+	const PEOPLE_PHOTO_BUDGET_SECONDS = 150;
+
+	/**
 	 * Apply a Series Import Plan.
 	 *
 	 * @param array<string, mixed> $plan    Series plan.
@@ -504,6 +510,9 @@ class Movies_WP_Streamit_TV_Adapter {
 	}
 
 	private static function persist_series_people( $series_id, array $data, array $options ) {
+		if ( ! isset( $options['people_photo_deadline'] ) ) {
+			$options['people_photo_deadline'] = microtime( true ) + self::PEOPLE_PHOTO_BUDGET_SECONDS;
+		}
 		$people_count = 0;
 		$people_snap  = Movies_WP_Series_Import_Profiler::phase_start( 'people' );
 		foreach ( array( 'cast', 'crew' ) as $type ) {
@@ -659,12 +668,16 @@ class Movies_WP_Streamit_TV_Adapter {
 
 	/**
 	 * Best-effort: a missing profile photo must not fail the Series import.
+	 * Photos skipped after the time budget are filled in by the next re-import.
 	 *
 	 * @return bool Whether a download was attempted.
 	 */
 	private static function persist_person_image( $person_id, array $credit, array $options ) {
 		$path = trim( (string) ( $credit['profile_path'] ?? '' ) );
-		if ( '' === $path || absint( self::load_person_meta( $person_id, 'thumbnail_id', $options ) ) > 0 ) {
+		if ( '' === $path || microtime( true ) > (float) ( $options['people_photo_deadline'] ?? INF ) ) {
+			return false;
+		}
+		if ( absint( self::load_person_meta( $person_id, 'thumbnail_id', $options ) ) > 0 ) {
 			return false;
 		}
 		$started    = Movies_WP_Series_Import_Profiler::begin( 'image_sideload.profile' );
@@ -1045,6 +1058,13 @@ class Movies_WP_Streamit_TV_Adapter {
 
 	private static function download_image( array $image, $role, array $options ) {
 		$url = trim( (string) ( $image['url'] ?? '' ) );
+		if ( '' === $url && ! empty( $image['path'] ) && ! function_exists( 'streamit_get_tmdb_image_url' ) && defined( 'STREAMIT_PLUGIN_PATH' ) ) {
+			// Streamit loads its TMDb helpers only in wp-admin, not in cron / Action Scheduler.
+			$importer = STREAMIT_PLUGIN_PATH . 'admin/content-import/streamit-tmdb_movie-function.php';
+			if ( is_readable( $importer ) ) {
+				require_once $importer;
+			}
+		}
 		if ( '' === $url && ! empty( $image['path'] ) && function_exists( 'streamit_get_tmdb_image_url' ) ) {
 			$size = 'poster' === $role ? 'w780' : ( 'still' === $role ? 'w500' : 'original' );
 			$url  = streamit_get_tmdb_image_url( (string) $image['path'], $size );

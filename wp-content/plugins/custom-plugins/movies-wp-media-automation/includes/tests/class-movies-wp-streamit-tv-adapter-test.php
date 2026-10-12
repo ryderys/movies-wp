@@ -1004,6 +1004,19 @@ tv_adapter_assert( ! empty( $people['ok'] ), 'failed profile download does not f
 tv_adapter_same( 900, $state['tv_meta']['_cast'][1]['id'], 'person is still linked when the profile download fails' );
 tv_adapter_assert( ! isset( $state['person_meta'][900]['thumbnail_id'] ), 'failed profile download writes no thumbnail_id' );
 
+$state   = array();
+$options = tv_adapter_harness( $state );
+$profile_downloads = array();
+$options['download_image'] = static function ( $url, $role ) use ( &$profile_downloads ) {
+	$profile_downloads[] = array( $role, $url );
+	return 600;
+};
+$options['people_photo_deadline'] = microtime( true ) - 1;
+$people = Movies_WP_Streamit_TV_Adapter::apply_people_phase( 100, $plan, $options );
+tv_adapter_assert( ! empty( $people['ok'] ), 'people phase succeeds after the photo time budget is spent' );
+tv_adapter_same( array(), $profile_downloads, 'no profile downloads after the photo time budget is spent' );
+tv_adapter_same( 900, $state['tv_meta']['_cast'][1]['id'], 'people are still linked after the photo time budget is spent' );
+
 echo "\n";
 if ( $failures > 0 ) {
 	fwrite( STDERR, "{$failures} assertion(s) failed.\n" );
