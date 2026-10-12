@@ -548,6 +548,9 @@ class Movies_WP_Streamit_TV_Adapter {
 			if ( $person_id <= 0 ) {
 				continue;
 			}
+			if ( self::persist_person_image( $person_id, $credit, $options ) && ! self::lease_heartbeat( $options ) ) {
+				return new WP_Error( 'series_import_job_busy', __( 'This Series import job is already running.', 'movies-wp' ) );
+			}
 
 			$relationship = array( 'id' => $person_id );
 			if ( 'cast' === $type ) {
@@ -652,6 +655,25 @@ class Movies_WP_Streamit_TV_Adapter {
 			}
 		}
 		return $id;
+	}
+
+	/**
+	 * Best-effort: a missing profile photo must not fail the Series import.
+	 *
+	 * @return bool Whether a download was attempted.
+	 */
+	private static function persist_person_image( $person_id, array $credit, array $options ) {
+		$path = trim( (string) ( $credit['profile_path'] ?? '' ) );
+		if ( '' === $path || absint( self::load_person_meta( $person_id, 'thumbnail_id', $options ) ) > 0 ) {
+			return false;
+		}
+		$started    = Movies_WP_Series_Import_Profiler::begin( 'image_sideload.profile' );
+		$attachment = self::download_image( array( 'path' => $path ), 'profile', $options );
+		Movies_WP_Series_Import_Profiler::end( 'image_sideload.profile', $started, $path );
+		if ( ! is_wp_error( $attachment ) && absint( $attachment ) > 0 ) {
+			self::write_person_meta( $person_id, 'thumbnail_id', absint( $attachment ), $options );
+		}
+		return true;
 	}
 
 	private static function save_genres_with_streamit_terms( $series_id, array $genres ) {

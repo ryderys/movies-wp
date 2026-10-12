@@ -52,6 +52,11 @@ if ( ! function_exists( 'esc_url_raw' ) ) {
 if ( ! function_exists( 'wp_basename' ) ) {
 	function wp_basename( $value ) { return basename( (string) $value ); }
 }
+if ( ! function_exists( 'streamit_get_tmdb_image_url' ) ) {
+	function streamit_get_tmdb_image_url( $path, $size = 'original' ) {
+		return 'https://tmdb.asiastars.ir/t/p/' . $size . '/' . ltrim( (string) $path, '/' );
+	}
+}
 
 require_once dirname( __DIR__ ) . '/class-movies-wp-streamit-tv-adapter.php';
 
@@ -964,6 +969,40 @@ tv_adapter_same( 'series_tv_adapter_episode_remember_failed', (string) ( $failed
 tv_adapter_same( 1, $creates, 'failed remember does not call create_episode again' );
 tv_adapter_assert( empty( $state['episode_meta'][70] ?? array() ), 'failed remember does not write identity metadata' );
 tv_adapter_same( array(), $state['episode_meta_writes'], 'failed remember writes no episode meta keys' );
+
+echo "\n[people-profile-images]\n";
+$plan = tv_adapter_plan();
+$plan['series']['cast'][0]['profile_path'] = '/existing.jpg';
+$plan['series']['cast'][1]['profile_path'] = '/new-actor.jpg';
+$state   = array( 'person_meta' => array( 801 => array( 'thumbnail_id' => 444 ) ) );
+$options = tv_adapter_harness( $state );
+$profile_downloads = array();
+$heartbeats        = 0;
+$options['download_image'] = static function ( $url, $role ) use ( &$profile_downloads ) {
+	$profile_downloads[] = array( $role, $url );
+	return 600;
+};
+$options['lease_heartbeat'] = static function () use ( &$heartbeats ) {
+	++$heartbeats;
+	return true;
+};
+$people = Movies_WP_Streamit_TV_Adapter::apply_people_phase( 100, $plan, $options );
+tv_adapter_assert( ! empty( $people['ok'] ), 'people phase with profile images succeeds' );
+tv_adapter_same( array( array( 'profile', 'https://tmdb.asiastars.ir/t/p/original/new-actor.jpg' ) ), $profile_downloads, 'only the person without a photo downloads the TMDb profile image' );
+tv_adapter_same( 600, $state['person_meta'][900]['thumbnail_id'], 'new person receives profile thumbnail_id' );
+tv_adapter_same( 444, $state['person_meta'][801]['thumbnail_id'], 'existing person photo is kept' );
+tv_adapter_assert( ! isset( $state['person_meta'][803]['thumbnail_id'] ), 'person without TMDb profile_path gets no thumbnail' );
+tv_adapter_same( 1, $heartbeats, 'lease heartbeat runs after each profile download' );
+
+$state   = array();
+$options = tv_adapter_harness( $state );
+$options['download_image'] = static function () {
+	return new WP_Error( 'download_failed', 'boom' );
+};
+$people = Movies_WP_Streamit_TV_Adapter::apply_people_phase( 100, $plan, $options );
+tv_adapter_assert( ! empty( $people['ok'] ), 'failed profile download does not fail the people phase' );
+tv_adapter_same( 900, $state['tv_meta']['_cast'][1]['id'], 'person is still linked when the profile download fails' );
+tv_adapter_assert( ! isset( $state['person_meta'][900]['thumbnail_id'] ), 'failed profile download writes no thumbnail_id' );
 
 echo "\n";
 if ( $failures > 0 ) {
