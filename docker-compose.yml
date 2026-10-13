@@ -17,12 +17,16 @@ services:
       WP_DEBUG: ${WP_DEBUG:-1}
       WP_DEBUG_LOG: ${WP_DEBUG_LOG:-1}
       WP_DEBUG_DISPLAY: ${WP_DEBUG_DISPLAY:-0}
+      MEDIA_SCAN_API_URL: ${MEDIA_SCAN_API_URL:-https://media.asiastarx.ir}
+      MEDIA_SCAN_API_KEY: ${MEDIA_SCAN_API_KEY:-}
+      MEDIA_SCAN_HMAC_SECRET: ${MEDIA_SCAN_HMAC_SECRET:-}
     # Mount only wp-content from the host. WordPress core + PHP run from the image
     # (fast on Windows). Rebuild after editing files outside wp-content:
     #   docker compose build wordpress && docker compose up -d
     volumes:
       - ./wp-content:/var/www/html/wp-content
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./media-server:/var/www/html/media-server:ro
     depends_on:
       db:
         condition: service_healthy

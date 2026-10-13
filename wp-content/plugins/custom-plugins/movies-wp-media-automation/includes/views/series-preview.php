@@ -281,6 +281,13 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 						<p class="description"><?php esc_html_e( 'Relative path under the media root. Absolute and signed paths are rejected.', 'movies-wp' ); ?></p>
 					</td>
 				</tr>
+				<tr>
+					<th scope="row"><label for="series-season-number"><?php esc_html_e( 'Season number (optional)', 'movies-wp' ); ?></label></th>
+					<td>
+						<input id="series-season-number" name="season_number" type="number" min="0" value="<?php echo esc_attr( (string) ( $values['season_number'] ?? '' ) ); ?>" class="small-text" dir="ltr" placeholder="3">
+						<p class="description"><?php esc_html_e( 'Explicit season number. Required when filenames do not identify a season (e.g. EP01.mkv). Must match filenames if season is present.', 'movies-wp' ); ?></p>
+					</td>
+				</tr>
 			</table>
 			<?php submit_button( __( 'Scan & Preview', 'movies-wp' ) ); ?>
 		</form>

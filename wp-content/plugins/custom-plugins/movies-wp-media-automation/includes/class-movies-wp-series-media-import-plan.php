@@ -140,6 +140,17 @@ class Movies_WP_Series_Media_Import_Plan {
 		$errors     = array();
 		$seen       = array();
 
+		$existing_by_path = array();
+		foreach ( $existing as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$epath = self::normalize_series_path( (string) ( $row['link'] ?? $row['download_content'] ?? '' ) );
+			if ( ! is_wp_error( $epath ) && ! isset( $existing_by_path[ $epath ] ) ) {
+				$existing_by_path[ $epath ] = $row;
+			}
+		}
+
 		foreach ( $sources as $source ) {
 			if ( ! is_array( $source ) ) {
 				continue;
@@ -156,11 +167,31 @@ class Movies_WP_Series_Media_Import_Plan {
 			$seen[ $path ] = true;
 
 			$quality = isset( $source['quality'] ) && is_string( $source['quality'] ) ? $source['quality'] : '';
+
+			// Determine release type from scan or filename to preserve release variants (e.g. WEB-DL vs WEBRip).
+			$release_type = '';
+			if ( ! empty( $source['source_type'] ) && is_string( $source['source_type'] ) ) {
+				$release_type = trim( $source['source_type'] );
+			} elseif ( ! empty( $source['release_type'] ) && is_string( $source['release_type'] ) ) {
+				$release_type = trim( $source['release_type'] );
+			} else {
+				$release_type = self::infer_source_type_from_path( $path ) ?? '';
+			}
+
+			// Preserve existing manual name if already set on this path.
+			$name = $release_type;
+			if ( isset( $existing_by_path[ $path ] ) ) {
+				$existing_name = trim( (string) ( $existing_by_path[ $path ]['name'] ?? '' ) );
+				if ( '' !== $existing_name ) {
+					$name = $existing_name;
+				}
+			}
+
 			$operations[] = array(
 				'action' => 'upsert',
 				'path'   => $path,
 				'row'    => array(
-					'name'             => '',
+					'name'             => $name,
 					'link'             => $path,
 					'is_affiliate'     => '0',
 					'quality'          => $quality,

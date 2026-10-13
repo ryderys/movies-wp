@@ -10,8 +10,8 @@
 
 declare(strict_types=1);
 
-/** SxxExx, plus the SxxEPxx variant some subtitle sources use (e.g. S01EP100). */
-const MEDIA_SERIES_EPISODE_IDENTITY_PATTERN = '/(?<![A-Za-z0-9])S([0-9]{1,3})EP?([0-9]{1,4})(?![0-9])/i';
+/** SxxExx, plus delimited variants like S03.E01, S03 E01, S03-E01, and SxxEPxx (e.g. S01EP100). */
+const MEDIA_SERIES_EPISODE_IDENTITY_PATTERN = '/(?<![A-Za-z0-9])S([0-9]{1,3})[\s._-]*EP?([0-9]{1,4})(?![0-9])/i';
 const MEDIA_SERIES_EPISODE_ONLY_PATTERN = '/(?<![A-Za-z0-9])EP([0-9]{1,4})(?![A-Za-z0-9])/i';
 /** Bare E## (e.g. .E04.); lookbehind prevents matching the E inside S01E04. */
 const MEDIA_SERIES_BARE_E_PATTERN = '/(?<![A-Za-z0-9])E([0-9]{1,4})(?![0-9])/i';
@@ -41,12 +41,49 @@ function media_parse_series_episode_identity( string $filename ): array {
 		);
 	}
 
-	$season_match_count = preg_match_all( MEDIA_SERIES_EPISODE_IDENTITY_PATTERN, $basename, $matches, PREG_SET_ORDER );
-	preg_match_all( MEDIA_SERIES_EPISODE_ONLY_PATTERN, $basename, $ep_matches, PREG_SET_ORDER );
-	preg_match_all( MEDIA_SERIES_BARE_E_PATTERN, $basename, $bare_e_matches, PREG_SET_ORDER );
-	preg_match_all( MEDIA_SERIES_EPISODE_WORD_PATTERN, $basename, $word_matches, PREG_SET_ORDER );
-	$episode_only_matches = array_merge( $ep_matches, $bare_e_matches, $word_matches );
-	$episode_match_count  = count( $episode_only_matches );
+	$season_match_count = preg_match_all( MEDIA_SERIES_EPISODE_IDENTITY_PATTERN, $basename, $matches_with_offsets, PREG_SET_ORDER | PREG_OFFSET_CAPTURE );
+	preg_match_all( MEDIA_SERIES_EPISODE_ONLY_PATTERN, $basename, $ep_matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE );
+	preg_match_all( MEDIA_SERIES_BARE_E_PATTERN, $basename, $bare_e_matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE );
+	preg_match_all( MEDIA_SERIES_EPISODE_WORD_PATTERN, $basename, $word_matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE );
+	$raw_episode_only_matches = array_merge( $ep_matches, $bare_e_matches, $word_matches );
+
+	// Filter out episode-only matches that are entirely contained within a season_episode match
+	// (e.g. "E01" inside "S03.E01" or "S03 E01").
+	$episode_only_matches = array();
+	foreach ( $raw_episode_only_matches as $ep_match ) {
+		$ep_offset = $ep_match[0][1];
+		$ep_length = strlen( $ep_match[0][0] );
+		$is_inside_season = false;
+		foreach ( $matches_with_offsets as $s_match ) {
+			$s_offset = $s_match[0][1];
+			$s_length = strlen( $s_match[0][0] );
+			if ( $ep_offset >= $s_offset && ( $ep_offset + $ep_length ) <= ( $s_offset + $s_length ) ) {
+				$is_inside_season = true;
+				break;
+			}
+		}
+		if ( ! $is_inside_season ) {
+			$episode_only_matches[] = array_map(
+				static function( $item ) {
+					return is_array( $item ) ? $item[0] : $item;
+				},
+				$ep_match
+			);
+		}
+	}
+	$episode_match_count = count( $episode_only_matches );
+
+	$matches = array_map(
+		static function( $match ) {
+			return array_map(
+				static function( $item ) {
+					return is_array( $item ) ? $item[0] : $item;
+				},
+				$match
+			);
+		},
+		$matches_with_offsets
+	);
 
 	if ( $season_match_count > 0 && $episode_match_count > 0 ) {
 		return array(
@@ -185,7 +222,7 @@ function media_series_episode_canonical_number( string $digits ): string {
 }
 
 function media_series_episode_identity_has_malformed_token( string $basename ): bool {
-	return (bool) preg_match( '/(?<![A-Za-z0-9])(?:S(?:[0-9]{0,3}E(?![0-9])|E[0-9]{1,4}|xE[0-9]{1,4})|EP(?!isode)(?:$|[^0-9]|[0-9]{5,}))/i', $basename );
+	return (bool) preg_match( '/(?<![A-Za-z0-9])(?:S(?:[0-9]{1,3}[\s._-]*E(?![0-9])|E[0-9]{1,4}|xE[0-9]{1,4})|EP(?!isode)(?:$|[^0-9]|[0-9]{5,}))/i', $basename );
 }
 
 /**

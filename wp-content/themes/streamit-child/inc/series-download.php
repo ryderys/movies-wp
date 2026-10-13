@@ -553,7 +553,9 @@ function streamit_child_load_series_download_episode_map( array $episode_ids ) {
 	$ids = array_values(
 		array_unique(
 			array_filter(
-				array_map( 'absint', $episode_ids )
+				array_map( static function ( $id ) {
+					return abs( (int) $id );
+				}, $episode_ids )
 			)
 		)
 	);
@@ -600,6 +602,22 @@ function streamit_child_load_series_download_episode_map( array $episode_ids ) {
 		}
 
 		$sources   = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_sources' ) : array();
+		if ( empty( $sources ) && method_exists( $episode, 'get_meta' ) ) {
+			$sources = $episode->get_meta( '_source' );
+		}
+		if ( empty( $sources ) && method_exists( $episode, 'get_meta' ) ) {
+			$url_link = trim( (string) $episode->get_meta( 'episode_url_link' ) );
+			if ( '' !== $url_link ) {
+				$sources = array(
+					array(
+						'quality'          => 'Default',
+						'download_content' => $url_link,
+						'link'             => $url_link,
+					),
+				);
+			}
+		}
+
 		$subtitles = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_subtitles' ) : array();
 		$season_n  = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_season_number' ) : '';
 		$episode_n = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_episode_number' ) : '';
@@ -611,10 +629,259 @@ function streamit_child_load_series_download_episode_map( array $episode_ids ) {
 			'subtitles'      => $subtitles,
 			'season_number'  => $season_n,
 			'episode_number' => $episode_n,
+			'object'         => $episode,
 		);
 	}
 
 	return $map;
+}
+
+/**
+ * Check whether an episode has valid video sources.
+ *
+ * @param array<string, mixed> $ep Episode map entry.
+ * @return bool
+ */
+function streamit_child_episode_has_video( array $ep ) {
+	$raw_sources = isset( $ep['sources'] ) && is_array( $ep['sources'] ) ? $ep['sources'] : array();
+	$sources     = function_exists( 'streamit_child_get_downloadable_sources' )
+		? streamit_child_get_downloadable_sources( $raw_sources )
+		: array();
+
+	if ( ! empty( $sources ) ) {
+		return true;
+	}
+
+	// Fallback if streamit_child_get_downloadable_sources is not loaded.
+	foreach ( $raw_sources as $source ) {
+		if ( ! is_array( $source ) ) {
+			continue;
+		}
+		$quality  = isset( $source['quality'] ) ? trim( (string) $source['quality'] ) : '';
+		$download = isset( $source['download_content'] ) ? trim( (string) $source['download_content'] ) : '';
+		$link     = isset( $source['link'] ) ? trim( (string) $source['link'] ) : '';
+		if ( '' !== $quality && ( '' !== $download || '' !== $link ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Check whether an episode has available media (video or subtitles).
+ *
+ * Matches the download box rule: an episode is considered to have media
+ * if it has at least one valid video source OR at least one valid subtitle.
+ *
+ * @param array<string, mixed> $ep Episode map entry.
+ * @return bool
+ */
+function streamit_child_episode_has_media( array $ep ) {
+	if ( streamit_child_episode_has_video( $ep ) ) {
+		return true;
+	}
+
+	$raw_subtitles = isset( $ep['subtitles'] ) && is_array( $ep['subtitles'] ) ? $ep['subtitles'] : array();
+	$subs          = function_exists( 'streamit_child_normalize_subtitles' )
+		? streamit_child_normalize_subtitles( $raw_subtitles )
+		: array();
+
+	if ( ! empty( $subs ) ) {
+		return true;
+	}
+
+	// Fallback if streamit_child_normalize_subtitles is not loaded.
+	foreach ( $raw_subtitles as $sub ) {
+		if ( is_array( $sub ) && ! empty( $sub['url'] ) && '' !== trim( (string) $sub['url'] ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Filter raw `_seasons` array based on media availability from an episode map.
+ *
+ * Retains only seasons that have at least one available episode.
+ * In each retained season, `episodes` is filtered to contain ONLY the available episode IDs.
+ * Preserves the original `season_number` and all other metadata on each season.
+ * Re-indexes array sequentially (0, 1, 2...) for tab slider compatibility.
+ *
+ * @param array<int, mixed>                $seasons        Raw `_seasons` rows.
+ * @param array<int, array<string, mixed>> $episodes_by_id Episode map by ID.
+ * @param array<string, mixed>             $options        Filter options ('require_video' => bool).
+ * @return array<int, array<string, mixed>> Filtered available seasons.
+ */
+function streamit_child_filter_available_seasons_data( array $seasons, array $episodes_by_id, array $options = array() ) {
+	$require_video     = ! empty( $options['require_video'] );
+	$available_seasons = array();
+
+	foreach ( array_values( $seasons ) as $season ) {
+		if ( ! is_array( $season ) ) {
+			continue;
+		}
+
+		$episode_ids = isset( $season['episodes'] ) && is_array( $season['episodes'] ) ? $season['episodes'] : array();
+		if ( empty( $episode_ids ) ) {
+			continue;
+		}
+
+		$available_episode_ids = array();
+		foreach ( $episode_ids as $episode_id ) {
+			$episode_id = (int) $episode_id;
+			if ( $episode_id <= 0 || ! isset( $episodes_by_id[ $episode_id ] ) ) {
+				continue;
+			}
+
+			$ep = $episodes_by_id[ $episode_id ];
+			if ( ! is_array( $ep ) ) {
+				continue;
+			}
+
+			$has_media = $require_video
+				? streamit_child_episode_has_video( $ep )
+				: streamit_child_episode_has_media( $ep );
+
+			if ( $has_media ) {
+				$available_episode_ids[] = $episode_id;
+			}
+		}
+
+		if ( empty( $available_episode_ids ) ) {
+			continue;
+		}
+
+		$season_copy             = $season;
+		$season_copy['episodes'] = $available_episode_ids;
+		$available_seasons[]     = $season_copy;
+	}
+
+	return $available_seasons;
+}
+
+/**
+ * Retrieve available seasons for a TV show, filtered to seasons and episodes with media.
+ *
+ * @param mixed                $st_data_or_id TV show Streamit object, WP_Post, or post ID.
+ * @param array<string, mixed> $options       Filter options ('require_video' => bool).
+ * @return array<int, array<string, mixed>> Available seasons with filtered episode IDs.
+ */
+function streamit_child_get_available_seasons( $st_data_or_id, array $options = array() ) {
+	static $cache = array();
+
+	$st_data = null;
+	$post_id = 0;
+
+	if ( is_numeric( $st_data_or_id ) ) {
+		$post_id = (int) $st_data_or_id;
+		if ( function_exists( 'streamit_get_tvshow' ) ) {
+			$st_data = streamit_get_tvshow( $post_id );
+		}
+	} elseif ( is_object( $st_data_or_id ) ) {
+		$st_data = $st_data_or_id;
+		if ( method_exists( $st_data, 'get_id' ) ) {
+			$post_id = (int) $st_data->get_id();
+		} elseif ( isset( $st_data->ID ) ) {
+			$post_id = (int) $st_data->ID;
+		}
+	}
+
+	$cache_key = $post_id ? ( $post_id . ':' . ( ! empty( $options['require_video'] ) ? 'v' : 'all' ) ) : '';
+	if ( $cache_key && isset( $cache[ $cache_key ] ) ) {
+		return $cache[ $cache_key ];
+	}
+
+	$seasons = array();
+	if ( is_object( $st_data ) && method_exists( $st_data, 'get_meta' ) ) {
+		$seasons = $st_data->get_meta( '_seasons' );
+	} elseif ( $post_id > 0 ) {
+		if ( function_exists( 'streamit_get_tvshow_meta' ) ) {
+			$seasons = streamit_get_tvshow_meta( $post_id, '_seasons', true );
+		}
+		if ( empty( $seasons ) && function_exists( 'get_post_meta' ) ) {
+			$seasons = get_post_meta( $post_id, '_seasons', true );
+		}
+	}
+
+	if ( ! is_array( $seasons ) || empty( $seasons ) ) {
+		return array();
+	}
+
+	$episode_ids = array();
+	foreach ( $seasons as $season ) {
+		if ( ! is_array( $season ) || empty( $season['episodes'] ) || ! is_array( $season['episodes'] ) ) {
+			continue;
+		}
+		foreach ( $season['episodes'] as $episode_id ) {
+			$episode_ids[] = (int) $episode_id;
+		}
+	}
+
+	if ( empty( $episode_ids ) ) {
+		return array();
+	}
+
+	$map     = streamit_child_load_series_download_episode_map( $episode_ids );
+	$results = streamit_child_filter_available_seasons_data( $seasons, $map, $options );
+
+	if ( $cache_key ) {
+		$cache[ $cache_key ] = $results;
+	}
+
+	return $results;
+}
+
+/**
+ * Get the first genuinely available playable episode for a TV show.
+ *
+ * Prefers regular seasons (Season 1, 2, ...) over Season 0 ("Specials")
+ * so the "Start Watching" button launches the story rather than behind-the-scenes clips.
+ * Falls back to Season 0 only if no regular season has playable episodes.
+ * Returns null if no playable episode is found.
+ *
+ * @param mixed $st_data_or_id TV show Streamit object, WP_Post, or post ID.
+ * @return mixed Episode object, or null.
+ */
+function streamit_child_get_first_available_episode( $st_data_or_id ) {
+	$available_seasons = streamit_child_get_available_seasons( $st_data_or_id, array( 'require_video' => true ) );
+	if ( empty( $available_seasons ) ) {
+		return null;
+	}
+
+	// Separate regular seasons from Season 0.
+	$regular_seasons = array();
+	$specials_season = null;
+
+	foreach ( $available_seasons as $season ) {
+		$season_num = isset( $season['season_number'] ) ? trim( (string) $season['season_number'] ) : '';
+		if ( '0' === $season_num || 0 === $season_num ) {
+			$specials_season = $season;
+		} else {
+			$regular_seasons[] = $season;
+		}
+	}
+
+	// Prefer the first available regular season.
+	$target_season = ! empty( $regular_seasons ) ? $regular_seasons[0] : $specials_season;
+	if ( ! $target_season || empty( $target_season['episodes'] ) ) {
+		return null;
+	}
+
+	$first_episode_id = (int) $target_season['episodes'][0];
+	if ( $first_episode_id <= 0 ) {
+		return null;
+	}
+
+	if ( function_exists( 'streamit_get_episode' ) ) {
+		$ep = streamit_get_episode( $first_episode_id );
+		if ( ! empty( $ep ) ) {
+			return $ep;
+		}
+	}
+
+	return null;
 }
 
 /**

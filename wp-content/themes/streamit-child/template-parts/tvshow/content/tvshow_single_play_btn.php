@@ -24,22 +24,30 @@ $has_access = function_exists( 'movies_wp_user_can_access_media' )
 		? streamit_user_has_stream_access( $post_id, $post_type, $user_id )
 		: true );
 
-$play_label    = esc_html__( 'شروع تماشا', 'streamit' );
-$redirect_link = home_url( '/' );
+$play_label            = esc_html__( 'شروع تماشا', 'streamit' );
+$redirect_link         = '';
+$has_available_episode = false;
 
 if ( $post ) {
-	$first_season  = $post->get_meta( '_seasons' )[0] ?? null;
-	$first_episode = $first_season['episodes'][0] ?? null;
-	if ( $first_episode ) {
-		$episode = function_exists( 'streamit_get_episode' ) ? streamit_get_episode( (int) $first_episode ) : null;
-		if ( ! empty( $episode ) && function_exists( 'streamit_get_permalink' ) ) {
-			$redirect_link = streamit_get_permalink( $episode->get_post_type(), $episode->get_post_name() );
-		}
+	$episode = function_exists( 'streamit_child_get_first_available_episode' )
+		? streamit_child_get_first_available_episode( $post )
+		: null;
+
+	if ( ! empty( $episode ) && function_exists( 'streamit_get_permalink' ) ) {
+		$redirect_link         = streamit_get_permalink( $episode->get_post_type(), $episode->get_post_name() );
+		$has_available_episode = true;
 	}
 }
 ?>
 <div class="play-button-wrapper">
-	<?php if ( $has_access ) : ?>
+	<?php if ( ! $has_available_episode ) : ?>
+		<button type="button" class="btn btn-primary disabled" disabled aria-disabled="true">
+			<span class="d-flex align-items-center justify-content-center gap-2">
+				<?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php echo esc_html__( 'به زودی', 'streamit' ); ?></span>
+			</span>
+		</button>
+	<?php elseif ( $has_access ) : ?>
 		<a class="btn btn-primary" href="<?php echo esc_url( $redirect_link ); ?>">
 			<span class="d-flex align-items-center justify-content-center gap-2">
 				<?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

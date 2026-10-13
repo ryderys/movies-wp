@@ -136,6 +136,20 @@ class Movies_WP_Series_Import_Plan {
 					);
 				}
 
+				$ep_num = self::nonnegative_integer( $episode['episode_number'] ?? null );
+				if ( null === $ep_num ) {
+					return new WP_Error(
+						'series_import_plan_invalid_episode',
+						__( 'A Series episode has invalid identity fields.', 'movies-wp' )
+					);
+				}
+				$ep_key = (string) $season_number . ':' . (string) $ep_num;
+				if ( isset( $options['scanned_episode_keys'] ) && is_array( $options['scanned_episode_keys'] ) ) {
+					if ( ! in_array( $ep_key, $options['scanned_episode_keys'], true ) ) {
+						continue;
+					}
+				}
+
 				$episode_plan = self::plan_episode(
 					$episode,
 					$season_number,
@@ -148,6 +162,12 @@ class Movies_WP_Series_Import_Plan {
 					return $episode_plan;
 				}
 				$episode_plans[] = $episode_plan;
+			}
+
+			if ( isset( $options['scanned_episode_keys'] ) && is_array( $options['scanned_episode_keys'] ) ) {
+				if ( count( $episode_plans ) === 0 ) {
+					continue;
+				}
 			}
 
 			$planned_episode_ids = array();

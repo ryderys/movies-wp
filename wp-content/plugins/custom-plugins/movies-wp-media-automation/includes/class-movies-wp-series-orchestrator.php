@@ -46,18 +46,6 @@ class Movies_WP_Series_Orchestrator {
 			return new WP_Error( 'series_automation_invalid_metadata_preview', __( 'Series metadata preview returned invalid data.', 'movies-wp' ) );
 		}
 
-		$plan_snap     = Movies_WP_Series_Import_Profiler::phase_start( 'metadata_plan' );
-		$metadata_plan = isset( $options['metadata_plan_build'] ) && is_callable( $options['metadata_plan_build'] )
-			? call_user_func( $options['metadata_plan_build'], $metadata_preview )
-			: Movies_WP_Series_Import_Plan::build( $metadata_preview );
-		Movies_WP_Series_Import_Profiler::phase_end( 'metadata_plan', $plan_snap, 1, 'metadata_plan_build' );
-		if ( is_wp_error( $metadata_plan ) ) {
-			return $metadata_plan;
-		}
-		if ( ! is_array( $metadata_plan ) ) {
-			return new WP_Error( 'series_automation_invalid_metadata_plan', __( 'Series metadata plan returned invalid data.', 'movies-wp' ) );
-		}
-
 		$scan_snap = Movies_WP_Series_Import_Profiler::phase_start( 'media_scan' );
 		$scan      = isset( $options['scan_series'] ) && is_callable( $options['scan_series'] )
 			? call_user_func( $options['scan_series'], $normalized['series_directory'] )
@@ -73,31 +61,53 @@ class Movies_WP_Series_Orchestrator {
 
 		$errors   = array();
 		$warnings = array();
-		self::append_issues( $errors, $metadata_plan['errors'] ?? array() );
-		self::append_issues( $warnings, $metadata_plan['warnings'] ?? array() );
 		self::append_issues( $errors, $scan['errors'] ?? array() );
 		self::append_issues( $warnings, $scan['warnings'] ?? array() );
 
-		$tmdb_index = self::index_tmdb_episodes( $metadata_preview, $metadata_plan, $errors );
+		$candidate_episodes = self::index_tmdb_episodes( $metadata_preview, array(), $errors );
+
 		$resolution = Movies_WP_Series_Media_Preview_Service::resolve_scan_episode_groups(
 			self::list_value( $scan['episodes'] ?? array() ),
-			array_values( $tmdb_index )
+			array_values( $candidate_episodes ),
+			$normalized['season_number'] ?? null
 		);
 		self::append_issues( $errors, $resolution['errors'] );
 		$scan['episodes'] = $resolution['episodes'];
-		$scan_index = self::index_scan_episodes( $scan, $errors );
+		$scan_index       = self::index_scan_episodes( $scan, $errors );
+
+		$scanned_episode_keys = array_keys( $scan_index );
+		$plan_options         = array_merge( $options, array( 'scanned_episode_keys' => $scanned_episode_keys ) );
+
+		$plan_snap     = Movies_WP_Series_Import_Profiler::phase_start( 'metadata_plan' );
+		$metadata_plan = isset( $options['metadata_plan_build'] ) && is_callable( $options['metadata_plan_build'] )
+			? call_user_func( $options['metadata_plan_build'], $metadata_preview, $plan_options )
+			: Movies_WP_Series_Import_Plan::build( $metadata_preview, $plan_options );
+		Movies_WP_Series_Import_Profiler::phase_end( 'metadata_plan', $plan_snap, 1, 'metadata_plan_build' );
+		if ( is_wp_error( $metadata_plan ) ) {
+			return $metadata_plan;
+		}
+		if ( ! is_array( $metadata_plan ) ) {
+			return new WP_Error( 'series_automation_invalid_metadata_plan', __( 'Series metadata plan returned invalid data.', 'movies-wp' ) );
+		}
+
+		self::append_issues( $errors, $metadata_plan['errors'] ?? array() );
+		self::append_issues( $warnings, $metadata_plan['warnings'] ?? array() );
+
+		$tmdb_index = self::index_tmdb_episodes( $metadata_preview, $metadata_plan, $errors );
 		$episodes   = array();
 
 		foreach ( $tmdb_index as $key => $tmdb_episode ) {
-			$media = $scan_index[ $key ] ?? null;
+			$media          = $scan_index[ $key ] ?? null;
 			unset( $scan_index[ $key ] );
 			$source_count   = is_array( $media ) ? count( self::list_value( $media['sources'] ?? array() ) ) : 0;
 			$subtitle_count = is_array( $media ) ? count( self::list_value( $media['subtitles'] ?? array() ) ) : 0;
+			$has_media      = ( $source_count + $subtitle_count ) > 0;
 
 			$episodes[] = array_merge(
 				$tmdb_episode,
 				array(
-					'status'         => ( $source_count + $subtitle_count ) > 0 ? 'metadata_and_media' : 'metadata_only',
+					'action'         => $has_media ? ( $tmdb_episode['action'] ?: 'create' ) : null,
+					'status'         => $has_media ? 'metadata_and_media' : 'metadata_only',
 					'token'          => is_array( $media ) ? (string) ( $media['token'] ?? '' ) : '',
 					'sources'        => is_array( $media ) ? self::list_value( $media['sources'] ?? array() ) : array(),
 					'subtitles'      => is_array( $media ) ? self::list_value( $media['subtitles'] ?? array() ) : array(),
@@ -201,11 +211,16 @@ class Movies_WP_Series_Orchestrator {
 		if ( is_wp_error( $directory ) ) {
 			return new WP_Error( 'series_automation_invalid_input', __( 'A valid relative Series directory is required.', 'movies-wp' ) );
 		}
+		$season_number = isset( $input['season_number'] ) && '' !== trim( (string) $input['season_number'] )
+			? (string) absint( $input['season_number'] )
+			: null;
+
 		return array(
 			'tmdb_id'          => $tmdb_id,
 			'title'            => $title,
 			'summary'          => $summary,
 			'series_directory' => $directory,
+			'season_number'    => $season_number,
 		);
 	}
 

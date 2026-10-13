@@ -144,6 +144,16 @@ wp plugin update --all
 wp theme update --all
 ```
 
+#### Docker prod note (this repo)
+
+In production, WordPress core runs inside the `movies-wordpress:latest` container filesystem (not in `wp-content`).
+For reliable core updates (force `en_US` core ZIP; keep `fa_IR` UI via language packs), use:
+
+```bash
+chmod +x ./scripts/wp-core-update-prod.sh
+./scripts/wp-core-update-prod.sh 7.1.3
+```
+
 ## Troubleshooting
 
 ### Database Connection Issues

@@ -539,21 +539,27 @@ class Movies_WP_Series_Admin {
 	 * @return array{tmdb_id:int,title:string,summary:string,series_directory:string}
 	 */
 	private static function values_from_array( array $post ) {
-		return array(
+		$values = array(
 			'tmdb_id'          => isset( $post['tmdb_id'] ) ? absint( $post['tmdb_id'] ) : 0,
 			'title'            => isset( $post['title'] ) ? sanitize_text_field( (string) $post['title'] ) : '',
 			'summary'          => isset( $post['summary'] ) ? sanitize_textarea_field( (string) $post['summary'] ) : '',
 			'series_directory' => isset( $post['series_directory'] ) ? sanitize_text_field( (string) $post['series_directory'] ) : '',
 		);
+		if ( isset( $post['season_number'] ) && '' !== trim( (string) $post['season_number'] ) ) {
+			$values['season_number'] = (string) absint( $post['season_number'] );
+		}
+		return $values;
 	}
 
 	private static function notice_for_preview_error( $error ) {
 		$code = (string) $error->get_error_code();
 		$map  = array(
-			'series_preview_invalid_input'    => __( 'Please check the Series fields and try again.', 'movies-wp' ),
-			'series_automation_invalid_input' => __( 'Please check the Series fields and directory, then try again.', 'movies-wp' ),
-			'tmdb_tv_not_found'               => __( 'Could not find this series on TMDb.', 'movies-wp' ),
-			'tmdb_tv_request_failed'          => __( 'Could not load this series from TMDb. Please try again.', 'movies-wp' ),
+			'series_preview_invalid_input'          => __( 'Please check the Series fields and try again.', 'movies-wp' ),
+			'series_automation_invalid_input'       => __( 'Please check the Series fields and directory, then try again.', 'movies-wp' ),
+			'episode_only_requires_explicit_season' => __( 'Episode-only filenames require an explicit season number. Please specify the season number in the form.', 'movies-wp' ),
+			'series_automation_season_conflict'     => __( 'The specified season number conflicts with a season number detected in a filename.', 'movies-wp' ),
+			'tmdb_tv_not_found'                     => __( 'Could not find this series on TMDb.', 'movies-wp' ),
+			'tmdb_tv_request_failed'                => __( 'Could not load this series from TMDb. Please try again.', 'movies-wp' ),
 		);
 		return array(
 			'type'    => 'error',

@@ -58,7 +58,9 @@ $slider         = '';
                     $run_minutes   = $post->get_meta('_movie_run_minutes');
                     $genre_texonomy = 'movie_genre';
                 } elseif ($post_type == 'tvshow') {
-                    $seasons      = $post->get_meta('_seasons');
+                    $seasons = function_exists( 'streamit_child_get_available_seasons' )
+                        ? streamit_child_get_available_seasons( $post )
+                        : $post->get_meta('_seasons');
                     $season_count = $seasons ? count($seasons) : 0;
                     $censor_rating = $season_count
                         ? $season_count . _n(" Season", " Seasons", $season_count, 'streamit')

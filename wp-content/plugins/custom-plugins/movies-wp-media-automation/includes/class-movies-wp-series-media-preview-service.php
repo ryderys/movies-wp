@@ -65,7 +65,8 @@ class Movies_WP_Series_Media_Preview_Service {
 		$matches  = array();
 		$resolution = self::resolve_scan_episode_groups(
 			isset( $scan['episodes'] ) && is_array( $scan['episodes'] ) ? $scan['episodes'] : array(),
-			array_values( $episode_index['by_id'] )
+			array_values( $episode_index['by_id'] ),
+			$normalized['season_number'] ?? null
 		);
 		$errors = $resolution['errors'];
 		$scan['episodes'] = $resolution['episodes'];
@@ -168,10 +169,15 @@ class Movies_WP_Series_Media_Preview_Service {
 			return new WP_Error( 'series_media_preview_invalid_input', __( 'Invalid series directory.', 'movies-wp' ) );
 		}
 
+		$season_number  = isset( $input['season_number'] ) && '' !== trim( (string) $input['season_number'] )
+			? (string) absint( $input['season_number'] )
+			: null;
+
 		return array(
 			'tvshow_id'         => $tvshow_id,
 			'expected_tmdb_id'  => $expected,
 			'series_directory'  => $normalized_dir,
+			'season_number'     => $season_number,
 		);
 	}
 
@@ -298,15 +304,39 @@ class Movies_WP_Series_Media_Preview_Service {
 	}
 
 	/**
-	 * Resolve EPxx groups only when one authoritative season has that episode.
+	 * Resolve EPxx groups only when one authoritative season has that episode,
+	 * or when an explicit season is supplied that does not conflict with scan filenames.
 	 *
 	 * @param list<array<string, mixed>> $groups
 	 * @param list<array<string, mixed>> $authoritative_episodes
+	 * @param string|int|null            $explicit_season
 	 * @return array{episodes:list<array<string,mixed>>,errors:list<array<string,mixed>>}
 	 */
-	public static function resolve_scan_episode_groups( array $groups, array $authoritative_episodes ) {
+	public static function resolve_scan_episode_groups( array $groups, array $authoritative_episodes, $explicit_season = null ) {
 		$resolved = array();
 		$errors   = array();
+		$canonical_explicit_season = null !== $explicit_season ? self::canonical_season_string( $explicit_season ) : null;
+
+		$scan_filename_seasons = array();
+		foreach ( $groups as $g ) {
+			if ( is_array( $g ) && 'episode_only' !== ( $g['identity_type'] ?? '' ) ) {
+				$s = self::canonical_season_string( $g['season_number'] ?? null );
+				if ( null !== $s ) {
+					$scan_filename_seasons[ $s ] = true;
+				}
+			}
+		}
+
+		$all_authoritative_seasons = array();
+		foreach ( $authoritative_episodes as $candidate ) {
+			if ( is_array( $candidate ) ) {
+				$s = self::canonical_season_string( $candidate['season_number'] ?? null );
+				if ( null !== $s ) {
+					$all_authoritative_seasons[ $s ] = true;
+				}
+			}
+		}
+		$total_seasons_count = count( $all_authoritative_seasons );
 
 		foreach ( $groups as $group ) {
 			if ( ! is_array( $group ) ) {
@@ -322,6 +352,22 @@ class Movies_WP_Series_Media_Preview_Service {
 				continue;
 			}
 
+			if ( null !== $season && null !== $canonical_explicit_season && $season !== $canonical_explicit_season ) {
+				$errors[] = self::issue(
+					'series_automation_season_conflict',
+					sprintf(
+						/* translators: 1: explicit season, 2: filename season, 3: filename token */
+						__( 'Explicit season %1$s conflicts with filename season %2$s for %3$s.', 'movies-wp' ),
+						$canonical_explicit_season,
+						$season,
+						(string) ( $group['token'] ?? ( 'S' . $season . 'E' . $episode ) )
+					),
+					$season,
+					$episode
+				);
+				continue;
+			}
+
 			if ( null === $season ) {
 				if ( 'episode_only' !== ( $group['identity_type'] ?? '' ) ) {
 					$errors[] = self::issue(
@@ -333,25 +379,67 @@ class Movies_WP_Series_Media_Preview_Service {
 					continue;
 				}
 
-				$candidate_seasons = array();
-				foreach ( $authoritative_episodes as $candidate ) {
-					if ( ! is_array( $candidate ) || self::canonical_episode_string( $candidate['episode_number'] ?? null ) !== $episode ) {
+				if ( null !== $canonical_explicit_season ) {
+					$season = $canonical_explicit_season;
+					$group['resolved_from'] = 'episode_only';
+				} elseif ( 1 === count( $scan_filename_seasons ) ) {
+					$season = (string) array_key_first( $scan_filename_seasons );
+					$group['resolved_from'] = 'episode_only';
+				} elseif ( 0 === count( $scan_filename_seasons ) && 1 === $total_seasons_count ) {
+					$season = (string) array_key_first( $all_authoritative_seasons );
+					$group['resolved_from'] = 'episode_only';
+				} else {
+					$candidate_seasons = array();
+					foreach ( $authoritative_episodes as $candidate ) {
+						if ( ! is_array( $candidate ) || self::canonical_episode_string( $candidate['episode_number'] ?? null ) !== $episode ) {
+							continue;
+						}
+						$candidate_season = self::canonical_season_string( $candidate['season_number'] ?? null );
+						if ( null !== $candidate_season ) {
+							$candidate_seasons[ $candidate_season ] = true;
+						}
+					}
+					$candidate_seasons = array_keys( $candidate_seasons );
+					sort( $candidate_seasons, SORT_NUMERIC );
+
+					if ( count( $candidate_seasons ) === 0 ) {
+						$errors[] = self::issue(
+							'episode_only_without_authoritative_match',
+							sprintf(
+								/* translators: %s: episode number */
+								__( 'Episode EP%s has no authoritative season/episode match. No episode will be created from the filename.', 'movies-wp' ),
+								$episode
+							),
+							'',
+							$episode
+						);
 						continue;
 					}
-					$candidate_season = self::canonical_season_string( $candidate['season_number'] ?? null );
-					if ( null !== $candidate_season ) {
-						$candidate_seasons[ $candidate_season ] = true;
+					if ( count( $candidate_seasons ) > 1 ) {
+						$errors[] = array_merge(
+							self::issue(
+								'episode_only_ambiguous_season',
+								sprintf(
+									/* translators: 1: episode number, 2: candidate season numbers */
+									__( 'Episode EP%1$s matches multiple authoritative seasons (%2$s); its season cannot be resolved safely.', 'movies-wp' ),
+									$episode,
+									implode( ', ', $candidate_seasons )
+								),
+								'',
+								$episode
+							),
+							array( 'candidate_seasons' => $candidate_seasons )
+						);
+						continue;
 					}
-				}
-				$candidate_seasons = array_keys( $candidate_seasons );
-				sort( $candidate_seasons, SORT_NUMERIC );
 
-				if ( count( $candidate_seasons ) === 0 ) {
+					// When the series has multiple seasons in total, do not guess the season merely because
+					// TMDB has an episode with that number in exactly one season. Require an explicit season.
 					$errors[] = self::issue(
-						'episode_only_without_authoritative_match',
+						'episode_only_requires_explicit_season',
 						sprintf(
 							/* translators: %s: episode number */
-							__( 'Episode EP%s has no authoritative season/episode match. No episode will be created from the filename.', 'movies-wp' ),
+							__( 'Episode EP%s has no season in filename. An explicit season number is required for import.', 'movies-wp' ),
 							$episode
 						),
 						'',
@@ -359,25 +447,32 @@ class Movies_WP_Series_Media_Preview_Service {
 					);
 					continue;
 				}
-				if ( count( $candidate_seasons ) > 1 ) {
-					$errors[] = array_merge(
-						self::issue(
-							'episode_only_ambiguous_season',
-							sprintf(
-								/* translators: 1: episode number, 2: candidate season numbers */
-								__( 'Episode EP%1$s matches multiple authoritative seasons (%2$s); its season cannot be resolved safely.', 'movies-wp' ),
-								$episode,
-								implode( ', ', $candidate_seasons )
-							),
-							'',
+
+				// Verify that the resolved season and episode match an authoritative record.
+				$has_match = false;
+				foreach ( $authoritative_episodes as $candidate ) {
+					if (
+						is_array( $candidate )
+						&& self::canonical_season_string( $candidate['season_number'] ?? null ) === $season
+						&& self::canonical_episode_string( $candidate['episode_number'] ?? null ) === $episode
+					) {
+						$has_match = true;
+						break;
+					}
+				}
+				if ( ! $has_match ) {
+					$errors[] = self::issue(
+						'episode_only_without_authoritative_match',
+						sprintf(
+							/* translators: %s: episode number */
+							__( 'Episode EP%s has no authoritative season/episode match. No episode will be created from the filename.', 'movies-wp' ),
 							$episode
 						),
-						array( 'candidate_seasons' => $candidate_seasons )
+						$season,
+						$episode
 					);
 					continue;
 				}
-				$season = $candidate_seasons[0];
-				$group['resolved_from'] = 'episode_only';
 			}
 
 			$group['identity_type']  = 'season_episode';

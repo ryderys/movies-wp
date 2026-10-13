@@ -44,6 +44,24 @@ series_identity_assert_true( ( $second['season_number'] ?? '' ) === '1' && ( $se
 $season_two = series_identity_parse( 'Show.S02E01.mkv' );
 series_identity_assert_true( ( $season_two['season_number'] ?? '' ) === '2' && ( $season_two['episode_number'] ?? '' ) === '1', 'explicit S02E01 remains season 2 episode 1' );
 
+$s3e1_standard = series_identity_parse( 'Show.S03E01.mkv' );
+series_identity_assert_true( ( $s3e1_standard['ok'] ?? false ) === true && ( $s3e1_standard['season_number'] ?? '' ) === '3' && ( $s3e1_standard['episode_number'] ?? '' ) === '1', 'S03E01 parsed correctly' );
+
+$s3e1_single_digit = series_identity_parse( 'Show.S3E1.mkv' );
+series_identity_assert_true( ( $s3e1_single_digit['ok'] ?? false ) === true && ( $s3e1_single_digit['season_number'] ?? '' ) === '3' && ( $s3e1_single_digit['episode_number'] ?? '' ) === '1', 'S3E1 parsed correctly' );
+
+$s3e1_dot = series_identity_parse( 'Show.S03.E01.mkv' );
+series_identity_assert_true( ( $s3e1_dot['ok'] ?? false ) === true && ( $s3e1_dot['season_number'] ?? '' ) === '3' && ( $s3e1_dot['episode_number'] ?? '' ) === '1', 'S03.E01 parsed correctly' );
+
+$s3e1_space = series_identity_parse( 'Show.S03 E01.mkv' );
+series_identity_assert_true( ( $s3e1_space['ok'] ?? false ) === true && ( $s3e1_space['season_number'] ?? '' ) === '3' && ( $s3e1_space['episode_number'] ?? '' ) === '1', 'S03 E01 parsed correctly' );
+
+$s3e1_underscore = series_identity_parse( 'Show.S03_E01.mkv' );
+series_identity_assert_true( ( $s3e1_underscore['ok'] ?? false ) === true && ( $s3e1_underscore['season_number'] ?? '' ) === '3' && ( $s3e1_underscore['episode_number'] ?? '' ) === '1', 'S03_E01 parsed correctly' );
+
+$s3e1_dash = series_identity_parse( 'Show.S03-E01.mkv' );
+series_identity_assert_true( ( $s3e1_dash['ok'] ?? false ) === true && ( $s3e1_dash['season_number'] ?? '' ) === '3' && ( $s3e1_dash['episode_number'] ?? '' ) === '1', 'S03-E01 parsed correctly' );
+
 $ep01 = series_identity_parse( 'Spring.Burning.EP01.1080p.WEB-DL.mkv' );
 series_identity_assert_true( ( $ep01['ok'] ?? false ) === true, 'EP01 accepted' );
 series_identity_assert_true( ( $ep01['identity_type'] ?? '' ) === 'episode_only', 'EP01 is explicitly seasonless' );

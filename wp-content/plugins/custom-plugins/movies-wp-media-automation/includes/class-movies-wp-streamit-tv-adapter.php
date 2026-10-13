@@ -122,6 +122,7 @@ class Movies_WP_Streamit_TV_Adapter {
 		}
 
 		if ( array() !== $season_rows ) {
+			$seasons = self::sort_seasons( $seasons );
 			$written = self::write_tvshow_meta( $series_id, '_seasons', $seasons, $options );
 			if ( true !== $written ) {
 				$error        = self::err( 'series_tv_adapter_seasons_failed', __( 'Failed to save Streamit seasons.', 'movies-wp' ) );
@@ -359,6 +360,7 @@ class Movies_WP_Streamit_TV_Adapter {
 			}
 		}
 		if ( array() !== $season_rows ) {
+			$seasons = self::sort_seasons( $seasons );
 			$written = self::write_tvshow_meta( $series_id, '_seasons', $seasons, $options );
 			if ( true !== $written ) {
 				$errors[] = self::err( 'series_tv_adapter_seasons_failed', __( 'Failed to save Streamit seasons.', 'movies-wp' ) );
@@ -372,11 +374,58 @@ class Movies_WP_Streamit_TV_Adapter {
 		);
 	}
 
+	private static function sort_seasons( array $seasons ) {
+		usort(
+			$seasons,
+			static function ( $a, $b ) {
+				$num_a = isset( $a['season_number'] ) ? (int) $a['season_number'] : 0;
+				$num_b = isset( $b['season_number'] ) ? (int) $b['season_number'] : 0;
+				return $num_a <=> $num_b;
+			}
+		);
+		return array_values( $seasons );
+	}
+
 	private static function persist_series( array $plan, array $options ) {
 		$action = (string) $plan['identity']['action'];
 		$data   = $plan['series'];
 
 		$row_snap = Movies_WP_Series_Import_Profiler::phase_start( 'series_row' );
+
+		// Stale create guard: Recheck immediately before creating a new series so that a stale preview
+		// cannot create a duplicate if a series with this TMDb ID now exists.
+		if ( 'create' === $action ) {
+			$tmdb_id = absint( $data['tmdb_id'] ?? 0 );
+			if ( $tmdb_id > 0 ) {
+				$existing_id = null;
+				if ( isset( $options['find_existing_series'] ) && is_callable( $options['find_existing_series'] ) ) {
+					$existing_id = call_user_func( $options['find_existing_series'], $tmdb_id );
+				} elseif ( function_exists( 'streamit_get_tvshows' ) ) {
+					$existing_query = streamit_get_tvshows(
+						array(
+							'per_page'    => 1,
+							'post_status' => array( 'all' ),
+							'meta_query'  => array(
+								array(
+									'key'     => '_tmdb_id',
+									'value'   => (string) $tmdb_id,
+									'compare' => '=',
+								),
+							),
+						)
+					);
+					if ( is_object( $existing_query ) && isset( $existing_query->results ) && is_array( $existing_query->results ) && ! empty( $existing_query->results ) ) {
+						$first       = $existing_query->results[0];
+						$existing_id = is_object( $first ) && isset( $first->ID ) ? (int) $first->ID : ( (int) ( $first['id'] ?? 0 ) );
+					}
+				}
+				if ( absint( $existing_id ) > 0 ) {
+					$action    = 'update';
+					$series_id = absint( $existing_id );
+				}
+			}
+		}
+
 		if ( 'create' === $action ) {
 			$row = self::new_row(
 				(string) $data['title'],
@@ -397,7 +446,9 @@ class Movies_WP_Streamit_TV_Adapter {
 			}
 			$series_id = absint( $created );
 		} else {
-			$series_id = absint( $plan['identity']['existing_series_id'] );
+			if ( ! isset( $series_id ) ) {
+				$series_id = absint( $plan['identity']['existing_series_id'] );
+			}
 			$tvshow    = isset( $options['get_tvshow'] ) && is_callable( $options['get_tvshow'] )
 				? call_user_func( $options['get_tvshow'], $series_id )
 				: ( function_exists( 'streamit_get_tvshow' ) ? streamit_get_tvshow( $series_id ) : null );
@@ -408,8 +459,13 @@ class Movies_WP_Streamit_TV_Adapter {
 			}
 
 			// Approved plan title/summary overlay (same as Movie Import metadata step).
-			$row['post_title']        = (string) $data['title'];
-			$row['post_content']      = (string) $data['summary'];
+			// Avoid replacing manually edited series metadata with blank or unintended form values.
+			if ( '' !== trim( (string) ( $data['title'] ?? '' ) ) ) {
+				$row['post_title'] = (string) $data['title'];
+			}
+			if ( '' !== trim( (string) ( $data['summary'] ?? '' ) ) ) {
+				$row['post_content'] = (string) $data['summary'];
+			}
 			$row['post_modified']     = self::now( false, $options );
 			$row['post_modified_gmt'] = self::now( true, $options );
 			$updated = isset( $options['update_tvshow_row'] ) && is_callable( $options['update_tvshow_row'] )

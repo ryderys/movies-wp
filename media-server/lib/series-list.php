@@ -92,6 +92,23 @@ function media_list_series_dir( string $relative, string $media_root, string $se
 		$categories[]   = $classification;
 
 		if ( $classification['type'] === 'UNKNOWN' ) {
+			if ( ! empty( $classification['warnings'] ) ) {
+				foreach ( $classification['warnings'] as $cw ) {
+					$warnings[] = media_series_list_warning(
+						$cw['code'] ?? 'unknown_category',
+						$cw['message'] ?? ( 'Unrecognized release/category directory: ' . $name ),
+						$name,
+						$name
+					);
+				}
+			} else {
+				$warnings[] = media_series_list_warning(
+					'unknown_category',
+					'Unrecognized release/category directory: ' . $name,
+					$name,
+					$name
+				);
+			}
 			continue;
 		}
 

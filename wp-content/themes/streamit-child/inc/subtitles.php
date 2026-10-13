@@ -290,19 +290,21 @@ function streamit_child_subtitle_display_format( $sub ) {
  * @param array<string, mixed> $sub Normalized subtitle row.
  * @return array<int, string>
  */
-function streamit_child_subtitle_download_meta_values( $sub ) {
-	$values = array();
-	$base   = streamit_child_subtitle_display_basename( isset( $sub['url'] ) ? $sub['url'] : '' );
-	$format = streamit_child_subtitle_display_format( $sub );
+if ( ! function_exists( 'streamit_child_subtitle_download_meta_values' ) ) {
+	function streamit_child_subtitle_download_meta_values( $sub ) {
+		$values = array();
+		$base   = streamit_child_subtitle_display_basename( isset( $sub['url'] ) ? $sub['url'] : '' );
+		$format = streamit_child_subtitle_display_format( $sub );
 
-	if ( '' !== $base ) {
-		$values[] = $base;
-	}
-	if ( '' !== $format ) {
-		$values[] = $format;
-	}
+		if ( '' !== $base ) {
+			$values[] = $base;
+		}
+		if ( '' !== $format ) {
+			$values[] = $format;
+		}
 
-	return $values;
+		return $values;
+	}
 }
 
 /**
@@ -316,51 +318,53 @@ function streamit_child_subtitle_download_meta_values( $sub ) {
  * @param string $type   Mint type: 'v' (player track) or 'd' (download).
  * @return string Playable/downloadable URL, or empty string.
  */
-function streamit_child_resolve_subtitle_url( $stored, $type = 'v' ) {
-	$stored = str_replace( '\\', '/', trim( (string) $stored ) );
-	if ( '' === $stored ) {
-		return '';
-	}
+if ( ! function_exists( 'streamit_child_resolve_subtitle_url' ) ) {
+	function streamit_child_resolve_subtitle_url( $stored, $type = 'v' ) {
+		$stored = str_replace( '\\', '/', trim( (string) $stored ) );
+		if ( '' === $stored ) {
+			return '';
+		}
 
-	// Never expose absolute /data paths — strip to a relative path when possible.
-	if ( str_starts_with( $stored, '/data/' ) || str_contains( $stored, '/data/' ) ) {
-		$stored = preg_replace( '#^.*?/data/#', '', $stored );
-		$stored = ltrim( (string) $stored, '/' );
-	}
+		// Never expose absolute /data paths — strip to a relative path when possible.
+		if ( str_starts_with( $stored, '/data/' ) || str_contains( $stored, '/data/' ) ) {
+			$stored = preg_replace( '#^.*?/data/#', '', $stored );
+			$stored = ltrim( (string) $stored, '/' );
+		}
 
-	if ( '' === $stored ) {
-		return '';
-	}
+		if ( '' === $stored ) {
+			return '';
+		}
 
-	if ( function_exists( 'streamit_child_is_external_media_link' ) && streamit_child_is_external_media_link( $stored ) ) {
-		return $stored;
-	}
+		if ( function_exists( 'streamit_child_is_external_media_link' ) && streamit_child_is_external_media_link( $stored ) ) {
+			return $stored;
+		}
 
-	if ( preg_match( '#^https?://#i', $stored ) ) {
-		return $stored;
-	}
+		if ( preg_match( '#^https?://#i', $stored ) ) {
+			return $stored;
+		}
 
-	// Local relative path (e.g. Movie/.../*.srt).
-	if ( str_starts_with( $stored, '/' ) || str_contains( $stored, '://' ) ) {
-		return '';
-	}
+		// Local relative path (e.g. Movie/.../*.srt).
+		if ( str_starts_with( $stored, '/' ) || str_contains( $stored, '://' ) ) {
+			return '';
+		}
 
-	if ( ! function_exists( 'movies_wp_media_signed_url' ) ) {
-		return '';
-	}
+		if ( ! function_exists( 'movies_wp_media_signed_url' ) ) {
+			return '';
+		}
 
-	$type   = ( 'd' === $type ) ? 'd' : 'v';
-	$signed = movies_wp_media_signed_url( $stored, $type );
-	if ( is_wp_error( $signed ) ) {
-		return '';
-	}
+		$type   = ( 'd' === $type ) ? 'd' : 'v';
+		$signed = movies_wp_media_signed_url( $stored, $type );
+		if ( is_wp_error( $signed ) ) {
+			return '';
+		}
 
-	$signed = trim( (string) $signed );
-	if ( '' === $signed || str_contains( $signed, '/data/' ) || str_starts_with( $signed, '/data' ) ) {
-		return '';
-	}
+		$signed = trim( (string) $signed );
+		if ( '' === $signed || str_contains( $signed, '/data/' ) || str_starts_with( $signed, '/data' ) ) {
+			return '';
+		}
 
-	return $signed;
+		return $signed;
+	}
 }
 
 /**

@@ -16,9 +16,12 @@ if (!defined('ABSPATH')) exit;
         if ($post_type === 'movie' || $post_type === 'video') {
             $run_time = esc_html($post->get_meta('_' . $post_type . '_run_time'));
         } elseif ($post_type === 'tvshow') {
-            $seasons = $post->get_meta('_seasons');
-            $run_time = (!empty($seasons) && is_array($seasons))
-                ? count($seasons) . _n(' Season', ' Seasons', count($seasons), 'streamit')
+            $seasons = function_exists( 'streamit_child_get_available_seasons' )
+                ? streamit_child_get_available_seasons( $post )
+                : $post->get_meta('_seasons');
+            $season_count = (!empty($seasons) && is_array($seasons)) ? count($seasons) : 0;
+            $run_time = ($season_count > 0)
+                ? $season_count . _n(' Season', ' Seasons', $season_count, 'streamit')
                 : esc_html__('Arriving Soon', 'streamit');
         } else {
             $run_time = '';
