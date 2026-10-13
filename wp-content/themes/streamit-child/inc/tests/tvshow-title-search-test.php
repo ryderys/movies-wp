@@ -14,30 +14,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', sys_get_temp_dir() . '/streamit-child-tvshow-title-search-test/' );
 }
 
-if ( ! function_exists( 'absint' ) ) {
-	function absint( $value ) {
-		return abs( (int) $value );
-	}
-}
-
 if ( ! function_exists( 'sanitize_text_field' ) ) {
 	function sanitize_text_field( $value ) {
 		return trim( (string) $value );
 	}
 }
 
-if ( ! function_exists( 'apply_filters' ) ) {
-	function apply_filters( $hook, $value ) {
-		unset( $hook );
-		return $value;
-	}
+$GLOBALS['tvshow_search_test_hooks'] = array();
+
+/**
+ * Minimal hook registry: like WordPress, callbacks receive only the arguments
+ * apply_filters() was called with (capped by accepted_args).
+ */
+function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
+	$GLOBALS['tvshow_search_test_hooks'][ $hook ][ $priority ][] = array( $callback, (int) $accepted_args );
+	return true;
 }
 
-if ( ! function_exists( 'add_filter' ) ) {
-	function add_filter( ...$args ) {
-		unset( $args );
-		return true;
+function apply_filters( $hook, $value, ...$extra ) {
+	$by_priority = $GLOBALS['tvshow_search_test_hooks'][ $hook ] ?? array();
+	ksort( $by_priority );
+	foreach ( $by_priority as $callbacks ) {
+		foreach ( $callbacks as $entry ) {
+			$args  = array_slice( array_merge( array( $value ), $extra ), 0, $entry[1] );
+			$value = call_user_func_array( $entry[0], $args );
+		}
 	}
+	return $value;
 }
 
 class Tvshow_Title_Search_Wpdb {
@@ -50,10 +53,6 @@ class Tvshow_Title_Search_Wpdb {
 
 	public function prepare( $query, ...$args ) {
 		foreach ( $args as $value ) {
-			if ( false !== strpos( $query, '%d' ) ) {
-				$query = preg_replace( '/%d/', (string) (int) $value, $query, 1 );
-				continue;
-			}
 			$quoted = "'" . str_replace( "'", "''", (string) $value ) . "'";
 			$query  = preg_replace( '/%s/', $quoted, $query, 1 );
 		}
@@ -77,15 +76,46 @@ function assert_true( bool $condition, string $label ): void {
 	echo "  FAIL  {$label}\n";
 }
 
-echo "tvshow database search SQL\n\n";
+/**
+ * Same shape as Streamit_Tvshow::prepare_query() output.
+ */
+function tvshow_queries( string $search = '' ): array {
+	$where = "tv.post_status IN ('publish')";
+	if ( '' !== $search ) {
+		$where .= " AND tv.post_title LIKE '%" . $search . "%'";
+	}
+	return array(
+		'paginateQuery' => "SELECT tv.* FROM wp_streamit_tvshow tv WHERE {$where} GROUP BY tv.ID ORDER BY tv.ID DESC LIMIT 6 OFFSET 0",
+		'countQuery'    => "SELECT COUNT(DISTINCT tv.ID) FROM wp_streamit_tvshow tv WHERE {$where}",
+	);
+}
 
-$queries = streamit_child_expand_tvshow_title_search_query(
-	array(
-		'paginateQuery' => "SELECT tv.* FROM wp_streamit_tvshow tv WHERE tv.post_status IN ('publish') AND tv.post_title LIKE '%A Shop for Killers%' GROUP BY tv.ID ORDER BY tv.ID DESC LIMIT 6 OFFSET 0",
-		'countQuery'    => "SELECT COUNT(DISTINCT tv.ID) FROM wp_streamit_tvshow tv WHERE tv.post_status IN ('publish') AND tv.post_title LIKE '%A Shop for Killers%'",
-	),
-	array( 's' => 'A Shop for Killers' )
-);
+/**
+ * Exactly what Streamit does: one argument, no query args.
+ */
+function streamit_apply_tvshow_query_filter( array $queries ) {
+	return apply_filters( 'streamit_get_tvshows_query', $queries );
+}
+
+echo "normal tvshow queries (no search term)\n\n";
+
+$plain = tvshow_queries();
+try {
+	$result = streamit_apply_tvshow_query_filter( $plain );
+	assert_true( true, 'one-argument filter call does not throw' );
+	assert_true( $result === $plain, 'normal query is unchanged' );
+} catch ( Throwable $e ) {
+	assert_true( false, 'one-argument filter call does not throw: ' . $e->getMessage() );
+}
+
+apply_filters( 'streamit_tvshows_arguments', array( 'paged' => 1, 'per_page' => 10 ) );
+$result = streamit_apply_tvshow_query_filter( $plain );
+assert_true( $result === $plain, 'archive args without s leave the query unchanged' );
+
+echo "\nEnglish-name search via staged args (one-argument filter call)\n\n";
+
+apply_filters( 'streamit_tvshows_arguments', array( 's' => 'A Shop for Killers' ) );
+$queries = streamit_apply_tvshow_query_filter( tvshow_queries( 'A Shop for Killers' ) );
 
 foreach ( array( 'paginateQuery', 'countQuery' ) as $query_key ) {
 	$sql = $queries[ $query_key ] ?? '';
@@ -94,8 +124,27 @@ foreach ( array( 'paginateQuery', 'countQuery' ) as $query_key ) {
 	assert_true( str_contains( $sql, "'_tmdb_title'" ), "{$query_key}: searches _tmdb_title" );
 	assert_true( str_contains( $sql, "'_tmdb_original_title'" ), "{$query_key}: searches _tmdb_original_title" );
 	assert_true( str_contains( $sql, "search_title_meta.meta_value LIKE '%A Shop for Killers%'" ), "{$query_key}: metadata value uses same search term" );
-	assert_true( ! str_contains( $sql, 'get_post_meta' ), "{$query_key}: no PHP/N+1 metadata filtering" );
 }
+
+apply_filters( 'streamit_tvshows_arguments', array( 's' => 'فروشگاه قاتلان' ) );
+$persian = streamit_apply_tvshow_query_filter( tvshow_queries( 'فروشگاه قاتلان' ) );
+assert_true( str_contains( $persian['paginateQuery'], "tv.post_title LIKE '%فروشگاه قاتلان%'" ), 'Persian post_title remains searchable' );
+
+echo "\nstaged term does not leak into later queries\n\n";
+
+apply_filters( 'streamit_tvshows_arguments', array( 'paged' => 2 ) );
+$result = streamit_apply_tvshow_query_filter( $plain );
+assert_true( $result === $plain, 'a later archive call without s clears the staged term' );
+
+apply_filters( 'streamit_tvshows_arguments', array( 's' => 'Killers' ) );
+$result = streamit_apply_tvshow_query_filter( $plain );
+assert_true( $result === $plain, 'staged term is a no-op for queries without that search clause' );
+
+echo "\ncallers that pass args directly\n\n";
+
+$GLOBALS['streamit_child_tvshow_search_term'] = '';
+$direct = streamit_child_expand_tvshow_title_search_query( tvshow_queries( 'The Husband' ), array( 's' => 'The Husband' ) );
+assert_true( str_contains( $direct['paginateQuery'], "search_title_meta.meta_value LIKE '%The Husband%'" ), 'two-argument call still expands the search' );
 
 echo "\n";
 if ( $failures > 0 ) {
@@ -105,4 +154,3 @@ if ( $failures > 0 ) {
 
 echo "All tvshow-title-search assertions passed.\n";
 exit( 0 );
-

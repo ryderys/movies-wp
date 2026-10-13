@@ -8,67 +8,75 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Stage the TV show search term for the SQL filter.
+ *
+ * Streamit applies `streamit_get_tvshows_query` with the SQL only (no args),
+ * so the term is captured here, like the release-year filter extras.
+ *
+ * @param array $args Query args.
+ * @return array
+ */
+function streamit_child_stage_tvshow_search_term( $args ) {
+	$GLOBALS['streamit_child_tvshow_search_term'] = '';
+
+	if ( is_array( $args ) && ! empty( $args['s'] ) ) {
+		$GLOBALS['streamit_child_tvshow_search_term'] = sanitize_text_field( (string) $args['s'] );
+	}
+
+	return $args;
+}
+add_filter( 'streamit_tvshows_arguments', 'streamit_child_stage_tvshow_search_term', 15 );
+
+/**
  * Add `_tmdb_title` and `_tmdb_original_title` matching to Streamit TV show
  * pagination and count queries.
  *
- * This is used by:
- * - header dropdown search (`St_Search_Content_Controller`)
- * - fullscreen search modal (`template-parts/search/ajax_search.php`)
- *
- * @param array<string, string> $queries Streamit paginate/count SQL.
- * @param array<string, mixed>  $args    Streamit tvshow query arguments.
+ * @param array<string, string>     $queries Streamit paginate/count SQL.
+ * @param array<string, mixed>|null $args    Query args, when the caller passes them.
  * @return array<string, string>
  */
-function streamit_child_expand_tvshow_title_search_query( $queries, $args ) {
+function streamit_child_expand_tvshow_title_search_query( $queries, $args = null ) {
 	global $wpdb;
 
-	if ( ! is_array( $queries ) || ! is_array( $args ) || empty( $args['s'] ) ) {
+	if ( ! is_array( $queries ) ) {
 		return $queries;
 	}
 	if ( ! isset( $wpdb->streamit_tvshowmeta ) || ! is_string( $wpdb->streamit_tvshowmeta ) ) {
 		return $queries;
 	}
 
-	$search = sanitize_text_field( (string) $args['s'] );
+	if ( is_array( $args ) && ! empty( $args['s'] ) ) {
+		$search = sanitize_text_field( (string) $args['s'] );
+	} else {
+		$search = (string) ( $GLOBALS['streamit_child_tvshow_search_term'] ?? '' );
+	}
 	if ( '' === $search ) {
 		return $queries;
 	}
 
-	$core_like   = '%' . $search . '%';
+	// Match the core title clause produced by Streamit_Tvshow, then expand it.
+	$core_clause = $wpdb->prepare( 'tv.post_title LIKE %s', '%' . $search . '%' );
 	$search_like = '%' . $wpdb->esc_like( $search ) . '%';
+	$expanded    = $wpdb->prepare(
+		"(tv.post_title LIKE %s OR EXISTS (
+			SELECT 1
+			FROM {$wpdb->streamit_tvshowmeta} search_title_meta
+			WHERE search_title_meta.streamit_tvshow_id = tv.ID
+			AND search_title_meta.meta_key IN (%s, %s)
+			AND search_title_meta.meta_value LIKE %s
+		))",
+		$search_like,
+		'_tmdb_title',
+		'_tmdb_original_title',
+		$search_like
+	);
 
-	// Streamit TV show queries typically alias the table as `tv`.
-	$aliases = array( 'tv', 't' );
-	foreach ( $aliases as $alias ) {
-		$core_clause = $wpdb->prepare( "{$alias}.post_title LIKE %s", $core_like );
-		$expanded    = $wpdb->prepare(
-			"({$alias}.post_title LIKE %s OR EXISTS (
-				SELECT 1
-				FROM {$wpdb->streamit_tvshowmeta} search_title_meta
-				WHERE search_title_meta.streamit_tvshow_id = {$alias}.ID
-				AND search_title_meta.meta_key IN (%s, %s)
-				AND search_title_meta.meta_value LIKE %s
-			))",
-			$search_like,
-			'_tmdb_title',
-			'_tmdb_original_title',
-			$search_like
-		);
-
-		$matched_any = false;
-		foreach ( array( 'paginateQuery', 'countQuery' ) as $key ) {
-			if ( isset( $queries[ $key ] ) && is_string( $queries[ $key ] ) && false !== strpos( $queries[ $key ], $core_clause ) ) {
-				$queries[ $key ] = str_replace( $core_clause, $expanded, $queries[ $key ] );
-				$matched_any     = true;
-			}
-		}
-
-		if ( $matched_any ) {
-			return $queries;
+	foreach ( array( 'paginateQuery', 'countQuery' ) as $key ) {
+		if ( isset( $queries[ $key ] ) && is_string( $queries[ $key ] ) ) {
+			$queries[ $key ] = str_replace( $core_clause, $expanded, $queries[ $key ] );
 		}
 	}
 
 	return $queries;
 }
 add_filter( 'streamit_get_tvshows_query', 'streamit_child_expand_tvshow_title_search_query', 9, 2 );
-
