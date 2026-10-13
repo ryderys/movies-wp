@@ -127,10 +127,14 @@
 	border-bottom: 1px solid rgba(229, 9, 20, 0.25);
 }
 
-/* Header dropdown stacking: ensure menus render above hero/media containers. */
+/* Header dropdown stacking: keep menus above hero/media containers, but below Bootstrap modals.
+ * Bootstrap z-index scale: dropdown=1000, sticky=1020, fixed=1030, offcanvas=1050, modal=1055.
+ * The header redesign previously used 9999/10000, which caused the search modal to render behind
+ * the header and blocked input focus/clicks.
+ */
 #default-header.header-default {
 	position: relative;
-	z-index: 9999;
+	z-index: 1030;
 	overflow: visible; /* avoid clipping dropdowns */
 }
 
@@ -147,7 +151,7 @@
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 	border-radius: 8px;
 	padding: 8px 0;
-	z-index: 10000; /* above header itself */
+	z-index: 1031; /* above header itself, still below modals */
 }
 
 .header-default #site-navigation ul.sub-menu a,
