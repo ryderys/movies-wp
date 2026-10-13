@@ -35,7 +35,7 @@ function streamit_child_render_search_modal() {
 							autocomplete="off"
 						/>
 					</div>
-					<button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="modal" aria-label="بستن"></button>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
 				</div>
 				<div class="modal-body streamit-search-modal__body">
 					<div id="streamit-search-modal-results" class="streamit-search-modal__results" aria-live="polite"></div>
@@ -118,6 +118,8 @@ function streamit_child_enqueue_search_modal_assets() {
 			'empty'   => 'نتیجه‌ای یافت نشد.',
 			'error'   => 'خطا در جستجو. لطفاً دوباره تلاش کنید.',
 			'loading' => 'در حال جستجو...',
+			'watchlistAdd'    => 'افزودن به لیست تماشا',
+			'watchlistRemove' => 'حذف از لیست تماشا',
 		)
 	);
 }

@@ -8,7 +8,17 @@
 	var debounceTimer = null;
 
 	function setResults(html) {
-		$('#streamit-search-modal-results').html(html);
+		var $results = $('#streamit-search-modal-results');
+		$results.html(html);
+
+		// Card "+" is the theme's watchlist toggle (login link for guests) and has no visible label.
+		$results.find('.watch-list-btn:not([aria-label])').each(function () {
+			var label = this.getAttribute('data-action') === 'remove' ? config.watchlistRemove : config.watchlistAdd;
+			if (label) {
+				this.setAttribute('aria-label', label);
+				this.setAttribute('title', label);
+			}
+		});
 	}
 
 	function showHint() {

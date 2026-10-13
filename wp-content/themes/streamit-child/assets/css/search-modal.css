@@ -5,6 +5,10 @@
 /* Ensure the modal stays above the fixed header (and remains clickable/focusable). */
 #streamit-search-modal.modal {
 	z-index: 1060;
+	/* Extra dimming on top of Bootstrap's 0.5 backdrop so the page recedes. */
+	background: rgba(0, 0, 0, 0.35);
+	-webkit-backdrop-filter: blur(3px);
+	backdrop-filter: blur(3px);
 }
 
 /* Hide the cramped header dropdown; modal replaces it. */
@@ -27,6 +31,7 @@ header .dropdown-search-wrapper .search_result_section {
 	margin: 4.5rem auto 1.5rem;
 	height: auto;
 	max-height: calc(100vh - 6rem);
+	max-height: calc(100dvh - 6rem);
 }
 
 .streamit-search-modal {
@@ -34,7 +39,10 @@ header .dropdown-search-wrapper .search_result_section {
 	color: var(--bs-body-color, #fff);
 	height: auto;
 	max-height: calc(100vh - 6rem);
+	max-height: calc(100dvh - 6rem);
+	border: 1px solid rgba(255, 255, 255, 0.08);
 	border-radius: 1rem;
+	box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.6);
 	overflow: hidden;
 }
 
@@ -47,14 +55,37 @@ header .dropdown-search-wrapper .search_result_section {
 .streamit-search-modal__input-wrap {
 	flex: 1;
 	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid transparent;
 	border-radius: 0.75rem;
 	padding: 0.25rem 0.5rem;
+	transition: border-color 0.15s ease;
+}
+
+.streamit-search-modal__input-wrap:focus-within {
+	border-color: var(--bs-primary, #e50914);
+}
+
+.streamit-search-modal__input-wrap .input-group-text {
+	padding-inline: 0.5rem;
 }
 
 .streamit-search-modal__input-wrap .form-control {
 	background: transparent;
 	color: #fff;
 	font-size: 1.25rem;
+	padding-inline: 0.25rem;
+}
+
+.streamit-search-modal .modal-header .btn-close {
+	flex-shrink: 0;
+	margin: 0;
+	padding: 0.75rem;
+	opacity: 0.75;
+}
+
+.streamit-search-modal .modal-header .btn-close:hover,
+.streamit-search-modal .modal-header .btn-close:focus-visible {
+	opacity: 1;
 }
 
 .streamit-search-modal__input-wrap .form-control::placeholder {
@@ -68,8 +99,10 @@ header .dropdown-search-wrapper .search_result_section {
 .streamit-search-modal__results {
 	min-height: 12rem;
 	max-height: calc(100vh - 14rem);
+	max-height: calc(100dvh - 14rem);
 	overflow-y: auto;
 	overflow-x: hidden;
+	padding: 0.25rem;
 }
 
 .streamit-search-modal__hint,
@@ -97,8 +130,58 @@ header .dropdown-search-wrapper .search_result_section {
 	margin-bottom: 1.5rem !important;
 }
 
-.streamit-search-modal__results .tab-content .row {
-	--bs-gutter-x: 1rem;
+/*
+ * ajax_search.php's row-cols-* follow the viewport, not this 720px panel
+ * (6 tiny columns on desktop). Use a container-based grid instead.
+ */
+.streamit-search-modal__results .tab-pane > .row {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+	gap: 1.25rem 1rem;
+	margin: 0;
+}
+
+.streamit-search-modal__results .tab-pane > .row > .col {
+	width: auto;
+	max-width: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Detail overlay: let clicks fall through to the poster link except on title/button. */
+.streamit-search-modal__results .common_card .css_prefix-detail-part {
+	gap: 0.5rem;
+	align-items: flex-end;
+	pointer-events: none;
+}
+
+.streamit-search-modal__results .common_card .css_prefix-detail-part > * {
+	pointer-events: auto;
+}
+
+.streamit-search-modal__results .common_card .css_prefix-detail-part h6 {
+	flex: 1;
+	min-width: 0;
+	font-size: 0.9rem;
+	line-height: 1.5;
+	-webkit-line-clamp: 2;
+}
+
+.streamit-search-modal__results .common_card .watch-list-btn {
+	flex-shrink: 0;
+}
+
+.streamit-search-modal__results .common_card .image-box img {
+	transition: transform 0.2s ease;
+}
+
+.streamit-search-modal__results .common_card:hover .image-box img {
+	transform: scale(1.04);
+}
+
+.streamit-search-modal__results .common_card a:focus-visible {
+	outline: 2px solid var(--bs-primary, #e50914);
+	outline-offset: 2px;
 }
 
 .streamit-search-modal__results .search_output {
@@ -113,25 +196,23 @@ header .dropdown-search-wrapper .search_result_section {
 	padding: 0;
 }
 
-html[dir="rtl"] .streamit-search-modal .btn-close {
-	margin-left: 0;
-	margin-right: 1rem;
-}
-
 @media (max-width: 767.98px) {
 	#streamit-search-modal .modal-dialog.streamit-search-modal__dialog {
 		max-width: none;
 		width: calc(100% - 1.5rem);
 		margin: 3.5rem auto 1rem;
 		max-height: calc(100vh - 4.5rem);
+		max-height: calc(100dvh - 4.5rem);
 	}
 
 	.streamit-search-modal {
 		max-height: calc(100vh - 4.5rem);
+		max-height: calc(100dvh - 4.5rem);
 		border-radius: 0.75rem;
 	}
 
 	.streamit-search-modal .modal-header {
+		gap: 0.5rem;
 		padding: 1rem;
 	}
 
@@ -145,5 +226,24 @@ html[dir="rtl"] .streamit-search-modal .btn-close {
 
 	.streamit-search-modal__results {
 		max-height: calc(100vh - 12rem);
+		max-height: calc(100dvh - 12rem);
+	}
+
+	/* "No results" block: stack image above text on narrow screens. */
+	.streamit-search-modal__results > .col-md-12 > .d-flex {
+		flex-direction: column;
+		text-align: center;
+		margin: 2rem 0 !important;
+	}
+
+	.streamit-search-modal__results > .col-md-12 > .d-flex .image img {
+		max-width: 6rem;
+	}
+}
+
+@media (max-width: 575.98px) {
+	.streamit-search-modal__results .tab-pane > .row {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem 0.75rem;
 	}
 }
