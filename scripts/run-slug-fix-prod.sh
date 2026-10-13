@@ -35,8 +35,9 @@ TARGET_DIR="/tmp/movies-wp-scripts"
 TARGET_SCRIPT="${TARGET_DIR}/fix-slugs-to-tmdb-title-prod.php"
 
 echo "Copying PHP script into container..."
-tar -cf - "$PHP_SCRIPT" | docker compose -f "$COMPOSE_FILE" exec -T "$SERVICE" sh -lc \
-  "mkdir -p \"$TARGET_DIR\" && tar -xf - -C / && chmod 0644 \"$TARGET_SCRIPT\""
+# Stream just the PHP file contents into the target directory (avoid extracting repo paths).
+(cd scripts && tar -cf - fix-slugs-to-tmdb-title-prod.php) | docker compose -f "$COMPOSE_FILE" exec -T "$SERVICE" sh -lc \
+  "mkdir -p \"$TARGET_DIR\" && tar -xf - -C \"$TARGET_DIR\" && chmod 0644 \"$TARGET_SCRIPT\""
 
 MODE_ARGS=(--dry-run "--sample=${SAMPLE}")
 if [[ "$APPLY" == "1" ]]; then
