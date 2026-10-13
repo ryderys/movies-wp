@@ -888,6 +888,7 @@ require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/player-fix.php';
 require_once get_stylesheet_directory() . '/inc/search-modal.php';
 require_once get_stylesheet_directory() . '/inc/movie-title-search.php';
+require_once get_stylesheet_directory() . '/inc/tvshow-title-search.php';
 require_once get_stylesheet_directory() . '/inc/rtl-default.php';
 require_once get_stylesheet_directory() . '/inc/digits-login.php';
 require_once get_stylesheet_directory() . '/inc/person-archive-pagination.php';
