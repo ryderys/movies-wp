@@ -2,6 +2,11 @@
  * Centered search modal panel.
  */
 
+/* Ensure the modal stays above the fixed header (and remains clickable/focusable). */
+#streamit-search-modal.modal {
+	z-index: 1060;
+}
+
 /* Hide the cramped header dropdown; modal replaces it. */
 header .dropdown-search-wrapper .css_prefix-search-bar,
 header .dropdown-search-wrapper .search_result_section {

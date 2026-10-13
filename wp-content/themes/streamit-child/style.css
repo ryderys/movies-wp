@@ -134,7 +134,7 @@
  */
 #default-header.header-default {
 	position: relative;
-	z-index: 1030;
+	z-index: 1030 !important;
 	overflow: visible; /* avoid clipping dropdowns */
 }
 
