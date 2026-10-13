@@ -253,6 +253,23 @@ class Movies_WP_Streamit_Adapter {
 		$payload['post_modified']      = self::now_local( $options );
 		$payload['post_modified_gmt']  = self::now_gmt( $options );
 
+		// Slug policy: on create imports, derive the post_name (slug) from the TMDb English title
+		// when available, instead of the operator/localized title.
+		if ( 'create' === (string) ( $plan['identity']['action'] ?? '' ) ) {
+			$slug_source = isset( $plan['movie']['tmdb_title'] ) ? trim( (string) $plan['movie']['tmdb_title'] ) : '';
+			if ( '' === $slug_source ) {
+				$slug_source = isset( $plan['movie']['tmdb_original_title'] ) ? trim( (string) $plan['movie']['tmdb_original_title'] ) : '';
+			}
+			if ( '' !== $slug_source ) {
+				$slug = function_exists( 'sanitize_title' )
+					? sanitize_title( $slug_source )
+					: strtolower( preg_replace( '/[^a-z0-9]+/i', '-', trim( $slug_source ) ) );
+				if ( is_string( $slug ) && '' !== trim( $slug ) ) {
+					$payload['post_name'] = $slug;
+				}
+			}
+		}
+
 		if ( isset( $options['update_movie_row'] ) && is_callable( $options['update_movie_row'] ) ) {
 			$updated = call_user_func( $options['update_movie_row'], (int) $movie_id, $payload );
 		} else {

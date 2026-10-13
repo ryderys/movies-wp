@@ -512,6 +512,7 @@ echo "\n[create]\n";
 	assert_eq( 1, $state['create_calls'], '4. insert_movie_tmdb called once' );
 	assert_eq( 999, $state['create_tmdb_id'] ?? null, '4. tmdb id passed' );
 	assert_eq( 'Admin Title', $state['update_rows'][0]['payload']['post_title'] ?? null, '4. create overlay keeps local title as post_title' );
+	assert_eq( 'decision-to-leave', $state['update_rows'][0]['payload']['post_name'] ?? null, '4. create sets slug from TMDb title' );
 	assert_eq( 'Decision to Leave', $state['meta_written']['_tmdb_title']['value'] ?? null, '4. create persists _tmdb_title' );
 	assert_eq( '헤어질 결심', $state['meta_written']['_tmdb_original_title']['value'] ?? null, '4. create persists _tmdb_original_title' );
 	assert_true( ! isset( $state['meta_written']['original_title'] ), '4. create never writes unprefixed original_title' );

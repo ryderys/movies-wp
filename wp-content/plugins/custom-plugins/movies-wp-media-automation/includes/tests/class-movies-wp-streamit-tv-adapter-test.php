@@ -266,6 +266,7 @@ tv_adapter_same( 100, $result['series_id'], 'create returns Streamit series ID' 
 tv_adapter_same( 'create', $result['seasons'][0]['action'], 'new Season 0 is created' );
 tv_adapter_same( 'عنوان اپراتور', $state['created_tv_rows'][0]['post_title'], 'create uses operator title' );
 tv_adapter_same( 'خلاصه جدید', $state['created_tv_rows'][0]['post_content'], 'create uses planned summary' );
+tv_adapter_same( 'tmdb-name', $state['created_tv_rows'][0]['post_name'], 'create sets slug from TMDb title' );
 tv_adapter_same( '0', $state['episode_meta'][70]['_season_number'], 'Season 0 stored as string zero' );
 tv_adapter_same( 'E01', $state['episode_meta'][70]['_episode_number'], 'episode number uses E01 format' );
 tv_adapter_same( '100', $state['episode_meta'][70]['tvshow_id'], 'created episode receives current TV show identity meta' );

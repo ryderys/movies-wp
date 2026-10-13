@@ -433,6 +433,25 @@ class Movies_WP_Streamit_TV_Adapter {
 				'tvshow',
 				$options
 			);
+
+			// Slug policy: keep the visible post_title as operator/localized title, but derive
+			// the post_name (slug) from the English TMDb name when available.
+			$slug_source = trim( (string) ( $data['tmdb_title'] ?? '' ) );
+			if ( '' === $slug_source ) {
+				$slug_source = trim( (string) ( $data['tmdb_original_title'] ?? '' ) );
+			}
+			if ( '' === $slug_source ) {
+				$slug_source = trim( (string) ( $data['title'] ?? '' ) );
+			}
+			if ( '' !== $slug_source ) {
+				$slug = function_exists( 'sanitize_title' )
+					? sanitize_title( $slug_source )
+					: strtolower( preg_replace( '/[^a-z0-9]+/i', '-', trim( $slug_source ) ) );
+				if ( is_string( $slug ) && '' !== trim( $slug ) ) {
+					$row['post_name'] = $slug;
+				}
+			}
+
 			$created = isset( $options['create_tvshow'] ) && is_callable( $options['create_tvshow'] )
 				? call_user_func( $options['create_tvshow'], $row )
 				: ( function_exists( 'streamit_add_tvshow' ) ? streamit_add_tvshow( $row ) : new WP_Error( 'missing_api', 'streamit_add_tvshow() is not available.' ) );
