@@ -146,6 +146,85 @@ $GLOBALS['streamit_child_tvshow_search_term'] = '';
 $direct = streamit_child_expand_tvshow_title_search_query( tvshow_queries( 'The Husband' ), array( 's' => 'The Husband' ) );
 assert_true( str_contains( $direct['paginateQuery'], "search_title_meta.meta_value LIKE '%The Husband%'" ), 'two-argument call still expands the search' );
 
+/**
+ * Stub of Streamit's streamit_get_tvshows(): builds the title clause from
+ * args['s'] and applies the query filter with one argument.
+ */
+function streamit_get_tvshows( $args = array() ) {
+	if ( ! empty( $args['throw'] ) ) {
+		throw new RuntimeException( 'query failed' );
+	}
+	$GLOBALS['tvshow_search_test_last_sql'] = streamit_apply_tvshow_query_filter( tvshow_queries( (string) ( $args['s'] ?? '' ) ) );
+	return (object) array( 'results' => array() );
+}
+
+function last_tvshow_sql(): string {
+	return (string) ( $GLOBALS['tvshow_search_test_last_sql']['paginateQuery'] ?? '' );
+}
+
+function staged_term(): string {
+	return (string) ( $GLOBALS['streamit_child_tvshow_search_term'] ?? '' );
+}
+
+echo "\nsearch modal entry point (ajax_search.php)\n\n";
+
+$template = (string) file_get_contents( dirname( __DIR__, 2 ) . '/template-parts/search/ajax_search.php' );
+assert_true( str_contains( $template, 'streamit_child_get_tvshows_with_title_search( $query_args )' ), 'modal template fetches tvshows through the staging helper' );
+assert_true( str_contains( $template, 'streamit_get_movies( $query_args )' ), 'modal template movie search is unchanged' );
+
+streamit_child_get_tvshows_with_title_search( array( 's' => 'A Shop for Killers', 'posts_per_page' => -1 ) );
+assert_true( str_contains( last_tvshow_sql(), "search_title_meta.meta_value LIKE '%A Shop for Killers%'" ), 'modal: English title matches TMDb metadata' );
+assert_true( str_contains( last_tvshow_sql(), "tv.post_title LIKE '%A Shop for Killers%'" ), 'modal: post_title match is kept' );
+assert_true( '' === staged_term(), 'modal: staged term cleared after the query' );
+
+streamit_child_get_tvshows_with_title_search( array( 's' => 'فروشگاه قاتلان', 'posts_per_page' => -1 ) );
+assert_true( str_contains( last_tvshow_sql(), "tv.post_title LIKE '%فروشگاه قاتلان%'" ), 'modal: Persian title still matches post_title' );
+assert_true( '' === staged_term(), 'modal: staged term cleared after Persian query' );
+
+streamit_child_get_tvshows_with_title_search( array( 's' => '', 'posts_per_page' => -1 ) );
+assert_true( ! str_contains( last_tvshow_sql(), 'EXISTS (' ), 'modal: empty search adds no metadata clause' );
+
+try {
+	streamit_child_get_tvshows_with_title_search( array( 's' => 'A Shop for Killers', 'throw' => true ) );
+} catch ( RuntimeException $e ) {
+	unset( $e );
+}
+assert_true( '' === staged_term(), 'modal: staged term cleared even when the query throws' );
+
+echo "\nheader dropdown entry point (St_Search_Content_Controller)\n\n";
+
+$header_args = apply_filters( 'st_header_search_args', array( 'per_page' => 2, 's' => 'A Shop for Killers' ) );
+assert_true( array( 'per_page' => 2, 's' => 'A Shop for Killers' ) === $header_args, 'header: search args pass through unchanged' );
+streamit_get_tvshows( $header_args );
+assert_true( str_contains( last_tvshow_sql(), "search_title_meta.meta_value LIKE '%A Shop for Killers%'" ), 'header: English title matches TMDb metadata' );
+$header_result = apply_filters( 'st_header_search_result', '<div>results</div>', 'A Shop for Killers' );
+assert_true( '<div>results</div>' === $header_result, 'header: result HTML passes through unchanged' );
+assert_true( '' === staged_term(), 'header: staged term cleared after results are built' );
+
+$header_args = apply_filters( 'st_header_search_args', array( 'per_page' => 2, 's' => 'فروشگاه قاتلان' ) );
+streamit_get_tvshows( $header_args );
+assert_true( str_contains( last_tvshow_sql(), "tv.post_title LIKE '%فروشگاه قاتلان%'" ), 'header: Persian title still matches post_title' );
+apply_filters( 'st_header_search_result', '', 'فروشگاه قاتلان' );
+
+$header_args = apply_filters( 'st_header_search_args', array( 'per_page' => 2, 's' => '' ) );
+streamit_get_tvshows( $header_args );
+assert_true( ! str_contains( last_tvshow_sql(), 'EXISTS (' ), 'header: empty search adds no metadata clause' );
+apply_filters( 'st_header_search_result', '', '' );
+
+echo "\nsequential unrelated queries in the same request\n\n";
+
+streamit_child_get_tvshows_with_title_search( array( 's' => 'A Shop for Killers' ) );
+streamit_get_tvshows( array( 's' => 'A Shop for Killers' ) );
+assert_true( ! str_contains( last_tvshow_sql(), 'EXISTS (' ), 'after modal search: a later direct query is not rewritten' );
+
+apply_filters( 'st_header_search_args', array( 'per_page' => 2, 's' => 'A Shop for Killers' ) );
+apply_filters( 'st_header_search_result', '', 'A Shop for Killers' );
+streamit_get_tvshows( array( 's' => 'A Shop for Killers' ) );
+assert_true( ! str_contains( last_tvshow_sql(), 'EXISTS (' ), 'after header search: a later direct query is not rewritten' );
+
+streamit_get_tvshows( array( 'per_page' => 10 ) );
+assert_true( last_tvshow_sql() === tvshow_queries()['paginateQuery'], 'plain listing query is unchanged' );
+
 echo "\n";
 if ( $failures > 0 ) {
 	echo "FAILED: {$failures} assertion(s)\n";

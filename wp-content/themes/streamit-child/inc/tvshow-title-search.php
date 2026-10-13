@@ -28,6 +28,41 @@ function streamit_child_stage_tvshow_search_term( $args ) {
 add_filter( 'streamit_tvshows_arguments', 'streamit_child_stage_tvshow_search_term', 15 );
 
 /**
+ * Clear the staged TV show search term. Passes `$value` through so it can
+ * also run as a filter.
+ *
+ * @param mixed $value Filtered value.
+ * @return mixed
+ */
+function streamit_child_clear_tvshow_search_term( $value = null ) {
+	$GLOBALS['streamit_child_tvshow_search_term'] = '';
+	return $value;
+}
+
+// Header dropdown (St_Search_Content_Controller): stage before its queries, clear after.
+add_filter( 'st_header_search_args', 'streamit_child_stage_tvshow_search_term', 15 );
+add_filter( 'st_header_search_result', 'streamit_child_clear_tvshow_search_term', 15 );
+
+/**
+ * `streamit_get_tvshows()` with the search term staged for this call only.
+ *
+ * @param array $args Query args.
+ * @return mixed
+ */
+function streamit_child_get_tvshows_with_title_search( $args ) {
+	if ( ! function_exists( 'streamit_get_tvshows' ) ) {
+		return null;
+	}
+
+	streamit_child_stage_tvshow_search_term( $args );
+	try {
+		return streamit_get_tvshows( $args );
+	} finally {
+		streamit_child_clear_tvshow_search_term();
+	}
+}
+
+/**
  * Add `_tmdb_title` and `_tmdb_original_title` matching to Streamit TV show
  * pagination and count queries.
  *

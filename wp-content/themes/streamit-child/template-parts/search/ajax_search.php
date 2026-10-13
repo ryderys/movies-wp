@@ -36,7 +36,7 @@ $query_args = array(
 $movie_data   = function_exists( 'streamit_get_movies' ) ? streamit_get_movies( $query_args )->results : '';
 $video_data   = function_exists( 'streamit_get_videos' ) ? streamit_get_videos( $query_args )->results : '';
 $person_data  = function_exists( 'streamit_get_persons' ) ? streamit_get_persons( $query_args )->results : '';
-$tvshow_data  = function_exists( 'streamit_get_tvshows' ) ? streamit_get_tvshows( $query_args )->results : '';
+$tvshow_data  = function_exists( 'streamit_get_tvshows' ) ? streamit_child_get_tvshows_with_title_search( $query_args )->results : '';
 $episode_data = function_exists( 'streamit_get_episodes' ) ? streamit_get_episodes( $query_args )->results : '';
 
 $tabs = array(
