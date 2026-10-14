@@ -40,9 +40,11 @@ header .dropdown-search-wrapper .search_result_section {
 	height: auto;
 	max-height: calc(100vh - 6rem);
 	max-height: calc(100dvh - 6rem);
-	border: 1px solid rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(var(--bs-primary-rgb, 229, 9, 20), 0.3);
 	border-radius: 1rem;
-	box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.6);
+	box-shadow:
+		0 0 2.5rem rgba(var(--bs-primary-rgb, 229, 9, 20), 0.16),
+		0 1.5rem 3rem rgba(0, 0, 0, 0.6);
 	overflow: hidden;
 }
 
