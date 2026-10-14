@@ -51,6 +51,11 @@ $valid_sources = function_exists( 'streamit_child_get_downloadable_sources' )
 				<?php if ( ! empty( $valid_sources ) ) : ?>
 					<ul class="list-inline m-0 p-0 downloadModal-list">
 						<?php foreach ( $valid_sources as $source ) : ?>
+							<?php
+							if ( isset( $source['file_size'] ) && function_exists( 'streamit_child_episode_display_file_size' ) ) {
+								$source['file_size'] = streamit_child_episode_display_file_size( $source['file_size'] );
+							}
+							?>
 							<li>
 								<div class="stc-download-row">
 									<div class="stc-download-info">

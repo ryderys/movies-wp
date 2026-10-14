@@ -489,6 +489,82 @@ assert_eq( 2, count( $mixed_encoder ), 'same quality different encoders stay sep
 assert_eq( 'A', $mixed_encoder[0]['encoder'] ?? null, 'encoder A group' );
 assert_eq( 'B', $mixed_encoder[1]['encoder'] ?? null, 'encoder B group' );
 
+echo "\nstreamit_child_episode_display_file_size tests (+23 MB, display only)\n\n";
+
+assert_eq( '1.52 GB', streamit_child_episode_display_file_size( '1.50 GB' ), 'scanner GB label +23 MB' );
+assert_eq( '823.00 MB', streamit_child_episode_display_file_size( '800 MB' ), 'MB label +23 MB keeps MB' );
+assert_eq( '428.57 MB', streamit_child_episode_display_file_size( '405.57 MB' ), 'two-decimal MB label' );
+assert_eq( '1.01 GB', streamit_child_episode_display_file_size( '1010 MB' ), 'crossing 1024 MB promotes to GB' );
+assert_eq( '1.00 GB', streamit_child_episode_display_file_size( '1001 MB' ), 'exactly 1024 MB → 1.00 GB' );
+assert_eq( '1.02 GB', streamit_child_episode_display_file_size( '1 GB' ), 'admin integer GB label' );
+assert_eq( '2.12 GB', streamit_child_episode_display_file_size( '2.1GB' ), 'no space between number and unit' );
+assert_eq( '1.48 GB', streamit_child_episode_display_file_size( ' 1.46 gb ' ), 'lowercase unit and padding' );
+assert_eq( '23.49 MB', streamit_child_episode_display_file_size( '500 KB' ), 'KB label converts up' );
+assert_eq( '', streamit_child_episode_display_file_size( '' ), 'missing size stays empty' );
+assert_eq( '', streamit_child_episode_display_file_size( null ), 'null size stays empty' );
+assert_eq( 'نامشخص', streamit_child_episode_display_file_size( 'نامشخص' ), 'unknown text unchanged' );
+assert_eq( '1,5 GB', streamit_child_episode_display_file_size( '1,5 GB' ), 'unrecognised format unchanged' );
+assert_eq( '1.5 GiB', streamit_child_episode_display_file_size( '1.5 GiB' ), 'unsupported unit unchanged' );
+assert_eq( '0 B', streamit_child_episode_display_file_size( '0 B' ), 'zero size unchanged' );
+
+$size_seasons  = array(
+	array(
+		'name'          => 'فصل ۱',
+		'season_number' => '1',
+		'episodes'      => array( 30, 31 ),
+	),
+);
+$size_episodes = array(
+	30 => array(
+		'title'          => 'Sized',
+		'season_number'  => '1',
+		'episode_number' => 'E01',
+		'sources'        => array(
+			array(
+				'quality'          => '1080p',
+				'download_content' => $path,
+				'file_size'        => '1.50 GB',
+			),
+		),
+		'subtitles'      => array(),
+	),
+	31 => array(
+		'title'          => 'Unsized',
+		'season_number'  => '1',
+		'episode_number' => 'E02',
+		'sources'        => array(
+			array(
+				'quality'          => '1080p',
+				'download_content' => $path,
+			),
+		),
+		'subtitles'      => array(),
+	),
+);
+$size_episodes_before = $size_episodes;
+
+$size_catalog = streamit_child_build_series_download_catalog_from_data( $size_seasons, $size_episodes, true );
+assert_eq( '1.50 GB', $size_catalog['seasons'][0]['episodes'][0]['sources'][0]['file_size'] ?? null, 'catalog keeps the stored size (adjusted only at render)' );
+
+$size_season_episodes = $size_catalog['seasons'][0]['episodes'];
+$size_groups          = streamit_child_series_download_quality_groups( $size_season_episodes );
+assert_eq( '1.52 GB', $size_groups[0]['episodes'][0]['file_size'] ?? null, 'series download row shows stored size +23 MB exactly once' );
+assert_eq( '', $size_groups[0]['episodes'][1]['file_size'] ?? null, 'episode without a size stays empty' );
+
+$size_groups_again = streamit_child_series_download_quality_groups( $size_season_episodes );
+assert_eq( $size_groups, $size_groups_again, 'rebuilding the rows (reload/rerender) gives the same sizes' );
+assert_eq( $size_episodes_before, $size_episodes, 'underlying episode data unchanged' );
+assert_eq( '1.50 GB', $size_season_episodes[0]['sources'][0]['file_size'] ?? null, 'catalog rows unchanged after grouping' );
+
+$movie_source = array(
+	'quality'          => '1080p',
+	'download_content' => 'Movie/Film/Film.1080p.mkv',
+	'file_size'        => '2.1 GB',
+);
+$movie_rows   = streamit_child_get_downloadable_sources( array( $movie_source ) );
+assert_eq( '2.1 GB', $movie_rows[0]['file_size'] ?? null, 'movie source size not adjusted' );
+assert_true( in_array( '2.1 GB', streamit_child_download_source_meta_values( $movie_rows[0] ), true ), 'movie modal meta shows the stored size' );
+
 echo "\n";
 if ( $failures > 0 ) {
 	echo "FAILED: {$failures} assertion(s)\n";

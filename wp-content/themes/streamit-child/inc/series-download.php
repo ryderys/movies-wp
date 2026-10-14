@@ -65,6 +65,38 @@ function streamit_child_series_download_episode_ordinal( $label, $fallback = 0 )
 }
 
 /**
+ * Display-only TV episode file size: the stored size plus 23 MB.
+ *
+ * Call only when rendering — never persist the result, or the 23 MB would
+ * accumulate. Parses "<number> <unit>" labels (B…PB, 1024-based like the media
+ * scanner's media_format_size_label()) and re-formats them the same way
+ * ("%.2f UNIT"). Empty, zero or unrecognised values are returned unchanged.
+ * Movies must not use this.
+ *
+ * @param mixed $file_size Stored `_sources[].file_size`, e.g. "1.46 GB".
+ * @return string
+ */
+function streamit_child_episode_display_file_size( $file_size ) {
+	$raw   = (string) $file_size;
+	$units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB' );
+
+	if ( ! preg_match( '/^\s*(\d+(?:\.\d+)?)\s*([KMGTP]?B)\s*$/i', $raw, $m ) || (float) $m[1] <= 0 ) {
+		return $raw;
+	}
+
+	$power = (int) array_search( strtoupper( $m[2] ), $units, true );
+	$value = (float) $m[1] * ( 1024 ** $power ) + 23 * 1024 * 1024;
+	$index = 0;
+
+	while ( $value >= 1024 && $index < count( $units ) - 1 ) {
+		$value /= 1024;
+		$index++;
+	}
+
+	return sprintf( '%.2f %s', $value, $units[ $index ] );
+}
+
+/**
  * Persian button label for one subtitle file.
  *
  * Automation stores the uppercased language code as the label ("ENG", "FA")
@@ -206,7 +238,7 @@ function streamit_child_series_download_quality_groups( array $episodes ) {
 
 			$groups[ $key ]['episodes'][] = $base + array(
 				'href'      => $href,
-				'file_size' => isset( $source['file_size'] ) ? (string) $source['file_size'] : '',
+				'file_size' => isset( $source['file_size'] ) ? streamit_child_episode_display_file_size( $source['file_size'] ) : '',
 			);
 			if ( '' !== $href ) {
 				$groups[ $key ]['link_count']++;

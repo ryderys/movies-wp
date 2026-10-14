@@ -99,6 +99,22 @@ if ( ! function_exists( 'maybe_unserialize' ) ) {
 		return $value;
 	}
 }
+if ( ! function_exists( 'maybe_serialize' ) ) {
+	function maybe_serialize( $data ) {
+		return serialize( $data );
+	}
+}
+if ( ! function_exists( 'current_time' ) ) {
+	function current_time( $type ) {
+		unset( $type );
+		return '2026-10-14 10:00:00';
+	}
+}
+if ( ! function_exists( 'wp_json_encode' ) ) {
+	function wp_json_encode( $data, $flags = 0 ) {
+		return json_encode( $data, $flags );
+	}
+}
 
 class TV_Adapter_Object {
 	private $data;
@@ -145,6 +161,7 @@ require_once dirname( __DIR__ ) . '/class-movies-wp-series-import-plan.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-media-import-plan.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-orchestrator.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-streamit-tv-adapter.php';
+require_once dirname( __DIR__ ) . '/class-movies-wp-streamit-episode-media-adapter.php';
 $root_dir = dirname( __DIR__, 6 );
 require_once $root_dir . '/media-server/lib/series-episode-identity.php';
 require_once $root_dir . '/media-server/lib/series-category.php';
@@ -791,6 +808,132 @@ p2_same( 'upsert', $planned_ops[0]['action'], 'new source is upsert' );
 p2_same( 'preserve', $planned_ops[1]['action'], 'manual source action is preserve' );
 p2_same( 'Custom VIP Server', $planned_ops[1]['row']['name'], 'manual source name is preserved' );
 p2_same( 'series/korea/2024/Show/1080p-manual/Show.S01E01.mp4', $planned_ops[1]['row']['link'], 'manual source link is preserved' );
+
+echo "\n=== Requirement 12: Episode download size shows +23 MB once; stored size untouched ===\n";
+$size_store = array(
+	2001 => array(
+		'tvshow_id'       => 500,
+		'_season_number'  => '1',
+		'_episode_number' => '1',
+		'_sources'        => array(),
+		'_subtitles'      => array(),
+	),
+);
+$size_adapter_options = array(
+	'now_local'           => '2026-10-14 10:00:00',
+	'get_episode'         => static function ( int $id ): array {
+		return array( 'id' => $id );
+	},
+	'get_episode_meta'    => static function ( int $id, string $key ) use ( &$size_store ) {
+		return $size_store[ $id ][ $key ] ?? null;
+	},
+	'update_episode_meta' => static function ( int $id, string $key, $value ) use ( &$size_store ): bool {
+		$size_store[ $id ][ $key ] = $value;
+		return true;
+	},
+);
+$size_import = static function ( int $bytes ) use ( &$size_store, $size_adapter_options ): array {
+	$plan = Movies_WP_Series_Media_Import_Plan::build(
+		array(
+			'ok'         => true,
+			'type'       => 'series_media',
+			'input'      => array(
+				'tvshow_id'        => 500,
+				'series_directory' => 'series/korea/2024/Show',
+				'expected_tmdb_id' => 777,
+			),
+			'validation' => array( 'errors' => array(), 'warnings' => array() ),
+			'episodes'   => array(
+				array(
+					'season_number'  => '1',
+					'episode_number' => '1',
+					'status'         => 'matched',
+					'episode_id'     => 2001,
+					'sources'        => array(
+						array(
+							'media_path'  => 'series/korea/2024/Show/1080p WEB-DL/Show.S01E01.1080p.WEB-DL.mkv',
+							'quality'     => '1080p',
+							'source_type' => 'WEB-DL',
+							'size_label'  => media_format_size_label( $bytes ),
+						),
+					),
+					'subtitles'      => array(),
+				),
+			),
+		),
+		array(
+			'get_sources'   => static function () use ( &$size_store ) {
+				return $size_store[2001]['_sources'];
+			},
+			'get_subtitles' => static function () use ( &$size_store ) {
+				return $size_store[2001]['_subtitles'];
+			},
+		)
+	);
+	return Movies_WP_Streamit_Episode_Media_Adapter::apply( $plan, $size_adapter_options );
+};
+$size_displayed = static function () use ( &$size_store ): ?string {
+	$catalog = streamit_child_build_series_download_catalog_from_data(
+		array(
+			array(
+				'name'          => 'فصل ۱',
+				'season_number' => '1',
+				'episodes'      => array( 2001 ),
+			),
+		),
+		array(
+			2001 => array(
+				'title'          => 'Episode 1',
+				'season_number'  => '1',
+				'episode_number' => 'E01',
+				'sources'        => $size_store[2001]['_sources'],
+				'subtitles'      => array(),
+			),
+		),
+		true
+	);
+	$groups = streamit_child_series_download_quality_groups( $catalog['seasons'][0]['episodes'] ?? array() );
+	return $groups[0]['episodes'][0]['file_size'] ?? null;
+};
+
+$first_import = $size_import( 1610612736 );
+p2_same( true, $first_import['ok'] ?? false, 'new episode media import applies' );
+p2_same( '1.50 GB', $size_store[2001]['_sources'][0]['file_size'] ?? null, 'new import stores the scanner size unchanged' );
+p2_same( '1.52 GB', $size_displayed(), 'new import displays stored size +23 MB' );
+p2_same( '1.52 GB', $size_displayed(), 'page reload displays the same size' );
+p2_same( '1.50 GB', $size_store[2001]['_sources'][0]['file_size'] ?? null, 'displaying does not modify stored size' );
+
+$size_import( 1610612736 );
+$size_import( 1610612736 );
+p2_same( 1, count( $size_store[2001]['_sources'] ), 'repeated imports do not duplicate the source' );
+p2_same( '1.50 GB', $size_store[2001]['_sources'][0]['file_size'] ?? null, 'repeated imports keep the scanner size (no accumulation)' );
+p2_same( '1.52 GB', $size_displayed(), 'repeated imports still display +23 MB exactly once' );
+
+$size_import( 2147483648 );
+p2_same( '2.00 GB', $size_store[2001]['_sources'][0]['file_size'] ?? null, 'updated episode stores the new scanner size' );
+p2_same( '2.02 GB', $size_displayed(), 'updated episode displays new size +23 MB' );
+
+$legacy_store_sources = array(
+	array(
+		'quality'          => '720p',
+		'download_content' => 'series/korea/2024/Show/720p/Show.S01E01.mkv',
+		'file_size'        => '800 MB',
+	),
+);
+$size_store[2001]['_sources'] = $legacy_store_sources;
+p2_same( '823.00 MB', $size_displayed(), 'existing (pre-change) episode size is adjusted at display time' );
+p2_same( $legacy_store_sources, $size_store[2001]['_sources'], 'existing episode meta is not rewritten' );
+
+$movie_rows = streamit_child_get_downloadable_sources(
+	array(
+		array(
+			'quality'          => '1080p',
+			'download_content' => 'Movie/Film/Film.1080p.mkv',
+			'file_size'        => media_format_size_label( 1610612736 ),
+		),
+	)
+);
+p2_same( '1.50 GB', $movie_rows[0]['file_size'] ?? null, 'movie download size is not adjusted' );
 
 if ( $failures > 0 ) {
 	fwrite( STDERR, "\n{$failures} test failure(s) in Phase 2 suite\n" );
