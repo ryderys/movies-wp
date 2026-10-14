@@ -11,6 +11,7 @@ if (!defined('ABSPATH')) exit;
         $post_slug  = $post->get_post_name();
         $post_title = $post->get_post_title();
         $card_title = function_exists( 'streamit_child_homepage_card_title' ) ? streamit_child_homepage_card_title( $post ) : $post_title;
+        $card_subtitle = function_exists( 'streamit_child_homepage_card_subtitle' ) ? streamit_child_homepage_card_subtitle( $post ) : '';
         $image_id   = $post->get_meta('thumbnail_id');
 
         // Determine run time / season info
@@ -73,6 +74,9 @@ if (!defined('ABSPATH')) exit;
                     <?php endif; ?>
 
                     <h2 class="m-0 title RightAnimate-two line-count-2"><?php echo esc_html($card_title); ?></h2>
+                    <?php if ('' !== $card_subtitle) : ?>
+                        <p class="streamit-child-card-fa-title RightAnimate-two line-count-1" dir="auto"><?php echo esc_html($card_subtitle); ?></p>
+                    <?php endif; ?>
 
                     <div class="d-flex flex-wrap align-items-center justify-content-lg-start justify-content-center gap-3 horizontal-thumb-description py-2 RightAnimate-three">
                         <?php if (!empty($imdb_rating)) : ?>
@@ -126,6 +130,9 @@ if (!defined('ABSPATH')) exit;
                 </a>
                 <div class="vertical-thumb-card-desc">
                     <h5 class="verticle-title line-count-2"><?php echo esc_html($card_title); ?></h5>
+                    <?php if ('' !== $card_subtitle) : ?>
+                        <p class="streamit-child-card-fa-title line-count-1" dir="auto"><?php echo esc_html($card_subtitle); ?></p>
+                    <?php endif; ?>
                     <?php if (!empty($run_time) && $run_time !== '0:00' && $run_time !== 'Arriving Soon') : ?>
                         <div class="movie-time my-2">
                             <span class="movie-time-text small font-normal d-flex align-items-center gap-1">

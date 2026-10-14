@@ -68,7 +68,8 @@ if (!defined('ABSPATH')) {
                             </span>
                             <div class="d-flex align-items-center justify-content-between continue-watching-desc">
                                 <ul class="list-inline m-0 p-0 d-flex row-gap-1 column-gap-3">
-                                    <li><span class="line-count-1"><?php echo esc_html(function_exists('streamit_child_homepage_card_title') ? streamit_child_homepage_card_title($post_data) : $post_data->get_post_title()); ?></span></li>
+                                    <?php $card_subtitle = function_exists('streamit_child_homepage_card_subtitle') ? streamit_child_homepage_card_subtitle($post_data) : ''; ?>
+                                    <li><span class="line-count-1"><?php echo esc_html(function_exists('streamit_child_homepage_card_title') ? streamit_child_homepage_card_title($post_data) : $post_data->get_post_title()); ?></span><?php if ('' !== $card_subtitle) : ?><span class="streamit-child-card-fa-title line-count-1" dir="auto"><?php echo esc_html($card_subtitle); ?></span><?php endif; ?></li>
                                     <li class="flex-shrink-0"><?php echo esc_html(date_i18n('M, Y', strtotime($post_data->get_post_date()))); ?></li>
                                 </ul>
                                 <a href="<?php echo esc_url(streamit_get_permalink($post_data->get_post_type(), $post_data->get_post_name())); ?>">

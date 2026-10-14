@@ -36,3 +36,24 @@ function streamit_child_homepage_card_title( $st_data ) {
 
 	return '' !== $english ? $english : $title;
 }
+
+/**
+ * Secondary (Persian) title shown under the English homepage card title.
+ *
+ * Returns the stored post title only when the card shows a different title;
+ * otherwise an empty string, so no duplicate or blank line is rendered.
+ *
+ * @param object $st_data Streamit content object.
+ * @return string Unescaped title, or ''.
+ */
+function streamit_child_homepage_card_subtitle( $st_data ) {
+	$title = is_object( $st_data ) && method_exists( $st_data, 'get_post_title' )
+		? trim( (string) $st_data->get_post_title() )
+		: '';
+
+	if ( '' === $title || trim( streamit_child_homepage_card_title( $st_data ) ) === $title ) {
+		return '';
+	}
+
+	return $title;
+}

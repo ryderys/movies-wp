@@ -176,6 +176,8 @@ $movie_no_en  = new Homepage_Card_Test_Object( 'movie', 'فیلم بدون عن�
 $tvshow_blank = new Homepage_Card_Test_Object( 'tvshow', 'سریال بی‌نام', array( '_tmdb_title' => '   ' ) );
 $episode      = new Homepage_Card_Test_Object( 'episode', 'قسمت ۱', array( '_tmdb_title' => 'Episode 1' ) );
 $video        = new Homepage_Card_Test_Object( 'video', 'ویدیو', array( '_tmdb_title' => 'Video' ) );
+$movie_same   = new Homepage_Card_Test_Object( 'movie', 'Parasite', array( '_tmdb_title' => 'Parasite' ) );
+$tvshow_no_fa = new Homepage_Card_Test_Object( 'tvshow', '  ', array( '_tmdb_title' => 'Moving' ) );
 
 echo "streamit_child_homepage_card_title\n\n";
 
@@ -190,6 +192,24 @@ assert_eq( '', streamit_child_homepage_card_title( null ), 'non-object returns e
 $GLOBALS['hct_is_front_page'] = false;
 assert_eq( 'تصمیم به جدایی', streamit_child_homepage_card_title( $movie ), 'off the front page the movie title is unchanged' );
 assert_eq( 'شوهر', streamit_child_homepage_card_title( $tvshow ), 'off the front page the TV show title is unchanged' );
+$GLOBALS['hct_is_front_page'] = true;
+
+echo "\nstreamit_child_homepage_card_subtitle\n\n";
+
+assert_eq( 'تصمیم به جدایی', streamit_child_homepage_card_subtitle( $movie ), 'movie card subtitle is the Persian post title' );
+assert_eq( 'شوهر', streamit_child_homepage_card_subtitle( $tvshow ), 'TV show card subtitle is the Persian post title' );
+assert_eq( '', streamit_child_homepage_card_subtitle( $movie_no_en ), 'no subtitle when English title is missing (Persian already primary)' );
+assert_eq( '', streamit_child_homepage_card_subtitle( $tvshow_blank ), 'no subtitle when English title is blank' );
+assert_eq( '', streamit_child_homepage_card_subtitle( $movie_same ), 'no duplicate subtitle when titles are identical' );
+assert_eq( '', streamit_child_homepage_card_subtitle( $tvshow_no_fa ), 'no blank subtitle when Persian title is empty' );
+assert_eq( 'Moving', streamit_child_homepage_card_title( $tvshow_no_fa ), 'English title still shown when Persian title is empty' );
+assert_eq( '', streamit_child_homepage_card_subtitle( $episode ), 'episode cards get no subtitle' );
+assert_eq( '', streamit_child_homepage_card_subtitle( $video ), 'video cards get no subtitle' );
+assert_eq( '', streamit_child_homepage_card_subtitle( null ), 'non-object returns empty subtitle' );
+
+$GLOBALS['hct_is_front_page'] = false;
+assert_eq( '', streamit_child_homepage_card_subtitle( $movie ), 'no subtitle off the front page (movie)' );
+assert_eq( '', streamit_child_homepage_card_subtitle( $tvshow ), 'no subtitle off the front page (TV show)' );
 $GLOBALS['hct_is_front_page'] = true;
 
 function render_template( string $file, array $vars ): string {
@@ -269,23 +289,35 @@ $banner = render_banner( array( $tvshow, $movie, $movie_no_en ) );
 assert_eq( array( 'The Husband', 'Decision to Leave', 'فیلم بدون عنوان انگلیسی' ), visible_titles( $banner, '#<h2 class="m-0 title[^"]*">([^<]*)</h2>#' ), 'hero banner titles: English, English, fallback' );
 assert_eq( array( 'The Husband', 'Decision to Leave', 'فیلم بدون عنوان انگلیسی' ), visible_titles( $banner, '#<h5 class="verticle-title[^"]*">([^<]*)</h5>#' ), 'thumbnail card titles: English, English, fallback' );
 assert_true( str_contains( $banner, 'alt="شوهر"' ), 'image alt text keeps the stored title' );
+assert_true( (bool) preg_match( '#<h2 class="m-0 title[^"]*">The Husband</h2>\s*<p class="streamit-child-card-fa-title RightAnimate-two line-count-1" dir="auto">شوهر</p>#u', $banner ), 'hero: Persian title directly under English title' );
+assert_true( (bool) preg_match( '#<h5 class="verticle-title[^"]*">Decision to Leave</h5>\s*<p class="streamit-child-card-fa-title line-count-1" dir="auto">تصمیم به جدایی</p>#u', $banner ), 'thumbnail: Persian title directly under English title' );
+assert_eq( 4, substr_count( $banner, 'streamit-child-card-fa-title' ), 'banner: subtitle only for the 2 English cards (hero + thumbnail each)' );
+assert_true( ! preg_match( '#فیلم بدون عنوان انگلیسی</h[25]>\s*<p class="streamit-child-card-fa-title#u', $banner ), 'banner: fallback card has no duplicate subtitle' );
 
 echo "\nhomepage main card grid (hover overlay title)\n\n";
 
 $grid = render_grid( array( $tvshow, $movie, $tvshow_blank ) );
 assert_eq( array( 'The Husband', 'Decision to Leave', 'سریال بی‌نام' ), visible_titles( $grid, '#<h5 class="css_prefix-title[^"]*">\s*<a[^>]*>([^<]*)</a>#' ), 'grid card titles: English, English, fallback' );
 assert_true( str_contains( $grid, 'class="btn btn-primary w-100"' ) && str_contains( $grid, 'watch-list-btn' ), 'play and watchlist buttons still render' );
+assert_eq( array( 'شوهر', 'تصمیم به جدایی' ), visible_titles( $grid, '#</h5>\s*<p class="streamit-child-card-fa-title line-count-1" dir="auto">([^<]*)</p>#u' ), 'grid: Persian subtitles directly under English titles, none for fallback' );
+
+$grid_edge = render_grid( array( $movie_same, $tvshow_no_fa ) );
+assert_eq( array( 'Parasite', 'Moving' ), visible_titles( $grid_edge, '#<h5 class="css_prefix-title[^"]*">\s*<a[^>]*>([^<]*)</a>#' ), 'grid: identical-title and empty-Persian cards keep their primary title' );
+assert_true( ! str_contains( $grid_edge, 'streamit-child-card-fa-title' ), 'grid: no duplicate or blank subtitle' );
 
 echo "\nhomepage continue watching\n\n";
 
 $continue = render_continue( array( $movie, $episode ) );
 assert_eq( array( 'Decision to Leave', 'قسمت ۱' ), visible_titles( $continue, '#<span class="line-count-1">([^<]*)</span>#' ), 'continue watching: movie English, episode unchanged' );
+assert_true( (bool) preg_match( '#<span class="line-count-1">Decision to Leave</span><span class="streamit-child-card-fa-title line-count-1" dir="auto">تصمیم به جدایی</span>#u', $continue ), 'continue watching: Persian title directly after English title' );
+assert_eq( 1, substr_count( $continue, 'streamit-child-card-fa-title' ), 'continue watching: no subtitle for episode' );
 
 echo "\nsame templates off the front page (e.g. Movies / TV Shows pages)\n\n";
 
 $GLOBALS['hct_is_front_page'] = false;
 assert_eq( array( 'شوهر', 'تصمیم به جدایی', 'سریال بی‌نام' ), visible_titles( render_grid( array( $tvshow, $movie, $tvshow_blank ) ), '#<h5 class="css_prefix-title[^"]*">\s*<a[^>]*>([^<]*)</a>#' ), 'grid keeps stored titles off the front page' );
 assert_eq( array( 'شوهر' ), visible_titles( render_banner( array( $tvshow ) ), '#<h2 class="m-0 title[^"]*">([^<]*)</h2>#' ), 'banner keeps stored title off the front page' );
+assert_true( ! str_contains( render_grid( array( $tvshow, $movie ) ) . render_banner( array( $tvshow, $movie ) ) . render_continue( array( $movie ) ), 'streamit-child-card-fa-title' ), 'no Persian subtitle line off the front page' );
 $GLOBALS['hct_is_front_page'] = true;
 
 echo "\ndetail page titles unchanged\n\n";
@@ -301,6 +333,7 @@ foreach ( array( true, false ) as $front ) {
 	$tv_html = render_template( $theme . '/template-parts/tvshow/content/tvshow_single_title.php', array( 'st_data' => $tvshow ) );
 	assert_true( (bool) preg_match( '#<h1[^>]*>\s*شوهر\s*</h1>#', $tv_html ), "TV detail h1 stays Persian ({$ctx})" );
 	assert_true( (bool) preg_match( '#streamit-child-tmdb-title[^>]*>\s*The Husband\s*<#', $tv_html ), "TV detail English subtitle unchanged ({$ctx})" );
+	assert_true( ! str_contains( $movie_html . $tv_html, 'streamit-child-card-fa-title' ), "detail pages render no homepage subtitle ({$ctx})" );
 }
 
 echo "\n";

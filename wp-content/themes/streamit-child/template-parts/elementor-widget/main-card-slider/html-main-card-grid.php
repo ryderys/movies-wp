@@ -183,6 +183,10 @@ $taxonomy_mapping = [
                                         <h5 class="css_prefix-title text-capitalize line-count-1">
                                             <a href="<?php echo $permalink; ?>" class="color-inherit"><?php echo function_exists('streamit_child_homepage_card_title') ? esc_html(streamit_child_homepage_card_title($post)) : $post_title; ?></a>
                                         </h5>
+                                        <?php $card_subtitle = function_exists('streamit_child_homepage_card_subtitle') ? streamit_child_homepage_card_subtitle($post) : ''; ?>
+                                        <?php if ('' !== $card_subtitle) : ?>
+                                            <p class="streamit-child-card-fa-title line-count-1" dir="auto"><?php echo esc_html($card_subtitle); ?></p>
+                                        <?php endif; ?>
                                     <?php endif; ?>
 
                                     <div class="d-flex flex-wrap align-items-center gap-2">
