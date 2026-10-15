@@ -110,6 +110,21 @@
 			0 0 1.35rem rgba(var(--bs-primary-rgb, 229, 9, 20), 0.55);
 	}
 
+	.css_prefix-card-wrapper.movie_cards.grid-view .css_prefix-card,
+	.css_prefix-card-wrapper.tvshow_cards.grid-view .css_prefix-card {
+		border-radius: var(--bs-border-radius);
+		box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb, 229, 9, 20), 0);
+		transition: box-shadow 0.35s ease;
+	}
+
+	.css_prefix-card-wrapper.movie_cards.grid-view .css_prefix-card:hover,
+	.css_prefix-card-wrapper.tvshow_cards.grid-view .css_prefix-card:hover {
+		box-shadow:
+			0 0 0 2px rgba(var(--bs-primary-rgb, 229, 9, 20), 1),
+			0 0 0.7rem 2px rgba(var(--bs-primary-rgb, 229, 9, 20), 0.85),
+			0 0 1.35rem rgba(var(--bs-primary-rgb, 229, 9, 20), 0.55);
+	}
+
 	/* Keep overflow:hidden. Equal vertical padding is the existing title gap,
 	   moved inside the clip so arrows stay centered and the section does not
 	   grow. A full 2.5rem would drop the cards. Horizontal padding would
