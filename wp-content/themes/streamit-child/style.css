@@ -105,8 +105,8 @@
 
 	.home .css_prefx-main-card .css_prefix-card:hover {
 		box-shadow:
-			0 0 0 1px rgba(var(--bs-primary-rgb, 229, 9, 20), 0.3),
-			0 0 2.5rem rgba(var(--bs-primary-rgb, 229, 9, 20), 0.16);
+			0 0 0 2px rgba(var(--bs-primary-rgb, 229, 9, 20), 0.6),
+			0 0 2.75rem rgba(var(--bs-primary-rgb, 229, 9, 20), 0.32);
 	}
 
 	/* Keep overflow:hidden. Equal vertical padding is the existing title gap,
