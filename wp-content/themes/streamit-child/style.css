@@ -78,6 +78,26 @@
 	font-size: 0.85em;
 }
 
+/* Homepage movie/TV poster cards: mirror the search modal's subtle red glow. */
+@media (hover: hover) and (pointer: fine) {
+	.home .css_prefix-card-wrapper.movie_cards.grid-view .css_prefix-card.card-hover,
+	.home .css_prefix-card-wrapper.tvshow_cards.grid-view .css_prefix-card.card-hover,
+	.front-page .css_prefix-card-wrapper.movie_cards.grid-view .css_prefix-card.card-hover,
+	.front-page .css_prefix-card-wrapper.tvshow_cards.grid-view .css_prefix-card.card-hover {
+		box-shadow: 0 0 0 rgba(var(--bs-primary-rgb, 229, 9, 20), 0);
+		transition: all 0.6s ease, box-shadow 0.35s ease;
+	}
+
+	.home .css_prefix-card-wrapper.movie_cards.grid-view .css_prefix-card.card-hover:hover,
+	.home .css_prefix-card-wrapper.tvshow_cards.grid-view .css_prefix-card.card-hover:hover,
+	.front-page .css_prefix-card-wrapper.movie_cards.grid-view .css_prefix-card.card-hover:hover,
+	.front-page .css_prefix-card-wrapper.tvshow_cards.grid-view .css_prefix-card.card-hover:hover {
+		box-shadow:
+			0 0 2.5rem rgba(var(--bs-primary-rgb, 229, 9, 20), 0.16),
+			inset 0 0 0 1px rgba(var(--bs-primary-rgb, 229, 9, 20), 0.3);
+	}
+}
+
 @media (max-width: 1199.98px) {
 	.vertical-thumb-card-desc .streamit-child-card-fa-title {
 		font-size: 0.8125rem;
