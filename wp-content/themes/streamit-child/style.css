@@ -96,6 +96,52 @@
 			0 0 2.5rem rgba(var(--bs-primary-rgb, 229, 9, 20), 0.16),
 			inset 0 0 0 1px rgba(var(--bs-primary-rgb, 229, 9, 20), 0.3);
 	}
+
+	.home .css_prefx-main-card .css_prefix-card {
+		border-radius: var(--bs-border-radius);
+		box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb, 229, 9, 20), 0);
+		transition: box-shadow 0.35s ease;
+	}
+
+	.home .css_prefx-main-card .css_prefix-card:hover {
+		box-shadow:
+			0 0 0 1px rgba(var(--bs-primary-rgb, 229, 9, 20), 0.3),
+			0 0 2.5rem rgba(var(--bs-primary-rgb, 229, 9, 20), 0.16);
+	}
+
+	/* Keep overflow:hidden. Equal vertical padding is the existing title gap,
+	   moved inside the clip so arrows stay centered and the section does not
+	   grow. A full 2.5rem would drop the cards. Horizontal padding would
+	   narrow slides or reveal the next poster. */
+	.home .section-spacing-bottom:has(> .css_prefx-main-card) .streamit-card-title .title {
+		margin-bottom: 0;
+	}
+
+	.home .section-spacing-bottom:has(> .css_prefx-main-card) {
+		padding-bottom: calc(3.75em - 1.5em);
+	}
+
+	.home .css_prefx-main-card .css_prefix-slick-general > .slick-list {
+		padding-top: 1.5em;
+		padding-bottom: 1.5em;
+	}
+}
+
+@media (hover: hover) and (pointer: fine) and (max-width: 1024px) {
+	.home .section-spacing-bottom:has(> .css_prefx-main-card) {
+		padding-bottom: calc(2em - 1.5em);
+	}
+}
+
+@media (hover: hover) and (pointer: fine) and (max-width: 575px) {
+	.home .css_prefx-main-card .css_prefix-slick-general > .slick-list {
+		padding-top: 0.8em;
+		padding-bottom: 0.8em;
+	}
+
+	.home .section-spacing-bottom:has(> .css_prefx-main-card) {
+		padding-bottom: calc(2em - 0.8em);
+	}
 }
 
 @media (max-width: 1199.98px) {
