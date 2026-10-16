@@ -225,7 +225,30 @@ function streamit_child_get_trailer_playback( $stored ) {
 }
 
 /**
- * Enqueue a small front-end helper so the trailer modal uses the correct MIME.
+ * Attributes for a movie-single "Watch Trailer" button, or null when hidden.
+ *
+ * @param string $stored Raw `_name_trailer_link` meta.
+ * @return array{type:string,trailer_link:string,mime:string}|null
+ */
+function streamit_child_get_movie_trailer_button( $stored ) {
+	$playback = streamit_child_get_trailer_playback( $stored );
+	$type     = isset( $playback['type'] ) ? (string) $playback['type'] : '';
+	$link     = isset( $playback['trailer_link'] ) ? (string) $playback['trailer_link'] : '';
+	$mime     = isset( $playback['mime'] ) ? (string) $playback['mime'] : '';
+
+	if ( '' === $link || ( 'iframe' !== $type && 'video' !== $type ) ) {
+		return null;
+	}
+
+	return array(
+		'type'         => $type,
+		'trailer_link' => $link,
+		'mime'         => $mime,
+	);
+}
+
+/**
+ * Enqueue trailer modal helpers (MIME + stop/focus).
  */
 function streamit_child_enqueue_trailer_modal_mime() {
 	$path = get_stylesheet_directory() . '/assets/js/trailer-modal-mime.js';

@@ -311,3 +311,8 @@
 .header-default #site-navigation li.menu-icon-account > a .menu-title::before {
 	content: "\f007";
 }
+
+/* Movie single: click-to-play Watch Trailer beside the primary play CTA. */
+.play-button-wrapper .streamit-child-watch-trailer {
+	min-height: 2.75rem;
+}

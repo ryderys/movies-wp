@@ -252,6 +252,34 @@ assert_eq( 0, count( $GLOBALS['trailer_sign_calls'] ), 'traversal path is never 
 $false_folder = streamit_child_get_trailer_playback( 'Movie/Korea/2022/Foo/NotTrailer/clip.mp4' );
 assert_eq( '', $false_folder['trailer_link'], 'NotTrailer folder is rejected' );
 
+$btn_none = streamit_child_get_movie_trailer_button( '' );
+assert_eq( null, $btn_none, 'empty meta hides Watch Trailer button' );
+
+$btn_bad = streamit_child_get_movie_trailer_button( 'https://www.aparat.com/v/abcd' );
+assert_eq( null, $btn_bad, 'invalid Aparat URL hides Watch Trailer button' );
+
+$btn_aparat = streamit_child_get_movie_trailer_button( 'https://www.aparat.com/v/nwlrj1m' );
+assert_true( is_array( $btn_aparat ), 'valid Aparat shows Watch Trailer button' );
+assert_eq( 'iframe', $btn_aparat['type'] ?? null, 'Aparat button type is iframe' );
+assert_eq( $aparat_embed, $btn_aparat['trailer_link'] ?? null, 'Aparat button uses embed URL' );
+
+$btn_yt = streamit_child_get_movie_trailer_button( 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' );
+assert_true( is_array( $btn_yt ), 'YouTube shows Watch Trailer button' );
+assert_eq( 'iframe', $btn_yt['type'] ?? null, 'YouTube button type is iframe' );
+
+$btn_vimeo = streamit_child_get_movie_trailer_button( 'https://vimeo.com/123456' );
+assert_true( is_array( $btn_vimeo ), 'Vimeo shows Watch Trailer button' );
+assert_eq( 'iframe', $btn_vimeo['type'] ?? null, 'Vimeo button type is iframe' );
+
+$GLOBALS['trailer_sign_calls'] = array();
+$btn_local = streamit_child_get_movie_trailer_button( $valid );
+assert_true( is_array( $btn_local ), 'local Trailer path shows Watch Trailer button' );
+assert_eq( 'video', $btn_local['type'] ?? null, 'local button type is video' );
+assert_true( str_starts_with( (string) ( $btn_local['trailer_link'] ?? '' ), 'https://media.asiastarx.ir/v/' ), 'local button uses signed URL' );
+
+$btn_feature = streamit_child_get_movie_trailer_button( 'Movie/Korea/2022/Decision.to.Leave/Decision.to.Leave.2022.1080p.mkv' );
+assert_eq( null, $btn_feature, 'non-trailer local path hides Watch Trailer button' );
+
 echo "\n";
 if ( $failures > 0 ) {
 	echo "FAILED {$failures} assertion(s)\n";
