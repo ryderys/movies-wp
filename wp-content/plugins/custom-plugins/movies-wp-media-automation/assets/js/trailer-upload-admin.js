@@ -31,7 +31,13 @@
 			return;
 		}
 		statusEl.textContent = message || '';
-		statusEl.className = 'description movies-wp-trailer-status' + (isError ? ' is-error' : message ? ' is-ok' : '');
+		var state = '';
+		if (isError) {
+			state = ' is-error';
+		} else if (message) {
+			state = ' is-ok';
+		}
+		statusEl.className = 'description movies-wp-trailer-status' + state;
 	}
 
 	function setProgress(pct) {

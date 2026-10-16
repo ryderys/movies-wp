@@ -90,17 +90,27 @@ class Movies_WP_Trailer_Upload_Admin {
 			<p id="movies-wp-trailer-replace-panel" <?php echo $has_link ? '' : 'hidden'; ?>>
 				<label>
 					<input type="checkbox" id="movies-wp-trailer-confirm-replace" value="1" />
-					<?php esc_html_e( 'Replace the existing trailer link after a successful upload', 'movies-wp' ); ?>
+					<?php
+					esc_html_e(
+						'Replace the existing trailer link (use a new filename; the previous file stays on the media server)',
+						'movies-wp'
+					);
+					?>
 				</label>
 			</p>
 			<p class="movies-wp-trailer-progress" hidden>
 				<progress id="movies-wp-trailer-progress-bar" max="100" value="0"></progress>
 				<span id="movies-wp-trailer-progress-label">0%</span>
 			</p>
-			<p id="movies-wp-trailer-status" class="description movies-wp-trailer-status" role="status" aria-live="polite">
+			<p
+				id="movies-wp-trailer-status"
+				class="description movies-wp-trailer-status<?php echo $dir_ok ? '' : ' is-warn'; ?>"
+				role="status"
+				aria-live="polite"
+			>
 				<?php
 				if ( ! $dir_ok ) {
-					esc_html_e( 'This title has no media directory. Set _media_directory before uploading a trailer.', 'movies-wp' );
+					esc_html_e( 'Configure this title’s media directory before uploading a trailer.', 'movies-wp' );
 				}
 				?>
 			</p>
