@@ -32,7 +32,7 @@ $stored_trailer = ( method_exists( $st_data, 'get_meta' ) && null !== $st_data->
 $trailer_button = function_exists( 'streamit_child_get_movie_trailer_button' )
 	? streamit_child_get_movie_trailer_button( $stored_trailer )
 	: null;
-$trailer_label  = esc_html__( 'Watch Trailer', 'streamit' );
+$trailer_label  = esc_html__( 'تماشای تریلر', 'streamit' );
 ?>
 <div class="play-button-wrapper d-flex align-items-center gap-md-4 gap-3 flex-wrap">
 	<?php if ( $has_access ) : ?>

@@ -32,7 +32,7 @@ $stored_trailer = ( $post && method_exists( $post, 'get_meta' ) && null !== $pos
 $trailer_button = function_exists( 'streamit_child_get_movie_trailer_button' )
 	? streamit_child_get_movie_trailer_button( $stored_trailer )
 	: null;
-$trailer_label  = esc_html__( 'Watch Trailer', 'streamit' );
+$trailer_label  = esc_html__( 'تماشای تریلر', 'streamit' );
 $redirect_link         = '';
 $has_available_episode = false;
 

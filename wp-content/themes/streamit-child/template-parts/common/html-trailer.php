@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 		<div class="modal-content">
 			<div class="modal-body">
 				<h2 id="streamitTrailerModalTitle" class="visually-hidden">
-					<?php esc_html_e( 'Watch Trailer', 'streamit' ); ?>
+					<?php esc_html_e( 'تماشای تریلر', 'streamit' ); ?>
 				</h2>
 				<div class="streamit_trailer_player">
 					<iframe
