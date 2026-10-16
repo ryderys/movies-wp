@@ -10,6 +10,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-tvshow-media-directory.php';
+require_once __DIR__ . '/class-movies-wp-streamit-tv-adapter.php';
+
 class Movies_WP_Series_Media_Import_Service {
 
 	/**
@@ -32,6 +35,32 @@ class Movies_WP_Series_Media_Import_Service {
 				array(
 					'code'    => 'series_media_import_service_invalid_adapter_result',
 					'message' => __( 'Episode media adapter returned an invalid result.', 'movies-wp' ),
+				),
+				$plan
+			);
+		}
+
+		if ( empty( $adapter['ok'] ) ) {
+			return self::present_adapter_result( $adapter, $plan );
+		}
+
+		$directory = Movies_WP_Tvshow_Media_Directory::validate_title_directory( (string) ( $plan['identity']['series_directory'] ?? '' ) );
+		if ( is_wp_error( $directory ) ) {
+			return self::failure(
+				array(
+					'code'    => 'series_media_import_service_invalid_path',
+					'message' => $directory->get_error_message(),
+				),
+				$plan
+			);
+		}
+
+		$stored = Movies_WP_Streamit_TV_Adapter::store_media_directory( (int) $plan['identity']['tvshow_id'], $directory, $options );
+		if ( is_wp_error( $stored ) ) {
+			return self::failure(
+				array(
+					'code'    => 'series_media_import_service_directory_failed',
+					'message' => $stored->get_error_message(),
 				),
 				$plan
 			);

@@ -196,6 +196,7 @@ sm_import_same( 'series_media_import_service_forbidden_meta_key', $forbidden_met
 echo "Series media import service adapter orchestration\n";
 
 $adapter_calls = 0;
+$stored_meta   = array();
 $success = Movies_WP_Series_Media_Import_Service::execute(
 	sm_import_plan(),
 	array(
@@ -211,11 +212,18 @@ $success = Movies_WP_Series_Media_Import_Service::execute(
 				'warnings'  => array(),
 			);
 		},
+		'update_tvshow_meta' => static function ( $id, $key, $value ) use ( &$stored_meta ) {
+			$stored_meta = array( 'id' => (int) $id, 'key' => (string) $key, 'value' => (string) $value );
+			return true;
+		},
 	)
 );
 sm_import_same( 1, $adapter_calls, 'adapter invoked exactly once' );
 sm_import_same( true, $success['ok'], 'valid plan succeeds' );
 sm_import_same( 1, $success['completed'], 'completed count preserved' );
+sm_import_same( 50, $stored_meta['id'] ?? 0, 'import stores directory on the tvshow id' );
+sm_import_same( '_media_directory', $stored_meta['key'] ?? '', 'import stores _media_directory' );
+sm_import_same( 'series/korea/2024/Show', $stored_meta['value'] ?? '', 'import stores the validated series directory' );
 
 $adapter_calls = 0;
 Movies_WP_Series_Media_Import_Service::execute(

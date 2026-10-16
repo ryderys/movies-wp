@@ -11,6 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/class-movies-wp-series-import-profiler.php';
+require_once __DIR__ . '/class-movies-wp-tvshow-media-directory.php';
 
 class Movies_WP_Streamit_TV_Adapter {
 
@@ -1294,6 +1295,30 @@ class Movies_WP_Streamit_TV_Adapter {
 			}
 		}
 		return 'tmdb-image.jpg';
+	}
+
+	/**
+	 * Persist the import's already-validated series directory on the TV show.
+	 *
+	 * @param int    $tvshow_id
+	 * @param string $directory series/{country}/{year}/{title}
+	 * @param array  $options   update_tvshow_meta / get_tvshow_meta test hooks.
+	 * @return string|WP_Error
+	 */
+	public static function store_media_directory( $tvshow_id, $directory, array $options = array() ) {
+		$tvshow_id = (int) $tvshow_id;
+		if ( $tvshow_id <= 0 ) {
+			return new WP_Error( 'tvshow_media_directory_invalid_id', __( 'Invalid TV show.', 'movies-wp' ) );
+		}
+		$dir = Movies_WP_Tvshow_Media_Directory::validate_title_directory( $directory );
+		if ( is_wp_error( $dir ) ) {
+			return $dir;
+		}
+		$written = self::write_tvshow_meta( $tvshow_id, '_media_directory', $dir, $options );
+		if ( ! $written ) {
+			return new WP_Error( 'tvshow_media_directory_write_failed', __( 'Failed to save the TV show media directory.', 'movies-wp' ) );
+		}
+		return $dir;
 	}
 
 	private static function write_tvshow_meta( $id, $key, $value, array $options ) {

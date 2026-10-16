@@ -36,6 +36,7 @@ require_once __DIR__ . '/includes/class-movies-wp-series-preview-service.php';
 require_once __DIR__ . '/includes/class-movies-wp-media-import-plan.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-import-plan.php';
 require_once __DIR__ . '/includes/class-movies-wp-streamit-adapter.php';
+require_once __DIR__ . '/includes/class-movies-wp-tvshow-media-directory.php';
 require_once __DIR__ . '/includes/class-movies-wp-streamit-tv-adapter.php';
 require_once __DIR__ . '/includes/class-movies-wp-media-import-service.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-import-service.php';
