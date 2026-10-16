@@ -1699,6 +1699,71 @@ echo "\n[failures]\n";
 }
 
 // ---------------------------------------------------------------------------
+// Trailer discovery on import
+// ---------------------------------------------------------------------------
+echo "\n[trailer-discovery]\n";
+{
+	$state = array();
+	$opts  = harness( $state );
+	$plan  = make_plan(
+		array(
+			'movie'   => array(
+				'tmdb_id'         => 999,
+				'media_directory' => 'Movie/Iran/2024/some-slug',
+			),
+			'trailer' => array(
+				'media_path' => 'Movie/Iran/2024/some-slug/Trailer/official.mp4',
+				'candidates' => array(
+					'Movie/Iran/2024/some-slug/Trailer/official.mp4',
+					'Movie/Iran/2024/some-slug/Trailers/teaser.webm',
+				),
+				'selection_rule' => 'test',
+			),
+		)
+	);
+	$r = Movies_WP_Streamit_Adapter::apply( $plan, $opts );
+	assert_true( ! empty( $r['ok'] ), 'trailer: import succeeds when trailer discovered' );
+	assert_eq(
+		'Movie/Iran/2024/some-slug/Trailer/official.mp4',
+		$state['meta_written']['_name_trailer_link']['value'] ?? null,
+		'trailer: assigns relative Trailer path'
+	);
+	assert_true( in_array( 'trailer', $r['completed'] ?? array(), true ), 'trailer: completed includes trailer' );
+}
+{
+	$state = array(
+		'existing_meta' => array(
+			'_name_trailer_link' => 'Movie/Iran/2024/some-slug/Trailer/manual.mp4',
+		),
+	);
+	$opts = harness( $state );
+	$plan = make_plan(
+		array(
+			'trailer' => array(
+				'media_path' => 'Movie/Iran/2024/some-slug/Trailer/other.mp4',
+				'candidates' => array( 'Movie/Iran/2024/some-slug/Trailer/other.mp4' ),
+			),
+		)
+	);
+	$r = Movies_WP_Streamit_Adapter::apply( $plan, $opts );
+	assert_true( ! empty( $r['ok'] ), 'trailer: import succeeds when link already set' );
+	assert_eq(
+		'Movie/Iran/2024/some-slug/Trailer/manual.mp4',
+		$state['existing_meta']['_name_trailer_link'] ?? null,
+		'trailer: preserves existing non-empty link'
+	);
+	assert_true( ! isset( $state['meta_written']['_name_trailer_link'] ), 'trailer: does not rewrite existing link' );
+	assert_true( ! in_array( 'trailer', $r['completed'] ?? array(), true ), 'trailer: preserved link is not a completed write' );
+}
+{
+	$state = array();
+	$opts  = harness( $state );
+	$r     = Movies_WP_Streamit_Adapter::apply( make_plan(), $opts );
+	assert_true( ! empty( $r['ok'] ), 'trailer: missing trailer still succeeds' );
+	assert_true( ! isset( $state['meta_written']['_name_trailer_link'] ), 'trailer: missing trailer writes nothing' );
+}
+
+// ---------------------------------------------------------------------------
 // 33–36. Forbidden calls + plan immutability (final sweep)
 // ---------------------------------------------------------------------------
 echo "\n[no-rediscovery]\n";

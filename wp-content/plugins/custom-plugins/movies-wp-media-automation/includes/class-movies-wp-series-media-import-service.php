@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/class-movies-wp-tvshow-media-directory.php';
 require_once __DIR__ . '/class-movies-wp-streamit-tv-adapter.php';
+require_once __DIR__ . '/class-movies-wp-trailer-discovery.php';
 
 class Movies_WP_Series_Media_Import_Service {
 
@@ -66,7 +67,30 @@ class Movies_WP_Series_Media_Import_Service {
 			);
 		}
 
-		return self::present_adapter_result( $adapter, $plan );
+		$presented = self::present_adapter_result( $adapter, $plan );
+		$trailer   = isset( $plan['trailer'] ) && is_array( $plan['trailer'] ) ? $plan['trailer'] : array();
+		$candidates = array();
+		if ( isset( $trailer['candidates'] ) && is_array( $trailer['candidates'] ) ) {
+			$candidates = $trailer['candidates'];
+		} elseif ( ! empty( $trailer['media_path'] ) ) {
+			$candidates = array( (string) $trailer['media_path'] );
+		}
+
+		$assignment = Movies_WP_Trailer_Discovery::assign_if_empty(
+			'tvshow',
+			(int) $plan['identity']['tvshow_id'],
+			$directory,
+			$candidates,
+			$options
+		);
+		if ( 'failed' === ( $assignment['status'] ?? '' ) ) {
+			$presented['warnings'][] = array(
+				'code'    => 'series_media_import_trailer_failed',
+				'message' => isset( $assignment['message'] ) ? (string) $assignment['message'] : __( 'Failed to save discovered trailer link.', 'movies-wp' ),
+			);
+		}
+
+		return $presented;
 	}
 
 	/**

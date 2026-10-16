@@ -213,17 +213,20 @@ $success = Movies_WP_Series_Media_Import_Service::execute(
 			);
 		},
 		'update_tvshow_meta' => static function ( $id, $key, $value ) use ( &$stored_meta ) {
-			$stored_meta = array( 'id' => (int) $id, 'key' => (string) $key, 'value' => (string) $value );
+			$stored_meta[ (string) $key ] = array( 'id' => (int) $id, 'value' => (string) $value );
 			return true;
+		},
+		'get_tvshow_meta' => static function ( $id, $key ) use ( &$stored_meta ) {
+			return $stored_meta[ (string) $key ]['value'] ?? '';
 		},
 	)
 );
 sm_import_same( 1, $adapter_calls, 'adapter invoked exactly once' );
 sm_import_same( true, $success['ok'], 'valid plan succeeds' );
 sm_import_same( 1, $success['completed'], 'completed count preserved' );
-sm_import_same( 50, $stored_meta['id'] ?? 0, 'import stores directory on the tvshow id' );
-sm_import_same( '_media_directory', $stored_meta['key'] ?? '', 'import stores _media_directory' );
-sm_import_same( 'series/korea/2024/Show', $stored_meta['value'] ?? '', 'import stores the validated series directory' );
+sm_import_same( 50, $stored_meta['_media_directory']['id'] ?? 0, 'import stores directory on the tvshow id' );
+sm_import_same( 'series/korea/2024/Show', $stored_meta['_media_directory']['value'] ?? '', 'import stores the validated series directory' );
+sm_import_assert( ! isset( $stored_meta['_name_trailer_link'] ), 'import without trailer candidates writes no trailer link' );
 
 $adapter_calls = 0;
 Movies_WP_Series_Media_Import_Service::execute(

@@ -20,6 +20,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-trailer-discovery.php';
+
 class Movies_WP_Media_Import_Plan {
 
 	/**
@@ -157,6 +159,7 @@ class Movies_WP_Media_Import_Plan {
 
 		$sources = self::plan_sources( $files, $existing_sources );
 		$subs    = self::plan_subtitles( $files, $association );
+		$trailer = Movies_WP_Trailer_Discovery::plan_from_files( $dir, $files );
 
 		$tmdb_overview = isset( $tmdb['overview'] ) ? (string) $tmdb['overview'] : '';
 		$tmdb_title    = isset( $tmdb['title'] ) ? (string) $tmdb['title'] : '';
@@ -200,6 +203,7 @@ class Movies_WP_Media_Import_Plan {
 			'subtitles'               => $subs['associated'],
 			'unassociated_subtitles'  => $subs['unassociated'],
 			'associations'            => $association['associations'],
+			'trailer'                 => $trailer,
 			'subtitle_persistence'    => array(
 				'ready'  => true,
 				'status' => 'relative_path',
@@ -226,6 +230,7 @@ class Movies_WP_Media_Import_Plan {
 				'Encoder/name uses the parser allowlist only (YIFY/YTS/RARBG); otherwise "".',
 				'On update, an empty detected encoder preserves an existing manual Streamit name.',
 				'Unmatched existing _source rows are keep_existing — never delete.',
+				'Trailer discovery stores a relative Trailer/ or Trailers/ path on _name_trailer_link when empty; missing trailers are non-fatal.',
 			),
 		);
 	}

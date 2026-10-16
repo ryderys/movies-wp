@@ -14,6 +14,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-trailer-discovery.php';
+
 class Movies_WP_Streamit_Adapter {
 
 	/**
@@ -99,7 +101,17 @@ class Movies_WP_Streamit_Adapter {
 		}
 		$completed[] = 'media_directory';
 
-		// 6) Subtitles — relative paths only (render-time signing elsewhere).
+		// 6) Trailer discovery — non-fatal; never overwrites an existing link.
+		$trailer_step = self::step_trailer( $movie_id, $plan, $options );
+		$warnings     = array();
+		if ( ! empty( $trailer_step['warning'] ) && is_array( $trailer_step['warning'] ) ) {
+			$warnings[] = $trailer_step['warning'];
+		}
+		if ( ! empty( $trailer_step['completed'] ) ) {
+			$completed[] = 'trailer';
+		}
+
+		// 7) Subtitles — relative paths only (render-time signing elsewhere).
 		$subs = self::step_subtitles( $movie_id, $plan, $options );
 		if ( empty( $subs['ok'] ) ) {
 			return self::failure_result( $movie_id, $identity_action, $completed, 'subtitles', $subs['error'] );
@@ -114,7 +126,7 @@ class Movies_WP_Streamit_Adapter {
 			'deferred'        => array(),
 			'source_stats'    => isset( $sources['stats'] ) ? $sources['stats'] : array(),
 			'subtitle_stats'  => isset( $subs['stats'] ) ? $subs['stats'] : array(),
-			'warnings'        => array(),
+			'warnings'        => $warnings,
 		);
 	}
 
@@ -657,6 +669,57 @@ class Movies_WP_Streamit_Adapter {
 		}
 
 		return array( 'ok' => true );
+	}
+
+	/**
+	 * Assign a discovered trailer path to `_name_trailer_link` when empty.
+	 *
+	 * @param array<string, mixed> $plan
+	 * @param array<string, mixed> $options
+	 * @return array{ok:bool,completed?:bool,warning?:array}
+	 */
+	private static function step_trailer( $movie_id, array $plan, array $options ) {
+		$dir = str_replace( '\\', '/', (string) ( $plan['movie']['media_directory'] ?? '' ) );
+		$dir = ltrim( trim( $dir ), '/' );
+
+		$trailer = isset( $plan['trailer'] ) && is_array( $plan['trailer'] ) ? $plan['trailer'] : array();
+		$candidates = array();
+		if ( isset( $trailer['candidates'] ) && is_array( $trailer['candidates'] ) ) {
+			$candidates = $trailer['candidates'];
+		} elseif ( ! empty( $trailer['media_path'] ) ) {
+			$candidates = array( (string) $trailer['media_path'] );
+		}
+
+		$discovery_options = $options;
+		if ( ! isset( $discovery_options['update_movie_meta'] ) && isset( $options['update_meta'] ) && is_callable( $options['update_meta'] ) ) {
+			$discovery_options['update_movie_meta'] = static function ( $id, $key, $value ) use ( $options ) {
+				return call_user_func( $options['update_meta'], (int) $id, (string) $key, $value );
+			};
+		}
+		if ( ! isset( $discovery_options['get_movie_meta'] ) && isset( $options['get_meta'] ) && is_callable( $options['get_meta'] ) ) {
+			$discovery_options['get_movie_meta'] = static function ( $id, $key ) use ( $options ) {
+				return call_user_func( $options['get_meta'], (int) $id, (string) $key );
+			};
+		}
+
+		$result = Movies_WP_Trailer_Discovery::assign_if_empty( 'movie', (int) $movie_id, $dir, $candidates, $discovery_options );
+		$status = (string) ( $result['status'] ?? '' );
+
+		if ( 'assigned' === $status ) {
+			return array( 'ok' => true, 'completed' => true );
+		}
+		if ( 'failed' === $status ) {
+			return array(
+				'ok'        => true,
+				'completed' => false,
+				'warning'   => self::err(
+					'media_adapter_trailer_failed',
+					isset( $result['message'] ) ? (string) $result['message'] : __( 'Failed to save discovered trailer link.', 'movies-wp' )
+				),
+			);
+		}
+
+		return array( 'ok' => true, 'completed' => false );
 	}
 
 	/**

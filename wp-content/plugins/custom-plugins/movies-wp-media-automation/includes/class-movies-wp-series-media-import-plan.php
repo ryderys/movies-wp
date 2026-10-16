@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-trailer-discovery.php';
+
 class Movies_WP_Series_Media_Import_Plan {
 
 	/**
@@ -104,6 +106,12 @@ class Movies_WP_Series_Media_Import_Plan {
 
 		$ready = empty( $errors );
 
+		$media_files = array();
+		if ( isset( $preview['media']['files'] ) && is_array( $preview['media']['files'] ) ) {
+			$media_files = $preview['media']['files'];
+		}
+		$trailer = Movies_WP_Trailer_Discovery::plan_from_files( $directory, $media_files );
+
 		return array(
 			'ok'              => true,
 			'type'            => 'series_media',
@@ -123,6 +131,7 @@ class Movies_WP_Series_Media_Import_Plan {
 				'delete_unmatched'    => false,
 				'allowed_meta_keys'   => array( '_sources', '_subtitles' ),
 			),
+			'trailer'         => $trailer,
 			'episodes'        => $episodes,
 			'errors'          => $errors,
 			'warnings'        => $warnings,

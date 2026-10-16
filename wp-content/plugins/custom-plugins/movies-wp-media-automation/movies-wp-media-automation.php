@@ -28,6 +28,7 @@ add_action(
 require_once __DIR__ . '/includes/class-movies-wp-media-api-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-service.php';
+require_once __DIR__ . '/includes/class-movies-wp-trailer-discovery.php';
 require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-admin.php';
 require_once __DIR__ . '/includes/class-movies-wp-tmdb-preview-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-tmdb-tv-preview-client.php';
