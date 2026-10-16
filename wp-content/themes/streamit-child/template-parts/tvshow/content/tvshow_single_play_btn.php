@@ -24,7 +24,15 @@ $has_access = function_exists( 'movies_wp_user_can_access_media' )
 		? streamit_user_has_stream_access( $post_id, $post_type, $user_id )
 		: true );
 
-$play_label            = esc_html__( 'شروع تماشا', 'streamit' );
+$play_label = esc_html__( 'شروع تماشا', 'streamit' );
+
+$stored_trailer = ( $post && method_exists( $post, 'get_meta' ) && null !== $post->get_meta( '_name_trailer_link' ) )
+	? $post->get_meta( '_name_trailer_link' )
+	: '';
+$trailer_button = function_exists( 'streamit_child_get_movie_trailer_button' )
+	? streamit_child_get_movie_trailer_button( $stored_trailer )
+	: null;
+$trailer_label  = esc_html__( 'Watch Trailer', 'streamit' );
 $redirect_link         = '';
 $has_available_episode = false;
 
@@ -39,7 +47,7 @@ if ( $post ) {
 	}
 }
 ?>
-<div class="play-button-wrapper">
+<div class="play-button-wrapper d-flex align-items-center gap-md-4 gap-3 flex-wrap">
 	<?php if ( ! $has_available_episode ) : ?>
 		<button type="button" class="btn btn-primary disabled" disabled aria-disabled="true">
 			<span class="d-flex align-items-center justify-content-center gap-2">
@@ -60,6 +68,23 @@ if ( $post ) {
 			<span class="d-flex align-items-center justify-content-center gap-2">
 				<?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<span><?php echo esc_html( $play_label ); ?></span>
+			</span>
+		</button>
+	<?php endif; ?>
+
+	<?php if ( is_array( $trailer_button ) ) : ?>
+		<button
+			type="button"
+			class="btn btn-secondary st-load-trailer streamit-child-watch-trailer"
+			data-trailer-type="<?php echo esc_attr( $trailer_button['type'] ); ?>"
+			data-trailer-url="<?php echo esc_url( $trailer_button['trailer_link'] ); ?>"
+			data-trailer-mime="<?php echo esc_attr( $trailer_button['mime'] ); ?>"
+			aria-haspopup="dialog"
+			aria-label="<?php echo esc_attr( $trailer_label ); ?>"
+		>
+			<span class="d-flex align-items-center justify-content-center gap-2">
+				<?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php echo esc_html( $trailer_label ); ?></span>
 			</span>
 		</button>
 	<?php endif; ?>
