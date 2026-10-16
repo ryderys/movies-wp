@@ -1,38 +1,50 @@
-.movies-wp-trailer-upload .movies-wp-trailer-progress {
+#_name_trailer_link_field .movies-wp-trailer-upload {
+	margin-top: 8px;
+	background: transparent;
+	color: inherit;
+	max-width: 100%;
+}
+
+#_name_trailer_link_field .movies-wp-trailer-actions {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	margin: 8px 0;
+	flex-wrap: wrap;
 }
 
-.movies-wp-trailer-upload progress {
-	width: 100%;
-	max-width: 220px;
-	height: 12px;
+#_name_trailer_link_field .movies-wp-trailer-upload input[type="file"].regular-text {
+	width: auto;
+	max-width: 100%;
+	flex: 1 1 16rem;
+	margin: 0;
 }
 
-.movies-wp-trailer-upload .movies-wp-trailer-status {
-	margin-top: 8px;
+#_name_trailer_link_field .movies-wp-trailer-upload .description {
+	margin: 6px 0 0;
+	color: var(--admin-lable-text-color, inherit);
 }
 
-.movies-wp-trailer-upload .movies-wp-trailer-status.is-error {
-	color: #b32d2e;
+#_name_trailer_link_field .movies-wp-trailer-upload label {
+	font-size: 0.875rem;
+	color: var(--admin-lable-text-color, inherit);
 }
 
-.movies-wp-trailer-upload .movies-wp-trailer-status.is-ok {
-	color: #007017;
+#_name_trailer_link_field .movies-wp-trailer-progress {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 6px 0 0;
 }
 
-#streamit_data_section > .movies-wp-trailer-upload {
-	background: #fff;
-	color: #1d2327;
-	padding: 12px 16px;
-	margin: 0 0 16px;
-	border: 1px solid #c3c4c7;
-	border-radius: 4px;
-	max-width: 720px;
+#_name_trailer_link_field .movies-wp-trailer-progress progress {
+	width: 8rem;
+	height: 8px;
 }
 
-.movies-wp-trailer-upload code {
-	word-break: break-all;
+#_name_trailer_link_field .movies-wp-trailer-status.is-error {
+	color: #ff8b8b;
+}
+
+#_name_trailer_link_field .movies-wp-trailer-status.is-ok {
+	color: #8dffb0;
 }

@@ -3,14 +3,14 @@
 
 	var cfg = window.moviesWpTrailerUpload || {};
 	var root = document.getElementById('movies-wp-trailer-upload-root');
-	if (!root || !cfg.ajaxUrl) {
+	var field = document.getElementById('_name_trailer_link_field');
+	var linkInput = field ? field.querySelector('input[name="_name_trailer_link"]') : null;
+	if (!root || !cfg.ajaxUrl || !field || !linkInput) {
 		return;
 	}
 
-	var streamitSection = document.getElementById('streamit_data_section');
-	if (streamitSection && root.parentNode) {
-		streamitSection.insertBefore(root, streamitSection.firstChild);
-	}
+	linkInput.insertAdjacentElement('afterend', root);
+	root.hidden = false;
 
 	var fileInput = document.getElementById('movies-wp-trailer-file');
 	var btn = document.getElementById('movies-wp-trailer-upload-btn');
@@ -19,7 +19,6 @@
 	var progressBar = document.getElementById('movies-wp-trailer-progress-bar');
 	var progressLabel = document.getElementById('movies-wp-trailer-progress-label');
 	var replacePanel = document.getElementById('movies-wp-trailer-replace-panel');
-	var currentPathEl = document.getElementById('movies-wp-trailer-current-path');
 	var confirmBox = document.getElementById('movies-wp-trailer-confirm-replace');
 	var i18n = cfg.i18n || {};
 	var maxBytes = parseInt(root.getAttribute('data-max-bytes') || '0', 10) || 0;
@@ -32,7 +31,7 @@
 			return;
 		}
 		statusEl.textContent = message || '';
-		statusEl.className = 'movies-wp-trailer-status' + (isError ? ' is-error' : ' is-ok');
+		statusEl.className = 'description movies-wp-trailer-status' + (isError ? ' is-error' : message ? ' is-ok' : '');
 	}
 
 	function setProgress(pct) {
@@ -53,17 +52,16 @@
 		progressWrap.hidden = true;
 	}
 
-	/**
-	 * After the first successful upload, show the replace checkbox without a reload.
-	 */
 	function markTrailerPresent(path) {
 		hasTrailer = true;
 		root.setAttribute('data-has-trailer', '1');
+		if (path) {
+			linkInput.value = path;
+			linkInput.dispatchEvent(new Event('input', { bubbles: true }));
+			linkInput.dispatchEvent(new Event('change', { bubbles: true }));
+		}
 		if (replacePanel) {
 			replacePanel.hidden = false;
-		}
-		if (currentPathEl && path) {
-			currentPathEl.textContent = path;
 		}
 		confirmBox = document.getElementById('movies-wp-trailer-confirm-replace');
 		if (confirmBox) {
@@ -131,13 +129,9 @@
 			}
 
 			if (payload && payload.success) {
-				setProgress(100);
+				resetProgress();
 				var path = payload.data && payload.data.path ? String(payload.data.path) : '';
-				var msg = (payload.data && payload.data.message) || i18n.success || 'OK';
-				if (path) {
-					msg += ' (' + path + ')';
-				}
-				setStatus(msg, false);
+				setStatus((payload.data && payload.data.message) || i18n.success || 'OK', false);
 				markTrailerPresent(path);
 				return;
 			}

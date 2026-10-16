@@ -13,50 +13,30 @@ class Movies_WP_Trailer_Upload_Admin {
 	const AJAX_ACTION  = 'movies_wp_upload_trailer';
 
 	public static function init() {
-		add_action( 'add_meta_boxes', array( __CLASS__, 'register_meta_box' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
-		add_action( 'admin_footer', array( __CLASS__, 'render_streamit_tvshow' ) );
+		add_action( 'admin_footer', array( __CLASS__, 'render_streamit_field' ) );
 		add_action( 'wp_ajax_' . self::AJAX_ACTION, array( __CLASS__, 'handle_ajax' ) );
 	}
 
-	public static function register_meta_box() {
-		add_meta_box(
-			'movies-wp-trailer-upload',
-			__( 'Upload Trailer', 'movies-wp' ),
-			array( __CLASS__, 'render_meta_box' ),
-			'movie',
-			'side',
-			'default'
-		);
-	}
-
 	/**
-	 * @param WP_Post $post
+	 * Streamit Additional Data has no render hook. Output the control in the footer
+	 * so script can place it under the existing #_name_trailer_link_field.
 	 */
-	public static function render_meta_box( $post ) {
-		$post_id = isset( $post->ID ) ? (int) $post->ID : 0;
-		if ( $post_id <= 0 || ! current_user_can( 'edit_post', $post_id ) ) {
-			echo '<p>' . esc_html__( 'You are not allowed to upload trailers for this movie.', 'movies-wp' ) . '</p>';
-			return;
-		}
-		self::render_box( $post_id, 'movie' );
-	}
-
-	/**
-	 * Streamit edits TV shows on admin.php?page=streamit-edit-tvshow&id=, not post.php.
-	 */
-	public static function render_streamit_tvshow() {
+	public static function render_streamit_field() {
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-		if ( ! $screen || 'admin_page_streamit-edit-tvshow' !== $screen->id ) {
+		$kinds  = array(
+			'admin_page_streamit-edit-movie'  => 'movie',
+			'admin_page_streamit-edit-tvshow' => 'tvshow',
+		);
+		if ( ! $screen || ! isset( $kinds[ $screen->id ] ) ) {
 			return;
 		}
-		$tvshow_id = isset( $_GET['id'] ) ? absint( wp_unslash( $_GET['id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( $tvshow_id <= 0 || ! self::user_can_edit_tvshow() || ! self::tvshow_exists( $tvshow_id ) ) {
+		$kind     = $kinds[ $screen->id ];
+		$title_id = isset( $_GET['id'] ) ? absint( wp_unslash( $_GET['id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( $title_id <= 0 || ! self::user_can_edit_streamit( $kind ) || ! self::streamit_title_exists( $kind, $title_id ) ) {
 			return;
 		}
-		echo '<div id="movies-wp-trailer-upload-anchor">';
-		self::render_box( $tvshow_id, 'tvshow' );
-		echo '</div>';
+		self::render_box( $title_id, $kind );
 	}
 
 	/**
@@ -65,85 +45,65 @@ class Movies_WP_Trailer_Upload_Admin {
 	 */
 	private static function render_box( $title_id, $kind ) {
 		$title_id = (int) $title_id;
-		$dir      = Movies_WP_Trailer_Upload_Service::get_meta( $kind, $title_id, '_media_directory' );
 		$trailer  = Movies_WP_Trailer_Upload_Service::get_meta( $kind, $title_id, '_name_trailer_link' );
 		$dir_ok   = ! is_wp_error( Movies_WP_Trailer_Upload_Service::resolve_directory( $kind, $title_id ) );
 		$has_link = Movies_WP_Trailer_Upload_Service::requires_replace_confirmation( $trailer );
 		$max_mb   = max( 1, (int) ceil( Movies_WP_Trailer_Upload_Client::max_bytes() / 1048576 ) );
-
-		wp_nonce_field( self::NONCE_ACTION, 'movies_wp_trailer_upload_nonce' );
 		?>
 		<div
 			id="movies-wp-trailer-upload-root"
 			class="movies-wp-trailer-upload"
+			hidden
 			data-post-id="<?php echo esc_attr( (string) $title_id ); ?>"
 			data-content-type="<?php echo esc_attr( $kind ); ?>"
 			data-has-trailer="<?php echo $has_link ? '1' : '0'; ?>"
 			data-max-bytes="<?php echo esc_attr( (string) Movies_WP_Trailer_Upload_Client::max_bytes() ); ?>"
 		>
+			<div class="movies-wp-trailer-actions">
+				<input
+					type="file"
+					id="movies-wp-trailer-file"
+					class="regular-text"
+					accept=".mp4,.webm,.mkv,video/mp4,video/webm,video/x-matroska"
+					<?php disabled( ! $dir_ok ); ?>
+				/>
+				<button
+					type="button"
+					class="button"
+					id="movies-wp-trailer-upload-btn"
+					<?php disabled( ! $dir_ok ); ?>
+				>
+					<?php esc_html_e( 'Upload', 'movies-wp' ); ?>
+				</button>
+			</div>
 			<p class="description">
 				<?php
 				echo esc_html(
 					sprintf(
-						/* translators: %d: max size in MiB */
-						__( 'Upload an MP4, WebM, or MKV trailer (max %d MiB) to this title’s Trailer folder on the media server.', 'movies-wp' ),
+						/* translators: %d: maximum trailer size in mebibytes */
+						__( 'MP4, WebM or MKV · Maximum %d MiB', 'movies-wp' ),
 						$max_mb
 					)
 				);
 				?>
 			</p>
-			<p class="description">
-				<?php
-				esc_html_e(
-					'Replacing a trailer requires a new filename. WordPress metadata updates only after a successful upload. The previous media-server file is left on disk (not deleted or overwritten).',
-					'movies-wp'
-				);
-				?>
+			<p id="movies-wp-trailer-replace-panel" <?php echo $has_link ? '' : 'hidden'; ?>>
+				<label>
+					<input type="checkbox" id="movies-wp-trailer-confirm-replace" value="1" />
+					<?php esc_html_e( 'Replace the existing trailer link after a successful upload', 'movies-wp' ); ?>
+				</label>
 			</p>
-
-			<p>
-				<strong><?php esc_html_e( 'Media directory', 'movies-wp' ); ?>:</strong>
-				<code><?php echo $dir_ok ? esc_html( (string) $dir ) : esc_html__( '(missing or invalid)', 'movies-wp' ); ?></code>
-			</p>
-
-			<div id="movies-wp-trailer-replace-panel" <?php echo $has_link ? '' : 'hidden'; ?>>
-				<p>
-					<strong><?php esc_html_e( 'Current trailer', 'movies-wp' ); ?>:</strong>
-					<code id="movies-wp-trailer-current-path"><?php echo $has_link ? esc_html( (string) $trailer ) : ''; ?></code>
-				</p>
-				<p>
-					<label>
-						<input type="checkbox" id="movies-wp-trailer-confirm-replace" value="1" />
-						<?php esc_html_e( 'Replace the existing trailer link after a successful upload', 'movies-wp' ); ?>
-					</label>
-				</p>
-			</div>
-			<p>
-				<input
-					type="file"
-					id="movies-wp-trailer-file"
-					accept=".mp4,.webm,.mkv,video/mp4,video/webm,video/x-matroska"
-					<?php disabled( ! $dir_ok ); ?>
-				/>
-			</p>
-
-			<p>
-				<button
-					type="button"
-					class="button button-primary"
-					id="movies-wp-trailer-upload-btn"
-					<?php disabled( ! $dir_ok ); ?>
-				>
-					<?php esc_html_e( 'Upload Trailer', 'movies-wp' ); ?>
-				</button>
-			</p>
-
-			<div class="movies-wp-trailer-progress" hidden>
+			<p class="movies-wp-trailer-progress" hidden>
 				<progress id="movies-wp-trailer-progress-bar" max="100" value="0"></progress>
 				<span id="movies-wp-trailer-progress-label">0%</span>
-			</div>
-
-			<p id="movies-wp-trailer-status" class="movies-wp-trailer-status" role="status" aria-live="polite"></p>
+			</p>
+			<p id="movies-wp-trailer-status" class="description movies-wp-trailer-status" role="status" aria-live="polite">
+				<?php
+				if ( ! $dir_ok ) {
+					esc_html_e( 'This title has no media directory. Set _media_directory before uploading a trailer.', 'movies-wp' );
+				}
+				?>
+			</p>
 		</div>
 		<?php
 	}
@@ -152,10 +112,8 @@ class Movies_WP_Trailer_Upload_Admin {
 	 * @param string $hook
 	 */
 	public static function enqueue( $hook ) {
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-		$is_movie_editor = ( 'post.php' === $hook || 'post-new.php' === $hook ) && $screen && 'movie' === $screen->post_type;
-		$is_tvshow_editor = 'admin_page_streamit-edit-tvshow' === $hook;
-		if ( ! $is_movie_editor && ! $is_tvshow_editor ) {
+		$screens = array( 'admin_page_streamit-edit-movie', 'admin_page_streamit-edit-tvshow' );
+		if ( ! in_array( $hook, $screens, true ) ) {
 			return;
 		}
 
@@ -229,7 +187,28 @@ class Movies_WP_Trailer_Upload_Admin {
 				);
 			}
 		} else {
-			if ( $post_id <= 0 || 'movie' !== get_post_type( $post_id ) ) {
+			$kind = 'movie';
+			if ( $post_id > 0 && 'movie' === get_post_type( $post_id ) ) {
+				if ( ! current_user_can( 'edit_post', $post_id ) ) {
+					wp_send_json_error(
+						array(
+							'code'    => 'trailer_upload_forbidden',
+							'message' => __( 'You are not allowed to upload trailers for this movie.', 'movies-wp' ),
+						),
+						403
+					);
+				}
+			} elseif ( self::streamit_title_exists( 'movie', $post_id ) ) {
+				if ( ! self::user_can_edit_streamit( 'movie' ) ) {
+					wp_send_json_error(
+						array(
+							'code'    => 'trailer_upload_forbidden',
+							'message' => __( 'You are not allowed to upload trailers for this movie.', 'movies-wp' ),
+						),
+						403
+					);
+				}
+			} else {
 				wp_send_json_error(
 					array(
 						'code'    => 'trailer_upload_invalid_movie',
@@ -238,17 +217,6 @@ class Movies_WP_Trailer_Upload_Admin {
 					400
 				);
 			}
-
-			if ( ! current_user_can( 'edit_post', $post_id ) ) {
-				wp_send_json_error(
-					array(
-						'code'    => 'trailer_upload_forbidden',
-						'message' => __( 'You are not allowed to upload trailers for this movie.', 'movies-wp' ),
-					),
-					403
-				);
-			}
-			$kind = 'movie';
 		}
 
 		$confirm = ! empty( $_POST['confirm_replace'] ) && '1' === (string) wp_unslash( $_POST['confirm_replace'] );
@@ -323,10 +291,35 @@ class Movies_WP_Trailer_Upload_Admin {
 	}
 
 	/**
+	 * @param string $kind movie|tvshow
 	 * @return bool
 	 */
-	private static function user_can_edit_tvshow() {
-		return current_user_can( 'manage_options' ) || current_user_can( 'edit_posts' );
+	private static function user_can_edit_streamit( $kind ) {
+		$prefix = defined( 'STREAMIT_CORE_PREFIX' ) ? STREAMIT_CORE_PREFIX : 'streamit_core_';
+		$cap    = $prefix . ( 'tvshow' === $kind ? 'edit_tvshow' : 'edit_movie' );
+		return current_user_can( $cap );
+	}
+
+	/**
+	 * @param string $kind movie|tvshow
+	 * @param int    $title_id
+	 * @return bool
+	 */
+	private static function streamit_title_exists( $kind, $title_id ) {
+		$title_id = (int) $title_id;
+		if ( $title_id <= 0 ) {
+			return false;
+		}
+		if ( 'tvshow' === $kind ) {
+			if ( ! function_exists( 'streamit_get_tvshow' ) ) {
+				return false;
+			}
+			return ! empty( streamit_get_tvshow( $title_id ) );
+		}
+		if ( ! function_exists( 'streamit_get_movie' ) ) {
+			return false;
+		}
+		return ! empty( streamit_get_movie( $title_id ) );
 	}
 
 	/**
@@ -334,10 +327,13 @@ class Movies_WP_Trailer_Upload_Admin {
 	 * @return bool
 	 */
 	private static function tvshow_exists( $tvshow_id ) {
-		if ( ! function_exists( 'streamit_get_tvshow' ) ) {
-			return false;
-		}
-		$show = streamit_get_tvshow( (int) $tvshow_id );
-		return ! empty( $show );
+		return self::streamit_title_exists( 'tvshow', $tvshow_id );
+	}
+
+	/**
+	 * @return bool
+	 */
+	private static function user_can_edit_tvshow() {
+		return self::user_can_edit_streamit( 'tvshow' );
 	}
 }

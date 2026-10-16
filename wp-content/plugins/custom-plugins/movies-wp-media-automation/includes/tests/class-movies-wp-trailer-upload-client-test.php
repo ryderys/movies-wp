@@ -78,9 +78,12 @@ if ( ! function_exists( 'update_post_meta' ) ) {
 
 // Minimal WordPress stubs for AJAX handler gate tests (no full WP bootstrap).
 $GLOBALS['trailer_ajax_nonce_ok']   = true;
-$GLOBALS['trailer_ajax_can_edit']   = true;
+$GLOBALS['trailer_ajax_can_edit']   = true; // default for edit_post / generic caps
+$GLOBALS['trailer_ajax_caps']       = array(); // capability => bool overrides
 $GLOBALS['trailer_ajax_post_types'] = array( 42 => 'movie', 99 => 'post' );
+$GLOBALS['trailer_ajax_streamit_movies'] = array( 55 => true ); // Streamit movie IDs (not WP post type movie)
 $GLOBALS['trailer_ajax_last']       = null;
+$GLOBALS['trailer_ajax_edit_post_ids'] = array(); // edit_post object IDs checked
 
 if ( ! class_exists( 'Trailer_Upload_Json_Exit', false ) ) {
 	class Trailer_Upload_Json_Exit extends Exception {
@@ -129,8 +132,22 @@ if ( ! function_exists( 'get_post_type' ) ) {
 }
 if ( ! function_exists( 'current_user_can' ) ) {
 	function current_user_can( $capability, ...$args ) {
-		unset( $capability, $args );
+		$capability = (string) $capability;
+		if ( 'edit_post' === $capability ) {
+			$GLOBALS['trailer_ajax_edit_post_ids'][] = isset( $args[0] ) ? (int) $args[0] : 0;
+		}
+		if ( array_key_exists( $capability, $GLOBALS['trailer_ajax_caps'] ) ) {
+			return ! empty( $GLOBALS['trailer_ajax_caps'][ $capability ] );
+		}
 		return ! empty( $GLOBALS['trailer_ajax_can_edit'] );
+	}
+}
+if ( ! function_exists( 'streamit_get_movie' ) ) {
+	function streamit_get_movie( $id ) {
+		$id = (int) $id;
+		return ! empty( $GLOBALS['trailer_ajax_streamit_movies'][ $id ] )
+			? (object) array( 'id' => $id )
+			: null;
 	}
 }
 if ( ! function_exists( 'wp_unslash' ) ) {
@@ -318,6 +335,7 @@ tu_assert( ! is_wp_error( $replaced ) && ! empty( $replaced['replaced'] ), 'conf
 tu_assert( ( $GLOBALS['trailer_meta_store'][44]['_name_trailer_link'] ?? '' ) === $dir . '/Trailer/new.mp4', 'confirmed replace updates link' );
 
 echo "\nAJAX handler gates (nonce, capability, post type)\n";
+tu_assert( ! method_exists( 'Movies_WP_Trailer_Upload_Admin', 'register_meta_box' ), 'standalone metabox is not registered' );
 tu_assert( 'movies_wp_upload_trailer' === Movies_WP_Trailer_Upload_Admin::NONCE_ACTION, 'nonce action constant' );
 tu_assert( 'movies_wp_upload_trailer' === Movies_WP_Trailer_Upload_Admin::AJAX_ACTION, 'ajax action constant' );
 
@@ -347,17 +365,44 @@ tu_assert( 403 === (int) ( $resp['status'] ?? 0 ), 'rejected nonce HTTP 403' );
 
 $GLOBALS['trailer_ajax_nonce_ok'] = true;
 $GLOBALS['trailer_ajax_can_edit'] = false;
+$GLOBALS['trailer_ajax_caps']     = array();
+$GLOBALS['trailer_ajax_edit_post_ids'] = array();
 $_POST['post_id'] = '42';
 $resp = tu_run_ajax_handler();
 tu_assert( is_array( $resp ) && empty( $resp['success'] ), 'insufficient capability returns error JSON' );
 tu_assert( is_array( $resp['data'] ?? null ) && 'trailer_upload_forbidden' === ( $resp['data']['code'] ?? '' ), 'insufficient capability code' );
 tu_assert( 403 === (int) ( $resp['status'] ?? 0 ), 'insufficient capability HTTP 403' );
+tu_assert( array( 42 ) === $GLOBALS['trailer_ajax_edit_post_ids'], 'edit_post checked with movie object ID' );
 
 $GLOBALS['trailer_ajax_can_edit'] = true;
 $_POST['post_id'] = '99'; // mapped to post type "post"
 $resp = tu_run_ajax_handler();
 tu_assert( is_array( $resp ) && empty( $resp['success'] ), 'invalid post type returns error JSON' );
 tu_assert( is_array( $resp['data'] ?? null ) && 'trailer_upload_invalid_movie' === ( $resp['data']['code'] ?? '' ), 'invalid post type code' );
+
+echo "\nStreamit movie AJAX authorization\n";
+$GLOBALS['trailer_ajax_can_edit'] = false;
+$GLOBALS['trailer_ajax_caps']     = array( 'streamit_core_edit_movie' => false );
+$_POST = array( 'nonce' => 'test', 'post_id' => '55', 'content_type' => 'movie', 'confirm_replace' => '0' );
+$_FILES = array();
+$resp = tu_run_ajax_handler();
+tu_assert( is_array( $resp ) && empty( $resp['success'] ), 'unauthorized Streamit movie rejected' );
+tu_assert( is_array( $resp['data'] ?? null ) && 'trailer_upload_forbidden' === ( $resp['data']['code'] ?? '' ), 'unauthorized Streamit movie code' );
+tu_assert( 403 === (int) ( $resp['status'] ?? 0 ), 'unauthorized Streamit movie HTTP 403' );
+
+$GLOBALS['trailer_ajax_caps'] = array( 'streamit_core_edit_movie' => true );
+$GLOBALS['trailer_meta_writes'] = array();
+$resp = tu_run_ajax_handler();
+tu_assert( is_array( $resp ) && empty( $resp['success'] ), 'authorized Streamit movie still requires file' );
+tu_assert( is_array( $resp['data'] ?? null ) && 'trailer_upload_missing_file' === ( $resp['data']['code'] ?? '' ), 'authorized Streamit movie reaches file gate' );
+tu_assert( $GLOBALS['trailer_meta_writes'] === array(), 'no meta write before upload for Streamit movie' );
+
+$GLOBALS['trailer_ajax_caps'] = array( 'streamit_core_edit_tvshow' => false );
+$_POST['post_id'] = '7';
+$_POST['content_type'] = 'tvshow';
+$resp = tu_run_ajax_handler();
+tu_assert( is_array( $resp ) && empty( $resp['success'] ), 'unauthorized Streamit tvshow rejected' );
+tu_assert( is_array( $resp['data'] ?? null ) && 'trailer_upload_forbidden' === ( $resp['data']['code'] ?? '' ), 'unauthorized Streamit tvshow code' );
 
 echo "\nTV show series directory\n";
 $series_dir = 'series/korea/2024/Marry.My.Husband';
