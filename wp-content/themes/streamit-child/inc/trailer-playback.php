@@ -118,9 +118,48 @@ function streamit_child_trailer_mime_for_stored( $stored ) {
 }
 
 /**
+ * Aparat watch URL → embed URL.
+ *
+ * Accepts only https://www.aparat.com/v/{hash} and https://aparat.com/v/{hash}.
+ * The hash is alphanumeric, 5–16 characters. Host is normalized to www.aparat.com.
+ *
+ * @param string $stored Raw meta value.
+ * @return string Embed URL, or empty when the value is not a valid Aparat watch URL.
+ */
+function streamit_child_aparat_trailer_embed_url( $stored ) {
+	$parts = wp_parse_url( trim( (string) $stored ) );
+	if ( ! is_array( $parts ) ) {
+		return '';
+	}
+
+	$scheme = isset( $parts['scheme'] ) ? strtolower( (string) $parts['scheme'] ) : '';
+	$host   = isset( $parts['host'] ) ? strtolower( (string) $parts['host'] ) : '';
+	$path   = isset( $parts['path'] ) ? (string) $parts['path'] : '';
+
+	if ( 'https' !== $scheme ) {
+		return '';
+	}
+	if ( 'www.aparat.com' !== $host && 'aparat.com' !== $host ) {
+		return '';
+	}
+	if ( isset( $parts['user'] ) || isset( $parts['pass'] ) || isset( $parts['port'] ) ) {
+		return '';
+	}
+	if ( ! empty( $parts['query'] ) || ! empty( $parts['fragment'] ) ) {
+		return '';
+	}
+	if ( ! preg_match( '#^/v/([A-Za-z0-9]{5,16})/?$#', $path, $matches ) ) {
+		return '';
+	}
+
+	return 'https://www.aparat.com/video/video/embed/videohash/' . $matches[1] . '/vt/frame';
+}
+
+/**
  * Resolve _name_trailer_link for public playback.
  *
- * External http(s) URLs keep streamit_get_trailer_embed() behavior.
+ * Aparat watch URLs become Aparat embed iframes.
+ * Other external http(s) URLs keep streamit_get_trailer_embed() behavior.
  * Local paths are signed only when under Trailer/ or Trailers/.
  * Never persists the signed URL.
  *
@@ -137,6 +176,15 @@ function streamit_child_get_trailer_playback( $stored ) {
 	$stored = trim( (string) $stored );
 	if ( '' === $stored ) {
 		return $empty;
+	}
+
+	$aparat = streamit_child_aparat_trailer_embed_url( $stored );
+	if ( '' !== $aparat ) {
+		return array(
+			'type'         => 'iframe',
+			'trailer_link' => $aparat,
+			'mime'         => '',
+		);
 	}
 
 	if ( function_exists( 'streamit_child_is_external_media_link' ) && streamit_child_is_external_media_link( $stored ) ) {
