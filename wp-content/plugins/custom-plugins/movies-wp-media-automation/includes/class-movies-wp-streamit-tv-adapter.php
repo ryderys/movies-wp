@@ -477,14 +477,8 @@ class Movies_WP_Streamit_TV_Adapter {
 				return array( 'ok' => false, 'action' => $action, 'error' => self::err( $row->get_error_code(), $row->get_error_message() ) );
 			}
 
-			// Approved plan title/summary overlay (same as Movie Import metadata step).
-			// Avoid replacing manually edited series metadata with blank or unintended form values.
-			if ( '' !== trim( (string) ( $data['title'] ?? '' ) ) ) {
-				$row['post_title'] = (string) $data['title'];
-			}
-			if ( '' !== trim( (string) ( $data['summary'] ?? '' ) ) ) {
-				$row['post_content'] = (string) $data['summary'];
-			}
+			// Title/summary: preserve stored values on update (including empty). Plan text
+			// initializes on create only; deliberate TMDb refresh is a separate policy.
 			$row['post_modified']     = self::now( false, $options );
 			$row['post_modified_gmt'] = self::now( true, $options );
 			$updated = isset( $options['update_tvshow_row'] ) && is_callable( $options['update_tvshow_row'] )
@@ -943,8 +937,8 @@ class Movies_WP_Streamit_TV_Adapter {
 				);
 			}
 
-			$row['post_title']        = $title;
-			$row['post_content']      = (string) $plan['overview'];
+			// Title/summary: preserve stored values on update (including empty). Create path
+			// initializes from plan name/overview via new_row() above.
 			$row['menu_order']        = $episode_number;
 			$row['post_modified']     = self::now( false, $options );
 			$row['post_modified_gmt'] = self::now( true, $options );
@@ -1061,18 +1055,25 @@ class Movies_WP_Streamit_TV_Adapter {
 		$season_snap = Movies_WP_Series_Import_Profiler::phase_start( 'season_image' );
 		$image       = isset( $plan['image'] ) && is_array( $plan['image'] ) ? $plan['image'] : array( 'action' => 'skip_missing' );
 		if ( 'set' === ( $image['action'] ?? '' ) ) {
-			$download = self::download_image( $image, 'season_poster', $options );
-			Movies_WP_Series_Import_Profiler::phase_end( 'season_image', $season_snap, 1, 'season_poster' );
-			Movies_WP_Series_Import_Profiler::progress( 'IMAGE season_poster action=set' );
-			if ( is_wp_error( $download ) ) {
-				return array(
-					'ok'            => false,
-					'action'        => (string) $plan['action'],
-					'season_number' => $number,
-					'error'         => self::err( $download->get_error_code(), $download->get_error_message() ),
-				);
+			$existing_image_id = absint( $row['image_id'] ?? 0 );
+			if ( $existing_image_id > 0 && self::is_valid_artwork_attachment( $existing_image_id, $options ) ) {
+				// Operator-managed season poster: skip TMDb sideload on re-import.
+				Movies_WP_Series_Import_Profiler::phase_end( 'season_image', $season_snap, 0, 'keep_existing' );
+				$row['image_id'] = $existing_image_id;
+			} else {
+				$download = self::download_image( $image, 'season_poster', $options );
+				Movies_WP_Series_Import_Profiler::phase_end( 'season_image', $season_snap, 1, 'season_poster' );
+				Movies_WP_Series_Import_Profiler::progress( 'IMAGE season_poster action=set' );
+				if ( is_wp_error( $download ) ) {
+					return array(
+						'ok'            => false,
+						'action'        => (string) $plan['action'],
+						'season_number' => $number,
+						'error'         => self::err( $download->get_error_code(), $download->get_error_message() ),
+					);
+				}
+				$row['image_id'] = (int) $download;
 			}
-			$row['image_id'] = (int) $download;
 		} else {
 			Movies_WP_Series_Import_Profiler::phase_end( 'season_image', $season_snap, 0, (string) ( $image['action'] ?? 'skip_missing' ) );
 			if ( ! array_key_exists( 'image_id', $row ) ) {
@@ -1103,6 +1104,20 @@ class Movies_WP_Streamit_TV_Adapter {
 		if ( 'set' !== $action ) {
 			return array( 'ok' => true, 'role' => $role, 'action' => $action, 'target' => $target, 'attachment_id' => null );
 		}
+
+		$existing_id = self::load_artwork_attachment_id( $owner_type, $owner_id, $target, $options );
+		if ( $existing_id > 0 && self::is_valid_artwork_attachment( $existing_id, $options ) ) {
+			// Keep operator/manual artwork; avoid a TMDb sideload on re-import.
+			return array(
+				'ok'            => true,
+				'role'          => $role,
+				'action'        => 'keep_existing',
+				'target'        => $target,
+				'attachment_id' => $existing_id,
+				'preserved'     => true,
+			);
+		}
+
 		$download_started = Movies_WP_Series_Import_Profiler::begin( 'image_sideload.' . $role );
 		$attachment       = self::download_image( $image, $role, $options );
 		Movies_WP_Series_Import_Profiler::end( 'image_sideload.' . $role, $download_started, (string) ( $image['url'] ?? $image['path'] ?? $role ) );
@@ -1129,6 +1144,51 @@ class Movies_WP_Streamit_TV_Adapter {
 			);
 		}
 		return array( 'ok' => true, 'role' => $role, 'action' => $action, 'target' => $target, 'attachment_id' => (int) $attachment );
+	}
+
+	/**
+	 * Stored artwork attachment id for a TV-show or episode meta target.
+	 *
+	 * @param array<string, mixed> $options
+	 */
+	private static function load_artwork_attachment_id( $owner_type, $owner_id, $target, array $options ) {
+		$raw = 'episode' === $owner_type
+			? self::load_episode_meta( $owner_id, $target, $options )
+			: self::load_tvshow_meta( $owner_id, $target, $options );
+
+		return absint( $raw );
+	}
+
+	/**
+	 * Whether a stored artwork attachment id is still usable.
+	 *
+	 * Valid: positive attachment id that resolves as an image attachment when
+	 * WordPress media helpers are available. Missing or non-image posts are
+	 * invalid so the importer can re-initialize from TMDb.
+	 *
+	 * @param array<string, mixed> $options
+	 */
+	private static function is_valid_artwork_attachment( $attachment_id, array $options ) {
+		$attachment_id = absint( $attachment_id );
+		if ( $attachment_id <= 0 ) {
+			return false;
+		}
+
+		if ( isset( $options['is_valid_artwork_attachment'] ) && is_callable( $options['is_valid_artwork_attachment'] ) ) {
+			return (bool) call_user_func( $options['is_valid_artwork_attachment'], $attachment_id );
+		}
+
+		if ( function_exists( 'wp_attachment_is_image' ) ) {
+			return (bool) wp_attachment_is_image( $attachment_id );
+		}
+
+		if ( function_exists( 'get_post' ) ) {
+			$post = get_post( $attachment_id );
+			return $post && isset( $post->post_type ) && 'attachment' === $post->post_type;
+		}
+
+		// Test harness / environments without WP media APIs: trust a positive id.
+		return true;
 	}
 
 	private static function download_image( array $image, $role, array $options ) {

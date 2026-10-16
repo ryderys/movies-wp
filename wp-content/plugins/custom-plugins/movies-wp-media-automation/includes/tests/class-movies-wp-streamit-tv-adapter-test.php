@@ -192,14 +192,26 @@ function tv_adapter_harness( array &$state ): array {
 	return array(
 		'current_user_id' => 7, 'now_local' => '2026-08-16 12:00:00', 'now_gmt' => '2026-08-16 08:30:00',
 		'create_tvshow' => static function ( $row ) use ( &$state ) { $state['created_tv_rows'][] = $row; return 100; },
-		'get_tvshow' => static function () use ( &$state ) { return new TV_Adapter_Object( tv_adapter_fields( 'tvshow', $state['local_title'] ?? 'عنوان فارسی موجود' ) ); },
+		'get_tvshow' => static function () use ( &$state ) {
+			$fields = tv_adapter_fields( 'tvshow', $state['local_title'] ?? 'عنوان فارسی موجود' );
+			if ( array_key_exists( 'local_summary', $state ) ) {
+				$fields['post_content'] = $state['local_summary'];
+			}
+			return new TV_Adapter_Object( $fields );
+		},
 		'update_tvshow_row' => static function ( $id, $row ) use ( &$state ) { $state['tv_rows'][] = array( $id, $row ); return true; },
 		'create_episode' => static function ( $row ) use ( &$state ) {
 			$state['created_episode_rows'][] = $row;
 			$id = $state['next_episode_id']++;
 			return in_array( $id, $state['failed_episode_ids'], true ) ? new WP_Error( 'episode_fail', 'episode failed' ) : $id;
 		},
-		'get_episode' => static function ( $id ) use ( &$state ) { return new TV_Adapter_Object( tv_adapter_fields( 'episode', 'Old episode ' . $id ) ); },
+		'get_episode' => static function ( $id ) use ( &$state ) {
+			$fields = tv_adapter_fields( 'episode', $state['episode_title'] ?? ( 'Old episode ' . $id ) );
+			if ( array_key_exists( 'episode_summary', $state ) ) {
+				$fields['post_content'] = $state['episode_summary'];
+			}
+			return new TV_Adapter_Object( $fields );
+		},
 		'update_episode_row' => static function ( $id, $row ) use ( &$state ) { $state['episode_rows'][] = array( $id, $row ); return true; },
 		'get_tvshow_meta' => static function ( $id, $key ) use ( &$state ) {
 			unset( $id );
@@ -330,8 +342,10 @@ $before_sources = $state['episode_meta'][50]['_sources'];
 $result = Movies_WP_Streamit_TV_Adapter::apply( tv_adapter_plan( 'update' ), tv_adapter_harness( $state ) );
 tv_adapter_assert( ! empty( $result['ok'] ), 'update series succeeds' );
 tv_adapter_same( 'update', $result['seasons'][0]['action'], 'existing Season 0 is updated' );
-tv_adapter_same( 'عنوان اپراتور', $state['tv_rows'][0][1]['post_title'], 'update applies planned local title' );
-tv_adapter_same( 'خلاصه جدید', $state['tv_rows'][0][1]['post_content'], 'update applies planned summary' );
+tv_adapter_same( 'عنوان فارسی موجود', $state['tv_rows'][0][1]['post_title'], 'update preserves stored series title' );
+tv_adapter_same( 'old content', $state['tv_rows'][0][1]['post_content'], 'update preserves stored series summary' );
+tv_adapter_same( 'Old episode 50', $state['episode_rows'][0][1]['post_title'], 'update preserves stored episode title' );
+tv_adapter_same( 'old content', $state['episode_rows'][0][1]['post_content'], 'update preserves stored episode summary' );
 tv_adapter_same( 'TMDb Name', $state['tv_meta']['_tmdb_title'], 'update still writes _tmdb_title meta' );
 tv_adapter_same( $before_sources, $state['episode_meta'][50]['_sources'], 'episode _sources remain exactly unchanged' );
 tv_adapter_assert( ! in_array( '_sources', array_column( $state['episode_meta_writes'], 1 ), true ), 'adapter generates no _sources write payload' );
@@ -353,7 +367,262 @@ tv_adapter_same( 775, $state['tv_meta']['thumbnail_id'], 'missing update backdro
 tv_adapter_same( 799, $state['tv_meta']['_cast'][0]['id'], 'unrelated existing cast is not deleted' );
 tv_adapter_same( 798, $state['tv_meta']['_crew'][0]['id'], 'unrelated existing crew is not deleted' );
 
-echo "\n[update-applies-approved-persian-title]\n";
+echo "\n[artwork-preserve-valid-on-set]\n";
+{
+	// Real series plans emit action=set whenever TMDb still has artwork. A valid
+	// stored attachment must survive that re-import without a sideload.
+	$plan = tv_adapter_plan( 'update' );
+	$plan['images']['poster'] = array(
+		'action' => 'set',
+		'url'    => 'https://image.tmdb.org/t/p/w500/new-poster.jpg',
+		'target' => '_portrait_thumbmail',
+	);
+	$plan['images']['backdrop'] = array(
+		'action' => 'set',
+		'url'    => 'https://image.tmdb.org/t/p/original/new-backdrop.jpg',
+		'target' => 'thumbnail_id',
+	);
+	$plan['seasons'][0]['image'] = array(
+		'action' => 'set',
+		'url'    => 'https://image.tmdb.org/t/p/w500/new-season.jpg',
+	);
+	$plan['seasons'][0]['episodes'][0]['image'] = array(
+		'action' => 'set',
+		'url'    => 'https://image.tmdb.org/t/p/w500/new-still.jpg',
+		'target' => 'thumbnail_id',
+	);
+
+	$state = array(
+		'seasons' => array(
+			array(
+				'season_number' => '0',
+				'name'          => 'Specials',
+				'episodes'      => array( 50 ),
+				'image_id'      => 774,
+			),
+		),
+		'tv_meta' => array(
+			'_portrait_thumbmail' => 776,
+			'thumbnail_id'        => 775,
+		),
+		'episode_meta' => array(
+			50 => array(
+				'tvshow_id'    => '42',
+				'thumbnail_id' => 777,
+			),
+		),
+	);
+	$options = tv_adapter_harness( $state );
+	$result  = Movies_WP_Streamit_TV_Adapter::apply( $plan, $options );
+	tv_adapter_assert( ! empty( $result['ok'] ), 'update with set keeps valid artwork' );
+	tv_adapter_same( 776, $state['tv_meta']['_portrait_thumbmail'], 'valid TV poster preserved against TMDb set' );
+	tv_adapter_same( 775, $state['tv_meta']['thumbnail_id'], 'valid TV backdrop preserved against TMDb set' );
+	tv_adapter_same( 777, $state['episode_meta'][50]['thumbnail_id'], 'valid episode still preserved against TMDb set' );
+	tv_adapter_same( 774, $state['seasons'][0]['image_id'], 'valid season poster preserved against TMDb set' );
+	tv_adapter_same( 0, count( $state['downloads'] ), 'no artwork sideload when all existing values are valid' );
+	tv_adapter_same( 'keep_existing', $result['images'][0]['action'] ?? null, 'poster result reports keep_existing' );
+	tv_adapter_same( 'keep_existing', $result['images'][1]['action'] ?? null, 'backdrop result reports keep_existing' );
+	tv_adapter_same( true, $result['images'][0]['preserved'] ?? false, 'poster result marks preserved' );
+	tv_adapter_same( 'keep_existing', $result['episodes'][0]['image']['action'] ?? null, 'still result reports keep_existing' );
+}
+
+echo "\n[artwork-initialize-empty-or-invalid]\n";
+{
+	$plan = tv_adapter_plan( 'update' );
+	$plan['images']['poster'] = array(
+		'action' => 'set',
+		'url'    => 'https://image.tmdb.org/t/p/w500/fill-poster.jpg',
+		'target' => '_portrait_thumbmail',
+	);
+	$plan['images']['backdrop'] = array(
+		'action' => 'set',
+		'url'    => 'https://image.tmdb.org/t/p/original/fill-backdrop.jpg',
+		'target' => 'thumbnail_id',
+	);
+	$plan['seasons'][0]['image'] = array(
+		'action' => 'set',
+		'url'    => 'https://image.tmdb.org/t/p/w500/fill-season.jpg',
+	);
+	$plan['seasons'][0]['episodes'][0]['image'] = array(
+		'action' => 'set',
+		'url'    => 'https://image.tmdb.org/t/p/w500/fill-still.jpg',
+		'target' => 'thumbnail_id',
+	);
+
+	// Empty artwork fields re-initialize from TMDb.
+	$state = array(
+		'seasons' => array(
+			array(
+				'season_number' => '0',
+				'name'          => 'Specials',
+				'episodes'      => array( 50 ),
+				'image_id'      => '',
+			),
+		),
+		'tv_meta' => array(),
+		'episode_meta' => array(
+			50 => array( 'tvshow_id' => '42' ),
+		),
+	);
+	$options = tv_adapter_harness( $state );
+	$result  = Movies_WP_Streamit_TV_Adapter::apply( $plan, $options );
+	tv_adapter_assert( ! empty( $result['ok'] ), 'empty artwork update initializes from TMDb' );
+	tv_adapter_same( 501, $state['tv_meta']['_portrait_thumbmail'], 'empty TV poster initialized' );
+	tv_adapter_same( 502, $state['tv_meta']['thumbnail_id'], 'empty TV backdrop initialized' );
+	tv_adapter_same( 503, $state['episode_meta'][50]['thumbnail_id'], 'empty episode still initialized' );
+	tv_adapter_same( 504, $state['seasons'][0]['image_id'], 'empty season poster initialized' );
+	tv_adapter_same(
+		array( 'poster', 'backdrop', 'still', 'season_poster' ),
+		array_column( $state['downloads'], 0 ),
+		'empty artwork triggers one sideload per role'
+	);
+
+	// Invalid / missing attachments also re-initialize.
+	$state = array(
+		'seasons' => array(
+			array(
+				'season_number' => '0',
+				'name'          => 'Specials',
+				'episodes'      => array( 50 ),
+				'image_id'      => 666,
+			),
+		),
+		'tv_meta' => array(
+			'_portrait_thumbmail' => 661,
+			'thumbnail_id'        => 662,
+		),
+		'episode_meta' => array(
+			50 => array(
+				'tvshow_id'    => '42',
+				'thumbnail_id' => 663,
+			),
+		),
+	);
+	$options = tv_adapter_harness( $state );
+	$options['is_valid_artwork_attachment'] = static function ( $attachment_id ) {
+		return false;
+	};
+	$result = Movies_WP_Streamit_TV_Adapter::apply( $plan, $options );
+	tv_adapter_assert( ! empty( $result['ok'] ), 'invalid artwork update re-initializes from TMDb' );
+	tv_adapter_same( 501, $state['tv_meta']['_portrait_thumbmail'], 'invalid TV poster replaced' );
+	tv_adapter_same( 502, $state['tv_meta']['thumbnail_id'], 'invalid TV backdrop replaced' );
+	tv_adapter_same( 503, $state['episode_meta'][50]['thumbnail_id'], 'invalid episode still replaced' );
+	tv_adapter_same( 504, $state['seasons'][0]['image_id'], 'invalid season poster replaced' );
+	tv_adapter_same( 4, count( $state['downloads'] ), 'invalid artwork still sideloads replacements' );
+}
+
+echo "\n[title-summary-preserve]\n";
+{
+	// Series + episode: differing stored vs incoming → keep stored; unrelated meta still writes.
+	$state = array(
+		'local_title'     => 'Stored Series Title',
+		'local_summary'   => 'Stored Series Summary',
+		'episode_title'   => 'Stored Episode Title',
+		'episode_summary' => 'Stored Episode Summary',
+		'seasons'         => array(
+			array(
+				'season_number' => '0',
+				'name'          => 'Specials',
+				'episodes'      => array( 50 ),
+			),
+		),
+		'episode_meta'    => array(
+			50 => array( 'tvshow_id' => '42' ),
+		),
+	);
+	$plan = tv_adapter_plan( 'update' );
+	$plan['series']['title']   = 'Incoming Series Title';
+	$plan['series']['summary'] = 'Incoming Series Summary';
+	$plan['seasons'][0]['episodes'][0]['name']     = 'Incoming Episode Name';
+	$plan['seasons'][0]['episodes'][0]['overview'] = 'Incoming Episode Overview';
+	$result = Movies_WP_Streamit_TV_Adapter::apply( $plan, tv_adapter_harness( $state ) );
+	tv_adapter_assert( ! empty( $result['ok'] ), 'title-summary differing update ok' );
+	tv_adapter_same( 'Stored Series Title', $state['tv_rows'][0][1]['post_title'], 'series title preserved when incoming differs' );
+	tv_adapter_same( 'Stored Series Summary', $state['tv_rows'][0][1]['post_content'], 'series summary preserved when incoming differs' );
+	tv_adapter_same( 'Stored Episode Title', $state['episode_rows'][0][1]['post_title'], 'episode title preserved when incoming differs' );
+	tv_adapter_same( 'Stored Episode Summary', $state['episode_rows'][0][1]['post_content'], 'episode summary preserved when incoming differs' );
+	tv_adapter_same( 'TMDb Name', $state['tv_meta']['_tmdb_title'], 'title-summary still writes _tmdb_title' );
+	tv_adapter_same( 1, $state['episode_rows'][0][1]['menu_order'], 'episode menu_order still updated' );
+}
+
+{
+	// Incoming empty summary/episode text (series title remains required by validate) → keep stored.
+	$state = array(
+		'local_title'     => 'Keep Series',
+		'local_summary'   => 'Keep Series Body',
+		'episode_title'   => 'Keep Episode',
+		'episode_summary' => 'Keep Episode Body',
+		'seasons'         => array(
+			array( 'season_number' => '0', 'name' => 'Specials', 'episodes' => array( 50 ) ),
+		),
+		'episode_meta'    => array( 50 => array( 'tvshow_id' => '42' ) ),
+	);
+	$plan = tv_adapter_plan( 'update' );
+	$plan['series']['title']   = 'Plan Still Requires Title';
+	$plan['series']['summary'] = '';
+	$plan['seasons'][0]['episodes'][0]['name']     = '';
+	$plan['seasons'][0]['episodes'][0]['overview'] = '';
+	$result = Movies_WP_Streamit_TV_Adapter::apply( $plan, tv_adapter_harness( $state ) );
+	tv_adapter_assert( ! empty( $result['ok'] ), 'title-summary empty incoming update ok' );
+	tv_adapter_same( 'Keep Series', $state['tv_rows'][0][1]['post_title'], 'non-empty plan series title still preserves stored' );
+	tv_adapter_same( 'Keep Series Body', $state['tv_rows'][0][1]['post_content'], 'empty incoming series summary preserves stored' );
+	tv_adapter_same( 'Keep Episode', $state['episode_rows'][0][1]['post_title'], 'empty incoming episode title preserves stored' );
+	tv_adapter_same( 'Keep Episode Body', $state['episode_rows'][0][1]['post_content'], 'empty incoming episode overview preserves stored' );
+
+	// Empty series title is rejected before row update (adapter validate); not a wipe path.
+	$state = array(
+		'local_title'   => 'Keep Series',
+		'local_summary' => 'Keep Series Body',
+		'seasons'       => array(
+			array( 'season_number' => '0', 'name' => 'Specials', 'episodes' => array( 50 ) ),
+		),
+		'episode_meta'  => array( 50 => array( 'tvshow_id' => '42' ) ),
+	);
+	$plan = tv_adapter_plan( 'update' );
+	$plan['series']['title'] = '';
+	$result = Movies_WP_Streamit_TV_Adapter::apply( $plan, tv_adapter_harness( $state ) );
+	tv_adapter_assert( empty( $result['ok'] ), 'empty series plan title rejected at validate' );
+	tv_adapter_same( 0, count( $state['tv_rows'] ), 'empty series title never updates row' );
+	tv_adapter_same( 0, count( $state['episode_rows'] ), 'empty series title never updates episodes' );
+}
+
+{
+	// Empty stored values on update: do not fill from plan (no silent refresh).
+	$state = array(
+		'local_title'     => '',
+		'local_summary'   => '',
+		'episode_title'   => '',
+		'episode_summary' => '',
+		'seasons'         => array(
+			array( 'season_number' => '0', 'name' => 'Specials', 'episodes' => array( 50 ) ),
+		),
+		'episode_meta'    => array( 50 => array( 'tvshow_id' => '42' ) ),
+	);
+	$plan = tv_adapter_plan( 'update' );
+	$plan['series']['title']   = 'Should Not Fill Series';
+	$plan['series']['summary'] = 'Should Not Fill Series Body';
+	$plan['seasons'][0]['episodes'][0]['name']     = 'Should Not Fill Episode';
+	$plan['seasons'][0]['episodes'][0]['overview'] = 'Should Not Fill Episode Body';
+	$result = Movies_WP_Streamit_TV_Adapter::apply( $plan, tv_adapter_harness( $state ) );
+	tv_adapter_assert( ! empty( $result['ok'] ), 'title-summary empty stored update ok' );
+	tv_adapter_same( '', $state['tv_rows'][0][1]['post_title'], 'empty stored series title not filled' );
+	tv_adapter_same( '', $state['tv_rows'][0][1]['post_content'], 'empty stored series summary not filled' );
+	tv_adapter_same( '', $state['episode_rows'][0][1]['post_title'], 'empty stored episode title not filled' );
+	tv_adapter_same( '', $state['episode_rows'][0][1]['post_content'], 'empty stored episode summary not filled' );
+}
+
+{
+	// Create still initializes title/summary from the plan.
+	$state  = array();
+	$result = Movies_WP_Streamit_TV_Adapter::apply( tv_adapter_plan( 'create' ), tv_adapter_harness( $state ) );
+	tv_adapter_assert( ! empty( $result['ok'] ), 'title-summary create ok' );
+	tv_adapter_same( 'عنوان اپراتور', $state['created_tv_rows'][0]['post_title'], 'create initializes series title' );
+	tv_adapter_same( 'خلاصه جدید', $state['created_tv_rows'][0]['post_content'], 'create initializes series summary' );
+	tv_adapter_same( 'S00E01 - Special', $state['created_episode_rows'][0]['post_title'], 'create initializes episode title' );
+	tv_adapter_same( 'Episode summary', $state['created_episode_rows'][0]['post_content'], 'create initializes episode overview' );
+}
+
+echo "\n[update-preserves-against-persian-plan-title]\n";
 $state = array(
 	'local_title' => 'A Shop for Killers',
 	'tv_meta'     => array(
@@ -380,8 +649,8 @@ $plan['series']['tmdb_title'] = 'A Shop for Killers';
 $options = tv_adapter_harness( $state );
 $result  = Movies_WP_Streamit_TV_Adapter::apply_series_phase( $plan, $options );
 tv_adapter_assert( ! empty( $result['ok'] ), 'persian title series-phase update succeeds' );
-tv_adapter_same( 'فروشگاه قاتلان', $state['tv_rows'][0][1]['post_title'], 'UPDATE replaces English title with approved Persian title' );
-tv_adapter_same( 'خلاصه فروشگاه قاتلان', $state['tv_rows'][0][1]['post_content'], 'UPDATE still applies planned summary' );
+tv_adapter_same( 'A Shop for Killers', $state['tv_rows'][0][1]['post_title'], 'update preserves stored English title against Persian plan' );
+tv_adapter_same( 'old content', $state['tv_rows'][0][1]['post_content'], 'update preserves stored summary against Persian plan' );
 tv_adapter_same( 'A Shop for Killers', $state['tv_meta']['_tmdb_title'], '_tmdb_title remains the TMDb English name' );
 tv_adapter_same( $before_sources, $state['episode_meta'][50]['_sources'], 'series-phase title fix does not touch episode _sources' );
 tv_adapter_same( 0, count( $state['episode_rows'] ), 'series-phase does not rewrite episode titles/rows' );

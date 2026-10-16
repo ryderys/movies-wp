@@ -78,7 +78,13 @@ class Movies_WP_Streamit_Adapter {
 		$completed[] = 'sources';
 
 		// 4) Default Streamit player meta from first merged video link.
-		$stream = self::step_default_stream( $movie_id, isset( $sources['merged'] ) && is_array( $sources['merged'] ) ? $sources['merged'] : array(), $options );
+		// On update, keep a valid operator choice (embed / upload / custom URL).
+		$stream = self::step_default_stream(
+			$movie_id,
+			isset( $sources['merged'] ) && is_array( $sources['merged'] ) ? $sources['merged'] : array(),
+			$identity_action,
+			$options
+		);
 		if ( empty( $stream['ok'] ) ) {
 			return self::failure_result( $movie_id, $identity_action, $completed, 'default_stream', $stream['error'] );
 		}
@@ -219,7 +225,8 @@ class Movies_WP_Streamit_Adapter {
 	}
 
 	/**
-	 * Load-merge-write title/summary and non-empty TMDb titles.
+	 * Load-merge-write movie row metadata and non-empty TMDb titles.
+	 * Title/summary: initialize from the plan on create; preserve stored values on update.
 	 * Never calls streamit_update_movie().
 	 *
 	 * @param array<string, mixed> $plan
@@ -227,8 +234,9 @@ class Movies_WP_Streamit_Adapter {
 	 * @return array{ok:bool,error?:array}
 	 */
 	private static function step_metadata( $movie_id, array $plan, array $options ) {
-		$title   = (string) $plan['metadata']['title'];
-		$summary = (string) $plan['metadata']['summary'];
+		$title     = (string) $plan['metadata']['title'];
+		$summary   = (string) $plan['metadata']['summary'];
+		$is_create = 'create' === (string) ( $plan['identity']['action'] ?? '' );
 
 		if ( isset( $options['get_movie'] ) && is_callable( $options['get_movie'] ) ) {
 			$movie = call_user_func( $options['get_movie'], (int) $movie_id );
@@ -248,14 +256,18 @@ class Movies_WP_Streamit_Adapter {
 			return array( 'ok' => false, 'error' => self::err( $payload->get_error_code(), $payload->get_error_message() ) );
 		}
 
-		$payload['post_title']         = $title;
-		$payload['post_content']       = $summary;
+		// Create: apply approved plan title/summary. Update: keep stored values even when
+		// the plan has non-empty TMDb/admin text (or when stored values are empty).
+		if ( $is_create ) {
+			$payload['post_title']   = $title;
+			$payload['post_content'] = $summary;
+		}
 		$payload['post_modified']      = self::now_local( $options );
 		$payload['post_modified_gmt']  = self::now_gmt( $options );
 
 		// Slug policy: on create imports, derive the post_name (slug) from the TMDb English title
 		// when available, instead of the operator/localized title.
-		if ( 'create' === (string) ( $plan['identity']['action'] ?? '' ) ) {
+		if ( $is_create ) {
 			$slug_source = isset( $plan['movie']['tmdb_title'] ) ? trim( (string) $plan['movie']['tmdb_title'] ) : '';
 			if ( '' === $slug_source ) {
 				$slug_source = isset( $plan['movie']['tmdb_original_title'] ) ? trim( (string) $plan['movie']['tmdb_original_title'] ) : '';
@@ -418,17 +430,39 @@ class Movies_WP_Streamit_Adapter {
 	}
 
 	/**
-	 * Set Streamit default player to the first merged relative Movie/... link.
-	 * Does not modify _source. Does not mint signed URLs or absolute /data paths.
+	 * Initialize or preserve Streamit default player meta from merged sources.
+	 *
+	 * Create imports always set `_movie_choice=movie_url` and `_movie_url_link`
+	 * to the first relative Movie/... link when one exists.
+	 *
+	 * Update imports keep a valid operator selection:
+	 * - movie_file with a non-empty attachment id
+	 * - movie_embed with non-empty embed content
+	 * - movie_url with a non-empty custom (non-Movie/) URL
+	 * - movie_url whose Movie/... link still exists in the merged sources
+	 *
+	 * Empty, unknown, incomplete, or stale Movie/... movie_url choices are
+	 * re-initialized to the first merged Movie/... link.
+	 *
+	 * Does not modify `_source`. Does not mint signed URLs or absolute /data paths.
+	 * Does not write `_movie_attachment_id` or `_movie_embed_content`.
 	 *
 	 * @param list<array<string, mixed>> $merged
+	 * @param string                     $identity_action create|update
 	 * @param array<string, mixed>       $options
-	 * @return array{ok:bool,skipped?:bool,error?:array}
+	 * @return array{ok:bool,skipped?:bool,preserved?:bool,error?:array}
 	 */
-	private static function step_default_stream( $movie_id, array $merged, array $options ) {
+	private static function step_default_stream( $movie_id, array $merged, $identity_action, array $options ) {
 		$first_video_link = self::first_relative_movie_link( $merged );
 		if ( null === $first_video_link ) {
 			return array( 'ok' => true, 'skipped' => true );
+		}
+
+		if ( 'update' === (string) $identity_action ) {
+			$existing = self::load_playback_meta( (int) $movie_id, $options );
+			if ( self::should_preserve_playback( $existing, $merged ) ) {
+				return array( 'ok' => true, 'skipped' => true, 'preserved' => true );
+			}
 		}
 
 		$writes = array(
@@ -469,6 +503,66 @@ class Movies_WP_Streamit_Adapter {
 	}
 
 	/**
+	 * @param array<string, mixed> $options
+	 * @return array{choice:string,url:string,embed:string,attachment_id:int}
+	 */
+	private static function load_playback_meta( $movie_id, array $options ) {
+		$read = static function ( $key ) use ( $movie_id, $options ) {
+			if ( isset( $options['get_meta'] ) && is_callable( $options['get_meta'] ) ) {
+				return call_user_func( $options['get_meta'], (int) $movie_id, (string) $key );
+			}
+			if ( function_exists( 'streamit_get_movie_meta' ) ) {
+				return streamit_get_movie_meta( (int) $movie_id, (string) $key, true );
+			}
+			return null;
+		};
+
+		$choice = $read( '_movie_choice' );
+		$url    = $read( '_movie_url_link' );
+		$embed  = $read( '_movie_embed_content' );
+
+		return array(
+			'choice'        => is_scalar( $choice ) ? trim( (string) $choice ) : '',
+			'url'           => is_scalar( $url ) ? trim( (string) $url ) : '',
+			'embed'         => is_scalar( $embed ) ? trim( (string) $embed ) : '',
+			'attachment_id' => absint( $read( '_movie_attachment_id' ) ),
+		);
+	}
+
+	/**
+	 * Whether an update should leave playback meta alone.
+	 *
+	 * @param array{choice:string,url:string,embed:string,attachment_id:int} $existing
+	 * @param list<array<string, mixed>>                                       $merged
+	 */
+	private static function should_preserve_playback( array $existing, array $merged ) {
+		$choice = $existing['choice'];
+
+		if ( 'movie_file' === $choice ) {
+			return $existing['attachment_id'] > 0;
+		}
+
+		if ( 'movie_embed' === $choice ) {
+			return '' !== $existing['embed'];
+		}
+
+		if ( 'movie_url' === $choice ) {
+			if ( '' === $existing['url'] ) {
+				return false;
+			}
+			$movie_path = self::normalize_relative_movie_link( $existing['url'] );
+			if ( null === $movie_path ) {
+				// Custom / external URL chosen by an operator.
+				return true;
+			}
+			// Automation-style Movie/... URL: keep only while that source still exists.
+			return self::merged_has_relative_movie_link( $merged, $movie_path );
+		}
+
+		return false;
+	}
+
+	/**
 	 * First merged _source link that is a relative Movie/... path.
 	 *
 	 * @param list<array<string, mixed>> $merged
@@ -479,20 +573,56 @@ class Movies_WP_Streamit_Adapter {
 			if ( ! is_array( $row ) ) {
 				continue;
 			}
-			$link = isset( $row['link'] ) ? str_replace( '\\', '/', trim( (string) $row['link'] ) ) : '';
-			$link = ltrim( $link, '/' );
-			if ( '' === $link ) {
-				continue;
+			$normalized = self::normalize_relative_movie_link( $row['link'] ?? '' );
+			if ( null !== $normalized ) {
+				return $normalized;
 			}
-			if ( str_starts_with( $link, '/' ) || str_contains( $link, '/data' ) ) {
-				continue;
-			}
-			if ( ! str_starts_with( $link, 'Movie/' ) ) {
-				continue;
-			}
-			return $link;
 		}
 		return null;
+	}
+
+	/**
+	 * Relative Movie/... playback path, or null when not that shape.
+	 *
+	 * @param mixed $link
+	 * @return string|null
+	 */
+	private static function normalize_relative_movie_link( $link ) {
+		if ( ! is_scalar( $link ) ) {
+			return null;
+		}
+		$link = str_replace( '\\', '/', trim( (string) $link ) );
+		$link = ltrim( $link, '/' );
+		if ( '' === $link ) {
+			return null;
+		}
+		if ( str_starts_with( $link, '/' ) || str_contains( $link, '/data' ) ) {
+			return null;
+		}
+		if ( preg_match( '#^https?://#i', $link ) ) {
+			return null;
+		}
+		if ( ! str_starts_with( $link, 'Movie/' ) ) {
+			return null;
+		}
+		return $link;
+	}
+
+	/**
+	 * @param list<array<string, mixed>> $merged
+	 * @param string                     $movie_path Normalized Movie/... path.
+	 */
+	private static function merged_has_relative_movie_link( array $merged, $movie_path ) {
+		foreach ( $merged as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$normalized = self::normalize_relative_movie_link( $row['link'] ?? '' );
+			if ( null !== $normalized && $normalized === $movie_path ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

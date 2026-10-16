@@ -511,7 +511,8 @@ echo "\n[create]\n";
 	assert_eq( 'create', $r['identity_action'] ?? null, '4. identity_action=create' );
 	assert_eq( 1, $state['create_calls'], '4. insert_movie_tmdb called once' );
 	assert_eq( 999, $state['create_tmdb_id'] ?? null, '4. tmdb id passed' );
-	assert_eq( 'Admin Title', $state['update_rows'][0]['payload']['post_title'] ?? null, '4. create overlay keeps local title as post_title' );
+	assert_eq( 'Admin Title', $state['update_rows'][0]['payload']['post_title'] ?? null, '4. create initializes post_title from plan' );
+	assert_eq( 'Admin Summary', $state['update_rows'][0]['payload']['post_content'] ?? null, '4. create initializes post_content from plan' );
 	assert_eq( 'decision-to-leave', $state['update_rows'][0]['payload']['post_name'] ?? null, '4. create sets slug from TMDb title' );
 	assert_eq( 'Decision to Leave', $state['meta_written']['_tmdb_title']['value'] ?? null, '4. create persists _tmdb_title' );
 	assert_eq( '헤어질 결심', $state['meta_written']['_tmdb_original_title']['value'] ?? null, '4. create persists _tmdb_original_title' );
@@ -575,11 +576,11 @@ echo "\n[update]\n";
 	assert_eq( 0, $state['create_calls'], '5. create not called on update' );
 	assert_eq( 1, count( $state['update_rows'] ), '7. full-row update called once' );
 	$payload = $state['update_rows'][0]['payload'];
-	assert_eq( 'Admin Title', $payload['post_title'], '8. title overlay' );
+	assert_eq( 'Old Title', $payload['post_title'], '8. update preserves stored title' );
 	assert_eq( 'Decision to Leave', $state['meta_written']['_tmdb_title']['value'] ?? null, '8. update persists _tmdb_title' );
 	assert_eq( '헤어질 결심', $state['meta_written']['_tmdb_original_title']['value'] ?? null, '8. update persists _tmdb_original_title' );
 	assert_true( ! isset( $state['meta_written']['original_title'] ), '8. update never writes unprefixed original_title' );
-	assert_eq( 'Admin Summary', $payload['post_content'], '9. summary overlay' );
+	assert_eq( 'Old summary', $payload['post_content'], '9. update preserves stored summary' );
 	assert_eq( 'old-slug', $payload['post_name'], '10. post_name preserved' );
 	assert_eq( 'publish', $payload['post_status'], '10. post_status preserved' );
 	assert_eq( '2020-01-01 10:00:00', $payload['post_date'], '10. post_date preserved' );
@@ -611,11 +612,104 @@ echo "\n[empty-tmdb-titles-preserve-existing]\n";
 	$r = Movies_WP_Streamit_Adapter::apply( $plan, $opts );
 
 	assert_true( ! empty( $r['ok'] ), 'empty TMDb titles do not fail update' );
-	assert_eq( 'Admin Title', $state['update_rows'][0]['payload']['post_title'] ?? null, 'empty TMDb titles do not change local post_title behavior' );
+	assert_eq( 'Old Title', $state['update_rows'][0]['payload']['post_title'] ?? null, 'empty TMDb titles leave stored post_title unchanged' );
 	assert_true( ! isset( $state['meta_written']['_tmdb_title'] ), 'empty plan _tmdb_title is not written' );
 	assert_true( ! isset( $state['meta_written']['_tmdb_original_title'] ), 'empty plan _tmdb_original_title is not written' );
 	assert_eq( 'Existing TMDb Title', $state['existing_meta']['_tmdb_title'], 'existing _tmdb_title preserved' );
 	assert_eq( 'Existing Original Title', $state['existing_meta']['_tmdb_original_title'], 'existing _tmdb_original_title preserved' );
+}
+
+// ---------------------------------------------------------------------------
+// Title / summary preserve on update
+// ---------------------------------------------------------------------------
+echo "\n[title-summary-preserve]\n";
+{
+	// Stored values differ from incoming plan → keep stored.
+	$state = array();
+	$opts  = harness( $state );
+	$plan  = make_plan(
+		array(
+			'metadata' => array(
+				'title'   => 'Incoming TMDb Title',
+				'summary' => 'Incoming TMDb Summary',
+			),
+			'movie'    => array(
+				'tmdb_id'             => 999,
+				'media_directory'     => 'Movie/Iran/2024/some-slug',
+				'tmdb_title'          => 'Decision to Leave',
+				'tmdb_original_title' => '헤어질 결심',
+			),
+		)
+	);
+	$r = Movies_WP_Streamit_Adapter::apply( $plan, $opts );
+	assert_true( ! empty( $r['ok'] ), 'title-summary: differing update ok' );
+	$payload = $state['update_rows'][0]['payload'];
+	assert_eq( 'Old Title', $payload['post_title'], 'title-summary: preserves differing stored title' );
+	assert_eq( 'Old summary', $payload['post_content'], 'title-summary: preserves differing stored summary' );
+	assert_eq( 'Decision to Leave', $state['meta_written']['_tmdb_title']['value'] ?? null, 'title-summary: still writes _tmdb_title' );
+	assert_eq( 'old-slug', $payload['post_name'], 'title-summary: slug unchanged on update' );
+}
+
+{
+	// Incoming empty summary (title remains required by validate_plan) → keep stored summary.
+	$state = array();
+	$opts  = harness( $state );
+	$plan  = make_plan(
+		array(
+			'metadata' => array(
+				'title'   => 'Plan Still Requires Title',
+				'summary' => '',
+			),
+		)
+	);
+	$r = Movies_WP_Streamit_Adapter::apply( $plan, $opts );
+	assert_true( ! empty( $r['ok'] ), 'title-summary: empty incoming summary update ok' );
+	assert_eq( 'Old Title', $state['update_rows'][0]['payload']['post_title'] ?? null, 'title-summary: non-empty plan title still preserves stored title' );
+	assert_eq( 'Old summary', $state['update_rows'][0]['payload']['post_content'] ?? null, 'title-summary: empty incoming preserves summary' );
+
+	// Empty plan title is rejected before metadata (validate_plan); not a wipe path.
+	$state = array();
+	$opts  = harness( $state );
+	$r     = Movies_WP_Streamit_Adapter::apply(
+		make_plan(
+			array(
+				'metadata' => array(
+					'title'   => '',
+					'summary' => 'ignored',
+				),
+			)
+		),
+		$opts
+	);
+	assert_true( empty( $r['ok'] ), 'title-summary: empty plan title rejected at validate' );
+	assert_eq( 'media_adapter_missing_title', $r['error']['code'] ?? null, 'title-summary: empty title error code' );
+	assert_eq( 0, count( $state['update_rows'] ), 'title-summary: empty title never updates row' );
+}
+
+{
+	// Empty stored title/summary on update: do not fill from plan (no silent refresh).
+	$state = array(
+		'movie_fields' => array_merge(
+			base_movie_fields(),
+			array(
+				'post_title'   => '',
+				'post_content' => '',
+			)
+		),
+	);
+	$opts = harness( $state );
+	$plan = make_plan(
+		array(
+			'metadata' => array(
+				'title'   => 'Should Not Fill',
+				'summary' => 'Should Not Fill Summary',
+			),
+		)
+	);
+	$r = Movies_WP_Streamit_Adapter::apply( $plan, $opts );
+	assert_true( ! empty( $r['ok'] ), 'title-summary: empty stored update ok' );
+	assert_eq( '', $state['update_rows'][0]['payload']['post_title'] ?? null, 'title-summary: empty stored title not filled' );
+	assert_eq( '', $state['update_rows'][0]['payload']['post_content'] ?? null, 'title-summary: empty stored summary not filled' );
 }
 
 // ---------------------------------------------------------------------------
@@ -994,6 +1088,254 @@ echo "\n[default-stream]\n";
 	assert_eq( '', $state['sources_written'][0]['name'] ?? null, 'default_stream does not alter _source name' );
 	assert_eq( $first, $state['sources_written'][0]['link'] ?? null, 'default_stream leaves _source link unchanged' );
 	assert_true( in_array( 'default_stream', $r['completed'], true ), 'default_stream completed step recorded' );
+}
+
+/**
+ * @param string               $path
+ * @param array<string,mixed>  $extra
+ * @return array<string,mixed>
+ */
+function adapter_test_source_row( string $path, array $extra = array() ): array {
+	return array_merge(
+		array(
+			'action'           => 'add',
+			'media_path'       => $path,
+			'identity_key'     => $path,
+			'name'             => '',
+			'quality'          => '1080p',
+			'language'         => null,
+			'link'             => $path,
+			'download_content' => $path,
+		),
+		$extra
+	);
+}
+
+// ---------------------------------------------------------------------------
+// Playback preserve policy on update (operator choice survives re-import)
+// ---------------------------------------------------------------------------
+echo "\n[default-stream-preserve]\n";
+{
+	$first  = 'Movie/Korea/2022/Decision.to.Leave/Decision.to.Leave.2022.1080p.mkv';
+	$second = 'Movie/Korea/2022/Decision.to.Leave/Decision.to.Leave.2022.480p.mkv';
+
+	// Create still initializes movie_url + first Movie/... link.
+	$state = array();
+	$opts  = harness( $state );
+	$r     = Movies_WP_Streamit_Adapter::apply(
+		make_plan(
+			array(
+				'identity' => array(
+					'action'  => 'create',
+					'tmdb_id' => 999,
+				),
+				'sources'  => array(
+					adapter_test_source_row( $first ),
+					adapter_test_source_row( $second ),
+				),
+			)
+		),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'create initialize playback ok' );
+	assert_eq( 'movie_url', $state['meta_written']['_movie_choice']['value'] ?? null, 'create sets _movie_choice=movie_url' );
+	assert_eq( $first, $state['meta_written']['_movie_url_link']['value'] ?? null, 'create sets first Movie/... link' );
+	assert_true( in_array( 'default_stream', $r['completed'], true ), 'create records default_stream' );
+
+	// Repeated update with empty choice still initializes (first import style).
+	$state = array();
+	$opts  = harness( $state );
+	$r     = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'empty choice update initializes ok' );
+	assert_eq( 'movie_url', $state['meta_written']['_movie_choice']['value'] ?? null, 'empty choice becomes movie_url' );
+	assert_eq( $first, $state['meta_written']['_movie_url_link']['value'] ?? null, 'empty choice gets first link' );
+
+	// Operator embed choice is preserved; embed content is not rewritten.
+	$state = array(
+		'existing_meta' => array(
+			'_movie_choice'        => 'movie_embed',
+			'_movie_embed_content' => '<iframe src="https://embed.example/x"></iframe>',
+			'_movie_url_link'      => 'https://should-not-be-touched.example/old',
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'embed preserve ok' );
+	assert_true( ! isset( $state['meta_written']['_movie_choice'] ), 'embed does not rewrite _movie_choice' );
+	assert_true( ! isset( $state['meta_written']['_movie_url_link'] ), 'embed does not rewrite _movie_url_link' );
+	assert_eq( 'movie_embed', $state['existing_meta']['_movie_choice'], 'embed choice remains' );
+	assert_eq(
+		'<iframe src="https://embed.example/x"></iframe>',
+		$state['existing_meta']['_movie_embed_content'],
+		'embed content remains'
+	);
+	assert_true( ! in_array( 'default_stream', $r['completed'], true ), 'preserved embed skips default_stream step' );
+
+	// Operator uploaded file choice is preserved.
+	$state = array(
+		'existing_meta' => array(
+			'_movie_choice'        => 'movie_file',
+			'_movie_attachment_id' => 77,
+			'_movie_url_link'      => '',
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'upload preserve ok' );
+	assert_true( ! isset( $state['meta_written']['_movie_choice'] ), 'upload does not rewrite _movie_choice' );
+	assert_true( ! isset( $state['meta_written']['_movie_url_link'] ), 'upload does not rewrite _movie_url_link' );
+	assert_eq( 'movie_file', $state['existing_meta']['_movie_choice'], 'upload choice remains' );
+	assert_eq( 77, $state['existing_meta']['_movie_attachment_id'], 'upload attachment remains' );
+
+	// Custom external movie_url is preserved even when Movie/... sources exist.
+	$custom = 'https://cdn.example/custom/stream.m3u8';
+	$state  = array(
+		'existing_meta' => array(
+			'_movie_choice'   => 'movie_url',
+			'_movie_url_link' => $custom,
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ), adapter_test_source_row( $second ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'custom url preserve ok' );
+	assert_true( ! isset( $state['meta_written']['_movie_choice'] ), 'custom url does not rewrite choice' );
+	assert_true( ! isset( $state['meta_written']['_movie_url_link'] ), 'custom url does not rewrite link' );
+	assert_eq( $custom, $state['existing_meta']['_movie_url_link'], 'custom url remains' );
+
+	// Existing movie_url pointing at a still-present (non-first) Movie/... source is preserved.
+	$state = array(
+		'existing_meta' => array(
+			'_movie_choice'   => 'movie_url',
+			'_movie_url_link' => $second,
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ), adapter_test_source_row( $second ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'existing movie_url source preserve ok' );
+	assert_true( ! isset( $state['meta_written']['_movie_choice'] ), 'existing movie_url choice not rewritten' );
+	assert_true( ! isset( $state['meta_written']['_movie_url_link'] ), 'non-first Movie/... url not forced to first' );
+	assert_eq( $second, $state['existing_meta']['_movie_url_link'], 'non-first Movie/... url remains' );
+
+	// Stale Movie/... movie_url (removed from sources) is re-initialized.
+	$removed = 'Movie/Korea/2022/Decision.to.Leave/Decision.to.Leave.2022.GONE.mkv';
+	$state   = array(
+		'existing_meta' => array(
+			'_movie_choice'   => 'movie_url',
+			'_movie_url_link' => $removed,
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'stale movie_url reinit ok' );
+	assert_eq( 'movie_url', $state['meta_written']['_movie_choice']['value'] ?? null, 'stale url resets choice to movie_url' );
+	assert_eq( $first, $state['meta_written']['_movie_url_link']['value'] ?? null, 'stale url resets to first merged link' );
+	assert_true( in_array( 'default_stream', $r['completed'], true ), 'stale url records default_stream' );
+
+	// Invalid / incomplete choices re-initialize.
+	$state = array(
+		'existing_meta' => array(
+			'_movie_choice'        => 'not_a_real_choice',
+			'_movie_url_link'      => 'https://example.com/x',
+			'_movie_embed_content' => '',
+			'_movie_attachment_id' => 0,
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'invalid choice reinit ok' );
+	assert_eq( 'movie_url', $state['meta_written']['_movie_choice']['value'] ?? null, 'invalid choice becomes movie_url' );
+	assert_eq( $first, $state['meta_written']['_movie_url_link']['value'] ?? null, 'invalid choice gets first link' );
+
+	$state = array(
+		'existing_meta' => array(
+			'_movie_choice'        => 'movie_file',
+			'_movie_attachment_id' => 0,
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'empty upload reinit ok' );
+	assert_eq( 'movie_url', $state['meta_written']['_movie_choice']['value'] ?? null, 'empty upload becomes movie_url' );
+
+	$state = array(
+		'existing_meta' => array(
+			'_movie_choice'        => 'movie_embed',
+			'_movie_embed_content' => '   ',
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'empty embed reinit ok' );
+	assert_eq( 'movie_url', $state['meta_written']['_movie_choice']['value'] ?? null, 'empty embed becomes movie_url' );
+
+	$state = array(
+		'existing_meta' => array(
+			'_movie_choice'   => 'movie_url',
+			'_movie_url_link' => '',
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $first ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'empty movie_url link reinit ok' );
+	assert_eq( $first, $state['meta_written']['_movie_url_link']['value'] ?? null, 'empty movie_url link gets first link' );
+}
+
+// ---------------------------------------------------------------------------
+// Movie artwork is not part of the media adapter update path (audit confirmed).
+// ---------------------------------------------------------------------------
+echo "\n[movie-artwork-untouched]\n";
+{
+	$path  = 'Movie/Korea/2022/Decision.to.Leave/Decision.to.Leave.2022.1080p.mkv';
+	$state = array(
+		'existing_meta' => array(
+			'thumbnail_id'         => 321,
+			'_portrait_thumbmail'  => 322,
+			'_movie_choice'        => 'movie_embed',
+			'_movie_embed_content' => '<iframe src="https://embed.example/keep"></iframe>',
+		),
+	);
+	$opts = harness( $state );
+	$r    = Movies_WP_Streamit_Adapter::apply(
+		make_plan( array( 'sources' => array( adapter_test_source_row( $path ) ) ) ),
+		$opts
+	);
+	assert_true( ! empty( $r['ok'] ), 'movie update without artwork writes ok' );
+	assert_true( ! isset( $state['meta_written']['thumbnail_id'] ), 'movie update never writes thumbnail_id' );
+	assert_true( ! isset( $state['meta_written']['_portrait_thumbmail'] ), 'movie update never writes _portrait_thumbmail' );
+	assert_eq( 321, $state['existing_meta']['thumbnail_id'], 'existing movie poster attachment remains' );
+	assert_eq( 322, $state['existing_meta']['_portrait_thumbmail'], 'existing movie portrait attachment remains' );
+	assert_true( ! isset( $state['meta_written']['_movie_choice'] ), 'playback preserve still skips rewrite' );
+	assert_eq( 'movie_embed', $state['existing_meta']['_movie_choice'], 'playback preserve still intact' );
 }
 
 // ---------------------------------------------------------------------------
