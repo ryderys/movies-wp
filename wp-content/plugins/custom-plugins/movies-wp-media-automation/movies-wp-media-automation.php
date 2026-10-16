@@ -26,6 +26,9 @@ add_action(
 );
 
 require_once __DIR__ . '/includes/class-movies-wp-media-api-client.php';
+require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-client.php';
+require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-service.php';
+require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-admin.php';
 require_once __DIR__ . '/includes/class-movies-wp-tmdb-preview-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-tmdb-tv-preview-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-media-preview-service.php';
@@ -57,4 +60,5 @@ add_action( 'init', array( 'Movies_WP_Series_Import_Schema', 'maybe_install' ), 
 Movies_WP_Series_Import_Job_Runner::init();
 Movies_WP_Movie_Import_Job_Runner::init();
 Movies_WP_Media_Admin::init();
+Movies_WP_Trailer_Upload_Admin::init();
 Movies_WP_Series_Admin::init();

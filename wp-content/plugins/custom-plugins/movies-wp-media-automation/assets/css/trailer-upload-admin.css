@@ -1,0 +1,28 @@
+.movies-wp-trailer-upload .movies-wp-trailer-progress {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 8px 0;
+}
+
+.movies-wp-trailer-upload progress {
+	width: 100%;
+	max-width: 220px;
+	height: 12px;
+}
+
+.movies-wp-trailer-upload .movies-wp-trailer-status {
+	margin-top: 8px;
+}
+
+.movies-wp-trailer-upload .movies-wp-trailer-status.is-error {
+	color: #b32d2e;
+}
+
+.movies-wp-trailer-upload .movies-wp-trailer-status.is-ok {
+	color: #007017;
+}
+
+.movies-wp-trailer-upload code {
+	word-break: break-all;
+}
