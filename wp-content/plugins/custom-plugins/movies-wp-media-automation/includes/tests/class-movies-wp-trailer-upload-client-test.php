@@ -138,8 +138,30 @@ if ( ! function_exists( 'wp_unslash' ) ) {
 		return $value;
 	}
 }
+if ( ! function_exists( 'sanitize_key' ) ) {
+	function sanitize_key( $key ) {
+		return strtolower( preg_replace( '/[^a-z0-9_\-]/', '', (string) $key ) ?? '' );
+	}
+}
+if ( ! function_exists( 'streamit_get_tvshow_meta' ) ) {
+	function streamit_get_tvshow_meta( $id, $key, $single = true ) {
+		unset( $single );
+		return get_post_meta( $id, $key, true );
+	}
+}
+if ( ! function_exists( 'streamit_update_tvshow_meta' ) ) {
+	function streamit_update_tvshow_meta( $id, $key, $value ) {
+		return update_post_meta( $id, $key, $value );
+	}
+}
+if ( ! function_exists( 'streamit_get_tvshow' ) ) {
+	function streamit_get_tvshow( $id ) {
+		return 7 === (int) $id ? (object) array( 'id' => 7 ) : null;
+	}
+}
 
 require_once dirname( __DIR__ ) . '/class-movies-wp-media-api-client.php';
+require_once dirname( __DIR__ ) . '/class-movies-wp-series-media-api-client.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-trailer-upload-client.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-trailer-upload-service.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-trailer-upload-admin.php';
@@ -336,6 +358,41 @@ $_POST['post_id'] = '99'; // mapped to post type "post"
 $resp = tu_run_ajax_handler();
 tu_assert( is_array( $resp ) && empty( $resp['success'] ), 'invalid post type returns error JSON' );
 tu_assert( is_array( $resp['data'] ?? null ) && 'trailer_upload_invalid_movie' === ( $resp['data']['code'] ?? '' ), 'invalid post type code' );
+
+echo "\nTV show series directory\n";
+$series_dir = 'series/korea/2024/Marry.My.Husband';
+$GLOBALS['trailer_meta_store'][7] = array(
+	'_media_directory'   => $series_dir,
+	'_name_trailer_link' => '',
+);
+tu_assert( Movies_WP_Trailer_Upload_Client::normalize_title_directory( $series_dir ) === $series_dir, 'series directory accepted' );
+tu_assert( is_wp_error( Movies_WP_Trailer_Upload_Service::resolve_directory( 'movie', 7 ) ), 'movie upload rejects series directory' );
+tu_assert( Movies_WP_Trailer_Upload_Service::resolve_directory( 'tvshow', 7 ) === $series_dir, 'tvshow resolves series directory' );
+
+$GLOBALS['trailer_meta_writes'] = array();
+$tv_upload = Movies_WP_Trailer_Upload_Service::upload_for_title(
+	'tvshow',
+	7,
+	$tmp,
+	'official.mp4',
+	false,
+	array(
+		'transport' => static function () use ( $series_dir ) {
+			return array(
+				'status' => 200,
+				'body'   => wp_json_encode_safe( array( 'ok' => true, 'path' => $series_dir . '/Trailer/official.mp4' ) ),
+			);
+		},
+	)
+);
+tu_assert( ! is_wp_error( $tv_upload ), 'tvshow upload succeeds' );
+tu_assert( ( $GLOBALS['trailer_meta_store'][7]['_name_trailer_link'] ?? '' ) === $series_dir . '/Trailer/official.mp4', 'tvshow trailer link saved' );
+
+$_POST['post_id']      = '8';
+$_POST['content_type'] = 'tvshow';
+$resp = tu_run_ajax_handler();
+tu_assert( is_array( $resp ) && empty( $resp['success'] ), 'unknown tvshow rejected' );
+tu_assert( is_array( $resp['data'] ?? null ) && 'trailer_upload_invalid_tvshow' === ( $resp['data']['code'] ?? '' ), 'unknown tvshow code' );
 
 @unlink( $tmp );
 

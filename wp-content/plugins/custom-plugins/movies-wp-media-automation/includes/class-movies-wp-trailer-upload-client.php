@@ -144,7 +144,7 @@ class Movies_WP_Trailer_Upload_Client {
 			return $config;
 		}
 
-		$dir = Movies_WP_Media_Api_Client::normalize_directory( $relative_directory );
+		$dir = self::normalize_title_directory( $relative_directory );
 		if ( is_wp_error( $dir ) ) {
 			return $dir;
 		}
@@ -327,6 +327,21 @@ class Movies_WP_Trailer_Upload_Client {
 			'ok'   => true,
 			'path' => $validated,
 		);
+	}
+
+	/**
+	 * Movie paths stay on the movie normalizer. Series paths use the series normalizer.
+	 *
+	 * @param mixed $directory
+	 * @return string|WP_Error
+	 */
+	public static function normalize_title_directory( $directory ) {
+		$raw = is_string( $directory ) ? str_replace( '\\', '/', trim( $directory ) ) : '';
+		$raw = trim( $raw, '/' );
+		if ( str_starts_with( strtolower( $raw ), 'series/' ) ) {
+			return Movies_WP_Series_Media_Api_Client::normalize_directory( $directory );
+		}
+		return Movies_WP_Media_Api_Client::normalize_directory( $directory );
 	}
 
 	/**

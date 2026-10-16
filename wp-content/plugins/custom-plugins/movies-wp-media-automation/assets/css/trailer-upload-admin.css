@@ -23,6 +23,16 @@
 	color: #007017;
 }
 
+#streamit_data_section > .movies-wp-trailer-upload {
+	background: #fff;
+	color: #1d2327;
+	padding: 12px 16px;
+	margin: 0 0 16px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	max-width: 720px;
+}
+
 .movies-wp-trailer-upload code {
 	word-break: break-all;
 }
