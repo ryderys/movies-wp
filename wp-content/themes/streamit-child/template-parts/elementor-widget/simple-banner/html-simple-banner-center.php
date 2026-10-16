@@ -155,13 +155,18 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <?php } ?>
                             </div>
 
-                            <?php if ( ( $post_type !== 'video' ) && $settings['show_trailer_btn'] === 'block' && ! empty( $trailer_link ) ) : ?>
-                                <?php $trailer_details = streamit_get_trailer_embed( $trailer_link ); ?>
+                            <?php
+                            $trailer_details = function_exists( 'streamit_child_get_trailer_playback' )
+                                ? streamit_child_get_trailer_playback( $trailer_link )
+                                : ( function_exists( 'streamit_get_trailer_embed' ) ? streamit_get_trailer_embed( $trailer_link ) : array() );
+                            ?>
+                            <?php if ( ( $post_type !== 'video' ) && $settings['show_trailer_btn'] === 'block' && ! empty( $trailer_details['trailer_link'] ) ) : ?>
                                 <div class="col-lg-5 col-md-12 trailor-video css_prefix-slider d-none d-lg-block">
                                     <a href="#"
                                         class="st-load-trailer video-open playbtn" 
                                         data-trailer-type="<?php echo esc_attr( $trailer_details['type'] ); ?>"
-                                        data-trailer-url="<?php echo esc_url( $trailer_details['trailer_link'] ); ?>">
+                                        data-trailer-url="<?php echo esc_url( $trailer_details['trailer_link'] ); ?>"
+                                        data-trailer-mime="<?php echo esc_attr( ! empty( $trailer_details['mime'] ) ? $trailer_details['mime'] : '' ); ?>">
                                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="80px" height="80px" viewBox="0 0 213.7 213.7">
                                             <polygon class="triangle" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" points="73.5,62.5 148.5,105.8 73.5,149.1" />
                                             <circle class="circle" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" cx="106.8" cy="106.8" r="103.3" />
