@@ -12,6 +12,88 @@
 		return !!$.trim( val || '' );
 	}
 
+	/**
+	 * Same contract as streamit_child_is_accepted_trailer_link().
+	 * Empty, a direct Trailer/ or Trailers/ video path, or an http(s) URL.
+	 */
+	function isAcceptedTrailerLink( value ) {
+		var raw = $.trim( value || '' );
+		if ( ! raw ) {
+			return true;
+		}
+		if ( /[\s\u0000-\u001F\u007F]/.test( raw ) ) {
+			return false;
+		}
+		if ( /^https?:\/\//i.test( raw ) ) {
+			try {
+				var url = new URL( raw );
+				if ( url.protocol !== 'http:' && url.protocol !== 'https:' ) {
+					return false;
+				}
+				if ( ! url.hostname || url.username || url.password ) {
+					return false;
+				}
+				if ( url.hostname.indexOf( '.' ) === -1 && ! /^\d{1,3}(\.\d{1,3}){3}$/.test( url.hostname ) ) {
+					return false;
+				}
+				return true;
+			} catch ( e ) {
+				return false;
+			}
+		}
+		if ( raw.indexOf( '://' ) !== -1 ) {
+			return false;
+		}
+
+		var path = raw.replace( /\\/g, '/' ).replace( /^\/+/, '' );
+		var parts = path.split( '/' );
+		var i;
+		if ( parts.length < 2 ) {
+			return false;
+		}
+		for ( i = 0; i < parts.length; i++ ) {
+			if ( ! parts[ i ] || parts[ i ] === '.' || parts[ i ] === '..' ) {
+				return false;
+			}
+		}
+		var parent = parts[ parts.length - 2 ].toLowerCase();
+		if ( parent !== 'trailer' && parent !== 'trailers' ) {
+			return false;
+		}
+		var ext = parts[ parts.length - 1 ].split( '.' ).pop().toLowerCase();
+		return ext === 'mp4' || ext === 'webm' || ext === 'mkv';
+	}
+
+	function relaxTrailerLinkInput() {
+		var input = document.getElementById( '_name_trailer_link' );
+		if ( input && input.getAttribute( 'type' ) === 'url' ) {
+			input.setAttribute( 'type', 'text' );
+		}
+	}
+
+	function attachTrailerLinkRule( rules ) {
+		relaxTrailerLinkInput();
+		if ( ! $.validator ) {
+			return rules;
+		}
+		if ( ! $.validator.methods.streamitTrailerLink ) {
+			$.validator.addMethod( 'streamitTrailerLink', function ( value ) {
+				return isAcceptedTrailerLink( value );
+			} );
+		}
+		rules._name_trailer_link = {
+			streamitTrailerLink: true,
+		};
+		return rules;
+	}
+
+	function attachTrailerLinkMessage( messages ) {
+		messages._name_trailer_link = {
+			streamitTrailerLink: 'Enter a Trailer/ path or a valid http(s) trailer URL.',
+		};
+		return messages;
+	}
+
 	// Edit mode: only require thumbnails when the hidden field is actually empty.
 	if ( typeof wp !== 'undefined' && wp.hooks ) {
 		wp.hooks.addFilter( 'tvshow_form_validation_rules', 'streamit-child/edit-relaxed', function ( rules ) {
@@ -47,7 +129,15 @@
 
 			return rules;
 		} );
+
+		wp.hooks.addFilter( 'movie_form_validation_rules', 'streamit-child/trailer-link', attachTrailerLinkRule );
+		wp.hooks.addFilter( 'tvshow_form_validation_rules', 'streamit-child/trailer-link', attachTrailerLinkRule );
+		wp.hooks.addFilter( 'movie_form_validation_messages', 'streamit-child/trailer-link', attachTrailerLinkMessage );
+		wp.hooks.addFilter( 'tvshow_form_validation_messages', 'streamit-child/trailer-link', attachTrailerLinkMessage );
 	}
+
+	relaxTrailerLinkInput();
+	$( relaxTrailerLinkInput );
 
 	function select2AjaxTransport( params, success, failure, extraParams ) {
 		var payload = $.extend(

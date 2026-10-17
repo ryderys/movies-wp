@@ -248,6 +248,65 @@ function streamit_child_get_movie_trailer_button( $stored ) {
 }
 
 /**
+ * Whether an admin Trailer Link value may be saved.
+ *
+ * Empty is allowed. A relative value must be a direct file under Trailer/ or
+ * Trailers/ (mp4, webm, mkv). An absolute value must be an http(s) URL with a
+ * host, which covers YouTube, Vimeo, Aparat, and other existing trailer URLs.
+ * This does not change how those values are played.
+ *
+ * @param string $value Raw field value.
+ * @return bool
+ */
+function streamit_child_is_accepted_trailer_link( $value ) {
+	$value = trim( (string) $value );
+	if ( '' === $value ) {
+		return true;
+	}
+	if ( preg_match( '/[\s\x00-\x1F\x7F]/', $value ) ) {
+		return false;
+	}
+	if ( function_exists( 'streamit_child_is_external_media_link' ) && streamit_child_is_external_media_link( $value ) ) {
+		return streamit_child_is_accepted_trailer_url( $value );
+	}
+	if ( false !== strpos( $value, '://' ) ) {
+		return false;
+	}
+	return streamit_child_is_allowed_trailer_media_path( $value );
+}
+
+/**
+ * http(s) URL with a host. Rejects scheme-only and credentialed URLs.
+ *
+ * @param string $value Trimmed URL.
+ * @return bool
+ */
+function streamit_child_is_accepted_trailer_url( $value ) {
+	if ( ! preg_match( '#^https?://#i', $value ) ) {
+		return false;
+	}
+
+	$parts = wp_parse_url( $value );
+	if ( ! is_array( $parts ) ) {
+		return false;
+	}
+
+	$scheme = isset( $parts['scheme'] ) ? strtolower( (string) $parts['scheme'] ) : '';
+	$host   = isset( $parts['host'] ) ? (string) $parts['host'] : '';
+	if ( 'http' !== $scheme && 'https' !== $scheme ) {
+		return false;
+	}
+	if ( '' === $host || isset( $parts['user'] ) || isset( $parts['pass'] ) ) {
+		return false;
+	}
+	if ( ! str_contains( $host, '.' ) && ! filter_var( $host, FILTER_VALIDATE_IP ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * Enqueue trailer modal helpers (MIME + stop/focus).
  */
 function streamit_child_enqueue_trailer_modal_mime() {

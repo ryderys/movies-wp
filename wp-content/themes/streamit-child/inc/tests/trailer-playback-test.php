@@ -280,6 +280,66 @@ assert_true( str_starts_with( (string) ( $btn_local['trailer_link'] ?? '' ), 'ht
 $btn_feature = streamit_child_get_movie_trailer_button( 'Movie/Korea/2022/Decision.to.Leave/Decision.to.Leave.2022.1080p.mkv' );
 assert_eq( null, $btn_feature, 'non-trailer local path hides Watch Trailer button' );
 
+echo "\nadmin trailer link acceptance\n";
+assert_true( streamit_child_is_accepted_trailer_link( '' ), 'empty trailer link is allowed' );
+assert_true( streamit_child_is_accepted_trailer_link( '  ' ), 'blank trailer link is allowed' );
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'Movie/Chin/2016/Bounty.Hunters/Trailer/official.mp4' ),
+	'existing relative Trailer/ path is accepted'
+);
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'series/Chin/2025/Dream.Show/Trailers/teaser.webm' ),
+	'Trailers/ webm path is accepted'
+);
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'Movie/Iran/2024/Foo/trailer/Foo.trailer.MKV' ),
+	'case-insensitive trailer folder and extension are accepted'
+);
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'https://cdn.example.com/trailers/official.mp4' ),
+	'ordinary https trailer URL is accepted'
+);
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' ),
+	'YouTube URL is accepted'
+);
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'https://youtu.be/dQw4w9WgXcQ' ),
+	'YouTube short URL is accepted'
+);
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'https://vimeo.com/123456' ),
+	'Vimeo URL is accepted'
+);
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'https://www.aparat.com/v/nwlrj1m' ),
+	'Aparat URL is accepted'
+);
+assert_true(
+	streamit_child_is_accepted_trailer_link( 'http://cdn.example.com/trailer.mp4' ),
+	'existing http trailer URL is accepted'
+);
+assert_true( ! streamit_child_is_accepted_trailer_link( 'not a url' ), 'plain text is rejected' );
+assert_true( ! streamit_child_is_accepted_trailer_link( 'https://' ), 'scheme-only URL is rejected' );
+assert_true( ! streamit_child_is_accepted_trailer_link( 'javascript:alert(1)' ), 'javascript URL is rejected' );
+assert_true( ! streamit_child_is_accepted_trailer_link( 'ftp://cdn.example.com/a.mp4' ), 'non-http scheme is rejected' );
+assert_true(
+	! streamit_child_is_accepted_trailer_link( 'Movie/Korea/2022/Foo/Decision.to.Leave.mkv' ),
+	'feature path outside Trailer/ is rejected'
+);
+assert_true(
+	! streamit_child_is_accepted_trailer_link( 'Movie/Korea/2022/Foo/Trailer/../Foo.mkv' ),
+	'traversal path is rejected'
+);
+assert_true(
+	! streamit_child_is_accepted_trailer_link( 'Movie/Korea/2022/Foo/Trailer/extra/nested.mp4' ),
+	'nested Trailer path is rejected'
+);
+assert_true(
+	! streamit_child_is_accepted_trailer_link( 'Movie/Korea/2022/Foo/Trailer/poster.jpg' ),
+	'non-video under Trailer/ is rejected'
+);
+
 echo "\n";
 if ( $failures > 0 ) {
 	echo "FAILED {$failures} assertion(s)\n";
