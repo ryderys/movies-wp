@@ -76,20 +76,20 @@ html[dir="rtl"] .css_prefix-video-player .back-btn {
 	right: 1em;
 }
 
-/* Trailer section card matches one episode card, full width on small screens. */
-.streamit-child-tvshow-trailer-section .streamit-child-tvshow-trailer-card {
+/* Detail-page trailer card matches one episode card, full width on small screens. */
+.streamit-child-detail-trailer-section .streamit-child-detail-trailer-card {
 	width: min(100%, 18rem);
 }
 
 @media (max-width: 577px) {
-	.streamit-child-tvshow-trailer-section .streamit-child-tvshow-trailer-card {
+	.streamit-child-detail-trailer-section .streamit-child-detail-trailer-card {
 		width: 100%;
 		max-width: 100%;
 	}
 }
 
 /* Overlay is a button; fill the card the way the episode link does. */
-button.episode-overlay.streamit-child-tvshow-trailer-open {
+button.episode-overlay.streamit-child-detail-trailer-open {
 	width: 100%;
 	height: 100%;
 	margin: 0;

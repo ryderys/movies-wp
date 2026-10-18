@@ -344,21 +344,21 @@ function streamit_child_trailer_image_url( $raw ) {
 }
 
 /**
- * Poster for the episodes-slider trailer card.
+ * Poster for a detail-page trailer card (movie or TV show).
  *
- * Prefer `_name_trailer_img`. Fall back to the show poster (`thumbnail_id`).
+ * Prefer `_name_trailer_img`. Fall back to the title poster (`thumbnail_id`).
  *
- * @param object $tvshow Streamit TV show.
+ * @param object $title Streamit movie or TV show.
  * @return string HTML, already escaped by the image helper, or an escaped img tag.
  */
-function streamit_child_tvshow_trailer_card_image_html( $tvshow ) {
+function streamit_child_detail_trailer_card_image_html( $title ) {
 	$alt   = __( 'تریلر', 'streamit' );
 	$class = 'img-fluid object-fit-cover position-relative';
-	$raw   = method_exists( $tvshow, 'get_meta' ) ? $tvshow->get_meta( '_name_trailer_img' ) : '';
+	$raw   = method_exists( $title, 'get_meta' ) ? $title->get_meta( '_name_trailer_img' ) : '';
 	$id    = streamit_child_trailer_image_attachment_id( $raw );
 
-	if ( $id <= 0 && method_exists( $tvshow, 'get_meta' ) ) {
-		$id = absint( $tvshow->get_meta( 'thumbnail_id' ) );
+	if ( $id <= 0 && method_exists( $title, 'get_meta' ) ) {
+		$id = absint( $title->get_meta( 'thumbnail_id' ) );
 	}
 
 	if ( $id > 0 && function_exists( 'streamit_render_image' ) ) {
@@ -388,22 +388,20 @@ function streamit_child_tvshow_trailer_card_image_html( $tvshow ) {
 }
 
 /**
- * Data for the TV-show trailer section card, or null when the show has no playable trailer.
+ * Data for a detail-page trailer card, or null when the title has no playable trailer.
  *
- * Uses the same playback resolver as the Watch Trailer button. The card is not an episode.
- *
- * @param object $tvshow Streamit TV show.
+ * @param object $title Streamit movie or TV show.
  * @return array{label:string,type:string,trailer_link:string,mime:string,image_html:string}|null
  */
-function streamit_child_get_tvshow_episode_trailer_card( $tvshow ) {
-	if ( ! is_object( $tvshow ) || ! method_exists( $tvshow, 'get_meta' ) ) {
+function streamit_child_get_detail_trailer_card( $title ) {
+	if ( ! is_object( $title ) || ! method_exists( $title, 'get_meta' ) ) {
 		return null;
 	}
 	if ( ! function_exists( 'streamit_child_get_movie_trailer_button' ) ) {
 		return null;
 	}
 
-	$stored = $tvshow->get_meta( '_name_trailer_link' );
+	$stored = $title->get_meta( '_name_trailer_link' );
 	$button = streamit_child_get_movie_trailer_button( null === $stored ? '' : $stored );
 	if ( ! is_array( $button ) ) {
 		return null;
@@ -414,26 +412,24 @@ function streamit_child_get_tvshow_episode_trailer_card( $tvshow ) {
 		'type'         => (string) $button['type'],
 		'trailer_link' => (string) $button['trailer_link'],
 		'mime'         => (string) $button['mime'],
-		'image_html'   => streamit_child_tvshow_trailer_card_image_html( $tvshow ),
+		'image_html'   => streamit_child_detail_trailer_card_image_html( $title ),
 	);
 }
 
 /**
- * One trailer card for the TV-show detail section. Empty when there is no playable trailer.
+ * One trailer card for a movie or TV-show detail section.
  *
- * The overlay uses `.st-load-trailer`, so the existing click handler opens the trailer modal.
- *
- * @param object $tvshow Streamit TV show.
+ * @param object $title Streamit movie or TV show.
  * @return string
  */
-function streamit_child_render_tvshow_trailer_card( $tvshow ) {
-	$card = streamit_child_get_tvshow_episode_trailer_card( $tvshow );
+function streamit_child_render_detail_trailer_card( $title ) {
+	$card = streamit_child_get_detail_trailer_card( $title );
 	if ( ! is_array( $card ) ) {
 		return '';
 	}
 
 	$attrs = sprintf(
-		' type="button" class="episode-overlay st-load-trailer streamit-child-tvshow-trailer-open" data-trailer-type="%1$s" data-trailer-url="%2$s" data-trailer-mime="%3$s" aria-haspopup="dialog" aria-label="%4$s"',
+		' type="button" class="episode-overlay st-load-trailer streamit-child-detail-trailer-open" data-trailer-type="%1$s" data-trailer-url="%2$s" data-trailer-mime="%3$s" aria-haspopup="dialog" aria-label="%4$s"',
 		esc_attr( $card['type'] ),
 		esc_url( $card['trailer_link'] ),
 		esc_attr( $card['mime'] ),
@@ -441,7 +437,7 @@ function streamit_child_render_tvshow_trailer_card( $tvshow ) {
 	);
 	$play = function_exists( 'st_get_icon' ) ? st_get_icon( 'play' ) : '';
 
-	return '<div class="episode-card streamit-child-tvshow-trailer-card">'
+	return '<div class="episode-card streamit-child-detail-trailer-card">'
 		. '<button' . $attrs . '></button>'
 		. '<div class="episode-image">'
 		. $card['image_html']
@@ -452,24 +448,40 @@ function streamit_child_render_tvshow_trailer_card( $tvshow ) {
 }
 
 /**
- * Detail-page trailer section. Empty when the show has no playable trailer.
+ * Detail-page trailer section for a movie or TV show. Empty when there is no playable trailer.
  *
- * @param object $tvshow Streamit TV show.
+ * @param object $title Streamit movie or TV show.
  * @return string
  */
-function streamit_child_render_tvshow_trailer_section( $tvshow ) {
-	$card = streamit_child_render_tvshow_trailer_card( $tvshow );
+function streamit_child_render_detail_trailer_section( $title ) {
+	$card = streamit_child_render_detail_trailer_card( $title );
 	if ( '' === $card ) {
 		return '';
 	}
 
-	return '<div class="section-spacing-top streamit-child-tvshow-trailer-section">'
+	return '<div class="section-spacing-top streamit-child-detail-trailer-section">'
 		. '<div class="container-fluid">'
 		. '<div class="d-flex align-items-center justify-content-between mb-md-5 mb-3">'
 		. '<h5 class="main-title text-capitalize mb-0">' . esc_html__( 'تریلر', 'streamit' ) . '</h5>'
 		. '</div>'
 		. $card
 		. '</div></div>';
+}
+
+/**
+ * @param object $tvshow Streamit TV show.
+ * @return string
+ */
+function streamit_child_render_tvshow_trailer_section( $tvshow ) {
+	return streamit_child_render_detail_trailer_section( $tvshow );
+}
+
+/**
+ * @param object $movie Streamit movie.
+ * @return string
+ */
+function streamit_child_render_movie_trailer_section( $movie ) {
+	return streamit_child_render_detail_trailer_section( $movie );
 }
 
 /**

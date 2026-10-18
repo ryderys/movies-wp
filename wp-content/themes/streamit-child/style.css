@@ -312,7 +312,4 @@
 	content: "\f007";
 }
 
-/* Movie single: click-to-play Watch Trailer beside the primary play CTA. */
-.play-button-wrapper .streamit-child-watch-trailer {
-	min-height: 2.75rem;
-}
+/* Trailer playback on movie/TV detail pages uses the separate «تریلر» section. */

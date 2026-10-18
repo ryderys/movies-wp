@@ -2,6 +2,8 @@
 /**
  * Movie play button — always shows "شروع تماشا"; locked plan opens subscribe modal.
  *
+ * Trailer playback lives in the separate detail-page «تریلر» section.
+ *
  * @package streamit-child
  */
 
@@ -25,14 +27,6 @@ $has_access = function_exists( 'movies_wp_user_can_access_media' )
 
 $play_label = esc_html__( 'شروع تماشا', 'streamit' );
 $player_url = streamit_get_permalink( $post_type, $st_data->get_post_name() . '/player' );
-
-$stored_trailer = ( method_exists( $st_data, 'get_meta' ) && null !== $st_data->get_meta( '_name_trailer_link' ) )
-	? $st_data->get_meta( '_name_trailer_link' )
-	: '';
-$trailer_button = function_exists( 'streamit_child_get_movie_trailer_button' )
-	? streamit_child_get_movie_trailer_button( $stored_trailer )
-	: null;
-$trailer_label  = esc_html__( 'تماشای تریلر', 'streamit' );
 ?>
 <div class="play-button-wrapper d-flex align-items-center gap-md-4 gap-3 flex-wrap">
 	<?php if ( $has_access ) : ?>
@@ -48,23 +42,6 @@ $trailer_label  = esc_html__( 'تماشای تریلر', 'streamit' );
 			<span class="d-flex align-items-center justify-content-center gap-2">
 				<span><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 				<span><?php echo esc_html( $play_label ); ?></span>
-			</span>
-		</button>
-	<?php endif; ?>
-
-	<?php if ( is_array( $trailer_button ) ) : ?>
-		<button
-			type="button"
-			class="btn btn-secondary st-load-trailer streamit-child-watch-trailer"
-			data-trailer-type="<?php echo esc_attr( $trailer_button['type'] ); ?>"
-			data-trailer-url="<?php echo esc_url( $trailer_button['trailer_link'] ); ?>"
-			data-trailer-mime="<?php echo esc_attr( $trailer_button['mime'] ); ?>"
-			aria-haspopup="dialog"
-			aria-label="<?php echo esc_attr( $trailer_label ); ?>"
-		>
-			<span class="d-flex align-items-center justify-content-center gap-2">
-				<span><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-				<span><?php echo esc_html( $trailer_label ); ?></span>
 			</span>
 		</button>
 	<?php endif; ?>
