@@ -7,9 +7,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-trailer-discovery.php';
+
 class Movies_WP_Series_Import_Snapshot_Store {
 
 	const TTL_SECONDS = 1200;
+
+	/**
+	 * Bumped when scan facts that affect trailer discovery change.
+	 * Old snapshots hashed without this token, so rematch will not reuse them.
+	 */
+	const TRAILER_SCAN_TOKEN = 'trailer_scan_v1';
 
 	/**
 	 * @var array<string, array<string, mixed>>
@@ -99,7 +107,11 @@ class Movies_WP_Series_Import_Snapshot_Store {
 			(string) ( $input['tmdb_id'] ?? '' ),
 			(string) ( $input['title'] ?? '' ),
 			(string) ( $input['series_directory'] ?? '' ),
+			self::TRAILER_SCAN_TOKEN,
 		);
+		foreach ( self::trailer_media_paths( $input, $scan ) as $trailer_path ) {
+			$bits[] = $trailer_path;
+		}
 		foreach ( isset( $scan['episodes'] ) && is_array( $scan['episodes'] ) ? $scan['episodes'] : array() as $episode ) {
 			if ( ! is_array( $episode ) ) {
 				continue;
@@ -113,6 +125,21 @@ class Movies_WP_Series_Import_Snapshot_Store {
 			}
 		}
 		return hash( 'sha256', implode( "\n", $bits ) );
+	}
+
+	/**
+	 * Normalized trailer paths from a scan, sorted for a stable hash.
+	 *
+	 * @param array<string, mixed> $input
+	 * @param array<string, mixed> $scan
+	 * @return list<string>
+	 */
+	private static function trailer_media_paths( array $input, array $scan ) {
+		$directory = (string) ( $input['series_directory'] ?? '' );
+		$files     = isset( $scan['files'] ) && is_array( $scan['files'] ) ? $scan['files'] : array();
+		$paths     = Movies_WP_Trailer_Discovery::candidates_from_files( $directory, $files );
+		sort( $paths, SORT_STRING );
+		return array_values( $paths );
 	}
 
 	/**

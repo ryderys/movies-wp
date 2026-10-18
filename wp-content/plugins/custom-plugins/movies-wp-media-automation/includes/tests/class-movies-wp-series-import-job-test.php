@@ -244,6 +244,56 @@ job_same( 'series_import_snapshot_user_mismatch', $user->get_error_code(), 'user
 $site = Movies_WP_Series_Import_Snapshot_Store::load_valid( $created['token'], array( 'user_id' => 9, 'blog_id' => 2, 'now' => 1001 ) );
 job_same( 'series_import_snapshot_site_mismatch', $site->get_error_code(), 'site binding is enforced' );
 
+echo "Trailer scan fingerprint\n";
+$without = job_payload();
+$with_a  = job_payload();
+$with_b  = job_payload();
+$dir     = 'series/korea/2024/Show';
+$with_a['media']['files'] = array(
+	array( 'kind' => 'video', 'media_path' => $dir . '/a.mkv' ),
+	array( 'kind' => 'trailer', 'media_path' => $dir . '/Trailer/z.mp4' ),
+	array( 'kind' => 'trailer', 'media_path' => $dir . '/Trailers/a.webm' ),
+);
+$with_b['media']['files'] = array(
+	array( 'kind' => 'trailer', 'media_path' => $dir . '/Trailers/a.webm' ),
+	array( 'kind' => 'trailer', 'media_path' => $dir . '/Trailer/z.mp4' ),
+	array( 'kind' => 'ignored', 'media_path' => $dir . '/cover.jpg' ),
+);
+$fp_without = Movies_WP_Series_Import_Snapshot_Store::fingerprint( $without );
+$fp_a       = Movies_WP_Series_Import_Snapshot_Store::fingerprint( $with_a );
+$fp_b       = Movies_WP_Series_Import_Snapshot_Store::fingerprint( $with_b );
+job_assert( $fp_without !== $fp_a, 'adding trailer paths changes the snapshot fingerprint' );
+job_same( $fp_a, $fp_b, 'trailer fingerprint ignores file order' );
+job_same( $fp_without, Movies_WP_Series_Import_Snapshot_Store::fingerprint( job_payload() ), 'unchanged snapshot fingerprint stays stable' );
+
+$legacy_bits = array( '100', 'Test', $dir );
+foreach ( $without['media']['episodes'] as $episode ) {
+	$legacy_bits[] = $episode['season_number'] . ':' . $episode['episode_number'];
+	foreach ( $episode['sources'] as $source ) {
+		$legacy_bits[] = $source['media_path'];
+	}
+}
+$legacy = hash( 'sha256', implode( "\n", $legacy_bits ) );
+job_assert( $legacy !== $fp_without, 'pre-trailer fingerprint does not match the trailer-scan token' );
+
+$meta = array();
+$opts = array(
+	'get_tvshow_meta'    => static function ( $id, $key ) use ( &$meta ) {
+		return $meta[ (int) $id ][ $key ] ?? '';
+	},
+	'update_tvshow_meta' => static function ( $id, $key, $value ) use ( &$meta ) {
+		$meta[ (int) $id ][ $key ] = $value;
+		return true;
+	},
+);
+$meta[40]['_name_trailer_link'] = $dir . '/Trailer/manual.mp4';
+$kept = Movies_WP_Trailer_Discovery::assign_if_empty( 'tvshow', 40, $dir, array( $dir . '/Trailer/z.mp4' ), $opts );
+job_same( 'preserved', $kept['status'], 'existing trailer link is preserved' );
+job_same( $dir . '/Trailer/manual.mp4', $meta[40]['_name_trailer_link'], 'preserved link is not overwritten' );
+$missing = Movies_WP_Trailer_Discovery::assign_if_empty( 'tvshow', 41, $dir, array(), $opts );
+job_same( 'missing', $missing['status'], 'missing trailer is non-fatal' );
+job_assert( ! isset( $meta[41] ), 'missing trailer does not write a link' );
+
 echo "Series import enqueue\n";
 Movies_WP_Series_Import_Snapshot_Store::reset_memory();
 Movies_WP_Series_Import_Job_Store::reset_memory();
