@@ -16,6 +16,9 @@ require_once __DIR__ . '/series-category.php';
 const MEDIA_SERIES_VIDEO_EXTENSIONS = array( 'mkv', 'mp4', 'avi' );
 
 /** @var list<string> */
+const MEDIA_SERIES_TRAILER_EXTENSIONS = array( 'mp4', 'webm', 'mkv' );
+
+/** @var list<string> */
 const MEDIA_SERIES_SUBTITLE_EXTENSIONS = array( 'srt', 'ass', 'ssa', 'vtt', 'sub' );
 
 /**
@@ -134,6 +137,19 @@ function media_list_series_dir( string $relative, string $media_root, string $se
 				'Skipped category symlink pointing outside the series directory.',
 				$name,
 				$name
+			);
+			continue;
+		}
+
+		if ( $classification['type'] === 'TRAILER' ) {
+			media_series_list_trailer_category(
+				$resolved['directory'],
+				$name,
+				$classification,
+				$category_abs,
+				$real_dir,
+				$files,
+				$warnings
 			);
 			continue;
 		}
@@ -328,6 +344,88 @@ function media_series_list_subtitle_category(
 				$warnings
 			);
 		}
+	}
+}
+
+/**
+ * List direct trailer files under Trailer/ or Trailers/. Does not recurse.
+ *
+ * @param list<array<string, mixed>> $files
+ * @param list<array<string, mixed>> $warnings
+ */
+function media_series_list_trailer_category(
+	string $series_directory,
+	string $category_name,
+	array $classification,
+	string $category_abs,
+	string $series_abs,
+	array &$files,
+	array &$warnings
+): void {
+	$entries = @scandir( $category_abs );
+	if ( ! is_array( $entries ) ) {
+		$warnings[] = media_series_list_warning( 'list_failed', 'Could not read trailer directory.', $category_name, $category_name );
+		return;
+	}
+
+	foreach ( $entries as $name ) {
+		if ( $name === '.' || $name === '..' || str_starts_with( $name, '.' ) ) {
+			continue;
+		}
+		if ( str_contains( $name, "\0" ) || str_contains( $name, '/' ) || str_contains( $name, '\\' ) ) {
+			continue;
+		}
+
+		$child = $category_abs . '/' . $name;
+		if ( is_dir( $child ) ) {
+			continue;
+		}
+		if ( ! is_file( $child ) && ! ( is_link( $child ) && is_file( realpath( $child ) ?: '' ) ) ) {
+			continue;
+		}
+
+		$extension = strtolower( (string) pathinfo( $name, PATHINFO_EXTENSION ) );
+		if ( ! in_array( $extension, MEDIA_SERIES_TRAILER_EXTENSIONS, true ) ) {
+			continue;
+		}
+
+		$real = realpath( $child );
+		if ( $real === false || ! is_file( $real ) ) {
+			continue;
+		}
+		$real = media_movie_dir_normalize_root( $real );
+		if ( ! media_movie_dir_is_inside( $real, $series_abs ) ) {
+			$warnings[] = media_series_list_warning(
+				'symlink_outside',
+				'Skipped trailer symlink pointing outside the series directory.',
+				$name,
+				$category_name
+			);
+			continue;
+		}
+
+		$size = filesize( $real );
+		if ( $size === false ) {
+			$warnings[] = media_series_list_warning( 'size_failed', 'Could not read trailer file size.', $name, $category_name );
+			continue;
+		}
+
+		$relative_from_series = substr( $real, strlen( $series_abs ) + 1 );
+		$media_path           = $series_directory . '/' . str_replace( '\\', '/', $relative_from_series );
+
+		$files[] = array(
+			'name'          => $name,
+			'media_path'    => $media_path,
+			'category'      => $category_name,
+			'category_path' => $category_name,
+			'category_type' => $classification['type'],
+			'quality_hint'  => null,
+			'language_hint' => null,
+			'extension'     => $extension,
+			'kind'          => 'trailer',
+			'size_bytes'    => (int) $size,
+			'size_label'    => media_format_size_label( (int) $size ),
+		);
 	}
 }
 

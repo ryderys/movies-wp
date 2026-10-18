@@ -130,6 +130,10 @@ function media_series_scan_absolute_dir( string $media_root, string $directory )
  * @return array<string, mixed>
  */
 function media_series_scan_enrich_file( array $file, ?string $abs_dir, array $ffprobe_config, ?callable $ffprobe_runner ): array {
+	if ( ( $file['kind'] ?? '' ) === 'trailer' ) {
+		return $file;
+	}
+
 	$name = isset( $file['name'] ) ? (string) $file['name'] : '';
 	$identity = media_parse_series_episode_identity( $name );
 	if ( ( $identity['ok'] ?? false ) !== true ) {

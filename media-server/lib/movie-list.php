@@ -16,6 +16,9 @@ require_once __DIR__ . '/movie-dir.php';
 const MEDIA_MOVIE_VIDEO_EXTENSIONS = array( 'mkv', 'mp4', 'avi' );
 
 /** @var list<string> */
+const MEDIA_MOVIE_TRAILER_EXTENSIONS = array( 'mp4', 'webm', 'mkv' );
+
+/** @var list<string> */
 const MEDIA_MOVIE_SUBTITLE_EXTENSIONS = array( 'srt', 'ass', 'ssa', 'vtt', 'sub' );
 
 /** @var list<string> */
@@ -41,7 +44,7 @@ const MEDIA_MOVIE_IGNORED_EXTENSIONS = array( 'jpg', 'jpeg', 'png', 'webp', 'nfo
  *     name: string,
  *     media_path: string,
  *     extension: string,
- *     kind: 'video'|'subtitle'|'ignored'|'directory',
+ *     kind: 'video'|'subtitle'|'ignored'|'directory'|'trailer',
  *     size_bytes: int|null,
  *     size_label: string|null
  *   }>
@@ -117,6 +120,18 @@ function media_list_movie_dir( string $relative, string $media_root, string $mov
 		}
 
 		if ( is_dir( $stat_path ) ) {
+			if ( media_movie_list_is_trailer_directory_name( $name ) ) {
+				media_movie_list_append_trailer_files(
+					$resolved['directory'],
+					$name,
+					$stat_path,
+					$real_dir,
+					$files,
+					$warnings
+				);
+				continue;
+			}
+
 			$files[]    = media_movie_list_entry( $resolved['directory'], $name, 'directory', '', null );
 			$warnings[] = media_movie_list_warning(
 				'unexpected_subdirectory',
@@ -217,7 +232,7 @@ function media_format_size_label( int $bytes ): string {
  *   name: string,
  *   media_path: string,
  *   extension: string,
- *   kind: 'video'|'subtitle'|'ignored'|'directory',
+ *   kind: 'video'|'subtitle'|'ignored'|'directory'|'trailer',
  *   size_bytes: int|null,
  *   size_label: string|null
  * }
@@ -231,6 +246,82 @@ function media_movie_list_entry( string $directory, string $name, string $kind, 
 		'size_bytes' => $size_bytes,
 		'size_label' => null === $size_bytes ? null : media_format_size_label( $size_bytes ),
 	);
+}
+
+function media_movie_list_is_trailer_directory_name( string $name ): bool {
+	return strcasecmp( $name, 'Trailer' ) === 0 || strcasecmp( $name, 'Trailers' ) === 0;
+}
+
+/**
+ * List direct trailer video files under Trailer/ or Trailers/. Does not recurse.
+ *
+ * @param list<array<string, mixed>> $files
+ * @param list<array<string, mixed>> $warnings
+ */
+function media_movie_list_append_trailer_files(
+	string $directory,
+	string $folder_name,
+	string $folder_abs,
+	string $title_abs,
+	array &$files,
+	array &$warnings
+): void {
+	$folder_real = realpath( $folder_abs );
+	if ( $folder_real === false || ! is_dir( $folder_real ) ) {
+		return;
+	}
+	$folder_real = media_movie_dir_normalize_root( $folder_real );
+	if ( ! media_movie_dir_is_inside( $folder_real, $title_abs ) ) {
+		$warnings[] = media_movie_list_warning(
+			'symlink_outside',
+			'Skipped trailer directory symlink that points outside the movie directory.',
+			$folder_name
+		);
+		return;
+	}
+
+	$entries = @scandir( $folder_real );
+	if ( ! is_array( $entries ) ) {
+		$warnings[] = media_movie_list_warning( 'list_failed', 'Could not read trailer directory.', $folder_name );
+		return;
+	}
+
+	foreach ( $entries as $name ) {
+		if ( $name === '.' || $name === '..' || str_starts_with( $name, '.' ) ) {
+			continue;
+		}
+		if ( str_contains( $name, "\0" ) || str_contains( $name, '/' ) || str_contains( $name, '\\' ) ) {
+			continue;
+		}
+
+		$child = $folder_real . '/' . $name;
+		if ( is_dir( $child ) ) {
+			continue;
+		}
+		if ( ! is_file( $child ) ) {
+			continue;
+		}
+
+		$extension = media_movie_list_extension( $name );
+		if ( ! in_array( $extension, MEDIA_MOVIE_TRAILER_EXTENSIONS, true ) ) {
+			continue;
+		}
+
+		$size = filesize( $child );
+		if ( $size === false ) {
+			$warnings[] = media_movie_list_warning( 'size_failed', 'Could not read trailer file size.', $folder_name . '/' . $name );
+			continue;
+		}
+
+		$relative_name = $folder_name . '/' . $name;
+		$files[]       = media_movie_list_entry(
+			$directory,
+			$relative_name,
+			'trailer',
+			$extension,
+			(int) $size
+		);
+	}
 }
 
 /**

@@ -33,7 +33,7 @@ const MEDIA_SERIES_SOURCE_TOKENS = array(
  * Classify one immediate child directory under a Series title directory.
  *
  * @return array{
- *   type: 'VIDEO_RELEASE'|'SUBTITLE'|'SUPPLEMENTARY'|'UNKNOWN',
+ *   type: 'VIDEO_RELEASE'|'SUBTITLE'|'SUPPLEMENTARY'|'TRAILER'|'UNKNOWN',
  *   name: string,
  *   quality_hint: string|null,
  *   language_hint: string|null,
@@ -60,6 +60,11 @@ function media_classify_series_category( string $name ): array {
 
 	if ( strcasecmp( $trimmed, 'OST' ) === 0 ) {
 		$result['type'] = 'SUPPLEMENTARY';
+		return $result;
+	}
+
+	if ( strcasecmp( $trimmed, 'Trailer' ) === 0 || strcasecmp( $trimmed, 'Trailers' ) === 0 ) {
+		$result['type'] = 'TRAILER';
 		return $result;
 	}
 
