@@ -119,6 +119,7 @@ if ( ! function_exists( 'wp_update_post' ) ) {
 	}
 }
 
+require_once dirname( __DIR__ ) . '/class-movies-wp-import-existing-local-fields.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-media-import-service.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-media-admin.php';
 
@@ -258,6 +259,13 @@ function import_harness( array &$state ): array {
 		'find_by_tmdb' => static function ( $tmdb_id ) use ( &$state ) {
 			$state['find_calls']++;
 			return array( 'ids' => $state['tmdb_ids'] );
+		},
+		'get_movie' => static function ( $id ) use ( &$state ) {
+			$state['get_movie_calls'] = ( $state['get_movie_calls'] ?? 0 ) + 1;
+			if ( isset( $state['get_movie'] ) && is_callable( $state['get_movie'] ) ) {
+				return call_user_func( $state['get_movie'], (int) $id );
+			}
+			return null;
 		},
 		'movie_exists' => static function ( $id ) use ( &$state ) {
 			return (bool) $state['movie_exists'];
@@ -621,6 +629,58 @@ echo "\n[source-safety]\n";
 	assert_eq( $before, $GLOBALS['import_forbidden'], '24. no direct Streamit writes at runtime' );
 }
 
+// Blank title: create still requires title; update reuses stored Streamit fields.
+echo "\n[existing-local-fields]\n";
+{
+	$state = array( 'tmdb_ids' => array() );
+	$opts  = import_harness( $state );
+	$r     = Movies_WP_Media_Import_Service::execute( base_request( array( 'title' => '', 'summary' => '' ) ), $opts );
+	assert_true( empty( $r['ok'] ), 'blank title create rejected' );
+	assert_eq( 'media_import_invalid_input', $r['code'] ?? null, 'blank title create code' );
+	assert_eq( 0, $state['adapter_calls'], 'blank title create does not adapt' );
+}
+{
+	$stub = new class() {
+		public function get_post_title() {
+			return 'Stored Movie Title';
+		}
+		public function get_post_content() {
+			return 'Stored Movie Summary';
+		}
+	};
+	$state = array(
+		'tmdb_ids'  => array( 55 ),
+		'get_movie' => static function () use ( $stub ) {
+			return $stub;
+		},
+		'plan'      => base_plan(
+			array(
+				'identity' => array(
+					'action'            => 'update',
+					'existing_movie_id' => 55,
+					'tmdb_id'           => 111,
+				),
+			)
+		),
+		'adapter_result' => array(
+			'ok'              => true,
+			'movie_id'        => 55,
+			'identity_action' => 'update',
+			'completed'       => array( 'movie', 'metadata', 'sources', 'media_directory', 'subtitles' ),
+			'deferred'        => array(),
+			'source_stats'    => array( 'added' => 0, 'updated' => 0, 'kept' => 1 ),
+			'subtitle_stats'  => array( 'added' => 0, 'updated' => 0, 'kept' => 0 ),
+			'warnings'        => array(),
+		),
+	);
+	$opts = import_harness( $state );
+	$r    = Movies_WP_Media_Import_Service::execute( base_request( array( 'title' => '', 'summary' => '' ) ), $opts );
+	assert_true( ! empty( $r['ok'] ), 'blank title update succeeds' );
+	assert_eq( 'Stored Movie Title', $state['last_preview_input']['title'] ?? null, 'blank title filled from Streamit' );
+	assert_eq( 'Stored Movie Summary', $state['last_preview_input']['summary'] ?? null, 'blank summary filled from Streamit' );
+	assert_eq( 1, $state['adapter_calls'], 'blank title update adapts' );
+}
+
 // 27–29. Import button state + confirmation in view
 echo "\n[ui-contract]\n";
 {
@@ -632,6 +692,8 @@ echo "\n[ui-contract]\n";
 	assert_true( ! str_contains( $view, 'name="sources"' ) && ! str_contains( $view, 'name="plan"' ), '30. plan/sources not in hidden POST' );
 	assert_true( str_contains( $view, 'Subtitles — added:' ) || str_contains( $view, 'Subtitles' ), '20. subtitle import status copy in UI' );
 	assert_true( ! str_contains( $view, 'Subtitles were not imported because subtitle URL rendering is not implemented yet.' ), '20. old deferred copy removed' );
+	assert_true( ! preg_match( '/id="movies-wp-title"[^>]*required/', $view ), 'title input is not HTML-required for reimports' );
+	assert_true( str_contains( $view, 'Leave blank when updating an existing movie by TMDb ID' ), 'title help text explains reimport blank' );
 }
 
 // Button enable logic unit check

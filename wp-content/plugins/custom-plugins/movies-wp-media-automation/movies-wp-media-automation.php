@@ -32,6 +32,7 @@ require_once __DIR__ . '/includes/class-movies-wp-trailer-discovery.php';
 require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-admin.php';
 require_once __DIR__ . '/includes/class-movies-wp-tmdb-preview-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-tmdb-tv-preview-client.php';
+require_once __DIR__ . '/includes/class-movies-wp-import-existing-local-fields.php';
 require_once __DIR__ . '/includes/class-movies-wp-media-preview-service.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-preview-service.php';
 require_once __DIR__ . '/includes/class-movies-wp-media-import-plan.php';

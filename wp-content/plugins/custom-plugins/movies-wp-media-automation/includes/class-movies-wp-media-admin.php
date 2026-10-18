@@ -516,16 +516,17 @@ class Movies_WP_Media_Admin {
 					'message' => __( 'Invalid movie directory.', 'movies-wp' ),
 				);
 			}
-			if ( false !== stripos( $msg, 'Title' ) ) {
-				return array(
-					'type'    => 'error',
-					'message' => __( 'Persian / local title is required.', 'movies-wp' ),
-				);
-			}
-			if ( false !== stripos( $msg, 'TMDb' ) ) {
+			if ( false !== stripos( $msg, 'TMDb ID must' ) || false !== stripos( $msg, 'TMDb Movie ID must' ) ) {
 				return array(
 					'type'    => 'error',
 					'message' => __( 'TMDb Movie ID must be a positive number.', 'movies-wp' ),
+				);
+			}
+			// Title-required, duplicate identity, and similar normalize errors already carry a clear message.
+			if ( '' !== $msg ) {
+				return array(
+					'type'    => 'error',
+					'message' => $msg,
 				);
 			}
 			return array(

@@ -268,11 +268,17 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 				</tr>
 				<tr>
 					<th scope="row"><label for="series-local-title"><?php esc_html_e( 'Persian / local title', 'movies-wp' ); ?></label></th>
-					<td><input id="series-local-title" name="title" type="text" required value="<?php echo esc_attr( (string) $values['title'] ); ?>" class="regular-text" dir="auto"></td>
+					<td>
+						<input id="series-local-title" name="title" type="text" value="<?php echo esc_attr( (string) $values['title'] ); ?>" class="regular-text" dir="auto">
+						<p class="description"><?php esc_html_e( 'Required for new series. Leave blank when updating an existing series by TMDb ID to keep the stored title.', 'movies-wp' ); ?></p>
+					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="series-summary"><?php esc_html_e( 'Summary', 'movies-wp' ); ?></label></th>
-					<td><textarea id="series-summary" name="summary" rows="5" class="large-text" dir="auto"><?php echo esc_textarea( (string) $values['summary'] ); ?></textarea></td>
+					<td>
+						<textarea id="series-summary" name="summary" rows="5" class="large-text" dir="auto"><?php echo esc_textarea( (string) $values['summary'] ); ?></textarea>
+						<p class="description"><?php esc_html_e( 'Optional. On updates, leave blank to keep the stored summary.', 'movies-wp' ); ?></p>
+					</td>
 				</tr>
 				<tr>
 					<th scope="row"><label for="series-directory"><?php esc_html_e( 'Series directory', 'movies-wp' ); ?></label></th>

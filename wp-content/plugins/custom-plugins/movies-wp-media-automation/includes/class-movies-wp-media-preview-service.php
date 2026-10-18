@@ -21,10 +21,11 @@ class Movies_WP_Media_Preview_Service {
 	 *     @type string     $summary
 	 *     @type string     $media_directory
 	 * }
+	 * @param array<string, mixed> $options Deterministic test hooks for existing-title reuse.
 	 * @return array<string, mixed>|WP_Error
 	 */
-	public static function build( array $input ) {
-		$normalized = self::normalize_input( $input );
+	public static function build( array $input, array $options = array() ) {
+		$normalized = self::normalize_input( $input, $options );
 		if ( is_wp_error( $normalized ) ) {
 			return $normalized;
 		}
@@ -60,9 +61,10 @@ class Movies_WP_Media_Preview_Service {
 
 	/**
 	 * @param array<string, mixed> $input
+	 * @param array<string, mixed> $options
 	 * @return array{tmdb_id: int, title: string, summary: string, media_directory: string}|WP_Error
 	 */
-	private static function normalize_input( array $input ) {
+	private static function normalize_input( array $input, array $options = array() ) {
 		$tmdb_id = isset( $input['tmdb_id'] ) ? absint( $input['tmdb_id'] ) : 0;
 		$title   = isset( $input['title'] ) ? trim( (string) $input['title'] ) : '';
 		$summary = isset( $input['summary'] ) ? trim( (string) $input['summary'] ) : '';
@@ -72,9 +74,12 @@ class Movies_WP_Media_Preview_Service {
 			return new WP_Error( 'media_preview_invalid_input', __( 'TMDb ID must be a positive integer.', 'movies-wp' ) );
 		}
 
-		if ( '' === $title ) {
-			return new WP_Error( 'media_preview_invalid_input', __( 'Title is required.', 'movies-wp' ) );
+		$local = Movies_WP_Import_Existing_Local_Fields::fill_movie( $tmdb_id, $title, $summary, $options );
+		if ( is_wp_error( $local ) ) {
+			return new WP_Error( 'media_preview_invalid_input', $local->get_error_message() );
 		}
+		$title   = $local['title'];
+		$summary = $local['summary'];
 
 		$directory = Movies_WP_Media_Api_Client::normalize_directory( $dir );
 		if ( is_wp_error( $directory ) ) {

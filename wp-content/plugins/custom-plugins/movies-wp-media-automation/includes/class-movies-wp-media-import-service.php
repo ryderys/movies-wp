@@ -41,7 +41,7 @@ class Movies_WP_Media_Import_Service {
 			);
 		}
 
-		$input = self::normalize_input( $request );
+		$input = self::normalize_input( $request, $options );
 		if ( is_wp_error( $input ) ) {
 			return self::fail_from_wp_error( $input, 'media_import_invalid_input' );
 		}
@@ -100,9 +100,10 @@ class Movies_WP_Media_Import_Service {
 
 	/**
 	 * @param array<string, mixed> $request
+	 * @param array<string, mixed> $options
 	 * @return array{tmdb_id:int,title:string,summary:string,media_directory:string}|WP_Error
 	 */
-	private static function normalize_input( array $request ) {
+	private static function normalize_input( array $request, array $options = array() ) {
 		$tmdb_id = isset( $request['tmdb_id'] ) ? absint( $request['tmdb_id'] ) : 0;
 		$title   = isset( $request['title'] ) ? trim( (string) $request['title'] ) : '';
 		$summary = isset( $request['summary'] ) ? (string) $request['summary'] : '';
@@ -111,9 +112,13 @@ class Movies_WP_Media_Import_Service {
 		if ( $tmdb_id <= 0 ) {
 			return new WP_Error( 'media_import_invalid_input', __( 'TMDb Movie ID must be a positive number.', 'movies-wp' ) );
 		}
-		if ( '' === $title ) {
-			return new WP_Error( 'media_import_invalid_input', __( 'Persian / local title is required.', 'movies-wp' ) );
+
+		$local = Movies_WP_Import_Existing_Local_Fields::fill_movie( $tmdb_id, $title, $summary, $options );
+		if ( is_wp_error( $local ) ) {
+			return new WP_Error( 'media_import_invalid_input', $local->get_error_message() );
 		}
+		$title   = $local['title'];
+		$summary = $local['summary'];
 
 		if ( class_exists( 'Movies_WP_Media_Api_Client' ) ) {
 			$normalized_dir = Movies_WP_Media_Api_Client::normalize_directory( $dir );

@@ -256,7 +256,8 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 					<label for="movies-wp-title"><?php esc_html_e( 'Persian / Local Title', 'movies-wp' ); ?></label>
 				</th>
 				<td>
-					<input type="text" class="regular-text" id="movies-wp-title" name="title" dir="auto" value="<?php echo esc_attr( $values['title'] ); ?>" required />
+					<input type="text" class="regular-text" id="movies-wp-title" name="title" dir="auto" value="<?php echo esc_attr( $values['title'] ); ?>" />
+					<p class="description"><?php esc_html_e( 'Required for new movies. Leave blank when updating an existing movie by TMDb ID to keep the stored title.', 'movies-wp' ); ?></p>
 				</td>
 			</tr>
 			<tr>
@@ -265,7 +266,7 @@ $import_details = ( is_array( $notice ) && isset( $notice['details']['import_res
 				</th>
 				<td>
 					<textarea class="large-text" rows="5" id="movies-wp-summary" name="summary" dir="auto"><?php echo esc_textarea( $values['summary'] ); ?></textarea>
-					<p class="description"><?php esc_html_e( 'Optional. Kept separate from the TMDb overview.', 'movies-wp' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Optional. On updates, leave blank to keep the stored summary. Kept separate from the TMDb overview.', 'movies-wp' ); ?></p>
 				</td>
 			</tr>
 			<tr>

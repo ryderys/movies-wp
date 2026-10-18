@@ -46,6 +46,7 @@ if ( ! function_exists( 'absint' ) ) {
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-import-snapshot-store.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-import-job-store.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-import-job-runner.php';
+require_once dirname( __DIR__ ) . '/class-movies-wp-import-existing-local-fields.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-orchestrator.php';
 
 $failures = 0;

@@ -159,6 +159,7 @@ require_once dirname( __DIR__ ) . '/class-movies-wp-series-media-api-client.php'
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-media-preview-service.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-import-plan.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-media-import-plan.php';
+require_once dirname( __DIR__ ) . '/class-movies-wp-import-existing-local-fields.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-orchestrator.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-streamit-tv-adapter.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-streamit-episode-media-adapter.php';

@@ -24,7 +24,7 @@ class Movies_WP_Series_Orchestrator {
 	 * @return array<string, mixed>|WP_Error
 	 */
 	public static function build_preview( array $input, array $options = array() ) {
-		$normalized = self::normalize_input( $input );
+		$normalized = self::normalize_input( $input, $options );
 		if ( is_wp_error( $normalized ) ) {
 			return $normalized;
 		}
@@ -198,15 +198,25 @@ class Movies_WP_Series_Orchestrator {
 	}
 
 	/**
-	 * @return array{tmdb_id:int,title:string,summary:string,series_directory:string}|WP_Error
+	 * @param array<string, mixed> $input
+	 * @param array<string, mixed> $options
+	 * @return array{tmdb_id:int,title:string,summary:string,series_directory:string,season_number:?string}|WP_Error
 	 */
-	private static function normalize_input( array $input ) {
+	private static function normalize_input( array $input, array $options = array() ) {
 		$tmdb_id = absint( $input['tmdb_id'] ?? 0 );
 		$title   = trim( (string) ( $input['title'] ?? '' ) );
 		$summary = trim( (string) ( $input['summary'] ?? '' ) );
-		if ( $tmdb_id <= 0 || '' === $title ) {
+		if ( $tmdb_id <= 0 ) {
 			return new WP_Error( 'series_automation_invalid_input', __( 'TMDb Series ID and local title are required.', 'movies-wp' ) );
 		}
+
+		$local = Movies_WP_Import_Existing_Local_Fields::fill_series( $tmdb_id, $title, $summary, $options );
+		if ( is_wp_error( $local ) ) {
+			return new WP_Error( 'series_automation_invalid_input', $local->get_error_message() );
+		}
+		$title   = $local['title'];
+		$summary = $local['summary'];
+
 		$directory = Movies_WP_Series_Media_Api_Client::normalize_directory( (string) ( $input['series_directory'] ?? '' ) );
 		if ( is_wp_error( $directory ) ) {
 			return new WP_Error( 'series_automation_invalid_input', __( 'A valid relative Series directory is required.', 'movies-wp' ) );

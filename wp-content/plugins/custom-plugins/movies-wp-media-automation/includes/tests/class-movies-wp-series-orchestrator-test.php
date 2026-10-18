@@ -53,6 +53,7 @@ if ( ! function_exists( 'absint' ) ) {
 
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-media-api-client.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-media-preview-service.php';
+require_once dirname( __DIR__ ) . '/class-movies-wp-import-existing-local-fields.php';
 require_once dirname( __DIR__ ) . '/class-movies-wp-series-orchestrator.php';
 
 $failures = 0;
@@ -740,6 +741,7 @@ $bootstrap = (string) file_get_contents( dirname( __DIR__, 2 ) . '/movies-wp-med
 orch_assert( str_contains( $bootstrap, 'Movies_WP_Series_Admin::init();' ), 'Series Automation remains registered' );
 orch_assert( ! str_contains( $bootstrap, 'class-movies-wp-series-media-admin.php' ), 'Series Media Automation admin page is not loaded' );
 orch_assert( str_contains( $bootstrap, 'class-movies-wp-series-orchestrator.php' ), 'orchestrator is loaded' );
+orch_assert( str_contains( $bootstrap, 'class-movies-wp-import-existing-local-fields.php' ), 'existing local fields helper is loaded' );
 
 echo $failures ? "\n{$failures} failure(s)\n" : "\nAll Series orchestrator tests passed.\n";
 exit( $failures ? 1 : 0 );
