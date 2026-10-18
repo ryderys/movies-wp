@@ -453,9 +453,9 @@ function streamit_child_user_can_download_series( $st_data, $user_id = null ) {
  * @param array<int, mixed>                $seasons        Raw `_seasons` rows.
  * @param array<int, array<string, mixed>> $episodes_by_id Episode payload by ID.
  * @param bool                             $can_download   Whether to mint gateway hrefs.
- * @return array{seasons: array<int, array<string, mixed>>, can_download: bool}
+ * @return array{seasons: array<int, array<string, mixed>>, ost: array<int, array<string, mixed>>, can_download: bool}
  */
-function streamit_child_build_series_download_catalog_from_data( array $seasons, array $episodes_by_id, $can_download = true ) {
+function streamit_child_build_series_download_catalog_from_data( array $seasons, array $episodes_by_id, $can_download = true, $st_data = null ) {
 	$can_download = (bool) $can_download;
 	$out_seasons  = array();
 
@@ -568,8 +568,14 @@ function streamit_child_build_series_download_catalog_from_data( array $seasons,
 		);
 	}
 
+	$ost = array();
+	if ( null !== $st_data && function_exists( 'streamit_child_build_ost_download_rows' ) ) {
+		$ost = streamit_child_build_ost_download_rows( $st_data, $can_download );
+	}
+
 	return array(
 		'seasons'      => $out_seasons,
+		'ost'          => $ost,
 		'can_download' => $can_download,
 	);
 }
@@ -920,11 +926,12 @@ function streamit_child_get_first_available_episode( $st_data_or_id ) {
  * Build the Series single download catalog from a TV show object.
  *
  * @param object $st_data TV show Streamit object.
- * @return array{seasons: array<int, array<string, mixed>>, can_download: bool}
+ * @return array{seasons: array<int, array<string, mixed>>, ost: array<int, array<string, mixed>>, can_download: bool}
  */
 function streamit_child_build_series_download_catalog( $st_data ) {
 	$empty = array(
 		'seasons'      => array(),
+		'ost'          => array(),
 		'can_download' => false,
 	);
 
@@ -934,6 +941,14 @@ function streamit_child_build_series_download_catalog( $st_data ) {
 
 	$seasons = $st_data->get_meta( '_seasons' );
 	if ( ! is_array( $seasons ) || empty( $seasons ) ) {
+		$ost = function_exists( 'streamit_child_build_ost_download_rows' )
+			? streamit_child_build_ost_download_rows( $st_data, streamit_child_user_can_download_series( $st_data ) )
+			: array();
+		if ( empty( $ost ) ) {
+			return $empty;
+		}
+		$empty['ost']          = $ost;
+		$empty['can_download'] = streamit_child_user_can_download_series( $st_data );
 		return $empty;
 	}
 
@@ -950,7 +965,7 @@ function streamit_child_build_series_download_catalog( $st_data ) {
 	$can_download = streamit_child_user_can_download_series( $st_data );
 	$map          = streamit_child_load_series_download_episode_map( $episode_ids );
 
-	return streamit_child_build_series_download_catalog_from_data( $seasons, $map, $can_download );
+	return streamit_child_build_series_download_catalog_from_data( $seasons, $map, $can_download, $st_data );
 }
 
 /**

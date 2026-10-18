@@ -20,7 +20,7 @@ if ( ! function_exists( 'streamit_child_build_series_download_catalog' ) ) {
 }
 
 $catalog = streamit_child_build_series_download_catalog( $st_data );
-if ( empty( $catalog['seasons'] ) ) {
+if ( empty( $catalog['seasons'] ) && empty( $catalog['ost'] ) ) {
 	return;
 }
 
@@ -298,6 +298,12 @@ $json_flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | J
 					</div>
 				<?php endforeach; ?>
 			</div>
+
+			<?php
+			if ( ! empty( $catalog['ost'] ) && function_exists( 'streamit_child_render_ost_download_section' ) ) {
+				streamit_child_render_ost_download_section( (array) $catalog['ost'], $can_download );
+			}
+			?>
 		</div>
 	</div>
 </section>

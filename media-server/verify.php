@@ -146,9 +146,25 @@ $accel = ltrim(str_replace('\\', '/', $accel), '/');
 
 if ($type === 'd') {
 	header('Content-Disposition: attachment; filename="' . rawurlencode(basename($real_file)) . '"');
+
+	// Prefer explicit audio MIME for soundtrack downloads; leave video/other to nginx.
+	$ext = strtolower((string) pathinfo($real_file, PATHINFO_EXTENSION));
+	$audio_types = array(
+		'mp3'  => 'audio/mpeg',
+		'flac' => 'audio/flac',
+		'm4a'  => 'audio/mp4',
+		'aac'  => 'audio/aac',
+		'wav'  => 'audio/wav',
+	);
+	if (isset($audio_types[$ext])) {
+		header('Content-Type: ' . $audio_types[$ext]);
+	} else {
+		header('Content-Type: '); // let nginx set from file
+	}
+} else {
+	header('Content-Type: '); // let nginx set from file
 }
 
 // nginx internal redirect — see media.asiastarx.ir site config
 header('X-Accel-Redirect: /internal-media/' . $accel);
-header('Content-Type: '); // let nginx set from file
 exit;

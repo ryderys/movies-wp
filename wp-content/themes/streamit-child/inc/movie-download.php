@@ -14,12 +14,13 @@ defined( 'ABSPATH' ) || exit;
  * (tooltip meta) and href (gateway URL, '' when locked).
  *
  * @param object $st_data Movie Streamit object.
- * @return array{sources: array<int, array<string, mixed>>, subtitles: array<int, array<string, mixed>>, can_download: bool}
+ * @return array{sources: array<int, array<string, mixed>>, subtitles: array<int, array<string, mixed>>, ost: array<int, array<string, mixed>>, can_download: bool}
  */
 function streamit_child_build_movie_download_catalog( $st_data ) {
 	$catalog = array(
 		'sources'      => array(),
 		'subtitles'    => array(),
+		'ost'          => array(),
 		'can_download' => false,
 	);
 
@@ -65,6 +66,10 @@ function streamit_child_build_movie_download_catalog( $st_data ) {
 			'source_type' => $source_type,
 			'href'        => $href,
 		);
+	}
+
+	if ( function_exists( 'streamit_child_build_ost_download_rows' ) ) {
+		$catalog['ost'] = streamit_child_build_ost_download_rows( $st_data, $catalog['can_download'] );
 	}
 
 	return $catalog;

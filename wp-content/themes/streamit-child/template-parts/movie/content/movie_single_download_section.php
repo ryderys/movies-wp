@@ -12,7 +12,7 @@ if ( empty( $st_data ) || ! is_object( $st_data ) || ! function_exists( 'streami
 }
 
 $catalog = streamit_child_build_movie_download_catalog( $st_data );
-if ( empty( $catalog['sources'] ) && empty( $catalog['subtitles'] ) ) {
+if ( empty( $catalog['sources'] ) && empty( $catalog['subtitles'] ) && empty( $catalog['ost'] ) ) {
 	return;
 }
 
@@ -177,6 +177,12 @@ $subtitle_groups = function_exists( 'streamit_child_movie_download_subtitle_grou
 					</div>
 				</details>
 			<?php endif; ?>
+
+			<?php
+			if ( ! empty( $catalog['ost'] ) && function_exists( 'streamit_child_render_ost_download_section' ) ) {
+				streamit_child_render_ost_download_section( (array) $catalog['ost'], $can_download );
+			}
+			?>
 		</div>
 	</div>
 </section>

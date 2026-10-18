@@ -878,6 +878,7 @@ require_once get_stylesheet_directory() . '/inc/subtitles.php';
 require_once get_stylesheet_directory() . '/inc/subtitle-track.php';
 require_once get_stylesheet_directory() . '/inc/series-download.php';
 require_once get_stylesheet_directory() . '/inc/movie-download.php';
+require_once get_stylesheet_directory() . '/inc/ost-download.php';
 require_once get_stylesheet_directory() . '/inc/tvshow-episodes-guide.php';
 require_once get_stylesheet_directory() . '/inc/admin-persian-labels.php';
 require_once get_stylesheet_directory() . '/inc/frontend-persian-labels.php';
