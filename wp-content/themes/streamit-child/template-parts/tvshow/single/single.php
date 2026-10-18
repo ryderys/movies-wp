@@ -41,6 +41,11 @@ if ( ! empty( (array) $content_data ) ) :
 			</div>
 		</div>
 
+		<!-- Trailer section: omitted entirely when the show has no playable trailer. -->
+		<?php
+		streamit_get_template( 'tvshow/content/tvshow_single_trailer_section.php', array( 'st_data' => $content_data ) );
+		?>
+
 		<!-- Season Section: Display information about the TV show's seasons -->
 		<?php
 		streamit_get_template( 'tvshow/content/tvshow_single_get_season.php', array( 'st_data' => $content_data ) );

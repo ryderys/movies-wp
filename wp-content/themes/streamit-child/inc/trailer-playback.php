@@ -388,7 +388,7 @@ function streamit_child_tvshow_trailer_card_image_html( $tvshow ) {
 }
 
 /**
- * Data for one episodes-slider trailer card, or null when the show has no playable trailer.
+ * Data for the TV-show trailer section card, or null when the show has no playable trailer.
  *
  * Uses the same playback resolver as the Watch Trailer button. The card is not an episode.
  *
@@ -419,35 +419,57 @@ function streamit_child_get_tvshow_episode_trailer_card( $tvshow ) {
 }
 
 /**
- * Markup for the episodes-slider trailer card. Empty when there is no playable trailer.
+ * One trailer card for the TV-show detail section. Empty when there is no playable trailer.
  *
  * The overlay uses `.st-load-trailer`, so the existing click handler opens the trailer modal.
  *
  * @param object $tvshow Streamit TV show.
  * @return string
  */
-function streamit_child_render_tvshow_episode_trailer_card( $tvshow ) {
+function streamit_child_render_tvshow_trailer_card( $tvshow ) {
 	$card = streamit_child_get_tvshow_episode_trailer_card( $tvshow );
 	if ( ! is_array( $card ) ) {
 		return '';
 	}
 
 	$attrs = sprintf(
-		' type="button" class="episode-overlay st-load-trailer streamit-child-episode-trailer-open" data-trailer-type="%1$s" data-trailer-url="%2$s" data-trailer-mime="%3$s" aria-haspopup="dialog" aria-label="%4$s"',
+		' type="button" class="episode-overlay st-load-trailer streamit-child-tvshow-trailer-open" data-trailer-type="%1$s" data-trailer-url="%2$s" data-trailer-mime="%3$s" aria-haspopup="dialog" aria-label="%4$s"',
 		esc_attr( $card['type'] ),
 		esc_url( $card['trailer_link'] ),
 		esc_attr( $card['mime'] ),
 		esc_attr( $card['label'] )
 	);
+	$play = function_exists( 'st_get_icon' ) ? st_get_icon( 'play' ) : '';
 
-	return '<div class="slick-item streamit-child-episode-trailer">'
-		. '<div class="episode-card">'
+	return '<div class="episode-card streamit-child-tvshow-trailer-card">'
 		. '<button' . $attrs . '></button>'
 		. '<div class="episode-image">'
 		. $card['image_html']
-		. '<div class="episode-detail"><div class="flex-grow-1">'
-		. '<h5 class="mt-2 mb-0 line-count-1">' . esc_html( $card['label'] ) . '</h5>'
-		. '</div></div></div></div></div>';
+		. '<div class="episode-detail">'
+		. '<div class="flex-grow-1"><h5 class="mt-2 mb-0 line-count-1">' . esc_html( $card['label'] ) . '</h5></div>'
+		. '<div class="flex-shrink-0"><span class="btn btn-primary" aria-hidden="true">' . $play . '</span></div>'
+		. '</div></div></div>';
+}
+
+/**
+ * Detail-page trailer section. Empty when the show has no playable trailer.
+ *
+ * @param object $tvshow Streamit TV show.
+ * @return string
+ */
+function streamit_child_render_tvshow_trailer_section( $tvshow ) {
+	$card = streamit_child_render_tvshow_trailer_card( $tvshow );
+	if ( '' === $card ) {
+		return '';
+	}
+
+	return '<div class="section-spacing-top streamit-child-tvshow-trailer-section">'
+		. '<div class="container-fluid">'
+		. '<div class="d-flex align-items-center justify-content-between mb-md-5 mb-3">'
+		. '<h5 class="main-title text-capitalize mb-0">' . esc_html__( 'تریلر', 'streamit' ) . '</h5>'
+		. '</div>'
+		. $card
+		. '</div></div>';
 }
 
 /**
@@ -466,16 +488,5 @@ function streamit_child_enqueue_trailer_modal_mime() {
 		(string) filemtime( $path ),
 		true
 	);
-
-	$card_js = get_stylesheet_directory() . '/assets/js/tvshow-episode-trailer-card.js';
-	if ( is_readable( $card_js ) ) {
-		wp_enqueue_script(
-			'streamit-child-tvshow-episode-trailer-card',
-			get_stylesheet_directory_uri() . '/assets/js/tvshow-episode-trailer-card.js',
-			array(),
-			(string) filemtime( $card_js ),
-			true
-		);
-	}
 }
 add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_trailer_modal_mime', 40 );
