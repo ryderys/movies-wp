@@ -105,9 +105,20 @@ $slick_args = array(
 												'season_index'         => $index1,
 											) );
 										elseif ( ! empty( $season['episodes'] ) && is_array( $season['episodes'] ) ) :
+											$trailer_card = '';
+											if ( 0 === (int) $index1 && function_exists( 'streamit_child_render_tvshow_episode_trailer_card' ) ) {
+												$trailer_card = streamit_child_render_tvshow_episode_trailer_card( $st_data );
+											}
+											if ( '' !== $trailer_card ) {
+												echo '<template id="streamit-child-episode-trailer-source">' . $trailer_card . '</template>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											}
 										?>
 											<div class="css_prefix-slick-general st-skeleton" data-display=0 data-season_no="<?php echo esc_attr( (string) $index1 ); ?>" data-extra_settings="true" data-slider_settings="<?php echo st_get_slick_slider_settings( $slick_args ); ?>">
 												<?php
+												if ( '' !== $trailer_card ) {
+													echo $trailer_card; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+												}
+
 												$episode_posts = function_exists( 'streamit_get_episodes' )
 													? streamit_get_episodes( array(
 														'orderby'  => 'post__in',

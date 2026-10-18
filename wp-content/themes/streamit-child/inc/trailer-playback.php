@@ -307,6 +307,150 @@ function streamit_child_is_accepted_trailer_url( $value ) {
 }
 
 /**
+ * Attachment ID stored in `_name_trailer_img`, when the value is an ID or ID array.
+ *
+ * @param mixed $raw Meta value.
+ * @return int
+ */
+function streamit_child_trailer_image_attachment_id( $raw ) {
+	if ( is_numeric( $raw ) ) {
+		return absint( $raw );
+	}
+	if ( ! is_array( $raw ) ) {
+		return 0;
+	}
+	foreach ( array( 'attachment_id', 'id', 'ID' ) as $key ) {
+		if ( isset( $raw[ $key ] ) && is_numeric( $raw[ $key ] ) ) {
+			return absint( $raw[ $key ] );
+		}
+	}
+	return 0;
+}
+
+/**
+ * Direct image URL stored in `_name_trailer_img`, when it is not an attachment ID.
+ *
+ * @param mixed $raw Meta value.
+ * @return string
+ */
+function streamit_child_trailer_image_url( $raw ) {
+	if ( is_string( $raw ) && preg_match( '#^https?://#i', trim( $raw ) ) ) {
+		return trim( $raw );
+	}
+	if ( is_array( $raw ) && isset( $raw['url'] ) && is_string( $raw['url'] ) && preg_match( '#^https?://#i', trim( $raw['url'] ) ) ) {
+		return trim( $raw['url'] );
+	}
+	return '';
+}
+
+/**
+ * Poster for the episodes-slider trailer card.
+ *
+ * Prefer `_name_trailer_img`. Fall back to the show poster (`thumbnail_id`).
+ *
+ * @param object $tvshow Streamit TV show.
+ * @return string HTML, already escaped by the image helper, or an escaped img tag.
+ */
+function streamit_child_tvshow_trailer_card_image_html( $tvshow ) {
+	$alt   = __( 'تریلر', 'streamit' );
+	$class = 'img-fluid object-fit-cover position-relative';
+	$raw   = method_exists( $tvshow, 'get_meta' ) ? $tvshow->get_meta( '_name_trailer_img' ) : '';
+	$id    = streamit_child_trailer_image_attachment_id( $raw );
+
+	if ( $id <= 0 && method_exists( $tvshow, 'get_meta' ) ) {
+		$id = absint( $tvshow->get_meta( 'thumbnail_id' ) );
+	}
+
+	if ( $id > 0 && function_exists( 'streamit_render_image' ) ) {
+		return (string) streamit_render_image(
+			array(
+				'attachment_id' => $id,
+				'class'         => $class,
+				'alt'           => $alt,
+				'decoding'      => 'async',
+				'size'          => defined( 'STREAMIT_CHILD_SIZE_EPISODE' ) ? STREAMIT_CHILD_SIZE_EPISODE : 'full',
+			)
+		);
+	}
+
+	$url = streamit_child_trailer_image_url( $raw );
+	if ( '' === $url && $id > 0 && function_exists( 'wp_get_attachment_image_url' ) ) {
+		$url = (string) wp_get_attachment_image_url( $id, 'full' );
+	}
+	if ( '' === $url && function_exists( 'streamit_placeholder_image' ) ) {
+		$url = (string) streamit_placeholder_image();
+	}
+	if ( '' === $url ) {
+		return '';
+	}
+
+	return '<img src="' . esc_url( $url ) . '" class="' . esc_attr( $class ) . '" alt="' . esc_attr( $alt ) . '" decoding="async" />';
+}
+
+/**
+ * Data for one episodes-slider trailer card, or null when the show has no playable trailer.
+ *
+ * Uses the same playback resolver as the Watch Trailer button. The card is not an episode.
+ *
+ * @param object $tvshow Streamit TV show.
+ * @return array{label:string,type:string,trailer_link:string,mime:string,image_html:string}|null
+ */
+function streamit_child_get_tvshow_episode_trailer_card( $tvshow ) {
+	if ( ! is_object( $tvshow ) || ! method_exists( $tvshow, 'get_meta' ) ) {
+		return null;
+	}
+	if ( ! function_exists( 'streamit_child_get_movie_trailer_button' ) ) {
+		return null;
+	}
+
+	$stored = $tvshow->get_meta( '_name_trailer_link' );
+	$button = streamit_child_get_movie_trailer_button( null === $stored ? '' : $stored );
+	if ( ! is_array( $button ) ) {
+		return null;
+	}
+
+	return array(
+		'label'        => __( 'تریلر', 'streamit' ),
+		'type'         => (string) $button['type'],
+		'trailer_link' => (string) $button['trailer_link'],
+		'mime'         => (string) $button['mime'],
+		'image_html'   => streamit_child_tvshow_trailer_card_image_html( $tvshow ),
+	);
+}
+
+/**
+ * Markup for the episodes-slider trailer card. Empty when there is no playable trailer.
+ *
+ * The overlay uses `.st-load-trailer`, so the existing click handler opens the trailer modal.
+ *
+ * @param object $tvshow Streamit TV show.
+ * @return string
+ */
+function streamit_child_render_tvshow_episode_trailer_card( $tvshow ) {
+	$card = streamit_child_get_tvshow_episode_trailer_card( $tvshow );
+	if ( ! is_array( $card ) ) {
+		return '';
+	}
+
+	$attrs = sprintf(
+		' type="button" class="episode-overlay st-load-trailer streamit-child-episode-trailer-open" data-trailer-type="%1$s" data-trailer-url="%2$s" data-trailer-mime="%3$s" aria-haspopup="dialog" aria-label="%4$s"',
+		esc_attr( $card['type'] ),
+		esc_url( $card['trailer_link'] ),
+		esc_attr( $card['mime'] ),
+		esc_attr( $card['label'] )
+	);
+
+	return '<div class="slick-item streamit-child-episode-trailer">'
+		. '<div class="episode-card">'
+		. '<button' . $attrs . '></button>'
+		. '<div class="episode-image">'
+		. $card['image_html']
+		. '<div class="episode-detail"><div class="flex-grow-1">'
+		. '<h5 class="mt-2 mb-0 line-count-1">' . esc_html( $card['label'] ) . '</h5>'
+		. '</div></div></div></div></div>';
+}
+
+/**
  * Enqueue trailer modal helpers (MIME + stop/focus).
  */
 function streamit_child_enqueue_trailer_modal_mime() {
@@ -322,5 +466,16 @@ function streamit_child_enqueue_trailer_modal_mime() {
 		(string) filemtime( $path ),
 		true
 	);
+
+	$card_js = get_stylesheet_directory() . '/assets/js/tvshow-episode-trailer-card.js';
+	if ( is_readable( $card_js ) ) {
+		wp_enqueue_script(
+			'streamit-child-tvshow-episode-trailer-card',
+			get_stylesheet_directory_uri() . '/assets/js/tvshow-episode-trailer-card.js',
+			array(),
+			(string) filemtime( $card_js ),
+			true
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_trailer_modal_mime', 40 );
