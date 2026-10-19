@@ -2,3 +2,40 @@
 .stc-artwork__backdrop .css_prefix-card .image-box img {
 	aspect-ratio: 16 / 9;
 }
+
+/*
+ * Theme arrows sit 3em outside the track and the detail wrapper is overflow:hidden,
+ * so they never show. Keep them on the slides. The theme also hides every slick
+ * arrow under 1024px.
+ */
+.stc-artwork-section .css_prefix-slick-general .slick-arrow {
+	display: inline-block !important;
+	z-index: 3;
+	background-color: rgba(0, 0, 0, 0.55);
+}
+
+.stc-artwork-section .css_prefix-slick-general .slick-arrow.slick-disabled {
+	display: none !important;
+}
+
+.stc-artwork-section .css_prefix-slick-general .slick-arrow.PreArrow-two,
+.stc-artwork-section .css_prefix-slick-general .slick-arrow.PrevArrow-two {
+	left: 0.75rem;
+	right: auto;
+}
+
+.stc-artwork-section .css_prefix-slick-general .slick-arrow.NextArrow-two {
+	right: 0.75rem;
+	left: auto;
+}
+
+html[dir="rtl"] .stc-artwork-section .css_prefix-slick-general .slick-arrow.PreArrow-two,
+html[dir="rtl"] .stc-artwork-section .css_prefix-slick-general .slick-arrow.PrevArrow-two {
+	right: 0.75rem;
+	left: auto;
+}
+
+html[dir="rtl"] .stc-artwork-section .css_prefix-slick-general .slick-arrow.NextArrow-two {
+	left: 0.75rem;
+	right: auto;
+}
