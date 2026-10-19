@@ -2,7 +2,8 @@
 /**
  * Orchestrates movie trailer uploads: directory resolution, replace confirmation, meta write.
  *
- * Updates only `_name_trailer_link` after a successful media-server response.
+ * After a successful media-server response, sets `_name_trailer_link` when it is
+ * empty and merges the new path into `_name_trailer_links`.
  *
  * @package movies-wp
  */
@@ -125,7 +126,37 @@ class Movies_WP_Trailer_Upload_Service {
 	}
 
 	/**
-	 * Upload a trailer for a movie and update `_name_trailer_link` only on success.
+	 * Normalize a stored trailer list.
+	 *
+	 * @param mixed $stored
+	 * @return list<string>
+	 */
+	public static function trailer_link_list( $stored ) {
+		if ( is_string( $stored ) ) {
+			$stored = array( $stored );
+		}
+		if ( ! is_array( $stored ) ) {
+			return array();
+		}
+
+		$links = array();
+		$seen  = array();
+		foreach ( $stored as $item ) {
+			if ( ! is_string( $item ) ) {
+				continue;
+			}
+			$path = trim( $item );
+			if ( '' === $path || isset( $seen[ $path ] ) ) {
+				continue;
+			}
+			$seen[ $path ] = true;
+			$links[]       = $path;
+		}
+		return $links;
+	}
+
+	/**
+	 * Upload a trailer for a movie. The first path fills an empty primary link; every path is kept in the list.
 	 *
 	 * @param int    $movie_id
 	 * @param string $tmp_path       Absolute path to uploaded temp file.
@@ -143,25 +174,16 @@ class Movies_WP_Trailer_Upload_Service {
 	 * @param int    $title_id
 	 * @param string $tmp_path
 	 * @param string $original_name
-	 * @param bool   $confirm_replace
+	 * @param bool   $confirm_replace Unused. Extra uploads are appended.
 	 * @param array  $options
-	 * @return array{ok:true,path:string,replaced:bool}|WP_Error
+	 * @return array{ok:true,path:string,replaced:bool,links:list<string>}|WP_Error
 	 */
 	public static function upload_for_title( $kind, $title_id, $tmp_path, $original_name, $confirm_replace = false, array $options = array() ) {
+		unset( $confirm_replace );
 		$title_id = (int) $title_id;
 		$dir      = self::resolve_directory( $kind, $title_id );
 		if ( is_wp_error( $dir ) ) {
 			return $dir;
-		}
-
-		$existing = self::get_meta( $kind, $title_id, '_name_trailer_link' );
-		$replaced = self::requires_replace_confirmation( $existing );
-		if ( $replaced && ! $confirm_replace ) {
-			return new WP_Error(
-				'trailer_upload_confirm_required',
-				__( 'This title already has a trailer. Confirm replacement before uploading.', 'movies-wp' ),
-				array( 'status' => 409, 'requires_confirm' => true )
-			);
 		}
 
 		$filename = self::normalize_upload_basename( $original_name );
@@ -180,18 +202,34 @@ class Movies_WP_Trailer_Upload_Service {
 			return $validated;
 		}
 
-		$written = self::update_meta( $kind, $title_id, '_name_trailer_link', $validated );
-		if ( false === $written ) {
-			return new WP_Error(
-				'trailer_upload_meta_failed',
-				__( 'Trailer was uploaded but saving the trailer link failed.', 'movies-wp' )
-			);
+		$primary = trim( (string) self::get_meta( $kind, $title_id, '_name_trailer_link' ) );
+		if ( '' === $primary ) {
+			$written = self::update_meta( $kind, $title_id, '_name_trailer_link', $validated );
+			if ( false === $written ) {
+				return new WP_Error(
+					'trailer_upload_meta_failed',
+					__( 'Trailer was uploaded but saving the trailer link failed.', 'movies-wp' )
+				);
+			}
+		}
+
+		$links = self::trailer_link_list( self::get_meta( $kind, $title_id, '_name_trailer_links' ) );
+		if ( ! in_array( $validated, $links, true ) ) {
+			$links[] = $validated;
+			$written = self::update_meta( $kind, $title_id, '_name_trailer_links', $links );
+			if ( false === $written ) {
+				return new WP_Error(
+					'trailer_upload_meta_failed',
+					__( 'Trailer was uploaded but saving the trailer link failed.', 'movies-wp' )
+				);
+			}
 		}
 
 		return array(
 			'ok'       => true,
 			'path'     => $validated,
-			'replaced' => $replaced,
+			'replaced' => false,
+			'links'    => $links,
 		);
 	}
 

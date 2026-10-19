@@ -76,7 +76,13 @@ html[dir="rtl"] .css_prefix-video-player .back-btn {
 	right: 1em;
 }
 
-/* Detail-page trailer card matches one episode card, full width on small screens. */
+/* Detail-page trailer cards sit beside each other, one episode-card wide. */
+.streamit-child-detail-trailer-section .streamit-child-detail-trailer-cards {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
 .streamit-child-detail-trailer-section .streamit-child-detail-trailer-card {
 	width: min(100%, 18rem);
 }

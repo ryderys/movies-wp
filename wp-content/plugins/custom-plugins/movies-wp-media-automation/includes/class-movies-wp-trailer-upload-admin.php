@@ -45,10 +45,15 @@ class Movies_WP_Trailer_Upload_Admin {
 	 */
 	private static function render_box( $title_id, $kind ) {
 		$title_id = (int) $title_id;
-		$trailer  = Movies_WP_Trailer_Upload_Service::get_meta( $kind, $title_id, '_name_trailer_link' );
 		$dir_ok   = ! is_wp_error( Movies_WP_Trailer_Upload_Service::resolve_directory( $kind, $title_id ) );
-		$has_link = Movies_WP_Trailer_Upload_Service::requires_replace_confirmation( $trailer );
-		$max_mb   = max( 1, (int) ceil( Movies_WP_Trailer_Upload_Client::max_bytes() / 1048576 ) );
+		$links    = Movies_WP_Trailer_Upload_Service::trailer_link_list(
+			Movies_WP_Trailer_Upload_Service::get_meta( $kind, $title_id, '_name_trailer_links' )
+		);
+		$primary  = trim( (string) Movies_WP_Trailer_Upload_Service::get_meta( $kind, $title_id, '_name_trailer_link' ) );
+		if ( '' !== $primary && ! in_array( $primary, $links, true ) ) {
+			array_unshift( $links, $primary );
+		}
+		$max_mb = max( 1, (int) ceil( Movies_WP_Trailer_Upload_Client::max_bytes() / 1048576 ) );
 		?>
 		<div
 			id="movies-wp-trailer-upload-root"
@@ -56,7 +61,6 @@ class Movies_WP_Trailer_Upload_Admin {
 			hidden
 			data-post-id="<?php echo esc_attr( (string) $title_id ); ?>"
 			data-content-type="<?php echo esc_attr( $kind ); ?>"
-			data-has-trailer="<?php echo $has_link ? '1' : '0'; ?>"
 			data-max-bytes="<?php echo esc_attr( (string) Movies_WP_Trailer_Upload_Client::max_bytes() ); ?>"
 		>
 			<div class="movies-wp-trailer-actions">
@@ -65,6 +69,7 @@ class Movies_WP_Trailer_Upload_Admin {
 					id="movies-wp-trailer-file"
 					class="regular-text"
 					accept=".mp4,.webm,.mkv,video/mp4,video/webm,video/x-matroska"
+					multiple
 					<?php disabled( ! $dir_ok ); ?>
 				/>
 				<button
@@ -73,7 +78,7 @@ class Movies_WP_Trailer_Upload_Admin {
 					id="movies-wp-trailer-upload-btn"
 					<?php disabled( ! $dir_ok ); ?>
 				>
-					<?php esc_html_e( 'Upload', 'movies-wp' ); ?>
+					<?php esc_html_e( 'Add trailers', 'movies-wp' ); ?>
 				</button>
 			</div>
 			<p class="description">
@@ -81,23 +86,17 @@ class Movies_WP_Trailer_Upload_Admin {
 				echo esc_html(
 					sprintf(
 						/* translators: %d: maximum trailer size in mebibytes */
-						__( 'MP4, WebM or MKV · Maximum %d MiB', 'movies-wp' ),
+						__( 'MP4, WebM or MKV · Maximum %d MiB · each new filename is added', 'movies-wp' ),
 						$max_mb
 					)
 				);
 				?>
 			</p>
-			<p id="movies-wp-trailer-replace-panel" <?php echo $has_link ? '' : 'hidden'; ?>>
-				<label>
-					<input type="checkbox" id="movies-wp-trailer-confirm-replace" value="1" />
-					<?php
-					esc_html_e(
-						'Replace the existing trailer link (use a new filename; the previous file stays on the media server)',
-						'movies-wp'
-					);
-					?>
-				</label>
-			</p>
+			<ul id="movies-wp-trailer-list" class="movies-wp-trailer-list">
+				<?php foreach ( $links as $link ) : ?>
+					<li><?php echo esc_html( $link ); ?></li>
+				<?php endforeach; ?>
+			</ul>
 			<p class="movies-wp-trailer-progress" hidden>
 				<progress id="movies-wp-trailer-progress-bar" max="100" value="0"></progress>
 				<span id="movies-wp-trailer-progress-label">0%</span>
@@ -154,7 +153,6 @@ class Movies_WP_Trailer_Upload_Admin {
 				'nonce'   => wp_create_nonce( self::NONCE_ACTION ),
 				'i18n'    => array(
 					'selectFile'       => __( 'Choose a trailer file first.', 'movies-wp' ),
-					'confirmRequired'  => __( 'Confirm replacement of the existing trailer before uploading.', 'movies-wp' ),
 					'uploading'        => __( 'Uploading…', 'movies-wp' ),
 					'success'          => __( 'Trailer uploaded and link saved.', 'movies-wp' ),
 					'genericError'     => __( 'Trailer upload failed.', 'movies-wp' ),
@@ -229,8 +227,6 @@ class Movies_WP_Trailer_Upload_Admin {
 			}
 		}
 
-		$confirm = ! empty( $_POST['confirm_replace'] ) && '1' === (string) wp_unslash( $_POST['confirm_replace'] );
-
 		if ( empty( $_FILES['trailer'] ) || ! is_array( $_FILES['trailer'] ) ) {
 			wp_send_json_error(
 				array(
@@ -274,7 +270,7 @@ class Movies_WP_Trailer_Upload_Admin {
 			);
 		}
 
-		$result = Movies_WP_Trailer_Upload_Service::upload_for_title( $kind, $post_id, $tmp, $name, $confirm );
+		$result = Movies_WP_Trailer_Upload_Service::upload_for_title( $kind, $post_id, $tmp, $name );
 		if ( is_wp_error( $result ) ) {
 			$data   = $result->get_error_data();
 			$status = ( is_array( $data ) && isset( $data['status'] ) ) ? (int) $data['status'] : 400;
@@ -285,17 +281,14 @@ class Movies_WP_Trailer_Upload_Admin {
 				'code'    => $result->get_error_code(),
 				'message' => $result->get_error_message(),
 			);
-			if ( is_array( $data ) && ! empty( $data['requires_confirm'] ) ) {
-				$payload['requires_confirm'] = true;
-			}
 			wp_send_json_error( $payload, $status );
 		}
 
 		wp_send_json_success(
 			array(
-				'path'     => (string) $result['path'],
-				'replaced' => ! empty( $result['replaced'] ),
-				'message'  => __( 'Trailer uploaded and link saved.', 'movies-wp' ),
+				'path'    => (string) $result['path'],
+				'links'   => isset( $result['links'] ) && is_array( $result['links'] ) ? $result['links'] : array(),
+				'message' => __( 'Trailer uploaded and link saved.', 'movies-wp' ),
 			)
 		);
 	}

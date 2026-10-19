@@ -107,8 +107,13 @@
 	text-transform: none;
 }
 
-#_name_trailer_link_field #movies-wp-trailer-replace-panel {
-	margin: 4px 0 0;
+#_name_trailer_link_field .movies-wp-trailer-list {
+	margin: 6px 0 0;
+	padding-left: 1.2em;
+}
+
+#_name_trailer_link_field .movies-wp-trailer-list:empty {
+	display: none;
 }
 
 #_name_trailer_link_field .movies-wp-trailer-progress {

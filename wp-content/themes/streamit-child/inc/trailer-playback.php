@@ -388,27 +388,83 @@ function streamit_child_detail_trailer_card_image_html( $title ) {
 }
 
 /**
- * Data for a detail-page trailer card, or null when the title has no playable trailer.
+ * Primary link first, then every extra path, without duplicates.
  *
  * @param object $title Streamit movie or TV show.
+ * @return list<string>
+ */
+function streamit_child_detail_trailer_stored_values( $title ) {
+	if ( ! is_object( $title ) || ! method_exists( $title, 'get_meta' ) ) {
+		return array();
+	}
+
+	$values  = array();
+	$primary = $title->get_meta( '_name_trailer_link' );
+	if ( is_string( $primary ) && '' !== trim( $primary ) ) {
+		$values[] = trim( $primary );
+	}
+
+	$links = $title->get_meta( '_name_trailer_links' );
+	if ( is_string( $links ) && '' !== trim( $links ) ) {
+		$links = array( $links );
+	}
+	if ( is_array( $links ) ) {
+		foreach ( $links as $link ) {
+			if ( is_string( $link ) && '' !== trim( $link ) ) {
+				$values[] = trim( $link );
+			}
+		}
+	}
+
+	$unique = array();
+	$seen   = array();
+	foreach ( $values as $value ) {
+		if ( isset( $seen[ $value ] ) ) {
+			continue;
+		}
+		$seen[ $value ] = true;
+		$unique[]       = $value;
+	}
+	return $unique;
+}
+
+/**
+ * @param string $stored
+ * @param int    $index
+ * @param int    $count
+ * @return string
+ */
+function streamit_child_detail_trailer_label( $stored, $index, $count ) {
+	if ( $count < 2 ) {
+		return __( 'تریلر', 'streamit' );
+	}
+	if ( preg_match( '#^https?://#i', $stored ) ) {
+		return sprintf(
+			/* translators: %d: trailer number */
+			__( 'تریلر %d', 'streamit' ),
+			$index + 1
+		);
+	}
+	$base = basename( str_replace( '\\', '/', $stored ) );
+	return '' !== $base ? $base : sprintf( __( 'تریلر %d', 'streamit' ), $index + 1 );
+}
+
+/**
+ * @param object $title
+ * @param string $stored
+ * @param string $label
  * @return array{label:string,type:string,trailer_link:string,mime:string,image_html:string}|null
  */
-function streamit_child_get_detail_trailer_card( $title ) {
-	if ( ! is_object( $title ) || ! method_exists( $title, 'get_meta' ) ) {
-		return null;
-	}
+function streamit_child_detail_trailer_card_from_stored( $title, $stored, $label ) {
 	if ( ! function_exists( 'streamit_child_get_movie_trailer_button' ) ) {
 		return null;
 	}
-
-	$stored = $title->get_meta( '_name_trailer_link' );
-	$button = streamit_child_get_movie_trailer_button( null === $stored ? '' : $stored );
+	$button = streamit_child_get_movie_trailer_button( $stored );
 	if ( ! is_array( $button ) ) {
 		return null;
 	}
-
 	return array(
-		'label'        => __( 'تریلر', 'streamit' ),
+		'label'        => $label,
 		'type'         => (string) $button['type'],
 		'trailer_link' => (string) $button['trailer_link'],
 		'mime'         => (string) $button['mime'],
@@ -417,13 +473,49 @@ function streamit_child_get_detail_trailer_card( $title ) {
 }
 
 /**
+ * Playable detail-page trailer cards. The primary link is first.
+ *
+ * @param object $title Streamit movie or TV show.
+ * @return list<array{label:string,type:string,trailer_link:string,mime:string,image_html:string}>
+ */
+function streamit_child_get_detail_trailer_cards( $title ) {
+	$stored = streamit_child_detail_trailer_stored_values( $title );
+	$count  = count( $stored );
+	$cards  = array();
+	foreach ( $stored as $index => $value ) {
+		$card = streamit_child_detail_trailer_card_from_stored(
+			$title,
+			$value,
+			streamit_child_detail_trailer_label( $value, $index, $count )
+		);
+		if ( is_array( $card ) ) {
+			$cards[] = $card;
+		}
+	}
+	return $cards;
+}
+
+/**
+ * Data for a detail-page trailer card, or null when the title has no playable trailer.
+ *
+ * @param object $title Streamit movie or TV show.
+ * @return array{label:string,type:string,trailer_link:string,mime:string,image_html:string}|null
+ */
+function streamit_child_get_detail_trailer_card( $title ) {
+	$cards = streamit_child_get_detail_trailer_cards( $title );
+	return $cards[0] ?? null;
+}
+
+/**
  * One trailer card for a movie or TV-show detail section.
  *
  * @param object $title Streamit movie or TV show.
  * @return string
  */
-function streamit_child_render_detail_trailer_card( $title ) {
-	$card = streamit_child_get_detail_trailer_card( $title );
+function streamit_child_render_detail_trailer_card( $title, $card = null ) {
+	if ( ! is_array( $card ) ) {
+		$card = streamit_child_get_detail_trailer_card( $title );
+	}
 	if ( ! is_array( $card ) ) {
 		return '';
 	}
@@ -454,8 +546,12 @@ function streamit_child_render_detail_trailer_card( $title ) {
  * @return string
  */
 function streamit_child_render_detail_trailer_section( $title ) {
-	$card = streamit_child_render_detail_trailer_card( $title );
-	if ( '' === $card ) {
+	$cards = streamit_child_get_detail_trailer_cards( $title );
+	$html  = '';
+	foreach ( $cards as $card ) {
+		$html .= streamit_child_render_detail_trailer_card( $title, $card );
+	}
+	if ( '' === $html ) {
 		return '';
 	}
 
@@ -464,7 +560,7 @@ function streamit_child_render_detail_trailer_section( $title ) {
 		. '<div class="d-flex align-items-center justify-content-between mb-md-5 mb-3">'
 		. '<h5 class="main-title text-capitalize mb-0">' . esc_html__( 'تریلر', 'streamit' ) . '</h5>'
 		. '</div>'
-		. $card
+		. '<div class="streamit-child-detail-trailer-cards">' . $html . '</div>'
 		. '</div></div>';
 }
 
