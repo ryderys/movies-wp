@@ -137,6 +137,10 @@ class Movies_WP_Movie_Import_Job_Runner {
 					),
 					$options
 				);
+				$movie_id = (int) ( $result['movie_id'] ?? 0 );
+				if ( $movie_id > 0 ) {
+					self::enqueue_telegram( 'movie', $movie_id, $raw_token, $options );
+				}
 			} else {
 				$msg = is_array( $result ) ? (string) ( $result['message'] ?? __( 'Import failed.', 'movies-wp' ) ) : __( 'Import failed.', 'movies-wp' );
 				Movies_WP_Movie_Import_Job_Store::update(
@@ -277,6 +281,26 @@ class Movies_WP_Movie_Import_Job_Runner {
 			);
 		}
 		return as_schedule_single_action( time(), self::HOOK, array( (string) $raw_token ), self::GROUP );
+	}
+
+	/**
+	 * Queue a Telegram announcement after the import job is already saved.
+	 * A missing publisher or a queue error cannot change the import result.
+	 *
+	 * @param string               $type
+	 * @param int                  $post_id
+	 * @param string               $token
+	 * @param array<string, mixed> $options
+	 */
+	private static function enqueue_telegram( $type, $post_id, $token, array $options ) {
+		try {
+			if ( ! class_exists( 'Movies_WP_Telegram_Publisher' ) ) {
+				return;
+			}
+			Movies_WP_Telegram_Publisher::enqueue( $type, (int) $post_id, (string) $token, $options );
+		} catch ( \Throwable $e ) {
+			unset( $e );
+		}
 	}
 }
 

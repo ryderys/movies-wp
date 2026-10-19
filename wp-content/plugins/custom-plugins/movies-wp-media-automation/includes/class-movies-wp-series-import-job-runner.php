@@ -562,6 +562,9 @@ class Movies_WP_Series_Import_Job_Runner {
 				),
 				$options
 			);
+			if ( $id > 0 && empty( $result['skipped'] ) ) {
+				self::enqueue_telegram( 'episode', $id, $token, $options );
+			}
 			if ( ! self::heartbeat( $token, $options ) ) {
 				return;
 			}
@@ -746,6 +749,27 @@ class Movies_WP_Series_Import_Job_Runner {
 			),
 			$options
 		);
+		self::enqueue_telegram( 'series', $series_id, $token, $options );
+	}
+
+	/**
+	 * Queue a Telegram announcement after the import progress is already saved.
+	 * A missing publisher or a queue error cannot change the job status.
+	 *
+	 * @param string               $type
+	 * @param int                  $post_id
+	 * @param string               $token
+	 * @param array<string, mixed> $options
+	 */
+	private static function enqueue_telegram( $type, $post_id, $token, array $options ) {
+		try {
+			if ( (int) $post_id <= 0 || ! class_exists( 'Movies_WP_Telegram_Publisher' ) ) {
+				return;
+			}
+			Movies_WP_Telegram_Publisher::enqueue( $type, (int) $post_id, (string) $token, $options );
+		} catch ( \Throwable $e ) {
+			unset( $e );
+		}
 	}
 
 	private static function snapshot_for_job( array $job, array $options ) {

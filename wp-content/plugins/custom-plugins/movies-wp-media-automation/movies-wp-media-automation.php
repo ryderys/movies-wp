@@ -58,10 +58,17 @@ require_once __DIR__ . '/includes/class-movies-wp-series-import-job-runner.php';
 require_once __DIR__ . '/includes/class-movies-wp-movie-import-job-runner.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-orchestrator.php';
 require_once __DIR__ . '/includes/class-movies-wp-series-admin.php';
+require_once __DIR__ . '/includes/class-movies-wp-telegram-publisher.php';
+require_once __DIR__ . '/includes/class-movies-wp-telegram-schema.php';
+require_once __DIR__ . '/includes/class-movies-wp-telegram-worker.php';
+require_once __DIR__ . '/includes/class-movies-wp-telegram-admin.php';
 
 add_action( 'init', array( 'Movies_WP_Series_Import_Schema', 'maybe_install' ), 1 );
+add_action( 'init', array( 'Movies_WP_Telegram_Schema', 'maybe_install' ), 1 );
 Movies_WP_Series_Import_Job_Runner::init();
 Movies_WP_Movie_Import_Job_Runner::init();
+Movies_WP_Telegram_Worker::init();
 Movies_WP_Media_Admin::init();
 Movies_WP_Trailer_Upload_Admin::init();
 Movies_WP_Series_Admin::init();
+Movies_WP_Telegram_Admin::init();
