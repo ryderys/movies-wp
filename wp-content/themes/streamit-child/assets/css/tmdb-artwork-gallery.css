@@ -1,13 +1,4 @@
-.stc-artwork__poster .stc-artwork__slide img {
-	aspect-ratio: 2 / 2.8;
-	object-fit: cover;
-	width: 100%;
-	display: block;
-}
-
-.stc-artwork__backdrop .stc-artwork__slide img {
+/* Posters reuse .css_prefix-card aspect-ratio. Backdrops are landscape. */
+.stc-artwork__backdrop .css_prefix-card .image-box img {
 	aspect-ratio: 16 / 9;
-	object-fit: cover;
-	width: 100%;
-	display: block;
 }

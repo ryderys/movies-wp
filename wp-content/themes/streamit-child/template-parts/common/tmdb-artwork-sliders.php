@@ -2,8 +2,8 @@
 /**
  * Poster and backdrop galleries under the download box.
  *
- * Markup matches the single-page recommended slider wrappers so Slick arrows
- * and spacing follow the theme.
+ * Uses the same slick-item / css_prefix-card shell as the recommended slider
+ * so spacing and radius match. Each image links to the full attachment URL.
  *
  * @package streamit-child
  */
@@ -133,20 +133,42 @@ foreach ( $sections as $section ) :
 						data-extra_settings="true"
 						data-slider_settings='<?php echo wp_json_encode( $section['slick'] ); ?>'>
 						<?php foreach ( $section['ids'] as $attachment_id ) : ?>
-							<div class="stc-artwork__slide">
-								<?php
-								if ( function_exists( 'streamit_render_image' ) ) {
-									echo streamit_render_image(
-										array(
-											'attachment_id' => $attachment_id,
-											'size'          => $section['size'],
-											'class'         => 'img-fluid object-cover w-100 border-0',
-											'alt'           => $section['title'],
-											'show_fallback' => false,
-										)
-									); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-								}
-								?>
+							<?php
+							$full_url = function_exists( 'wp_get_attachment_image_url' )
+								? wp_get_attachment_image_url( (int) $attachment_id, 'full' )
+								: '';
+							if ( ! is_string( $full_url ) || '' === $full_url ) {
+								continue;
+							}
+							$file_name = basename( (string) wp_parse_url( $full_url, PHP_URL_PATH ) );
+							if ( '' === $file_name ) {
+								$file_name = 'tmdb-image.jpg';
+							}
+							?>
+							<div class="slick-item">
+								<div class="css_prefix-card">
+									<div class="block-images position-relative w-100">
+										<a href="<?php echo esc_url( $full_url ); ?>"
+											class="color-inherit image-box w-100"
+											target="_blank"
+											rel="noopener noreferrer"
+											download="<?php echo esc_attr( $file_name ); ?>">
+											<?php
+											if ( function_exists( 'streamit_render_image' ) ) {
+												echo streamit_render_image(
+													array(
+														'attachment_id' => $attachment_id,
+														'size'          => $section['size'],
+														'class'         => 'img-fluid object-cover w-100 border-0',
+														'alt'           => $section['title'],
+														'show_fallback' => false,
+													)
+												); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											}
+											?>
+										</a>
+									</div>
+								</div>
 							</div>
 						<?php endforeach; ?>
 					</div>
