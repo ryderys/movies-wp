@@ -1,25 +1,30 @@
 <?php
 /**
- * TV show single title with an optional TMDb-localized secondary title
- * and TMDb series status.
- *
- * Matches the Movie single title behavior: Persian post_title as primary, and
- * `_tmdb_title` (English/original) shown underneath when present.
+ * TV show single title: English (_tmdb_title) primary when present,
+ * Persian post_title as secondary, plus TMDb series status.
+ * Falls back to Persian when English is empty.
  *
  * @package streamit-child
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$primary_title = is_object( $st_data ) && method_exists( $st_data, 'get_post_title' )
+$persian_title = is_object( $st_data ) && method_exists( $st_data, 'get_post_title' )
 	? trim( (string) $st_data->get_post_title() )
 	: '';
-$tmdb_title    = is_object( $st_data ) && method_exists( $st_data, 'get_meta' )
+$english_title = is_object( $st_data ) && method_exists( $st_data, 'get_meta' )
 	? trim( (string) $st_data->get_meta( '_tmdb_title' ) )
 	: '';
 $tmdb_status   = is_object( $st_data ) && method_exists( $st_data, 'get_meta' )
 	? trim( (string) $st_data->get_meta( '_tmdb_status' ) )
 	: '';
+
+$primary_title   = '' !== $english_title ? $english_title : $persian_title;
+$secondary_title = (
+	'' !== $english_title
+	&& '' !== $persian_title
+	&& $persian_title !== $english_title
+) ? $persian_title : '';
 
 $status_labels = array(
 	'Returning Series' => __( 'Returning Series', 'streamit' ),
@@ -38,9 +43,9 @@ $status_label = '' !== $tmdb_status
 		<?php echo esc_html( $primary_title ); ?>
 	</h1>
 <?php endif; ?>
-<?php if ( '' !== $tmdb_title && $tmdb_title !== $primary_title ) : ?>
+<?php if ( '' !== $secondary_title ) : ?>
 	<p class="streamit-child-tmdb-title mt-0 <?php echo '' !== $status_label ? 'mb-2' : 'mb-3'; ?>" dir="auto">
-		<?php echo esc_html( $tmdb_title ); ?>
+		<?php echo esc_html( $secondary_title ); ?>
 	</p>
 <?php endif; ?>
 <?php if ( '' !== $status_label ) : ?>

@@ -28,7 +28,7 @@
 	margin-left: auto;
 }
 
-/* Movie/TV single: TMDb-localized title remains secondary to the local post title. */
+/* Movie/TV single: Persian post title secondary under the English primary heading. */
 .streamit-child-tmdb-title {
 	color: var(--bs-body-color);
 	font-size: clamp(0.875rem, 1.5vw, 1.05rem);
