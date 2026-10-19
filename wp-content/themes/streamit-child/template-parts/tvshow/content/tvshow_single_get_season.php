@@ -32,6 +32,23 @@ if ( empty( $seasons ) || ! is_array( $seasons ) ) {
 	return;
 }
 
+$season_switch_state = get_stylesheet_directory() . '/assets/js/tvshow-season-switch-state.js';
+$season_switch       = get_stylesheet_directory() . '/assets/js/tvshow-season-switch.js';
+wp_enqueue_script(
+	'streamit-child-season-switch-state',
+	get_stylesheet_directory_uri() . '/assets/js/tvshow-season-switch-state.js',
+	array(),
+	file_exists( $season_switch_state ) ? (string) filemtime( $season_switch_state ) : '1.0',
+	true
+);
+wp_enqueue_script(
+	'streamit-child-season-switch',
+	get_stylesheet_directory_uri() . '/assets/js/tvshow-season-switch.js',
+	array( 'jquery', 'streamit-child-season-switch-state' ),
+	file_exists( $season_switch ) ? (string) filemtime( $season_switch ) : '1.0',
+	true
+);
+
 $slick_args = array(
 	'slidesToShow'   => 5,
 	'slidesToScroll' => 1,
