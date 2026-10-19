@@ -388,7 +388,7 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 	$can_download = (bool) $can_download;
 	$count        = count( $ost_rows );
 	?>
-	<details class="stc-dl-series-subs stc-dl-ost" open>
+	<details class="stc-dl-series-subs stc-dl-ost">
 		<summary class="stc-dl-series-subs__toggle">
 			<span class="stc-dl-series-subs__meta">
 				<span class="stc-dl-series-subs__title">
