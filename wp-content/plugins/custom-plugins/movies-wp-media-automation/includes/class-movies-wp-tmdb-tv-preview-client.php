@@ -38,7 +38,7 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 		);
 		$query = '?api_key=' . rawurlencode( $api_key ) . '&language=' . rawurlencode( 'en-US' );
 
-		$details = self::fetch_json( $base . $query, $options );
+		$details = self::fetch_json( $base . $query . '&append_to_response=' . rawurlencode( 'images' ), $options );
 		if ( is_wp_error( $details ) ) {
 			return $details;
 		}
@@ -205,6 +205,7 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 			'poster_url'         => self::image_url( $poster_path, 'w500' ),
 			'backdrop_path'      => $backdrop_path,
 			'backdrop_url'       => self::image_url( $backdrop_path, 'original' ),
+			'gallery'            => self::gallery( $body ),
 			'genres'             => $genres,
 			'origin_country'     => array_values( array_unique( $countries ) ),
 			'original_language'  => isset( $body['original_language'] ) ? trim( (string) $body['original_language'] ) : '',
@@ -379,6 +380,15 @@ class Movies_WP_Tmdb_TV_Preview_Client {
 		$settings = is_string( $raw ) ? @unserialize( $raw ) : $raw;
 		$key      = is_array( $settings ) ? ( $settings['tmdb']['api_key'] ?? '' ) : '';
 		return is_string( $key ) ? trim( $key ) : '';
+	}
+
+	/**
+	 * @param array<string, mixed> $body
+	 * @return array{posters:string[],backdrops:string[]}
+	 */
+	private static function gallery( array $body ) {
+		$images = isset( $body['images'] ) && is_array( $body['images'] ) ? $body['images'] : array();
+		return Movies_WP_Tmdb_Artwork_Selector::select( $images );
 	}
 
 	private static function optional_path( $value ) {

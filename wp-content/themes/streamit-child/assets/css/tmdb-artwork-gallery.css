@@ -1,0 +1,18 @@
+.stc-artwork .slick-slide {
+	padding-inline: 0.35rem;
+}
+
+.stc-artwork img {
+	display: block;
+	width: 100%;
+	object-fit: cover;
+	border-radius: 0.5rem;
+}
+
+.stc-artwork__poster img {
+	aspect-ratio: 2 / 2.8;
+}
+
+.stc-artwork__backdrop img {
+	aspect-ratio: 16 / 9;
+}

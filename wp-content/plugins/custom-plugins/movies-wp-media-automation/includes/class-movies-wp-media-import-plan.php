@@ -20,6 +20,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-tmdb-artwork-importer.php';
+
 require_once __DIR__ . '/class-movies-wp-trailer-discovery.php';
 
 class Movies_WP_Media_Import_Plan {
@@ -186,6 +188,7 @@ class Movies_WP_Media_Import_Plan {
 				// Adapter persists non-empty TMDb titles as dedicated movie meta.
 				'tmdb_original_title' => isset( $tmdb['original_title'] ) ? (string) $tmdb['original_title'] : null,
 			),
+			'gallery' => Movies_WP_Tmdb_Artwork_Importer::paths( $tmdb['gallery'] ?? array() ),
 			'identity' => array(
 				'existing_movie_id' => $identity['existing_movie_id'],
 				'action'            => $identity['action'],

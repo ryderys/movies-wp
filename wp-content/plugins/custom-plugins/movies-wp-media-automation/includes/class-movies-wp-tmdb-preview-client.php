@@ -39,7 +39,7 @@ class Movies_WP_Tmdb_Preview_Client {
 			$tmdb_id,
 			rawurlencode( $api_key ),
 			rawurlencode( 'en-US' ),
-			rawurlencode( 'credits' )
+			rawurlencode( 'credits,images' )
 		);
 
 		$response = wp_remote_get(
@@ -76,10 +76,14 @@ class Movies_WP_Tmdb_Preview_Client {
 	}
 
 	/**
+	 * Normalize a TMDb movie details payload.
+	 *
+	 * Public for deterministic unit tests; performs no I/O.
+	 *
 	 * @param array<string, mixed> $body
 	 * @return array<string, mixed>
 	 */
-	private static function normalize_movie( array $body ) {
+	public static function normalize_movie( array $body ) {
 		$release = isset( $body['release_date'] ) ? (string) $body['release_date'] : '';
 		$year    = null;
 		if ( preg_match( '/^(19|20)\d{2}/', $release, $m ) ) {
@@ -152,7 +156,17 @@ class Movies_WP_Tmdb_Preview_Client {
 			'poster_url'        => self::image_url( $poster_path, 'w500' ),
 			'backdrop_path'     => $backdrop_path !== '' ? $backdrop_path : null,
 			'backdrop_url'      => self::image_url( $backdrop_path, 'original' ),
+			'gallery'           => self::gallery( $body ),
 		);
+	}
+
+	/**
+	 * @param array<string, mixed> $body
+	 * @return array{posters:string[],backdrops:string[]}
+	 */
+	private static function gallery( array $body ) {
+		$images = isset( $body['images'] ) && is_array( $body['images'] ) ? $body['images'] : array();
+		return Movies_WP_Tmdb_Artwork_Selector::select( $images );
 	}
 
 	private static function image_url( $path, $size ) {

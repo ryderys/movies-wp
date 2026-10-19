@@ -30,6 +30,8 @@ require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-service.php';
 require_once __DIR__ . '/includes/class-movies-wp-trailer-discovery.php';
 require_once __DIR__ . '/includes/class-movies-wp-trailer-upload-admin.php';
+require_once __DIR__ . '/includes/class-movies-wp-tmdb-artwork-selector.php';
+require_once __DIR__ . '/includes/class-movies-wp-tmdb-artwork-importer.php';
 require_once __DIR__ . '/includes/class-movies-wp-tmdb-preview-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-tmdb-tv-preview-client.php';
 require_once __DIR__ . '/includes/class-movies-wp-import-existing-local-fields.php';

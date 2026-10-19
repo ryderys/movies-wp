@@ -15,6 +15,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/class-movies-wp-trailer-discovery.php';
+require_once __DIR__ . '/class-movies-wp-tmdb-artwork-importer.php';
 
 class Movies_WP_Streamit_Adapter {
 
@@ -117,6 +118,14 @@ class Movies_WP_Streamit_Adapter {
 			return self::failure_result( $movie_id, $identity_action, $completed, 'subtitles', $subs['error'] );
 		}
 		$completed[] = 'subtitles';
+
+		$gallery = self::step_gallery( $movie_id, $plan, $options );
+		if ( ! empty( $gallery['completed'] ) ) {
+			$completed[] = 'gallery';
+		}
+		if ( ! empty( $gallery['warnings'] ) && is_array( $gallery['warnings'] ) ) {
+			$warnings = array_merge( $warnings, $gallery['warnings'] );
+		}
 
 		return array(
 			'ok'              => true,
@@ -669,6 +678,89 @@ class Movies_WP_Streamit_Adapter {
 		}
 
 		return array( 'ok' => true );
+	}
+
+	/**
+	 * Extra TMDb posters and backdrops. A failed extra image does not fail the import.
+	 *
+	 * @param array<string, mixed> $plan
+	 * @param array<string, mixed> $options
+	 * @return array{completed:bool,warnings:array<int,array{code:string,message:string}>}
+	 */
+	private static function step_gallery( $movie_id, array $plan, array $options ) {
+		$existing = array(
+			'posters'   => self::gallery_meta( $movie_id, Movies_WP_Tmdb_Artwork_Importer::POSTER_META, $options ),
+			'backdrops' => self::gallery_meta( $movie_id, Movies_WP_Tmdb_Artwork_Importer::BACKDROP_META, $options ),
+		);
+		$imported = Movies_WP_Tmdb_Artwork_Importer::import(
+			$plan['gallery'] ?? array(),
+			$existing,
+			static function ( $path, $role ) use ( $options ) {
+				if ( isset( $options['download_artwork'] ) && is_callable( $options['download_artwork'] ) ) {
+					return call_user_func( $options['download_artwork'], $path, $role );
+				}
+				if ( ! function_exists( 'streamit_download_and_attach_movie_image' ) ) {
+					$loaded = self::ensure_tmdb_movie_importer();
+					if ( true !== $loaded ) {
+						return new WP_Error( $loaded['code'], $loaded['message'] );
+					}
+				}
+				if ( ! function_exists( 'streamit_download_and_attach_movie_image' ) ) {
+					return new WP_Error( 'media_adapter_artwork_download_missing', __( 'TMDb image download is not available.', 'movies-wp' ) );
+				}
+				return streamit_download_and_attach_movie_image( Movies_WP_Tmdb_Artwork_Importer::source_url( $path, $role ) );
+			}
+		);
+
+		$warnings  = array();
+		$completed = false;
+		$map       = array(
+			'posters'   => Movies_WP_Tmdb_Artwork_Importer::POSTER_META,
+			'backdrops' => Movies_WP_Tmdb_Artwork_Importer::BACKDROP_META,
+		);
+		foreach ( $imported['warnings'] as $warning ) {
+			$warnings[] = self::err(
+				'media_adapter_artwork_download_failed',
+				sprintf(
+					/* translators: 1: image role, 2: TMDb path */
+					__( 'Could not save %1$s image %2$s.', 'movies-wp' ),
+					(string) ( $warning['role'] ?? '' ),
+					(string) ( $warning['path'] ?? '' )
+				)
+			);
+		}
+		foreach ( $map as $role => $meta_key ) {
+			if ( 'set' !== ( $imported[ $role ]['action'] ?? '' ) ) {
+				continue;
+			}
+			$written = isset( $options['update_meta'] ) && is_callable( $options['update_meta'] )
+				? call_user_func( $options['update_meta'], (int) $movie_id, $meta_key, $imported[ $role ]['ids'] )
+				: ( function_exists( 'streamit_update_movie_meta' ) ? streamit_update_movie_meta( (int) $movie_id, $meta_key, $imported[ $role ]['ids'] ) : false );
+			if ( false === $written ) {
+				$warnings[] = self::err( 'media_adapter_artwork_meta_failed', __( 'Could not save the TMDb image gallery.', 'movies-wp' ) );
+				continue;
+			}
+			$completed = true;
+		}
+
+		return array(
+			'completed' => $completed,
+			'warnings'  => $warnings,
+		);
+	}
+
+	/**
+	 * @param array<string, mixed> $options
+	 * @return mixed
+	 */
+	private static function gallery_meta( $movie_id, $key, array $options ) {
+		if ( isset( $options['get_meta'] ) && is_callable( $options['get_meta'] ) ) {
+			return call_user_func( $options['get_meta'], (int) $movie_id, (string) $key );
+		}
+		if ( function_exists( 'streamit_get_movie_meta' ) ) {
+			return streamit_get_movie_meta( (int) $movie_id, (string) $key, true );
+		}
+		return null;
 	}
 
 	/**

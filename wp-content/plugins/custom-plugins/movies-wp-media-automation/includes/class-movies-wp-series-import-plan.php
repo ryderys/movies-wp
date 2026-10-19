@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-tmdb-artwork-importer.php';
+
 class Movies_WP_Series_Import_Plan {
 
 	/**
@@ -261,6 +263,7 @@ class Movies_WP_Series_Import_Plan {
 					'thumbnail_id'
 				),
 			),
+			'gallery'  => Movies_WP_Tmdb_Artwork_Importer::paths( $series['gallery'] ?? array() ),
 			'sources_policy'  => array(
 				'episode_meta_key' => '_sources',
 				'mutate'           => false,

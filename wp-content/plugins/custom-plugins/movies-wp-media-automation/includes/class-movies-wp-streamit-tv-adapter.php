@@ -10,6 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-movies-wp-tmdb-artwork-importer.php';
 require_once __DIR__ . '/class-movies-wp-series-import-profiler.php';
 require_once __DIR__ . '/class-movies-wp-tvshow-media-directory.php';
 
@@ -70,6 +71,7 @@ class Movies_WP_Streamit_TV_Adapter {
 
 		$image_snap    = Movies_WP_Series_Import_Profiler::phase_start( 'series_images' );
 		$image_results = self::persist_series_images( $series_id, $plan['images'], $options );
+		self::persist_gallery( $series_id, $plan, $options );
 		Movies_WP_Series_Import_Profiler::phase_end( 'series_images', $image_snap, count( $image_results ), 'poster_backdrop' );
 		Movies_WP_Series_Import_Profiler::progress( 'SERIES IMAGES DONE' );
 		$episode_rows  = array();
@@ -301,6 +303,7 @@ class Movies_WP_Streamit_TV_Adapter {
 	public static function apply_images_phase( $series_id, array $plan, array $options = array() ) {
 		$images  = isset( $plan['images'] ) && is_array( $plan['images'] ) ? $plan['images'] : array();
 		$results = self::persist_series_images( (int) $series_id, $images, $options );
+		self::persist_gallery( (int) $series_id, $plan, $options );
 		$errors  = array();
 		foreach ( $results as $image_result ) {
 			if ( empty( $image_result['ok'] ) && isset( $image_result['error'] ) ) {
@@ -804,6 +807,45 @@ class Movies_WP_Streamit_TV_Adapter {
 			}
 		}
 		return $results;
+	}
+
+	/**
+	 * @param array<string, mixed> $plan
+	 * @param array<string, mixed> $options
+	 */
+	private static function persist_gallery( $series_id, array $plan, array $options ) {
+		$existing = array(
+			'posters'   => self::load_tvshow_meta( $series_id, Movies_WP_Tmdb_Artwork_Importer::POSTER_META, $options ),
+			'backdrops' => self::load_tvshow_meta( $series_id, Movies_WP_Tmdb_Artwork_Importer::BACKDROP_META, $options ),
+		);
+		$imported = Movies_WP_Tmdb_Artwork_Importer::import(
+			$plan['gallery'] ?? array(),
+			array(
+				'posters'   => is_wp_error( $existing['posters'] ) ? array() : $existing['posters'],
+				'backdrops' => is_wp_error( $existing['backdrops'] ) ? array() : $existing['backdrops'],
+			),
+			static function ( $path, $role ) use ( $options ) {
+				$url = Movies_WP_Tmdb_Artwork_Importer::source_url( $path, $role );
+				return self::download_image(
+					array(
+						'url'  => $url,
+						'path' => $path,
+					),
+					'posters' === $role ? 'gallery_poster' : 'gallery_backdrop',
+					$options
+				);
+			}
+		);
+		$map = array(
+			'posters'   => Movies_WP_Tmdb_Artwork_Importer::POSTER_META,
+			'backdrops' => Movies_WP_Tmdb_Artwork_Importer::BACKDROP_META,
+		);
+		foreach ( $map as $role => $meta_key ) {
+			if ( 'set' !== ( $imported[ $role ]['action'] ?? '' ) ) {
+				continue;
+			}
+			self::write_tvshow_meta( $series_id, $meta_key, $imported[ $role ]['ids'], $options );
+		}
 	}
 
 	private static function persist_episode( $series_id, array $plan, array $options ) {
