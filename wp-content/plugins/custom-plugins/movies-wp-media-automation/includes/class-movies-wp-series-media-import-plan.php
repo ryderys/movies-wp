@@ -213,6 +213,13 @@ class Movies_WP_Series_Media_Import_Plan {
 			);
 		}
 
+		$upsert_basenames = array();
+		foreach ( $operations as $operation ) {
+			if ( 'upsert' === ( $operation['action'] ?? '' ) ) {
+				$upsert_basenames[ strtolower( basename( (string) $operation['path'] ) ) ] = true;
+			}
+		}
+
 		foreach ( $existing as $row ) {
 			if ( ! is_array( $row ) ) {
 				continue;
@@ -221,13 +228,18 @@ class Movies_WP_Series_Media_Import_Plan {
 			if ( is_wp_error( $path ) ) {
 				continue;
 			}
-			if ( ! isset( $seen[ $path ] ) ) {
-				$operations[] = array(
-					'action' => 'preserve',
-					'path'   => $path,
-					'row'    => $row,
-				);
+			if ( isset( $seen[ $path ] ) ) {
+				continue;
 			}
+			// Same filename under a new series directory replaces the old path.
+			if ( isset( $upsert_basenames[ strtolower( basename( $path ) ) ] ) ) {
+				continue;
+			}
+			$operations[] = array(
+				'action' => 'preserve',
+				'path'   => $path,
+				'row'    => $row,
+			);
 		}
 
 		return array(
