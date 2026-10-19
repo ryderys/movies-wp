@@ -11,9 +11,9 @@ defined( 'ABSPATH' ) || exit;
 	<div class="container-fluid">
 		<div class="overflow-hidden">
 			<?php streamit_get_template( 'common/tmdb-artwork-sliders.php', array( 'st_data' => $st_data ) ); ?>
-			<?php streamit_get_template( 'tvshow/content/tvshow_single_morelike_slider.php', array( 'st_data' => $st_data ) ); ?>
 			<?php streamit_get_template( 'tvshow/content/tvshow_single_persons_slider.php', array( 'st_data' => $st_data, 'type' => 'cast' ) ); ?>
 			<?php streamit_get_template( 'tvshow/content/tvshow_single_persons_slider.php', array( 'st_data' => $st_data, 'type' => 'crew' ) ); ?>
+			<?php streamit_get_template( 'tvshow/content/tvshow_single_morelike_slider.php', array( 'st_data' => $st_data ) ); ?>
 			<?php streamit_get_template( 'tvshow/content/tvshow_single_upcoming_tvshow.php', array( 'st_data' => $st_data ) ); ?>
 			<?php streamit_get_template( 'tvshow/content/tvshow_single_related_products.php', array( 'st_data' => $st_data ) ); ?>
 			<?php
