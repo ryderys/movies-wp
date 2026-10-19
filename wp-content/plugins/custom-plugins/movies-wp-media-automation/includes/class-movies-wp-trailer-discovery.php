@@ -4,10 +4,12 @@
  *
  * Selection rule (documented): among eligible files under the validated title
  * directory, prefer the folder name Trailer over Trailers (case-insensitive),
- * then pick the lexicographically first full relative path using strcasecmp.
- * Only direct children of those folders with extensions mp4, webm, or mkv are
- * eligible. Discovery never uploads, moves, renames, or deletes files, and
- * never overwrites a non-empty `_name_trailer_link`.
+ * then order by the full relative path using strcasecmp. Every eligible file
+ * is kept. Only direct children of those folders with extensions mp4, webm,
+ * or mkv are eligible. Discovery never uploads, moves, renames, or deletes
+ * files. A non-empty `_name_trailer_link` is left as the primary playback
+ * URL. The ordered paths are merged into `_name_trailer_links` without
+ * removing paths already stored.
  *
  * @package movies-wp
  */
@@ -19,15 +21,21 @@ class Movies_WP_Trailer_Discovery {
 	/** @var list<string> */
 	const EXTENSIONS = array( 'mp4', 'webm', 'mkv' );
 
+	const PRIMARY_META_KEY = '_name_trailer_link';
+
+	const LINKS_META_KEY = '_name_trailer_links';
+
 	/**
-	 * @param string               $title_directory Validated Movie/... or series/... directory.
-	 * @param list<mixed>          $candidates      Relative paths or scan file rows with media_path.
-	 * @return string|null Selected relative path, or null when none match.
+	 * Eligible trailer paths in playback order.
+	 *
+	 * @param string      $title_directory Validated Movie/... or series/... directory.
+	 * @param list<mixed> $candidates      Relative paths or scan file rows with media_path.
+	 * @return list<string>
 	 */
-	public static function select_path( $title_directory, array $candidates ) {
+	public static function select_paths( $title_directory, array $candidates ) {
 		$dir = self::normalize_directory( $title_directory );
 		if ( '' === $dir ) {
-			return null;
+			return array();
 		}
 
 		$eligible = array();
@@ -43,7 +51,7 @@ class Movies_WP_Trailer_Discovery {
 		}
 
 		if ( empty( $eligible ) ) {
-			return null;
+			return array();
 		}
 
 		$paths = array_keys( $eligible );
@@ -59,7 +67,17 @@ class Movies_WP_Trailer_Discovery {
 			}
 		);
 
-		return (string) $paths[0];
+		return array_map( 'strval', $paths );
+	}
+
+	/**
+	 * @param string               $title_directory Validated Movie/... or series/... directory.
+	 * @param list<mixed>          $candidates      Relative paths or scan file rows with media_path.
+	 * @return string|null First selected relative path, or null when none match.
+	 */
+	public static function select_path( $title_directory, array $candidates ) {
+		$paths = self::select_paths( $title_directory, $candidates );
+		return $paths[0] ?? null;
 	}
 
 	/**
@@ -133,14 +151,15 @@ class Movies_WP_Trailer_Discovery {
 	}
 
 	/**
-	 * Write `_name_trailer_link` when empty. Missing trailers and write failures are non-fatal.
+	 * Set `_name_trailer_link` when empty and merge every selected path into `_name_trailer_links`.
+	 * Missing trailers and write failures are non-fatal.
 	 *
 	 * @param string      $kind      movie|tvshow
 	 * @param int         $title_id
 	 * @param string      $directory Validated title directory.
 	 * @param list<mixed> $candidates
 	 * @param array       $options   get/update meta hooks for tests.
-	 * @return array{status:string,path?:string,message?:string}
+	 * @return array{status:string,path?:string,paths?:list<string>,message?:string}
 	 */
 	public static function assign_if_empty( $kind, $title_id, $directory, array $candidates, array $options = array() ) {
 		$kind     = (string) $kind;
@@ -160,31 +179,67 @@ class Movies_WP_Trailer_Discovery {
 			);
 		}
 
-		$existing = self::read_meta( $kind, $title_id, '_name_trailer_link', $options );
-		if ( is_string( $existing ) && '' !== trim( $existing ) ) {
-			return array(
-				'status' => 'preserved',
-				'path'   => trim( $existing ),
-			);
-		}
-
-		$selected = self::select_path( $dir, $candidates );
-		if ( null === $selected ) {
+		$selected = self::select_paths( $dir, $candidates );
+		$existing = self::read_meta( $kind, $title_id, self::PRIMARY_META_KEY, $options );
+		$primary  = is_string( $existing ) ? trim( $existing ) : '';
+		if ( empty( $selected ) ) {
+			if ( '' !== $primary ) {
+				return array(
+					'status' => 'preserved',
+					'path'   => $primary,
+				);
+			}
 			return array( 'status' => 'missing' );
 		}
 
-		$written = self::write_meta( $kind, $title_id, '_name_trailer_link', $selected, $options );
-		if ( ! $written ) {
+		$wrote = false;
+		if ( '' === $primary ) {
+			$primary = $selected[0];
+			$written = self::write_meta( $kind, $title_id, self::PRIMARY_META_KEY, $primary, $options );
+			if ( ! $written ) {
+				return array(
+					'status'  => 'failed',
+					'path'    => $primary,
+					'paths'   => $selected,
+					'message' => 'Failed to save discovered trailer link.',
+				);
+			}
+			$wrote = true;
+		}
+
+		$stored = self::stored_paths( self::read_meta( $kind, $title_id, self::LINKS_META_KEY, $options ) );
+		$merged = $stored;
+		foreach ( $selected as $path ) {
+			if ( ! in_array( $path, $merged, true ) ) {
+				$merged[] = $path;
+			}
+		}
+
+		if ( $merged !== $stored ) {
+			$written = self::write_meta( $kind, $title_id, self::LINKS_META_KEY, $merged, $options );
+			if ( ! $written ) {
+				return array(
+					'status'  => 'failed',
+					'path'    => $primary,
+					'paths'   => $selected,
+					'message' => 'Failed to save discovered trailer links.',
+				);
+			}
+			$wrote = true;
+		}
+
+		if ( ! $wrote ) {
 			return array(
-				'status'  => 'failed',
-				'path'    => $selected,
-				'message' => 'Failed to save discovered trailer link.',
+				'status' => 'preserved',
+				'path'   => $primary,
+				'paths'  => $merged,
 			);
 		}
 
 		return array(
 			'status' => 'assigned',
-			'path'   => $selected,
+			'path'   => $primary,
+			'paths'  => $merged,
 		);
 	}
 
@@ -193,15 +248,45 @@ class Movies_WP_Trailer_Discovery {
 	 *
 	 * @param string      $title_directory
 	 * @param list<mixed> $files
-	 * @return array{media_path:?string,candidates:list<string>,selection_rule:string}
+	 * @return array{media_path:?string,media_paths:list<string>,candidates:list<string>,selection_rule:string}
 	 */
 	public static function plan_from_files( $title_directory, array $files ) {
 		$candidates = self::candidates_from_files( $title_directory, $files );
+		$paths      = self::select_paths( $title_directory, $candidates );
 		return array(
-			'media_path'     => self::select_path( $title_directory, $candidates ),
+			'media_path'     => $paths[0] ?? null,
+			'media_paths'    => $paths,
 			'candidates'     => $candidates,
-			'selection_rule' => 'Prefer Trailer/ over Trailers/ (case-insensitive), then the first relative path by strcasecmp. Direct mp4/webm/mkv children only.',
+			'selection_rule' => 'Store every direct mp4/webm/mkv child of Trailer/ and Trailers/. Order prefers Trailer/ over Trailers/ (case-insensitive), then strcasecmp. The first path fills an empty _name_trailer_link; the full ordered list is merged into _name_trailer_links.',
 		);
+	}
+
+	/**
+	 * @param mixed $value
+	 * @return list<string>
+	 */
+	private static function stored_paths( $value ) {
+		if ( is_string( $value ) ) {
+			$value = array( $value );
+		}
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
+
+		$out  = array();
+		$seen = array();
+		foreach ( $value as $item ) {
+			if ( ! is_string( $item ) ) {
+				continue;
+			}
+			$path = self::normalize_path( $item );
+			if ( '' === $path || isset( $seen[ $path ] ) ) {
+				continue;
+			}
+			$seen[ $path ] = true;
+			$out[]         = $path;
+		}
+		return $out;
 	}
 
 	/**

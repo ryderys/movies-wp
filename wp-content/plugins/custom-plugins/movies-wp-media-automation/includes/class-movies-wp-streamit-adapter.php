@@ -764,7 +764,7 @@ class Movies_WP_Streamit_Adapter {
 	}
 
 	/**
-	 * Assign a discovered trailer path to `_name_trailer_link` when empty.
+	 * Assign discovered trailer paths. `_name_trailer_link` is set when empty; every path is merged into `_name_trailer_links`.
 	 *
 	 * @param array<string, mixed> $plan
 	 * @param array<string, mixed> $options
