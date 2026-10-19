@@ -102,7 +102,11 @@ $slick_args = array(
 						</div>
 					</div>
 					<div class="tab-content mt-5" id="nav-tabContent">
-						<?php foreach ( $seasons as $index1 => $season ) :
+						<?php
+						// Full episode rows only for the first pane that renders cards.
+						// Later seasons stay empty skeletons for the existing season-switch AJAX.
+						$slider_episodes_loaded = false;
+						foreach ( $seasons as $index1 => $season ) :
 							$season_name_id = trim( preg_replace( '/[^\p{L}\p{N}]+/u', '-', mb_strtolower( (string) $season['name'] ) ), '-' );
 						?>
 							<div class="tab-pane fade <?php echo 0 === $index1 ? esc_attr( 'active show' ) : ''; ?>" id="<?php echo esc_attr( $season_name_id ); ?>" role="tabpanel">
@@ -125,21 +129,25 @@ $slick_args = array(
 										?>
 											<div class="css_prefix-slick-general st-skeleton" data-display=0 data-season_no="<?php echo esc_attr( (string) $index1 ); ?>" data-extra_settings="true" data-slider_settings="<?php echo st_get_slick_slider_settings( $slick_args ); ?>">
 												<?php
-												$episode_posts = function_exists( 'streamit_get_episodes' )
-													? streamit_get_episodes( array(
-														'orderby'  => 'post__in',
-														'include'  => $season['episodes'],
-														'paged'    => 1,
-														'per_page' => -1,
-													) )->results
-													: array();
+												if ( ! $slider_episodes_loaded ) {
+													$episode_posts = function_exists( 'streamit_child_get_series_episode_objects' )
+														? streamit_child_get_series_episode_objects( $season['episodes'] )
+														: ( function_exists( 'streamit_get_episodes' )
+															? streamit_get_episodes(
+																array(
+																	'orderby'  => 'post__in',
+																	'include'  => $season['episodes'],
+																	'paged'    => 1,
+																	'per_page' => -1,
+																)
+															)->results
+															: array() );
 
-												foreach ( $episode_posts as $index => $episode ) :
-													if ( $index1 > 0 ) {
-														break;
+													foreach ( $episode_posts as $episode ) {
+														streamit_get_template( 'episode/content/episode_single_slider.php', array( 'episode' => $episode ) );
 													}
-													streamit_get_template( 'episode/content/episode_single_slider.php', array( 'episode' => $episode ) );
-												endforeach;
+													$slider_episodes_loaded = true;
+												}
 												?>
 											</div>
 										<?php else : ?>

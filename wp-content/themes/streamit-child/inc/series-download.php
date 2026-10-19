@@ -581,97 +581,512 @@ function streamit_child_build_series_download_catalog_from_data( array $seasons,
 }
 
 /**
+ * Episode ids accepted by the media-flag query, deduped and ordered.
+ *
+ * Mirrors the catalog map: absolute integers, zeros dropped.
+ *
+ * @param array<int, mixed> $episode_ids Raw ids.
+ * @return array<int, int>
+ */
+function streamit_child_normalize_episode_ids( array $episode_ids ) {
+	$ids = array();
+
+	foreach ( $episode_ids as $id ) {
+		if ( is_bool( $id ) || ( ! is_int( $id ) && ! is_float( $id ) && ! ( is_string( $id ) && preg_match( '/^-?\d+$/', $id ) ) ) ) {
+			continue;
+		}
+
+		$normalized = abs( (int) $id );
+		if ( $normalized > 0 ) {
+			$ids[ $normalized ] = $normalized;
+		}
+	}
+
+	$ids = array_values( $ids );
+	sort( $ids, SORT_NUMERIC );
+
+	return $ids;
+}
+
+/**
+ * How many episode ids one media-flag SELECT binds.
+ *
+ * @return int
+ */
+function streamit_child_episode_media_flags_chunk_size() {
+	return 200;
+}
+
+/**
+ * Request memo for media flags. Not a persistent cache.
+ *
+ * @return array<string, array<int, array{video: bool, media: bool}>>
+ */
+function &streamit_child_episode_media_flags_cache() {
+	static $cache = array();
+	return $cache;
+}
+
+/**
+ * Drop the request memo. Tests use this when the same ids change fixture data.
+ */
+function streamit_child_reset_episode_media_flags_cache() {
+	$cache = &streamit_child_episode_media_flags_cache();
+	$cache = array();
+}
+
+/**
+ * Meta keys the episode map consults before has_video() / has_media().
+ *
+ * @return array<int, string>
+ */
+function streamit_child_episode_media_flag_meta_keys() {
+	return array( '_sources', '_source', 'episode_url_link', '_subtitles' );
+}
+
+/**
+ * Unserialize one meta_value the way Streamit's meta layer does.
+ *
+ * Malformed payloads stay strings so the array parsers reject them.
+ *
+ * @param mixed $value Raw meta_value.
+ * @return mixed
+ */
+function streamit_child_unserialize_episode_meta( $value ) {
+	if ( ! is_string( $value ) ) {
+		return $value;
+	}
+
+	if ( function_exists( 'maybe_unserialize' ) ) {
+		return maybe_unserialize( $value );
+	}
+
+	if ( ! preg_match( '/^(?:a|O|s|i|d|b|C|N):/', $value ) ) {
+		return $value;
+	}
+
+	$parsed = @unserialize( $value, array( 'allowed_classes' => false ) ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize
+	if ( false === $parsed && 'b:0;' !== $value ) {
+		return $value;
+	}
+
+	return $parsed;
+}
+
+/**
+ * Episode meta table, prefixed the same way Streamit registers it.
+ *
+ * @return string Empty when $wpdb cannot name the table safely.
+ */
+function streamit_child_episode_meta_table() {
+	global $wpdb;
+
+	if ( ! isset( $wpdb ) || ! is_object( $wpdb ) ) {
+		return '';
+	}
+
+	$table = '';
+	if ( isset( $wpdb->streamit_episodemeta ) && is_string( $wpdb->streamit_episodemeta ) && '' !== $wpdb->streamit_episodemeta ) {
+		$table = $wpdb->streamit_episodemeta;
+	} elseif ( isset( $wpdb->prefix ) && is_string( $wpdb->prefix ) ) {
+		$table = $wpdb->prefix . 'streamit_episodemeta';
+	}
+
+	if ( ! preg_match( '/^[A-Za-z0-9_]+$/', $table ) ) {
+		return '';
+	}
+
+	return $table;
+}
+
+/**
+ * Load source/subtitle meta rows for one id chunk.
+ *
+ * @param array<int, int> $episode_ids Normalized ids, already within the chunk size.
+ * @return array<int, object>|null Rows, or null on a query error.
+ */
+function streamit_child_query_episode_media_meta( array $episode_ids ) {
+	global $wpdb;
+
+	$table = streamit_child_episode_meta_table();
+	if ( '' === $table || ! is_object( $wpdb ) || ! method_exists( $wpdb, 'prepare' ) || ! method_exists( $wpdb, 'get_results' ) ) {
+		return null;
+	}
+
+	$keys         = streamit_child_episode_media_flag_meta_keys();
+	$id_holders   = implode( ', ', array_fill( 0, count( $episode_ids ), '%d' ) );
+	$key_holders  = implode( ', ', array_fill( 0, count( $keys ), '%s' ) );
+	$wpdb->last_error = '';
+
+	$prepared = $wpdb->prepare(
+		"SELECT streamit_episode_id, meta_id, meta_key, meta_value
+		FROM {$table}
+		WHERE streamit_episode_id IN ($id_holders)
+		AND meta_key IN ($key_holders)
+		ORDER BY meta_id ASC",
+		...array_merge( $episode_ids, $keys )
+	);
+
+	if ( ! is_string( $prepared ) || '' === $prepared ) {
+		return null;
+	}
+
+	$rows = $wpdb->get_results( $prepared );
+	if ( ! is_array( $rows ) || ( isset( $wpdb->last_error ) && is_string( $wpdb->last_error ) && '' !== $wpdb->last_error ) ) {
+		return null;
+	}
+
+	return $rows;
+}
+
+/**
+ * Rebuild the sources/subtitles pair the existing parsers expect.
+ *
+ * First row per key wins (Streamit reads meta ordered by meta_id and get_meta is single).
+ * `_sources` wins over `_source`, then `episode_url_link` fills an empty source list.
+ *
+ * @param array<int, object> $rows Rows for one episode.
+ * @return array{sources: mixed, subtitles: mixed}
+ */
+function streamit_child_episode_media_entry_from_rows( array $rows ) {
+	$by_key = array();
+
+	foreach ( $rows as $row ) {
+		if ( is_array( $row ) ) {
+			$row = (object) $row;
+		}
+		if ( ! is_object( $row ) ) {
+			continue;
+		}
+
+		$key = isset( $row->meta_key ) ? (string) $row->meta_key : '';
+		if ( '' === $key || array_key_exists( $key, $by_key ) ) {
+			continue;
+		}
+
+		$by_key[ $key ] = streamit_child_unserialize_episode_meta( $row->meta_value ?? null );
+	}
+
+	$sources = array_key_exists( '_sources', $by_key ) ? $by_key['_sources'] : null;
+	if ( empty( $sources ) && array_key_exists( '_source', $by_key ) ) {
+		$sources = $by_key['_source'];
+	}
+
+	if ( empty( $sources ) && array_key_exists( 'episode_url_link', $by_key ) ) {
+		$url = $by_key['episode_url_link'];
+		if ( is_scalar( $url ) || null === $url ) {
+			$url = trim( (string) $url );
+			if ( '' !== $url ) {
+				$sources = array(
+					array(
+						'quality'          => 'Default',
+						'download_content' => $url,
+						'link'             => $url,
+					),
+				);
+			}
+		}
+	}
+
+	return array(
+		'sources'   => $sources,
+		'subtitles' => array_key_exists( '_subtitles', $by_key ) ? $by_key['_subtitles'] : array(),
+	);
+}
+
+/**
+ * Video and subtitle flags for episode ids, without loading episode rows.
+ *
+ * Memoized for this request by the normalized id list. A failed query is not memoized.
+ *
+ * @param array<int, mixed> $episode_ids Episode IDs.
+ * @return array<int, array{video: bool, media: bool}>
+ */
+function streamit_child_episode_media_flags( array $episode_ids ) {
+	$ids = streamit_child_normalize_episode_ids( $episode_ids );
+	if ( empty( $ids ) ) {
+		return array();
+	}
+
+	$cache_key = implode( ',', $ids );
+	$cache     = &streamit_child_episode_media_flags_cache();
+	if ( isset( $cache[ $cache_key ] ) ) {
+		return $cache[ $cache_key ];
+	}
+
+	$flags = array();
+	foreach ( $ids as $id ) {
+		$flags[ $id ] = array(
+			'video' => false,
+			'media' => false,
+		);
+	}
+
+	$rows  = array();
+	$chunk = streamit_child_episode_media_flags_chunk_size();
+	foreach ( array_chunk( $ids, $chunk ) as $id_chunk ) {
+		$chunk_rows = streamit_child_query_episode_media_meta( $id_chunk );
+		if ( null === $chunk_rows ) {
+			return $flags;
+		}
+		foreach ( $chunk_rows as $row ) {
+			$rows[] = $row;
+		}
+	}
+
+	$by_episode = array();
+	foreach ( $rows as $row ) {
+		if ( is_array( $row ) ) {
+			$row = (object) $row;
+		}
+		if ( ! is_object( $row ) || ! isset( $row->streamit_episode_id ) ) {
+			continue;
+		}
+		$episode_id = (int) $row->streamit_episode_id;
+		if ( ! isset( $flags[ $episode_id ] ) ) {
+			continue;
+		}
+		$by_episode[ $episode_id ][] = $row;
+	}
+
+	foreach ( $by_episode as $episode_id => $episode_rows ) {
+		usort(
+			$episode_rows,
+			static function ( $a, $b ) {
+				$a_id = is_object( $a ) && isset( $a->meta_id ) ? (int) $a->meta_id : 0;
+				$b_id = is_object( $b ) && isset( $b->meta_id ) ? (int) $b->meta_id : 0;
+				return $a_id <=> $b_id;
+			}
+		);
+		$entry = streamit_child_episode_media_entry_from_rows( $episode_rows );
+		$flags[ $episode_id ] = array(
+			'video' => streamit_child_episode_has_video( $entry ),
+			'media' => streamit_child_episode_has_media( $entry ),
+		);
+	}
+
+	$cache[ $cache_key ] = $flags;
+
+	return $flags;
+}
+
+/**
+ * Adapt flags to the episode-map shape streamit_child_filter_available_seasons_data() already filters.
+ *
+ * Episodes with neither video nor subtitles are omitted, matching a missing map entry.
+ *
+ * @param array<int, array{video: bool, media: bool}> $flags Flags keyed by episode id.
+ * @return array<int, array<string, mixed>>
+ */
+function streamit_child_episode_media_flags_as_episode_map( array $flags ) {
+	$map = array();
+
+	foreach ( $flags as $id => $flag ) {
+		if ( ! is_array( $flag ) ) {
+			continue;
+		}
+
+		$video = ! empty( $flag['video'] );
+		$media = ! empty( $flag['media'] );
+		if ( ! $video && ! $media ) {
+			continue;
+		}
+
+		$map[ (int) $id ] = array(
+			'sources'   => $video
+				? array(
+					array(
+						'quality'          => 'Default',
+						'download_content' => 'available',
+						'link'             => 'available',
+					),
+				)
+				: array(),
+			'subtitles' => ( ! $video && $media )
+				? array(
+					array(
+						'url' => 'available',
+					),
+				)
+				: array(),
+		);
+	}
+
+	return $map;
+}
+
+/**
+ * Request memo for full episode map rows. Not a persistent cache.
+ *
+ * @return array<int, array<string, mixed>>
+ */
+function &streamit_child_series_download_episode_map_cache() {
+	static $cache = array();
+	return $cache;
+}
+
+/**
+ * Drop the request memo. Tests use this between fixtures.
+ */
+function streamit_child_reset_series_download_episode_map_cache() {
+	$cache = &streamit_child_series_download_episode_map_cache();
+	$cache = array();
+}
+
+/**
+ * Build one catalog map entry from a Streamit episode object.
+ *
+ * @param object $episode Episode object with get_id() / get_meta().
+ * @return array<string, mixed>|null
+ */
+function streamit_child_series_download_episode_entry_from_object( $episode ) {
+	if ( ! is_object( $episode ) || ! method_exists( $episode, 'get_id' ) ) {
+		return null;
+	}
+
+	$id = (int) $episode->get_id();
+	if ( $id <= 0 ) {
+		return null;
+	}
+
+	$title = '';
+	if ( method_exists( $episode, 'get_post_title' ) ) {
+		$title = (string) $episode->get_post_title();
+	}
+
+	$permalink = '';
+	if ( method_exists( $episode, 'get_permalink' ) ) {
+		$permalink = (string) $episode->get_permalink();
+	} elseif ( function_exists( 'get_permalink' ) ) {
+		$permalink = (string) get_permalink( $id );
+	}
+
+	$sources = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_sources' ) : array();
+	if ( empty( $sources ) && method_exists( $episode, 'get_meta' ) ) {
+		$sources = $episode->get_meta( '_source' );
+	}
+	if ( empty( $sources ) && method_exists( $episode, 'get_meta' ) ) {
+		$url_link = trim( (string) $episode->get_meta( 'episode_url_link' ) );
+		if ( '' !== $url_link ) {
+			$sources = array(
+				array(
+					'quality'          => 'Default',
+					'download_content' => $url_link,
+					'link'             => $url_link,
+				),
+			);
+		}
+	}
+
+	$subtitles = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_subtitles' ) : array();
+	$season_n  = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_season_number' ) : '';
+	$episode_n = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_episode_number' ) : '';
+
+	return array(
+		'title'          => $title,
+		'permalink'      => $permalink,
+		'sources'        => is_array( $sources ) ? $sources : array(),
+		'subtitles'      => $subtitles,
+		'season_number'  => $season_n,
+		'episode_number' => $episode_n,
+		'object'         => $episode,
+	);
+}
+
+/**
  * Load episode payloads for catalog building.
+ *
+ * Request-scoped: only ids not already memoized are queried. Missing rows stay absent.
  *
  * @param array<int, int|string> $episode_ids Episode IDs.
  * @return array<int, array<string, mixed>>
  */
 function streamit_child_load_series_download_episode_map( array $episode_ids ) {
 	$map = array();
-	$ids = array_values(
-		array_unique(
-			array_filter(
-				array_map( static function ( $id ) {
-					return abs( (int) $id );
-				}, $episode_ids )
-			)
-		)
-	);
+	$ids = streamit_child_normalize_episode_ids( $episode_ids );
 
 	if ( empty( $ids ) ) {
 		return $map;
 	}
 
-	$episodes = array();
-	if ( function_exists( 'streamit_get_episodes' ) ) {
+	$cache   = &streamit_child_series_download_episode_map_cache();
+	$missing = array();
+	foreach ( $ids as $id ) {
+		if ( ! array_key_exists( $id, $cache ) ) {
+			$missing[] = $id;
+		}
+	}
+
+	if ( ! empty( $missing ) && function_exists( 'streamit_get_episodes' ) ) {
 		$result = streamit_get_episodes(
 			array(
 				'orderby'  => 'post__in',
-				'include'  => $ids,
+				'include'  => $missing,
 				'paged'    => 1,
 				'per_page' => -1,
 			)
 		);
-		if ( is_object( $result ) && ! empty( $result->results ) && is_array( $result->results ) ) {
-			$episodes = $result->results;
+		$episodes = ( is_object( $result ) && ! empty( $result->results ) && is_array( $result->results ) )
+			? $result->results
+			: array();
+
+		$found = array();
+		foreach ( $episodes as $episode ) {
+			$entry = streamit_child_series_download_episode_entry_from_object( $episode );
+			if ( null === $entry ) {
+				continue;
+			}
+			$found_id           = (int) $entry['object']->get_id();
+			$cache[ $found_id ] = $entry;
+			$found[ $found_id ] = true;
+		}
+
+		foreach ( $missing as $id ) {
+			if ( ! isset( $found[ $id ] ) ) {
+				$cache[ $id ] = null;
+			}
 		}
 	}
 
-	foreach ( $episodes as $episode ) {
-		if ( ! is_object( $episode ) || ! method_exists( $episode, 'get_id' ) ) {
-			continue;
+	foreach ( $ids as $id ) {
+		if ( isset( $cache[ $id ] ) && is_array( $cache[ $id ] ) ) {
+			$map[ $id ] = $cache[ $id ];
 		}
-
-		$id = (int) $episode->get_id();
-		if ( $id <= 0 ) {
-			continue;
-		}
-
-		$title = '';
-		if ( method_exists( $episode, 'get_post_title' ) ) {
-			$title = (string) $episode->get_post_title();
-		}
-
-		$permalink = '';
-		if ( method_exists( $episode, 'get_permalink' ) ) {
-			$permalink = (string) $episode->get_permalink();
-		} elseif ( function_exists( 'get_permalink' ) ) {
-			$permalink = (string) get_permalink( $id );
-		}
-
-		$sources   = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_sources' ) : array();
-		if ( empty( $sources ) && method_exists( $episode, 'get_meta' ) ) {
-			$sources = $episode->get_meta( '_source' );
-		}
-		if ( empty( $sources ) && method_exists( $episode, 'get_meta' ) ) {
-			$url_link = trim( (string) $episode->get_meta( 'episode_url_link' ) );
-			if ( '' !== $url_link ) {
-				$sources = array(
-					array(
-						'quality'          => 'Default',
-						'download_content' => $url_link,
-						'link'             => $url_link,
-					),
-				);
-			}
-		}
-
-		$subtitles = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_subtitles' ) : array();
-		$season_n  = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_season_number' ) : '';
-		$episode_n = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_episode_number' ) : '';
-
-		$map[ $id ] = array(
-			'title'          => $title,
-			'permalink'      => $permalink,
-			'sources'        => is_array( $sources ) ? $sources : array(),
-			'subtitles'      => $subtitles,
-			'season_number'  => $season_n,
-			'episode_number' => $episode_n,
-			'object'         => $episode,
-		);
 	}
 
 	return $map;
+}
+
+/**
+ * Episode objects for a season slider, in the season's id order.
+ *
+ * Uses the shared episode map so a later download catalog can reuse these rows.
+ *
+ * @param array<int, mixed> $episode_ids Season episode ids.
+ * @return array<int, object>
+ */
+function streamit_child_get_series_episode_objects( array $episode_ids ) {
+	$ordered = array();
+	foreach ( $episode_ids as $id ) {
+		$normalized = abs( (int) $id );
+		if ( $normalized > 0 ) {
+			$ordered[] = $normalized;
+		}
+	}
+
+	if ( empty( $ordered ) ) {
+		return array();
+	}
+
+	$map = streamit_child_load_series_download_episode_map( $ordered );
+	$out = array();
+	foreach ( $ordered as $id ) {
+		if ( isset( $map[ $id ]['object'] ) && is_object( $map[ $id ]['object'] ) ) {
+			$out[] = $map[ $id ]['object'];
+		}
+	}
+
+	return $out;
 }
 
 /**
@@ -861,7 +1276,8 @@ function streamit_child_get_available_seasons( $st_data_or_id, array $options = 
 		return array();
 	}
 
-	$map     = streamit_child_load_series_download_episode_map( $episode_ids );
+	$flags   = streamit_child_episode_media_flags( $episode_ids );
+	$map     = streamit_child_episode_media_flags_as_episode_map( $flags );
 	$results = streamit_child_filter_available_seasons_data( $seasons, $map, $options );
 
 	if ( $cache_key ) {
@@ -925,6 +1341,10 @@ function streamit_child_get_first_available_episode( $st_data_or_id ) {
 /**
  * Build the Series single download catalog from a TV show object.
  *
+ * Loads full episode rows only for seasons that already passed media-flag
+ * filtering. Reuses any rows memoized earlier in the request (e.g. the first
+ * season slider).
+ *
  * @param object $st_data TV show Streamit object.
  * @return array{seasons: array<int, array<string, mixed>>, ost: array<int, array<string, mixed>>, can_download: bool}
  */
@@ -939,16 +1359,20 @@ function streamit_child_build_series_download_catalog( $st_data ) {
 		return $empty;
 	}
 
-	$seasons = $st_data->get_meta( '_seasons' );
+	$can_download = streamit_child_user_can_download_series( $st_data );
+	$seasons      = function_exists( 'streamit_child_get_available_seasons' )
+		? streamit_child_get_available_seasons( $st_data )
+		: $st_data->get_meta( '_seasons' );
+
 	if ( ! is_array( $seasons ) || empty( $seasons ) ) {
 		$ost = function_exists( 'streamit_child_build_ost_download_rows' )
-			? streamit_child_build_ost_download_rows( $st_data, streamit_child_user_can_download_series( $st_data ) )
+			? streamit_child_build_ost_download_rows( $st_data, $can_download )
 			: array();
 		if ( empty( $ost ) ) {
 			return $empty;
 		}
 		$empty['ost']          = $ost;
-		$empty['can_download'] = streamit_child_user_can_download_series( $st_data );
+		$empty['can_download'] = $can_download;
 		return $empty;
 	}
 
@@ -962,8 +1386,7 @@ function streamit_child_build_series_download_catalog( $st_data ) {
 		}
 	}
 
-	$can_download = streamit_child_user_can_download_series( $st_data );
-	$map          = streamit_child_load_series_download_episode_map( $episode_ids );
+	$map = streamit_child_load_series_download_episode_map( $episode_ids );
 
 	return streamit_child_build_series_download_catalog_from_data( $seasons, $map, $can_download, $st_data );
 }

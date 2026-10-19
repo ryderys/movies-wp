@@ -102,6 +102,62 @@ require_once dirname( __DIR__ ) . '/sources-download.php';
 require_once dirname( __DIR__ ) . '/subtitles.php';
 require_once dirname( __DIR__ ) . '/series-download.php';
 
+/**
+ * Serves fixture episode meta to streamit_child_episode_media_flags().
+ */
+class Streamit_Child_Availability_Test_Wpdb {
+	public $prefix = 'wp_';
+	public $streamit_episodemeta = 'wp_streamit_episodemeta';
+	public $last_error = '';
+
+	public function prepare( $query, ...$args ) {
+		$offset = 0;
+		return preg_replace_callback(
+			'/%[dfs]/',
+			static function ( $match ) use ( &$args, &$offset ) {
+				$value = $args[ $offset ] ?? '';
+				$offset++;
+				if ( '%d' === $match[0] || '%f' === $match[0] ) {
+					return (string) (int) $value;
+				}
+				return "'" . str_replace( "'", "''", (string) $value ) . "'";
+			},
+			$query
+		);
+	}
+
+	public function get_results( $sql ) {
+		unset( $sql );
+		$this->last_error = '';
+		$rows             = array();
+		$map              = isset( $GLOBALS['test_episode_map'] ) && is_array( $GLOBALS['test_episode_map'] ) ? $GLOBALS['test_episode_map'] : array();
+		$meta_id          = 1;
+
+		foreach ( $map as $id => $data ) {
+			if ( ! empty( $data['sources'] ) ) {
+				$rows[] = (object) array(
+					'streamit_episode_id' => (int) $id,
+					'meta_id'             => $meta_id++,
+					'meta_key'            => '_sources',
+					'meta_value'          => serialize( $data['sources'] ),
+				);
+			}
+			if ( ! empty( $data['subtitles'] ) ) {
+				$rows[] = (object) array(
+					'streamit_episode_id' => (int) $id,
+					'meta_id'             => $meta_id++,
+					'meta_key'            => '_subtitles',
+					'meta_value'          => serialize( $data['subtitles'] ),
+				);
+			}
+		}
+
+		return $rows;
+	}
+}
+
+$GLOBALS['wpdb'] = new Streamit_Child_Availability_Test_Wpdb();
+
 $failures = 0;
 
 function assert_true( bool $cond, string $label ): void {
@@ -235,6 +291,7 @@ $mock_tvshow_s3 = new class( $seasons_three, $episodes_s3_only ) {
 
 // Global mock for episode lookup
 $GLOBALS['test_episode_map'] = $episodes_s3_only;
+streamit_child_reset_episode_media_flags_cache();
 if ( ! function_exists( 'streamit_get_episode' ) ) {
 	function streamit_get_episode( $id ) {
 		if ( isset( $GLOBALS['test_episode_map'][ $id ]['object'] ) ) {
@@ -388,6 +445,7 @@ $mock_tvshow_s0_empty = new class( $seasons_with_s0, $episodes_s0_empty ) {
 	public function get_meta( $k ) { return '_seasons' === $k ? $this->s : null; }
 };
 $GLOBALS['test_episode_map'] = $episodes_s0_empty;
+streamit_child_reset_episode_media_flags_cache();
 $first_ep_s0_empty = streamit_child_get_first_available_episode( $mock_tvshow_s0_empty );
 assert_eq( 101, $first_ep_s0_empty->ID, 'Play button targets Season 1 Episode 1 (not Season 0)' );
 
@@ -425,6 +483,7 @@ $mock_tvshow_both = new class( $seasons_with_s0, $episodes_both_have_media ) {
 	public function get_meta( $k ) { return '_seasons' === $k ? $this->s : null; }
 };
 $GLOBALS['test_episode_map'] = $episodes_both_have_media;
+streamit_child_reset_episode_media_flags_cache();
 $first_ep_both = streamit_child_get_first_available_episode( $mock_tvshow_both );
 assert_eq( 101, $first_ep_both->ID, 'Play button prefers Season 1 Episode 1 over Season 0 Specials' );
 
@@ -456,6 +515,7 @@ $mock_tvshow_only_s0 = new class( $seasons_with_s0, $episodes_only_s0 ) {
 	public function get_meta( $k ) { return '_seasons' === $k ? $this->s : null; }
 };
 $GLOBALS['test_episode_map'] = $episodes_only_s0;
+streamit_child_reset_episode_media_flags_cache();
 $first_ep_only_s0 = streamit_child_get_first_available_episode( $mock_tvshow_only_s0 );
 assert_eq( 50, $first_ep_only_s0->ID, 'Play button falls back to Season 0 when no regular seasons have media' );
 
@@ -508,6 +568,7 @@ $mock_tvshow_subs = new class( $seasons_subs_only, $episodes_subs_only ) {
 	public function get_meta( $k ) { return '_seasons' === $k ? $this->s : null; }
 };
 $GLOBALS['test_episode_map'] = $episodes_subs_only;
+streamit_child_reset_episode_media_flags_cache();
 $first_ep_subs = streamit_child_get_first_available_episode( $mock_tvshow_subs );
 assert_true( null === $first_ep_subs, 'Play button returns null when series has only subtitles and no video' );
 
@@ -567,6 +628,7 @@ $mock_tvshow_empty = new class( $seasons_empty, $episodes_empty ) {
 	public function get_meta( $k ) { return '_seasons' === $k ? $this->s : null; }
 };
 $GLOBALS['test_episode_map'] = $episodes_empty;
+streamit_child_reset_episode_media_flags_cache();
 $first_ep_none = streamit_child_get_first_available_episode( $mock_tvshow_empty );
 assert_true( null === $first_ep_none, 'Play button returns null (no broken play link)' );
 
