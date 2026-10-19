@@ -30,6 +30,9 @@ services:
       MEDIA_SCAN_API_URL: ${MEDIA_SCAN_API_URL:-https://media.asiastarx.ir}
       MEDIA_SCAN_API_KEY: ${MEDIA_SCAN_API_KEY:-}
       MEDIA_SCAN_HMAC_SECRET: ${MEDIA_SCAN_HMAC_SECRET:-}
+      MOVIES_WP_TELEGRAM_BOT_TOKEN: ${MOVIES_WP_TELEGRAM_BOT_TOKEN:-}
+      MOVIES_WP_TELEGRAM_CHAT_ID: ${MOVIES_WP_TELEGRAM_CHAT_ID:-}
+      MOVIES_WP_TELEGRAM_PROXY: ${MOVIES_WP_TELEGRAM_PROXY:-}
     volumes:
       - wp_content:/var/www/html/wp-content
       - ./php.ini:/usr/local/etc/php/conf.d/zz-custom.ini:ro

@@ -121,6 +121,7 @@ class Movies_WP_Telegram_Admin {
 			'episode_enabled' => Movies_WP_Telegram_Config::episode_enabled(),
 			'paused'          => Movies_WP_Telegram_Config::paused(),
 			'configured'      => Movies_WP_Telegram_Config::credentials_configured(),
+			'proxy_configured' => '' !== Movies_WP_Telegram_Config::proxy(),
 			'counts'          => $counts,
 			'failures'        => $clean,
 			'notice'          => is_array( $notice ) ? $notice : null,

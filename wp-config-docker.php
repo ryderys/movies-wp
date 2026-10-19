@@ -96,6 +96,20 @@ $media_url_secret = getenv( 'MEDIA_URL_SECRET' );
 if ( $media_url_secret ) {
 	define( 'MEDIA_URL_SECRET', $media_url_secret );
 }
+
+/**
+ * Telegram Bot API (optional). Proxy is required when the host cannot reach api.telegram.org.
+ * Publishing switches stay off until enabled in wp-admin → Telegram.
+ */
+foreach ( array( 'MOVIES_WP_TELEGRAM_BOT_TOKEN', 'MOVIES_WP_TELEGRAM_CHAT_ID', 'MOVIES_WP_TELEGRAM_PROXY' ) as $telegram_key ) {
+	if ( defined( $telegram_key ) ) {
+		continue;
+	}
+	$telegram_value = getenv( $telegram_key );
+	if ( is_string( $telegram_value ) && '' !== $telegram_value ) {
+		define( $telegram_key, $telegram_value );
+	}
+}
 $media_base_url = getenv( 'MEDIA_BASE_URL' );
 if ( $media_base_url ) {
 	define( 'MEDIA_BASE_URL', $media_base_url );

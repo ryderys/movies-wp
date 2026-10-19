@@ -20,6 +20,9 @@ services:
       MEDIA_SCAN_API_URL: ${MEDIA_SCAN_API_URL:-https://media.asiastarx.ir}
       MEDIA_SCAN_API_KEY: ${MEDIA_SCAN_API_KEY:-}
       MEDIA_SCAN_HMAC_SECRET: ${MEDIA_SCAN_HMAC_SECRET:-}
+      MOVIES_WP_TELEGRAM_BOT_TOKEN: ${MOVIES_WP_TELEGRAM_BOT_TOKEN:-}
+      MOVIES_WP_TELEGRAM_CHAT_ID: ${MOVIES_WP_TELEGRAM_CHAT_ID:-}
+      MOVIES_WP_TELEGRAM_PROXY: ${MOVIES_WP_TELEGRAM_PROXY:-}
     # Mount only wp-content from the host. WordPress core + PHP run from the image
     # (fast on Windows). Rebuild after editing files outside wp-content:
     #   docker compose build wordpress && docker compose up -d

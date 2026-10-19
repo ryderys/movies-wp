@@ -14,6 +14,7 @@ $counts    = isset( $state['counts'] ) && is_array( $state['counts'] ) ? $state[
 $failures  = isset( $state['failures'] ) && is_array( $state['failures'] ) ? $state['failures'] : array();
 $paused    = ! empty( $state['paused'] );
 $configured = ! empty( $state['configured'] );
+$proxy_configured = ! empty( $state['proxy_configured'] );
 $statuses  = array( 'pending', 'claimed', 'retry', 'sent', 'failed', 'ambiguous' );
 
 $checked = static function ( $on ) {
@@ -53,6 +54,10 @@ $checked = static function ( $on ) {
 			<tr>
 				<th scope="row"><?php echo esc_html__( 'Credentials', 'movies-wp' ); ?></th>
 				<td><?php echo esc_html( $configured ? __( 'Configured', 'movies-wp' ) : __( 'Not configured', 'movies-wp' ) ); ?></td>
+			</tr>
+			<tr>
+				<th scope="row"><?php echo esc_html__( 'Egress proxy', 'movies-wp' ); ?></th>
+				<td><?php echo esc_html( $proxy_configured ? __( 'Configured', 'movies-wp' ) : __( 'Not configured', 'movies-wp' ) ); ?></td>
 			</tr>
 			<tr>
 				<th scope="row"><?php echo esc_html__( 'Global publishing', 'movies-wp' ); ?></th>

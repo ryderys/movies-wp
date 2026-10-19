@@ -15,6 +15,7 @@ class Movies_WP_Telegram_Config {
 
 	const TOKEN_KEY   = 'MOVIES_WP_TELEGRAM_BOT_TOKEN';
 	const CHAT_KEY    = 'MOVIES_WP_TELEGRAM_CHAT_ID';
+	const PROXY_KEY   = 'MOVIES_WP_TELEGRAM_PROXY';
 	const OPT_GLOBAL  = 'movies_wp_telegram_enabled';
 	const OPT_MOVIE   = 'movies_wp_telegram_movies';
 	const OPT_SERIES  = 'movies_wp_telegram_series';
@@ -37,6 +38,44 @@ class Movies_WP_Telegram_Config {
 	 */
 	public static function chat_id() {
 		return self::secret( self::CHAT_KEY );
+	}
+
+	/**
+	 * Optional HTTP(S)/SOCKS proxy for api.telegram.org egress. Empty when unset.
+	 * Examples: http://host:8080, socks5://host:1080, http://user:pass@host:8080
+	 *
+	 * @return string
+	 */
+	public static function proxy() {
+		return self::normalize_proxy( self::secret( self::PROXY_KEY ) );
+	}
+
+	/**
+	 * @param string $raw
+	 * @return string Valid proxy URL or empty string.
+	 */
+	public static function normalize_proxy( $raw ) {
+		$raw = trim( (string) $raw );
+		if ( '' === $raw || strlen( $raw ) > 500 ) {
+			return '';
+		}
+		if ( false !== strpos( $raw, "\n" ) || false !== strpos( $raw, "\r" ) || false !== strpos( $raw, ' ' ) ) {
+			return '';
+		}
+		$parts = function_exists( 'wp_parse_url' ) ? wp_parse_url( $raw ) : parse_url( $raw );
+		if ( ! is_array( $parts ) ) {
+			return '';
+		}
+		$scheme = isset( $parts['scheme'] ) ? strtolower( (string) $parts['scheme'] ) : '';
+		$host   = isset( $parts['host'] ) ? (string) $parts['host'] : '';
+		if ( '' === $host ) {
+			return '';
+		}
+		$allowed = array( 'http', 'https', 'socks5', 'socks5h' );
+		if ( ! in_array( $scheme, $allowed, true ) ) {
+			return '';
+		}
+		return $raw;
 	}
 
 	/**
@@ -112,7 +151,8 @@ class Movies_WP_Telegram_Config {
 	}
 
 	/**
-	 * Constant, then environment. Never logs the value.
+	 * Constant, then environment (getenv / $_SERVER / $_ENV — Apache often leaves getenv empty).
+	 * Never logs the value.
 	 *
 	 * @param string $key
 	 * @return string
@@ -129,6 +169,12 @@ class Movies_WP_Telegram_Config {
 			$from_env = getenv( $key );
 			if ( is_string( $from_env ) && '' !== $from_env ) {
 				return $from_env;
+			}
+			if ( isset( $_SERVER[ $key ] ) && is_string( $_SERVER[ $key ] ) && '' !== $_SERVER[ $key ] ) {
+				return $_SERVER[ $key ];
+			}
+			if ( isset( $_ENV[ $key ] ) && is_string( $_ENV[ $key ] ) && '' !== $_ENV[ $key ] ) {
+				return $_ENV[ $key ];
 			}
 		} catch ( \Throwable $e ) {
 			unset( $e );

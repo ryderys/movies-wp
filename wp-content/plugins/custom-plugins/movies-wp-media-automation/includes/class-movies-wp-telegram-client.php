@@ -24,7 +24,7 @@ class Movies_WP_Telegram_Client {
 	 * Build and send an announcement from a content snapshot.
 	 *
 	 * @param array<string, mixed> $snapshot Formatter snapshot.
-	 * @param array<string, mixed> $options  token, chat_id, http_post. Test hooks only.
+	 * @param array<string, mixed> $options  token, chat_id, proxy, http_post. Test hooks only.
 	 * @return array{outcome:string,message_id:?string,error:string,code:string}
 	 */
 	public static function deliver( array $snapshot, array $options = array() ) {
@@ -132,22 +132,59 @@ class Movies_WP_Telegram_Client {
 	}
 
 	/**
+	 * @param array<string, mixed> $options
+	 * @return string
+	 */
+	private static function resolve_proxy( array $options ) {
+		if ( ! class_exists( 'Movies_WP_Telegram_Config' ) && is_readable( __DIR__ . '/class-movies-wp-telegram-config.php' ) ) {
+			require_once __DIR__ . '/class-movies-wp-telegram-config.php';
+		}
+		if ( ! class_exists( 'Movies_WP_Telegram_Config' ) ) {
+			return '';
+		}
+		if ( array_key_exists( 'proxy', $options ) ) {
+			$raw = is_string( $options['proxy'] ) ? $options['proxy'] : '';
+			return Movies_WP_Telegram_Config::normalize_proxy( $raw );
+		}
+		return Movies_WP_Telegram_Config::proxy();
+	}
+
+	/**
 	 * @param string               $url
 	 * @param array<string, mixed> $args
 	 * @param array<string, mixed> $options
 	 * @return array<string, mixed>|WP_Error
 	 */
 	private static function post( $url, array $args, array $options ) {
+		$proxy = self::resolve_proxy( $options );
+		if ( '' !== $proxy ) {
+			$args['proxy'] = $proxy;
+		}
 		if ( isset( $options['http_post'] ) && is_callable( $options['http_post'] ) ) {
 			return call_user_func( $options['http_post'], $url, $args );
 		}
 		if ( ! function_exists( 'wp_remote_post' ) ) {
 			return new WP_Error( 'telegram_http_missing', 'HTTP API is not available.' );
 		}
-		$hook = static function ( $handle ) {
-			if ( is_resource( $handle ) || $handle instanceof \CurlHandle ) {
-				curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, Movies_WP_Telegram_Client::CONNECT_TIMEOUT );
-				curl_setopt( $handle, CURLOPT_TIMEOUT, Movies_WP_Telegram_Client::RESPONSE_TIMEOUT );
+		$hook = static function ( $handle ) use ( $proxy ) {
+			if ( ! is_resource( $handle ) && ! ( $handle instanceof \CurlHandle ) ) {
+				return;
+			}
+			curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, Movies_WP_Telegram_Client::CONNECT_TIMEOUT );
+			curl_setopt( $handle, CURLOPT_TIMEOUT, Movies_WP_Telegram_Client::RESPONSE_TIMEOUT );
+			if ( '' === $proxy ) {
+				return;
+			}
+			curl_setopt( $handle, CURLOPT_PROXY, $proxy );
+			$scheme = strtolower( (string) ( parse_url( $proxy, PHP_URL_SCHEME ) ?: '' ) );
+			if ( 'socks5' === $scheme || 'socks5h' === $scheme ) {
+				if ( defined( 'CURLPROXY_SOCKS5_HOSTNAME' ) && 'socks5h' === $scheme ) {
+					curl_setopt( $handle, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5_HOSTNAME );
+				} elseif ( defined( 'CURLPROXY_SOCKS5' ) ) {
+					curl_setopt( $handle, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5 );
+				}
+			} else {
+				curl_setopt( $handle, CURLOPT_HTTPPROXYTUNNEL, true );
 			}
 		};
 		if ( function_exists( 'add_action' ) ) {
@@ -270,6 +307,8 @@ class Movies_WP_Telegram_Client {
 		$text = preg_replace( '/bot\d{5,}:[A-Za-z0-9_-]+/i', 'bot[redacted]', $text );
 		$text = is_string( $text ) ? $text : '';
 		$text = preg_replace( '/authorization\s*:\s*(?:bearer\s+)?\S+/i', 'authorization: [redacted]', $text );
+		$text = is_string( $text ) ? $text : '';
+		$text = preg_replace( '#(https?|socks5h?)://[^\s/]+@[^\s]+#i', '$1://[redacted]', $text );
 		$text = is_string( $text ) ? $text : '';
 		$text = trim( preg_replace( '/\s+/', ' ', $text ) ?? '' );
 		if ( strlen( $text ) > 500 ) {
