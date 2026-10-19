@@ -3,17 +3,18 @@
  * Backfill TMDb poster and backdrop galleries for TV shows imported earlier.
  *
  * Does not replace the primary poster or banner. A list that already has
- * attachment IDs is left alone. Run inside the WordPress container:
+ * attachment IDs is left alone unless --force is passed. Run inside the
+ * WordPress container:
  *
- *   php scripts/backfill-tvshow-artwork.php <tvshow_id> [--dry-run]
- *   php scripts/backfill-tvshow-artwork.php --all --limit=5 [--offset=0] [--dry-run]
+ *   php scripts/backfill-tvshow-artwork.php <tvshow_id> [--dry-run] [--force]
+ *   php scripts/backfill-tvshow-artwork.php --all --limit=1 [--offset=0] [--dry-run] [--force]
  */
 
 /**
  * Fill empty gallery lists for one TV show.
  *
  * @param int                  $tvshow_id Streamit TV show ID.
- * @param array<string, mixed> $options   Test hooks: get_meta, fetch_images, apply, dry_run, api_key.
+ * @param array<string, mixed> $options   Test hooks: get_meta, update_meta, fetch_images, apply, dry_run, force, api_key.
  * @return array<string, mixed>
  */
 function movies_wp_backfill_tvshow_artwork( $tvshow_id, array $options = array() ) {
@@ -21,10 +22,11 @@ function movies_wp_backfill_tvshow_artwork( $tvshow_id, array $options = array()
 	$get_meta  = $options['get_meta'] ?? static function ( $id, $key ) {
 		return streamit_get_tvshow_meta( $id, $key, true );
 	};
+	$force = ! empty( $options['force'] );
 
 	$poster_ids   = Movies_WP_Tmdb_Artwork_Importer::existing_ids( $get_meta( $tvshow_id, Movies_WP_Tmdb_Artwork_Importer::POSTER_META ) );
 	$backdrop_ids = Movies_WP_Tmdb_Artwork_Importer::existing_ids( $get_meta( $tvshow_id, Movies_WP_Tmdb_Artwork_Importer::BACKDROP_META ) );
-	if ( $poster_ids !== array() && $backdrop_ids !== array() ) {
+	if ( ! $force && $poster_ids !== array() && $backdrop_ids !== array() ) {
 		return array(
 			'ok'        => true,
 			'tvshow_id' => $tvshow_id,
@@ -54,7 +56,16 @@ function movies_wp_backfill_tvshow_artwork( $tvshow_id, array $options = array()
 		return array( 'ok' => false, 'tvshow_id' => $tvshow_id, 'reason' => 'tmdb_fetch_failed' );
 	}
 
-	$gallery = Movies_WP_Tmdb_Artwork_Selector::select( $body );
+	$images = isset( $body['images'] ) && is_array( $body['images'] ) ? $body['images'] : $body;
+	$gallery = Movies_WP_Tmdb_Artwork_Selector::select(
+		$images,
+		array(
+			'exclude_paths' => array(
+				$body['poster_path'] ?? null,
+				$body['backdrop_path'] ?? null,
+			),
+		)
+	);
 	if ( ! empty( $options['dry_run'] ) ) {
 		return array(
 			'ok'        => true,
@@ -63,6 +74,14 @@ function movies_wp_backfill_tvshow_artwork( $tvshow_id, array $options = array()
 			'posters'   => count( $gallery['posters'] ),
 			'backdrops' => count( $gallery['backdrops'] ),
 		);
+	}
+
+	if ( $force ) {
+		$update_meta = $options['update_meta'] ?? static function ( $id, $key, $value ) {
+			return streamit_update_tvshow_meta( $id, $key, $value );
+		};
+		$update_meta( $tvshow_id, Movies_WP_Tmdb_Artwork_Importer::POSTER_META, array() );
+		$update_meta( $tvshow_id, Movies_WP_Tmdb_Artwork_Importer::BACKDROP_META, array() );
 	}
 
 	$plan  = array(
@@ -89,6 +108,8 @@ function movies_wp_backfill_tvshow_artwork( $tvshow_id, array $options = array()
 }
 
 /**
+ * Fetch TV details with images so primary poster/backdrop paths can be excluded.
+ *
  * @param int                  $tmdb_id TMDb TV id.
  * @param array<string, mixed> $options  api_key override.
  * @return array<string, mixed>|WP_Error
@@ -105,10 +126,11 @@ function movies_wp_backfill_tvshow_fetch_images( $tmdb_id, array $options = arra
 
 	$host = defined( 'STREAMIT_TMDB_PROXY_HOST' ) ? STREAMIT_TMDB_PROXY_HOST : 'tmdb.asiastars.ir';
 	$url  = sprintf(
-		'https://%s/3/tv/%d/images?api_key=%s',
+		'https://%s/3/tv/%d?api_key=%s&append_to_response=%s',
 		$host,
 		absint( $tmdb_id ),
-		rawurlencode( $api_key )
+		rawurlencode( $api_key ),
+		rawurlencode( 'images' )
 	);
 	if ( function_exists( 'streamit_tmdb_server_proxy_url' ) ) {
 		$url = streamit_tmdb_server_proxy_url( $url );
@@ -137,12 +159,18 @@ function movies_wp_backfill_tvshow_fetch_images( $tmdb_id, array $options = arra
  * @return int
  */
 function movies_wp_backfill_tvshow_artwork_cli( array $args ) {
+	if ( function_exists( 'set_time_limit' ) ) {
+		@set_time_limit( 0 );
+	}
+	@ini_set( 'max_execution_time', '0' );
+
 	require '/var/www/html/wp-load.php';
 	require_once ABSPATH . 'wp-admin/includes/image.php';
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 	require_once ABSPATH . 'wp-admin/includes/media.php';
 
 	$dry_run = in_array( '--dry-run', $args, true );
+	$force   = in_array( '--force', $args, true );
 	$ids     = array();
 	if ( in_array( '--all', $args, true ) ) {
 		$limit  = 0;
@@ -182,7 +210,7 @@ function movies_wp_backfill_tvshow_artwork_cli( array $args ) {
 	}
 
 	if ( empty( $ids ) ) {
-		fwrite( STDERR, "Usage: php scripts/backfill-tvshow-artwork.php <tvshow_id> [--dry-run] | --all --limit=5 [--offset=0] [--dry-run]\n" );
+		fwrite( STDERR, "Usage: php scripts/backfill-tvshow-artwork.php <tvshow_id> [--dry-run] [--force] | --all --limit=1 [--offset=0] [--dry-run] [--force]\n" );
 		return 1;
 	}
 
@@ -192,7 +220,10 @@ function movies_wp_backfill_tvshow_artwork_cli( array $args ) {
 	foreach ( $ids as $tvshow_id ) {
 		$result = movies_wp_backfill_tvshow_artwork(
 			(int) $tvshow_id,
-			array( 'dry_run' => $dry_run )
+			array(
+				'dry_run' => $dry_run,
+				'force'   => $force,
+			)
 		);
 		$action = (string) ( $result['action'] ?? $result['reason'] ?? 'failed' );
 		echo 'tvshow ' . (int) $tvshow_id . ': ' . $action;

@@ -39,7 +39,6 @@ if ( ! empty( $content_data ) ) :
 		<?php
 		streamit_get_template( 'movie/content/movie_single_trailer_section.php', array( 'st_data' => $content_data ) );
 		streamit_get_template( 'movie/content/movie_single_download_section.php', array( 'st_data' => $content_data ) );
-		streamit_get_template( 'common/tmdb-artwork-sliders.php', array( 'st_data' => $content_data ) );
 		streamit_get_template(
 			'movie/single/movie_single_after_details.php',
 			array(

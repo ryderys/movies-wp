@@ -166,7 +166,15 @@ class Movies_WP_Tmdb_Preview_Client {
 	 */
 	private static function gallery( array $body ) {
 		$images = isset( $body['images'] ) && is_array( $body['images'] ) ? $body['images'] : array();
-		return Movies_WP_Tmdb_Artwork_Selector::select( $images );
+		return Movies_WP_Tmdb_Artwork_Selector::select(
+			$images,
+			array(
+				'exclude_paths' => array(
+					$body['poster_path'] ?? null,
+					$body['backdrop_path'] ?? null,
+				),
+			)
+		);
 	}
 
 	private static function image_url( $path, $size ) {

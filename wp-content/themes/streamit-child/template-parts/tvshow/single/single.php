@@ -54,7 +54,6 @@ if ( ! empty( (array) $content_data ) ) :
 		<!-- Download Section: season → episode quality / subtitle links -->
 		<?php
 		streamit_get_template( 'tvshow/content/tvshow_single_download_section.php', array( 'st_data' => $content_data ) );
-		streamit_get_template( 'common/tmdb-artwork-sliders.php', array( 'st_data' => $content_data ) );
 		?>
 
 		<!-- After Details Section: Additional content or related information -->
