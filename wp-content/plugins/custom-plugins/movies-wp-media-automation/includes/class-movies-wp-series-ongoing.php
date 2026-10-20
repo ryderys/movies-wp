@@ -1,6 +1,6 @@
 <?php
 /**
- * Ongoing series registry and cheap media fingerprints.
+ * Ongoing series eligibility (from TMDb status) and cheap media fingerprints.
  *
  * @package movies-wp
  */
@@ -9,8 +9,27 @@ defined( 'ABSPATH' ) || exit;
 
 class Movies_WP_Series_Ongoing {
 
-	const META_ONGOING     = '_series_ongoing';
 	const META_FINGERPRINT = '_media_sync_fingerprint';
+	const META_STATUS      = '_tv_show_status';
+	const META_TMDB_STATUS = '_tmdb_status';
+
+	/**
+	 * TMDb English status labels that still receive new episodes.
+	 *
+	 * @var list<string>
+	 */
+	const ONGOING_STATUSES = array(
+		'Returning Series',
+		'In Production',
+	);
+
+	/**
+	 * @param string $status TMDb status label (English).
+	 * @return bool
+	 */
+	public static function status_is_ongoing( $status ) {
+		return in_array( trim( (string) $status ), self::ONGOING_STATUSES, true );
+	}
 
 	/**
 	 * @param int                  $tvshow_id
@@ -18,23 +37,17 @@ class Movies_WP_Series_Ongoing {
 	 * @return bool
 	 */
 	public static function is_ongoing( $tvshow_id, array $options = array() ) {
-		$value = self::get_meta( (int) $tvshow_id, self::META_ONGOING, $options );
-		return '1' === (string) $value || 1 === $value || true === $value;
-	}
-
-	/**
-	 * @param int                  $tvshow_id
-	 * @param bool                 $ongoing
-	 * @param array<string, mixed> $options
-	 * @return bool
-	 */
-	public static function set_ongoing( $tvshow_id, $ongoing, array $options = array() ) {
 		$tvshow_id = (int) $tvshow_id;
 		if ( $tvshow_id <= 0 ) {
 			return false;
 		}
-		$value = $ongoing ? '1' : '0';
-		return self::write_meta( $tvshow_id, self::META_ONGOING, $value, $options );
+
+		$status = trim( (string) self::get_meta( $tvshow_id, self::META_STATUS, $options ) );
+		if ( '' === $status ) {
+			$status = trim( (string) self::get_meta( $tvshow_id, self::META_TMDB_STATUS, $options ) );
+		}
+
+		return self::status_is_ongoing( $status );
 	}
 
 	/**
@@ -85,7 +98,7 @@ class Movies_WP_Series_Ongoing {
 	}
 
 	/**
-	 * TV show IDs marked ongoing that also have a media directory.
+	 * TV show IDs with an ongoing TMDb status that also have a media directory.
 	 *
 	 * @param array<string, mixed> $options
 	 * @return list<int>
@@ -111,13 +124,15 @@ class Movies_WP_Series_Ongoing {
 			return array();
 		}
 
-		$table = $wpdb->prefix . 'streamit_tvshowmeta';
-		$sql   = $wpdb->prepare(
-			"SELECT streamit_tvshow_id FROM {$table} WHERE meta_key = %s AND meta_value = %s",
-			self::META_ONGOING,
-			'1'
-		);
-		$ids   = $wpdb->get_col( $sql );
+		$table      = $wpdb->prefix . 'streamit_tvshowmeta';
+		$statuses   = self::ONGOING_STATUSES;
+		$status_ph  = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
+		$meta_keys  = array( self::META_STATUS, self::META_TMDB_STATUS );
+		$key_ph     = implode( ',', array_fill( 0, count( $meta_keys ), '%s' ) );
+		$args       = array_merge( $meta_keys, $statuses );
+		$sql        = "SELECT DISTINCT streamit_tvshow_id FROM {$table} WHERE meta_key IN ({$key_ph}) AND meta_value IN ({$status_ph})";
+		$prepared   = $wpdb->prepare( $sql, ...$args );
+		$ids        = $wpdb->get_col( $prepared );
 		if ( ! is_array( $ids ) ) {
 			return array();
 		}

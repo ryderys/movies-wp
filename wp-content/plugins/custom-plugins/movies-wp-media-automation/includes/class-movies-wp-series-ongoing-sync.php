@@ -209,12 +209,11 @@ class Movies_WP_Series_Ongoing_Sync {
 			return new WP_Error( $code, $msg, array( 'preview' => $preview ) );
 		}
 
-		// Mark so finalize can set the ongoing flag / fingerprint owner.
+		// Mark so finalize refreshes the cheap fingerprint after import.
 		if ( ! isset( $preview['input'] ) || ! is_array( $preview['input'] ) ) {
 			$preview['input'] = $input;
 		}
-		$preview['input']['series_ongoing'] = true;
-		$preview['input']['ongoing_sync']   = true;
+		$preview['input']['ongoing_sync'] = true;
 
 		$context = array(
 			'user_id' => isset( $options['user_id'] ) ? (int) $options['user_id'] : self::system_user_id( $options ),
@@ -251,7 +250,7 @@ class Movies_WP_Series_Ongoing_Sync {
 	}
 
 	/**
-	 * After a successful import, refresh the cheap fingerprint and optional ongoing flag.
+	 * After a successful import, refresh the cheap fingerprint for ongoing series.
 	 *
 	 * @param int                  $tvshow_id
 	 * @param array<string, mixed> $payload Snapshot payload.
@@ -265,11 +264,8 @@ class Movies_WP_Series_Ongoing_Sync {
 		}
 
 		$input = is_array( $payload['input'] ?? null ) ? $payload['input'] : array();
-		if ( ! empty( $input['series_ongoing'] ) || ! empty( $input['ongoing_sync'] ) ) {
-			Movies_WP_Series_Ongoing::set_ongoing( $tvshow_id, true, $options );
-		}
-
-		if ( ! Movies_WP_Series_Ongoing::is_ongoing( $tvshow_id, $options ) ) {
+		$force = ! empty( $input['ongoing_sync'] );
+		if ( ! $force && ! Movies_WP_Series_Ongoing::is_ongoing( $tvshow_id, $options ) ) {
 			return;
 		}
 

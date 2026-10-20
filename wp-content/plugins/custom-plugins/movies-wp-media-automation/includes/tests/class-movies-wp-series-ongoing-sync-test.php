@@ -77,6 +77,12 @@ function og_same( $expected, $actual, string $label ): void {
 	og_assert( $expected === $actual, $label . ' got=' . var_export( $actual, true ) );
 }
 
+echo "Ongoing status helpers\n";
+og_assert( Movies_WP_Series_Ongoing::status_is_ongoing( 'Returning Series' ), 'Returning Series is ongoing' );
+og_assert( Movies_WP_Series_Ongoing::status_is_ongoing( 'In Production' ), 'In Production is ongoing' );
+og_assert( ! Movies_WP_Series_Ongoing::status_is_ongoing( 'Ended' ), 'Ended is not ongoing' );
+og_assert( ! Movies_WP_Series_Ongoing::status_is_ongoing( 'Canceled' ), 'Canceled is not ongoing' );
+
 echo "Ongoing fingerprint\n";
 
 $list_a = array(
@@ -115,7 +121,7 @@ echo "Poll enqueue guards\n";
 
 $meta = array(
 	97 => array(
-		Movies_WP_Series_Ongoing::META_ONGOING     => '1',
+		Movies_WP_Series_Ongoing::META_STATUS      => 'Returning Series',
 		'_media_directory'                         => 'series/korea/2026/A.Trap.Called.Desire',
 		'_tmdb_id'                                 => '326991',
 		Movies_WP_Series_Ongoing::META_FINGERPRINT => $fp_a,
@@ -148,9 +154,17 @@ $opts = array(
 	},
 );
 
+og_assert( Movies_WP_Series_Ongoing::is_ongoing( 97, $opts ), 'Returning Series meta is ongoing' );
+
 $unchanged = Movies_WP_Series_Ongoing_Sync::maybe_enqueue_tvshow( 97, $opts );
 og_same( false, $unchanged['enqueued'] ?? null, 'unchanged list does not enqueue' );
 og_same( 'unchanged', $unchanged['reason'] ?? null, 'unchanged reason' );
+
+$meta[97][ Movies_WP_Series_Ongoing::META_STATUS ] = 'Ended';
+$ended = Movies_WP_Series_Ongoing_Sync::maybe_enqueue_tvshow( 97, $opts );
+og_same( false, $ended['enqueued'] ?? null, 'Ended status does not enqueue' );
+og_same( 'not_ongoing', $ended['reason'] ?? null, 'not_ongoing reason for Ended' );
+$meta[97][ Movies_WP_Series_Ongoing::META_STATUS ] = 'Returning Series';
 
 $opts['list_series'] = static function () use ( $list_c ) {
 	return $list_c;
@@ -187,18 +201,19 @@ $changed = Movies_WP_Series_Ongoing_Sync::maybe_enqueue_tvshow( 97, $opts );
 og_same( true, $changed['enqueued'] ?? null, 'changed list enqueues import' );
 og_same( 1, $enqueued, 'enqueue_job called once' );
 
-echo "After successful import stores fingerprint + ongoing\n";
+echo "After successful import stores fingerprint for ongoing status\n";
 
 $meta[98] = array(
-	'_media_directory' => 'series/korea/2026/A.Trap.Called.Desire',
-	'_tmdb_id'         => '326991',
+	Movies_WP_Series_Ongoing::META_TMDB_STATUS => 'Returning Series',
+	'_media_directory'                         => 'series/korea/2026/A.Trap.Called.Desire',
+	'_tmdb_id'                                 => '326991',
 );
 Movies_WP_Series_Ongoing_Sync::after_successful_import(
 	98,
 	array(
 		'input' => array(
 			'series_directory' => 'series/korea/2026/A.Trap.Called.Desire',
-			'series_ongoing'   => true,
+			'ongoing_sync'     => true,
 		),
 	),
 	array(
@@ -214,8 +229,35 @@ Movies_WP_Series_Ongoing_Sync::after_successful_import(
 		},
 	)
 );
-og_same( '1', (string) ( $meta[98][ Movies_WP_Series_Ongoing::META_ONGOING ] ?? '' ), 'ongoing flag saved' );
 og_same( $fp_c, $meta[98][ Movies_WP_Series_Ongoing::META_FINGERPRINT ] ?? null, 'fingerprint saved after success' );
+og_assert( ! isset( $meta[98]['_series_ongoing'] ), 'legacy ongoing flag not written' );
+
+$meta[99] = array(
+	Movies_WP_Series_Ongoing::META_STATUS => 'Ended',
+	'_media_directory'                    => 'series/korea/2026/Ended.Show',
+	'_tmdb_id'                            => '1',
+);
+Movies_WP_Series_Ongoing_Sync::after_successful_import(
+	99,
+	array(
+		'input' => array(
+			'series_directory' => 'series/korea/2026/Ended.Show',
+		),
+	),
+	array(
+		'get_tvshow_meta' => static function ( $id, $key ) use ( &$meta ) {
+			return $meta[ (int) $id ][ $key ] ?? '';
+		},
+		'update_tvshow_meta' => static function ( $id, $key, $value ) use ( &$meta ) {
+			$meta[ (int) $id ][ (string) $key ] = $value;
+			return true;
+		},
+		'list_series' => static function () use ( $list_c ) {
+			return $list_c;
+		},
+	)
+);
+og_assert( ! isset( $meta[99][ Movies_WP_Series_Ongoing::META_FINGERPRINT ] ), 'Ended show skips fingerprint without ongoing_sync' );
 
 og_same( '/list/series', Movies_WP_Series_Media_Api_Client::LIST_REQUEST_PATH, 'list route constant' );
 
