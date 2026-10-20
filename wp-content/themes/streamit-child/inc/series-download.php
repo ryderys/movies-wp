@@ -11,6 +11,118 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Fixed phase labels allowed for TV-show frontend timings.
+ *
+ * Overlap note (TV-show single path):
+ * - `template_render` wraps the season + download template includes and therefore
+ *   contains the nested `get_available_seasons`, `episode_objects`, and
+ *   `download_catalog` phases. Do not sum nested phases with `template_render`.
+ * - `download_catalog` calls `streamit_child_get_available_seasons()` again
+ *   (usually a request-cache hit) and may reuse the episode map memoized by
+ *   `episode_objects`. Those nested costs are inside `download_catalog`, not additive.
+ *
+ * @return array<int, string>
+ */
+function streamit_child_tvshow_timing_phases() {
+	return array(
+		'get_available_seasons',
+		'episode_objects',
+		'download_catalog',
+		'template_render',
+	);
+}
+
+/**
+ * Whether request-scoped TV-show phase timings are enabled.
+ *
+ * Requires STREAMIT_CHILD_TVSHOW_TIMINGS to be defined and truthy. Default off.
+ *
+ * @return bool
+ */
+function streamit_child_tvshow_timings_enabled() {
+	return defined( 'STREAMIT_CHILD_TVSHOW_TIMINGS' ) && STREAMIT_CHILD_TVSHOW_TIMINGS;
+}
+
+/**
+ * Request-local open timer starts, keyed by fixed phase label.
+ *
+ * @return array<string, float>
+ */
+function &streamit_child_tvshow_timing_state() {
+	static $state = array();
+	return $state;
+}
+
+/**
+ * Drop open timers. Tests use this between cases.
+ */
+function streamit_child_tvshow_timing_reset() {
+	$state = &streamit_child_tvshow_timing_state();
+	$state = array();
+}
+
+/**
+ * Start a TV-show phase timer. No-op when timings are disabled.
+ *
+ * @param string $label Fixed phase label from streamit_child_tvshow_timing_phases().
+ */
+function streamit_child_tvshow_time_begin( $label ) {
+	if ( ! streamit_child_tvshow_timings_enabled() ) {
+		return;
+	}
+	if ( ! is_string( $label ) || ! in_array( $label, streamit_child_tvshow_timing_phases(), true ) ) {
+		return;
+	}
+	$state             = &streamit_child_tvshow_timing_state();
+	$state[ $label ] = microtime( true );
+}
+
+/**
+ * End a TV-show phase timer and optionally log milliseconds.
+ *
+ * Unmatched ends are ignored. Repeated begins overwrite the start time.
+ *
+ * @param string $label Fixed phase label from streamit_child_tvshow_timing_phases().
+ */
+function streamit_child_tvshow_time_end( $label ) {
+	if ( ! streamit_child_tvshow_timings_enabled() ) {
+		return;
+	}
+	if ( ! is_string( $label ) || ! in_array( $label, streamit_child_tvshow_timing_phases(), true ) ) {
+		return;
+	}
+
+	$state = &streamit_child_tvshow_timing_state();
+	if ( ! isset( $state[ $label ] ) || ! is_float( $state[ $label ] ) ) {
+		return;
+	}
+
+	$started = $state[ $label ];
+	unset( $state[ $label ] );
+
+	$ms   = ( microtime( true ) - $started ) * 1000;
+	$line = sprintf( 'STC_TVSHOW_TIMING phase=%s ms=%.2f', $label, $ms );
+
+	/**
+	 * Filter the timing log line before debug logging (tests may capture it).
+	 *
+	 * Return an empty string to suppress emission.
+	 *
+	 * @param string $line Full log line.
+	 * @param string $label Phase label.
+	 * @param float  $ms Elapsed milliseconds.
+	 */
+	$line = apply_filters( 'streamit_child_tvshow_timing_line', $line, $label, $ms );
+	if ( ! is_string( $line ) || '' === $line ) {
+		return;
+	}
+
+	if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG && function_exists( 'error_log' ) ) {
+		error_log( $line ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+	}
+}
+
+/**
  * Format an episode code like S01E03 from season/episode meta.
  *
  * @param mixed $season_number Digit string or empty.

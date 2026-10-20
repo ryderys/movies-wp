@@ -46,14 +46,20 @@ if ( ! empty( (array) $content_data ) ) :
 		streamit_get_template( 'tvshow/content/tvshow_single_trailer_section.php', array( 'st_data' => $content_data ) );
 		?>
 
-		<!-- Season Section: Display information about the TV show's seasons -->
+		<!-- Season + download: optional nested phase timings live inside these templates.
+		     template_render includes those nested phases — do not sum them together. -->
 		<?php
-		streamit_get_template( 'tvshow/content/tvshow_single_get_season.php', array( 'st_data' => $content_data ) );
-		?>
-
-		<!-- Download Section: season → episode quality / subtitle links -->
-		<?php
-		streamit_get_template( 'tvshow/content/tvshow_single_download_section.php', array( 'st_data' => $content_data ) );
+		if ( function_exists( 'streamit_child_tvshow_time_begin' ) ) {
+			streamit_child_tvshow_time_begin( 'template_render' );
+		}
+		try {
+			streamit_get_template( 'tvshow/content/tvshow_single_get_season.php', array( 'st_data' => $content_data ) );
+			streamit_get_template( 'tvshow/content/tvshow_single_download_section.php', array( 'st_data' => $content_data ) );
+		} finally {
+			if ( function_exists( 'streamit_child_tvshow_time_end' ) ) {
+				streamit_child_tvshow_time_end( 'template_render' );
+			}
+		}
 		?>
 
 		<!-- After Details Section: Additional content or related information -->

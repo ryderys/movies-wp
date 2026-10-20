@@ -19,7 +19,21 @@ if ( ! function_exists( 'streamit_child_build_series_download_catalog' ) ) {
 	return;
 }
 
-$catalog = streamit_child_build_series_download_catalog( $st_data );
+$catalog = array(
+	'seasons'      => array(),
+	'ost'          => array(),
+	'can_download' => false,
+);
+if ( function_exists( 'streamit_child_tvshow_time_begin' ) ) {
+	streamit_child_tvshow_time_begin( 'download_catalog' );
+}
+try {
+	$catalog = streamit_child_build_series_download_catalog( $st_data );
+} finally {
+	if ( function_exists( 'streamit_child_tvshow_time_end' ) ) {
+		streamit_child_tvshow_time_end( 'download_catalog' );
+	}
+}
 if ( empty( $catalog['seasons'] ) && empty( $catalog['ost'] ) ) {
 	return;
 }

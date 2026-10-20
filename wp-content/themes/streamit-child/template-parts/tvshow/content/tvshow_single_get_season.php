@@ -24,9 +24,19 @@ if ( function_exists( 'streamit_is_upcoming' ) ) {
 	}
 }
 
-$seasons = function_exists( 'streamit_child_get_available_seasons' )
-	? streamit_child_get_available_seasons( $st_data )
-	: ( isset( $st_data ) && method_exists( $st_data, 'get_meta' ) ? $st_data->get_meta( '_seasons' ) : array() );
+$seasons = array();
+if ( function_exists( 'streamit_child_tvshow_time_begin' ) ) {
+	streamit_child_tvshow_time_begin( 'get_available_seasons' );
+}
+try {
+	$seasons = function_exists( 'streamit_child_get_available_seasons' )
+		? streamit_child_get_available_seasons( $st_data )
+		: ( isset( $st_data ) && method_exists( $st_data, 'get_meta' ) ? $st_data->get_meta( '_seasons' ) : array() );
+} finally {
+	if ( function_exists( 'streamit_child_tvshow_time_end' ) ) {
+		streamit_child_tvshow_time_end( 'get_available_seasons' );
+	}
+}
 
 if ( empty( $seasons ) || ! is_array( $seasons ) ) {
 	return;
@@ -130,18 +140,27 @@ $slick_args = array(
 											<div class="css_prefix-slick-general st-skeleton" data-display=0 data-season_no="<?php echo esc_attr( (string) $index1 ); ?>" data-extra_settings="true" data-slider_settings="<?php echo st_get_slick_slider_settings( $slick_args ); ?>">
 												<?php
 												if ( ! $slider_episodes_loaded ) {
-													$episode_posts = function_exists( 'streamit_child_get_series_episode_objects' )
-														? streamit_child_get_series_episode_objects( $season['episodes'] )
-														: ( function_exists( 'streamit_get_episodes' )
-															? streamit_get_episodes(
-																array(
-																	'orderby'  => 'post__in',
-																	'include'  => $season['episodes'],
-																	'paged'    => 1,
-																	'per_page' => -1,
-																)
-															)->results
-															: array() );
+													if ( function_exists( 'streamit_child_tvshow_time_begin' ) ) {
+														streamit_child_tvshow_time_begin( 'episode_objects' );
+													}
+													try {
+														$episode_posts = function_exists( 'streamit_child_get_series_episode_objects' )
+															? streamit_child_get_series_episode_objects( $season['episodes'] )
+															: ( function_exists( 'streamit_get_episodes' )
+																? streamit_get_episodes(
+																	array(
+																		'orderby'  => 'post__in',
+																		'include'  => $season['episodes'],
+																		'paged'    => 1,
+																		'per_page' => -1,
+																	)
+																)->results
+																: array() );
+													} finally {
+														if ( function_exists( 'streamit_child_tvshow_time_end' ) ) {
+															streamit_child_tvshow_time_end( 'episode_objects' );
+														}
+													}
 
 													foreach ( $episode_posts as $episode ) {
 														streamit_get_template( 'episode/content/episode_single_slider.php', array( 'episode' => $episode ) );
