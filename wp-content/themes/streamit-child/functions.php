@@ -893,6 +893,7 @@ require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/tmdb-artwork-gallery.php';
 require_once get_stylesheet_directory() . '/inc/player-fix.php';
 require_once get_stylesheet_directory() . '/inc/search-modal.php';
+require_once get_stylesheet_directory() . '/inc/lazy-morelike.php';
 require_once get_stylesheet_directory() . '/inc/movie-title-search.php';
 require_once get_stylesheet_directory() . '/inc/tvshow-title-search.php';
 require_once get_stylesheet_directory() . '/inc/homepage-card-title.php';

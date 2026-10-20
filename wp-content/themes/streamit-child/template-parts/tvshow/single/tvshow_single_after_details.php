@@ -18,7 +18,12 @@ defined( 'ABSPATH' ) || exit;
 				streamit_child_tvshow_time_begin( 'after_morelike' );
 			}
 			try {
-				streamit_get_template( 'tvshow/content/tvshow_single_morelike_slider.php', array( 'st_data' => $st_data ) );
+				if ( function_exists( 'streamit_child_lazy_morelike_enabled' ) && streamit_child_lazy_morelike_enabled()
+					&& function_exists( 'streamit_child_render_lazy_morelike_placeholder' ) ) {
+					streamit_child_render_lazy_morelike_placeholder( $st_data );
+				} else {
+					streamit_get_template( 'tvshow/content/tvshow_single_morelike_slider.php', array( 'st_data' => $st_data ) );
+				}
 			} finally {
 				if ( function_exists( 'streamit_child_tvshow_time_end' ) ) {
 					streamit_child_tvshow_time_end( 'after_morelike' );
