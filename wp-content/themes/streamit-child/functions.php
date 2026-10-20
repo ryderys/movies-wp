@@ -876,6 +876,7 @@ require_once get_stylesheet_directory() . '/inc/pmpro-currency.php';
 require_once get_stylesheet_directory() . '/inc/subscribe-required.php';
 require_once get_stylesheet_directory() . '/inc/subtitles.php';
 require_once get_stylesheet_directory() . '/inc/subtitle-track.php';
+require_once get_stylesheet_directory() . '/inc/elementor-dss-enqueue-guard.php';
 require_once get_stylesheet_directory() . '/inc/series-download.php';
 require_once get_stylesheet_directory() . '/inc/movie-download.php';
 require_once get_stylesheet_directory() . '/inc/ost-download.php';
