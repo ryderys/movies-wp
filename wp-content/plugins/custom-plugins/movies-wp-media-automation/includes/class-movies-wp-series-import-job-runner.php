@@ -623,27 +623,15 @@ class Movies_WP_Series_Import_Job_Runner {
 			return;
 		}
 		$series_id = (int) ( $job['series_id'] ?? ( $job['result']['series_id'] ?? 0 ) );
-		$scan      = is_array( $payload['media'] ?? null ) ? $payload['media'] : array();
 		$input     = array(
 			'tvshow_id'        => $series_id,
 			'expected_tmdb_id' => absint( $payload['input']['tmdb_id'] ?? 0 ),
 			'series_directory' => (string) ( $payload['input']['series_directory'] ?? '' ),
 		);
+		// Always live-scan at rematch. Reusing the preview snapshot misses Trailer/,
+		// episodes, or subtitles added on disk after Preview (or during a long import).
 		$preview_opts = $options;
-		$fingerprint  = Movies_WP_Series_Import_Snapshot_Store::fingerprint( $payload );
-		$stored       = (string) ( $job['result']['fingerprint'] ?? $fingerprint );
-		$force_scan   = ! empty( $options['force_rescan'] );
-		$expired      = isset( $payload['_snapshot_expired'] ) && $payload['_snapshot_expired'];
-		if ( ! $expired && isset( $job['snapshot_id'] ) ) {
-			$row = Movies_WP_Series_Import_Snapshot_Store::find_by_id( (int) $job['snapshot_id'] );
-			if ( is_array( $row ) && isset( $row['expires_at'] ) ) {
-				$now = isset( $options['now'] ) ? (int) $options['now'] : time();
-				$expired = strtotime( (string) $row['expires_at'] . ' UTC' ) < $now;
-			}
-		}
-		if ( ! $force_scan && ! $expired && $stored === $fingerprint && array() !== $scan ) {
-			$preview_opts['scan'] = $scan;
-		}
+		unset( $preview_opts['scan'] );
 		$build = isset( $options['media_preview_build'] ) && is_callable( $options['media_preview_build'] )
 			? $options['media_preview_build']
 			: array( 'Movies_WP_Series_Media_Preview_Service', 'build' );
@@ -676,9 +664,9 @@ class Movies_WP_Series_Import_Job_Runner {
 		}
 		$state                  = is_array( $job['result'] ) ? $job['result'] : array();
 		$state['media_preview'] = array(
-			'ok'       => true,
-			'episodes' => $media_preview['episodes'] ?? array(),
-			'reused_scan' => isset( $preview_opts['scan'] ),
+			'ok'          => true,
+			'episodes'    => $media_preview['episodes'] ?? array(),
+			'reused_scan' => false,
 		);
 		$state['media_plan'] = $media_plan;
 		Movies_WP_Series_Import_Job_Store::update(

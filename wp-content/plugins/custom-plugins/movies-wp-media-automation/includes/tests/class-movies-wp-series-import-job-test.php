@@ -362,7 +362,7 @@ job_same( 1, $calls['images'], 'images phase ran once' );
 job_same( 2, $calls['episodes'], 'each episode is persisted' );
 job_same( 1, $calls['season'], 'season phase ran' );
 job_same( 1, $calls['media'], 'media phase ran after warnings' );
-job_same( true, $calls['reused_scan'], 'rematch reused snapshot scan' );
+job_same( false, $calls['reused_scan'], 'rematch live-scans instead of reusing the preview snapshot' );
 job_same( 2, (int) ( $state['episode_done'] ?? 0 ), 'episode cursor reaches total' );
 job_assert( array() !== ( $state['warnings'] ?? array() ), 'people warning did not stop later phases' );
 $again = Movies_WP_Series_Import_Job_Runner::run( $job['token'], $hooks );
