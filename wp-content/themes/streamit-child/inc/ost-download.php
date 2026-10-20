@@ -259,21 +259,185 @@ function streamit_child_ost_tracks_from_scan_files( $files, $title_directory ) {
 }
 
 /**
- * Call the media scan API for a title directory when available.
- *
- * @param string $title_directory Relative Movie/... or series/... path.
- * @return list<array{filename:string,media_path:string,size_label:string}>
+ * Action Scheduler hook that runs OST media-server discovery.
  */
-function streamit_child_fetch_ost_tracks_via_scan( $title_directory ) {
+const STREAMIT_CHILD_OST_DISCOVER_HOOK = 'streamit_child_ost_discover';
+
+/**
+ * Action Scheduler group for OST discovery jobs.
+ */
+const STREAMIT_CHILD_OST_DISCOVER_GROUP = 'streamit-child-ost';
+
+/**
+ * Positive OST result TTL (successful scan, including empty track lists).
+ *
+ * @return int Seconds.
+ */
+function streamit_child_ost_positive_ttl() {
+	return 15 * MINUTE_IN_SECONDS;
+}
+
+/**
+ * Negative-cache / backoff TTL after a failed or timed-out scan.
+ *
+ * Shorter than the positive TTL so a recovered media host is retried sooner,
+ * while still blocking frontend traffic from scheduling a scan storm.
+ *
+ * @return int Seconds.
+ */
+function streamit_child_ost_negative_ttl() {
+	return 2 * MINUTE_IN_SECONDS;
+}
+
+/**
+ * Worker lock TTL. Covers one scan attempt (20s timeout + optional 1s retry).
+ *
+ * @return int Seconds.
+ */
+function streamit_child_ost_lock_ttl() {
+	return 60;
+}
+
+/**
+ * Whether a normalized directory is eligible for OST media-server discovery.
+ *
+ * @param string $title_directory Normalized relative path.
+ * @return bool
+ */
+function streamit_child_ost_directory_is_scannable( $title_directory ) {
 	$title_directory = streamit_child_normalize_ost_relative_path( $title_directory );
 	if ( '' === $title_directory ) {
-		return array();
+		return false;
+	}
+	$parts = explode( '/', $title_directory );
+	$root  = strtolower( (string) ( $parts[0] ?? '' ) );
+	return ( 'movie' === $root || 'series' === $root );
+}
+
+/**
+ * Transient key for a successful OST discovery result.
+ *
+ * @param string $title_directory Normalized relative path.
+ * @return string
+ */
+function streamit_child_ost_result_transient_key( $title_directory ) {
+	return 'stc_ost_' . md5( streamit_child_normalize_ost_relative_path( $title_directory ) );
+}
+
+/**
+ * Transient key that backs off scheduling after a failed discovery.
+ *
+ * @param string $title_directory Normalized relative path.
+ * @return string
+ */
+function streamit_child_ost_failure_transient_key( $title_directory ) {
+	return 'stc_ost_fail_' . md5( streamit_child_normalize_ost_relative_path( $title_directory ) );
+}
+
+/**
+ * Option / object-cache key for the discovery worker lock.
+ *
+ * @param string $title_directory Normalized relative path.
+ * @return string
+ */
+function streamit_child_ost_lock_key( $title_directory ) {
+	return 'stc_ost_lock_' . md5( streamit_child_normalize_ost_relative_path( $title_directory ) );
+}
+
+/**
+ * Acquire a short-lived discovery lock for one directory.
+ *
+ * Prefers atomic wp_cache_add when an external object cache is present.
+ * Falls back to add_option(), which fails when the option already exists.
+ *
+ * @param string $title_directory Normalized relative path.
+ * @return bool True when this caller owns the lock.
+ */
+function streamit_child_ost_acquire_discovery_lock( $title_directory ) {
+	if ( ! streamit_child_ost_directory_is_scannable( $title_directory ) ) {
+		return false;
+	}
+	$key = streamit_child_ost_lock_key( $title_directory );
+	$ttl = streamit_child_ost_lock_ttl();
+
+	if ( function_exists( 'wp_using_ext_object_cache' ) && wp_using_ext_object_cache() && function_exists( 'wp_cache_add' ) ) {
+		return (bool) wp_cache_add( $key, 1, 'streamit_child_ost', $ttl );
+	}
+
+	if ( ! function_exists( 'add_option' ) || ! function_exists( 'get_option' ) || ! function_exists( 'delete_option' ) ) {
+		return true;
+	}
+
+	$existing = get_option( $key, false );
+	if ( false === $existing ) {
+		return (bool) add_option( $key, time(), '', 'no' );
+	}
+
+	$set_at = is_numeric( $existing ) ? (int) $existing : 0;
+	if ( $set_at > 0 && ( time() - $set_at ) > $ttl ) {
+		delete_option( $key );
+		return (bool) add_option( $key, time(), '', 'no' );
+	}
+
+	return false;
+}
+
+/**
+ * Release the discovery lock for one directory.
+ *
+ * @param string $title_directory Normalized relative path.
+ */
+function streamit_child_ost_release_discovery_lock( $title_directory ) {
+	$key = streamit_child_ost_lock_key( $title_directory );
+
+	if ( function_exists( 'wp_using_ext_object_cache' ) && wp_using_ext_object_cache() && function_exists( 'wp_cache_delete' ) ) {
+		wp_cache_delete( $key, 'streamit_child_ost' );
+	}
+
+	if ( function_exists( 'delete_option' ) ) {
+		delete_option( $key );
+	}
+}
+
+/**
+ * Run the authenticated media-server OST scan and normalize tracks.
+ *
+ * Never logs directories, tokens, or WP_Error messages.
+ *
+ * @param string $title_directory Relative Movie/... or series/... path.
+ * @return array{ok: bool, tracks: list<array{filename:string,media_path:string,size_label:string}>}
+ */
+function streamit_child_ost_scan_directory( $title_directory ) {
+	$title_directory = streamit_child_normalize_ost_relative_path( $title_directory );
+	$empty           = array(
+		'ok'     => false,
+		'tracks' => array(),
+	);
+
+	if ( ! streamit_child_ost_directory_is_scannable( $title_directory ) ) {
+		return $empty;
+	}
+
+	/**
+	 * Short-circuit the media-server scan (tests / local fakes).
+	 *
+	 * Return array{ok:bool,tracks:array} to skip the HTTP client.
+	 *
+	 * @param array{ok:bool,tracks:array}|null $pre
+	 * @param string                           $title_directory
+	 */
+	$pre = apply_filters( 'streamit_child_ost_pre_scan', null, $title_directory );
+	if ( is_array( $pre ) && array_key_exists( 'ok', $pre ) ) {
+		$tracks = isset( $pre['tracks'] ) && is_array( $pre['tracks'] ) ? $pre['tracks'] : array();
+		return array(
+			'ok'     => ! empty( $pre['ok'] ),
+			'tracks' => array_values( $tracks ),
+		);
 	}
 
 	$parts = explode( '/', $title_directory );
 	$root  = strtolower( (string) ( $parts[0] ?? '' ) );
-
-	$scan = null;
+	$scan  = null;
 	if ( 'movie' === $root && class_exists( 'Movies_WP_Media_Api_Client', false ) ) {
 		$scan = Movies_WP_Media_Api_Client::scan_movie_directory( $title_directory );
 	} elseif ( 'series' === $root && class_exists( 'Movies_WP_Series_Media_Api_Client', false ) ) {
@@ -281,17 +445,152 @@ function streamit_child_fetch_ost_tracks_via_scan( $title_directory ) {
 	}
 
 	if ( is_wp_error( $scan ) || ! is_array( $scan ) || empty( $scan['ok'] ) ) {
-		return array();
+		return $empty;
 	}
 
-	$files = isset( $scan['files'] ) && is_array( $scan['files'] ) ? $scan['files'] : array();
-	return streamit_child_ost_tracks_from_scan_files( $files, $title_directory );
+	$files  = isset( $scan['files'] ) && is_array( $scan['files'] ) ? $scan['files'] : array();
+	$tracks = streamit_child_ost_tracks_from_scan_files( $files, $title_directory );
+
+	return array(
+		'ok'     => true,
+		'tracks' => $tracks,
+	);
 }
 
 /**
- * Resolve OST tracks for a title: meta first, then cached scan discovery.
+ * Call the media scan API for a title directory when available.
  *
- * Never exposes absolute filesystem paths. On failure returns an empty list.
+ * Kept for compatibility. Frontend rendering must not call this.
+ *
+ * @param string $title_directory Relative Movie/... or series/... path.
+ * @return list<array{filename:string,media_path:string,size_label:string}>
+ */
+function streamit_child_fetch_ost_tracks_via_scan( $title_directory ) {
+	$result = streamit_child_ost_scan_directory( $title_directory );
+	return ! empty( $result['ok'] ) && isset( $result['tracks'] ) && is_array( $result['tracks'] )
+		? $result['tracks']
+		: array();
+}
+
+/**
+ * Schedule background OST discovery for one directory.
+ *
+ * Uses Action Scheduler when available. Dedupes pending/running jobs for the
+ * same directory args via as_has_scheduled_action(). AS unique=true is not used
+ * because WooCommerce AS 3.9.3 uniqueness ignores args (hook+group only).
+ *
+ * @param string $title_directory Normalized or raw relative path.
+ * @return bool True when a new job was scheduled.
+ */
+function streamit_child_ost_schedule_discovery( $title_directory ) {
+	$title_directory = streamit_child_normalize_ost_relative_path( $title_directory );
+	if ( ! streamit_child_ost_directory_is_scannable( $title_directory ) ) {
+		return false;
+	}
+
+	if ( function_exists( 'get_transient' ) && false !== get_transient( streamit_child_ost_failure_transient_key( $title_directory ) ) ) {
+		return false;
+	}
+
+	if ( function_exists( 'get_transient' ) ) {
+		$cached = get_transient( streamit_child_ost_result_transient_key( $title_directory ) );
+		if ( is_array( $cached ) ) {
+			return false;
+		}
+	}
+
+	/**
+	 * Short-circuit scheduling (tests). Return true/false to skip Action Scheduler.
+	 *
+	 * @param bool|null $pre
+	 * @param string    $title_directory
+	 */
+	$pre = apply_filters( 'streamit_child_ost_pre_schedule_discovery', null, $title_directory );
+	if ( null !== $pre ) {
+		return (bool) $pre;
+	}
+
+	if ( ! function_exists( 'as_schedule_single_action' ) ) {
+		return false;
+	}
+
+	$hook  = STREAMIT_CHILD_OST_DISCOVER_HOOK;
+	$group = STREAMIT_CHILD_OST_DISCOVER_GROUP;
+	$args  = array( $title_directory );
+
+	if ( function_exists( 'as_has_scheduled_action' ) && as_has_scheduled_action( $hook, $args, $group ) ) {
+		return false;
+	}
+
+	$id = as_schedule_single_action( time(), $hook, $args, $group, false );
+
+	return ( is_int( $id ) && $id > 0 ) || ( is_string( $id ) && ctype_digit( $id ) && (int) $id > 0 );
+}
+
+/**
+ * Background worker: scan once under a lock and write the result transient.
+ *
+ * @param string $title_directory Relative Movie/... or series/... path.
+ */
+function streamit_child_ost_run_discovery( $title_directory ) {
+	$title_directory = streamit_child_normalize_ost_relative_path( $title_directory );
+	if ( ! streamit_child_ost_directory_is_scannable( $title_directory ) ) {
+		return;
+	}
+
+	if ( ! streamit_child_ost_acquire_discovery_lock( $title_directory ) ) {
+		return;
+	}
+
+	try {
+		$result_key = streamit_child_ost_result_transient_key( $title_directory );
+		if ( function_exists( 'get_transient' ) ) {
+			$existing = get_transient( $result_key );
+			if ( is_array( $existing ) ) {
+				return;
+			}
+		}
+
+		$scan = streamit_child_ost_scan_directory( $title_directory );
+		if ( ! empty( $scan['ok'] ) ) {
+			$tracks = isset( $scan['tracks'] ) && is_array( $scan['tracks'] ) ? $scan['tracks'] : array();
+			if ( function_exists( 'set_transient' ) ) {
+				set_transient( $result_key, $tracks, streamit_child_ost_positive_ttl() );
+			}
+			if ( function_exists( 'delete_transient' ) ) {
+				delete_transient( streamit_child_ost_failure_transient_key( $title_directory ) );
+			}
+			return;
+		}
+
+		if ( function_exists( 'set_transient' ) ) {
+			set_transient( streamit_child_ost_failure_transient_key( $title_directory ), 1, streamit_child_ost_negative_ttl() );
+		}
+	} catch ( Throwable $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+		if ( function_exists( 'set_transient' ) ) {
+			set_transient( streamit_child_ost_failure_transient_key( $title_directory ), 1, streamit_child_ost_negative_ttl() );
+		}
+	} finally {
+		streamit_child_ost_release_discovery_lock( $title_directory );
+	}
+}
+
+/**
+ * Action Scheduler callback.
+ *
+ * @param string $title_directory Relative directory from the scheduled args.
+ */
+function streamit_child_ost_discover_action( $title_directory = '' ) {
+	streamit_child_ost_run_discovery( $title_directory );
+}
+
+/**
+ * Resolve OST tracks for a title without blocking on media-server discovery.
+ *
+ * Order: `_ost` meta → positive result transient (including cached `[]`) →
+ * schedule one background job on miss → return `[]`.
+ *
+ * Never exposes absolute filesystem paths.
  *
  * @param object $st_data Movie or TV show Streamit object with get_meta().
  * @return list<array{filename:string,media_path:string,size_label:string}>
@@ -301,7 +600,8 @@ function streamit_child_get_ost_tracks( $st_data ) {
 		return array();
 	}
 
-	$title_directory = streamit_child_normalize_ost_relative_path( (string) $st_data->get_meta( '_media_directory' ) );
+	$raw_directory = $st_data->get_meta( '_media_directory' );
+	$title_directory = streamit_child_normalize_ost_relative_path( is_string( $raw_directory ) ? $raw_directory : '' );
 	if ( '' === $title_directory ) {
 		return array();
 	}
@@ -311,20 +611,24 @@ function streamit_child_get_ost_tracks( $st_data ) {
 		return $from_meta;
 	}
 
-	$cache_key = 'stc_ost_' . md5( $title_directory );
 	if ( function_exists( 'get_transient' ) ) {
-		$cached = get_transient( $cache_key );
+		$cached = get_transient( streamit_child_ost_result_transient_key( $title_directory ) );
 		if ( is_array( $cached ) ) {
 			return streamit_child_normalize_ost_meta_tracks( $cached, $title_directory );
 		}
+
+		if ( false !== get_transient( streamit_child_ost_failure_transient_key( $title_directory ) ) ) {
+			return array();
+		}
 	}
 
-	$discovered = streamit_child_fetch_ost_tracks_via_scan( $title_directory );
-	if ( function_exists( 'set_transient' ) ) {
-		set_transient( $cache_key, $discovered, 15 * MINUTE_IN_SECONDS );
-	}
+	streamit_child_ost_schedule_discovery( $title_directory );
 
-	return $discovered;
+	return array();
+}
+
+if ( function_exists( 'add_action' ) ) {
+	add_action( STREAMIT_CHILD_OST_DISCOVER_HOOK, 'streamit_child_ost_discover_action', 10, 1 );
 }
 
 /**
