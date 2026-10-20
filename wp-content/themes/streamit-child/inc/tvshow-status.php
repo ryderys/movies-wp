@@ -149,6 +149,12 @@ function streamit_child_register_tv_status_slider( $widgets_manager ) {
 		$widgets_manager->unregister( 'top-ten-slider' );
 		$widgets_manager->register( new \Elementor\ST_Top_Ten_Tv_Status() );
 	}
+
+	if ( class_exists( '\Elementor\ST_VTBenner' ) ) {
+		require_once get_stylesheet_directory() . '/inc/elementor/class-st-vtbanner-popular.php';
+		$widgets_manager->unregister( 'vertical-thumbnail-banner' );
+		$widgets_manager->register( new \Elementor\ST_VTBanner_Popular() );
+	}
 }
 add_action( 'elementor/widgets/register', 'streamit_child_register_tv_status_slider', 99 );
 
