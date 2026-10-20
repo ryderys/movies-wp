@@ -168,6 +168,59 @@ assert_true(
 	'slider_cards line uses fixed label format: ' . $GLOBALS['tvshow_timing_test_logs'][0]
 );
 
+// 3c) HTTP localization phases are allowlisted; request-start begin is opt-in only.
+$http_phases = array( 'bootstrap_to_template', 'header', 'detail_metalist', 'after_morelike', 'footer' );
+foreach ( $http_phases as $phase ) {
+	assert_true( in_array( $phase, streamit_child_tvshow_timing_phases(), true ), $phase . ' is allowlisted' );
+}
+assert_true( streamit_child_tvshow_timing_is_tvshow_single( 'tvshow', 'single' ), 'tvshow/single is detected' );
+assert_true( ! streamit_child_tvshow_timing_is_tvshow_single( 'movie', 'single' ), 'movie/single is not tvshow single' );
+
+streamit_child_tvshow_timing_reset();
+tvshow_timing_capture_logs();
+streamit_child_tvshow_time_begin( 'detail_metalist' );
+usleep( 1000 );
+streamit_child_tvshow_time_end( 'detail_metalist' );
+assert_eq( 1, count( $GLOBALS['tvshow_timing_test_logs'] ), 'detail_metalist emits when enabled' );
+assert_true(
+	(bool) preg_match( '/^STC_TVSHOW_TIMING phase=detail_metalist ms=\d+\.\d{2}$/', $GLOBALS['tvshow_timing_test_logs'][0] ),
+	'detail_metalist line format'
+);
+
+streamit_child_tvshow_timing_reset();
+tvshow_timing_capture_logs();
+streamit_child_tvshow_time_begin( 'after_morelike' );
+usleep( 1000 );
+streamit_child_tvshow_time_end( 'after_morelike' );
+assert_true(
+	(bool) preg_match( '/^STC_TVSHOW_TIMING phase=after_morelike ms=\d+\.\d{2}$/', $GLOBALS['tvshow_timing_test_logs'][0] ?? '' ),
+	'after_morelike line format'
+);
+
+streamit_child_tvshow_timing_reset();
+tvshow_timing_capture_logs();
+$_SERVER['REQUEST_TIME_FLOAT'] = microtime( true ) - 0.05;
+streamit_child_tvshow_time_begin_from_request( 'bootstrap_to_template' );
+streamit_child_tvshow_time_end( 'bootstrap_to_template' );
+assert_eq( 1, count( $GLOBALS['tvshow_timing_test_logs'] ), 'bootstrap_to_template emits when REQUEST_TIME_FLOAT set' );
+assert_true(
+	(bool) preg_match( '/^STC_TVSHOW_TIMING phase=bootstrap_to_template ms=\d+\.\d{2}$/', $GLOBALS['tvshow_timing_test_logs'][0] ),
+	'bootstrap_to_template line format'
+);
+assert_true(
+	(bool) preg_match( '/ms=(\d+\.\d{2})$/', $GLOBALS['tvshow_timing_test_logs'][0], $boot_m )
+	&& isset( $boot_m[1] )
+	&& (float) $boot_m[1] >= 40.0,
+	'bootstrap_to_template uses request-start clock'
+);
+
+streamit_child_tvshow_timing_reset();
+tvshow_timing_capture_logs();
+unset( $_SERVER['REQUEST_TIME_FLOAT'] );
+streamit_child_tvshow_time_begin_from_request( 'bootstrap_to_template' );
+streamit_child_tvshow_time_end( 'bootstrap_to_template' );
+assert_eq( 0, count( $GLOBALS['tvshow_timing_test_logs'] ), 'bootstrap_to_template skipped without REQUEST_TIME_FLOAT' );
+
 // 4) Instrumentation helpers do not change catalog/helper return values.
 streamit_child_tvshow_timing_reset();
 tvshow_timing_capture_logs();

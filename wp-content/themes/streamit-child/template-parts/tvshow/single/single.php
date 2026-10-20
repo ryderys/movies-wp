@@ -29,7 +29,16 @@ if ( ! empty( (array) $content_data ) ) :
 				streamit_get_template( 'tvshow/content/tvshow_single_description.php', array( 'st_data' => $content_data ) );
 
 				// Include the metalist (cast/crew) template part
-				streamit_get_template( 'tvshow/single/tvshow_single_metalist.php', array( 'st_data' => $content_data ) );
+				if ( function_exists( 'streamit_child_tvshow_time_begin' ) ) {
+					streamit_child_tvshow_time_begin( 'detail_metalist' );
+				}
+				try {
+					streamit_get_template( 'tvshow/single/tvshow_single_metalist.php', array( 'st_data' => $content_data ) );
+				} finally {
+					if ( function_exists( 'streamit_child_tvshow_time_end' ) ) {
+						streamit_child_tvshow_time_end( 'detail_metalist' );
+					}
+				}
 
 				// Include the language information template part
 				streamit_get_template( 'tvshow/content/tvshow_language.php', array( 'st_data' => $content_data, 'is_limit' => false ) );

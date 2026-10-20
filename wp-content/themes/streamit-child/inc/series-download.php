@@ -22,16 +22,29 @@ defined( 'ABSPATH' ) || exit;
  * - `download_catalog` calls `streamit_child_get_available_seasons()` again
  *   (usually a request-cache hit) and may reuse the episode map memoized by
  *   `episode_objects`. Those nested costs are inside `download_catalog`, not additive.
+ * - `bootstrap_to_template` ends immediately before `header` begins. It uses PHP
+ *   `REQUEST_TIME_FLOAT` (SAPI request start) when available; it is not nested under
+ *   any other phase. Do not add it to `header` / content / `footer`.
+ * - `header` and `footer` wrap `get_header()` / `get_footer()` only. They do not
+ *   overlap `template_render`, `detail_metalist`, or `after_morelike`.
+ * - `detail_metalist` and `after_morelike` are siblings of `template_render` inside
+ *   the TV-show single body. They do not overlap each other or the season/download
+ *   nested phases.
  *
  * @return array<int, string>
  */
 function streamit_child_tvshow_timing_phases() {
 	return array(
+		'bootstrap_to_template',
+		'header',
+		'detail_metalist',
 		'get_available_seasons',
 		'episode_objects',
 		'slider_cards',
 		'download_catalog',
 		'template_render',
+		'after_morelike',
+		'footer',
 	);
 }
 
@@ -78,6 +91,43 @@ function streamit_child_tvshow_time_begin( $label ) {
 	}
 	$state             = &streamit_child_tvshow_timing_state();
 	$state[ $label ] = microtime( true );
+}
+
+/**
+ * Start a phase using PHP's request-start timestamp when available.
+ *
+ * Used for `bootstrap_to_template`. If `REQUEST_TIME_FLOAT` is missing, this is a
+ * no-op so we never invent a start time.
+ *
+ * @param string $label Fixed phase label from streamit_child_tvshow_timing_phases().
+ */
+function streamit_child_tvshow_time_begin_from_request( $label ) {
+	if ( ! streamit_child_tvshow_timings_enabled() ) {
+		return;
+	}
+	if ( ! is_string( $label ) || ! in_array( $label, streamit_child_tvshow_timing_phases(), true ) ) {
+		return;
+	}
+	if ( ! isset( $_SERVER['REQUEST_TIME_FLOAT'] ) ) {
+		return;
+	}
+	$start = (float) $_SERVER['REQUEST_TIME_FLOAT'];
+	if ( $start <= 0 ) {
+		return;
+	}
+	$state           = &streamit_child_tvshow_timing_state();
+	$state[ $label ] = $start;
+}
+
+/**
+ * Whether the current Streamit main-template context is a TV-show single view.
+ *
+ * @param mixed $content_type Streamit content type.
+ * @param mixed $view_type    Streamit view type.
+ * @return bool
+ */
+function streamit_child_tvshow_timing_is_tvshow_single( $content_type, $view_type ) {
+	return ( 'tvshow' === $content_type && 'single' === $view_type );
 }
 
 /**
