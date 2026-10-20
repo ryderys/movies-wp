@@ -23,7 +23,14 @@ class Movies_WP_Series_Ongoing_Sync {
 
 	public static function init() {
 		add_action( self::POLL_HOOK, array( __CLASS__, 'handle_poll' ), 10, 0 );
-		add_action( 'init', array( __CLASS__, 'ensure_scheduled' ), 20 );
+		// Wrap so WP's `init` hook does not pass a non-array first argument.
+		add_action(
+			'init',
+			static function () {
+				self::ensure_scheduled( array() );
+			},
+			20
+		);
 	}
 
 	public static function handle_poll() {
@@ -40,7 +47,10 @@ class Movies_WP_Series_Ongoing_Sync {
 	 * @param array<string, mixed> $options
 	 * @return bool
 	 */
-	public static function ensure_scheduled( array $options = array() ) {
+	public static function ensure_scheduled( $options = array() ) {
+		if ( ! is_array( $options ) ) {
+			$options = array();
+		}
 		try {
 			if ( isset( $options['schedule_recurring'] ) && is_callable( $options['schedule_recurring'] ) ) {
 				return (bool) call_user_func( $options['schedule_recurring'] );
