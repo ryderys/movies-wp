@@ -1,6 +1,9 @@
 /**
  * Fetch TV-show morelike slider HTML when the placeholder nears the viewport.
  * On failure, leave the sync fallback link visible (never a permanent empty section).
+ *
+ * After inject, Slick must be initialized: theme SlickGeneral only runs on first paint,
+ * when this section is still a placeholder (skeleton overlay never clears otherwise).
  */
 (function () {
 	'use strict';
@@ -17,6 +20,64 @@
 		if (fb) {
 			fb.hidden = false;
 		}
+	}
+
+	/**
+	 * Mirror SlickGeneral.initSlickSlider for markup injected after first paint.
+	 *
+	 * @param {Element|null} root Injected .more-like-section (or parent).
+	 */
+	function initInjectedSlick(root, attempt) {
+		if (!root) {
+			return;
+		}
+		attempt = attempt || 0;
+		if (typeof jQuery === 'undefined' || typeof jQuery.fn.slick !== 'function') {
+			if (attempt < 40) {
+				window.setTimeout(function () {
+					initInjectedSlick(root, attempt + 1);
+				}, 50);
+			}
+			return;
+		}
+
+		var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+		var $targets = jQuery(root).find('.css_prefix-slick-general').addBack('.css_prefix-slick-general');
+
+		$targets.each(function () {
+			var $el = jQuery(this);
+			if (!$el.length || $el.hasClass('slick-initialized')) {
+				return;
+			}
+
+			var slickSettings = jQuery.extend({}, $el.data('slider_settings') || {});
+			slickSettings.lazyLoad = 'ondemand';
+			slickSettings.rtl = isRtl;
+
+			var singleSliderSettings = $el.data('slingle_slider_settings');
+			if (singleSliderSettings) {
+				slickSettings = jQuery.extend(slickSettings, singleSliderSettings);
+			}
+
+			if ($el.data('extra_settings') === true) {
+				slickSettings.nextArrow =
+					'<button class="NextArrow-two"><i class="icon-arrow-right"></i></button>';
+				slickSettings.prevArrow =
+					'<button class="PreArrow-two"><i class="icon-arrow-left"></i></button>';
+			}
+
+			$el.slick(slickSettings);
+		});
+	}
+
+	function replaceWithHtml(el, html) {
+		var parent = el.parentNode;
+		el.outerHTML = html;
+		if (!parent) {
+			return;
+		}
+		var section = parent.querySelector('.more-like-section');
+		initInjectedSlick(section || parent);
 	}
 
 	function loadEl(el) {
@@ -68,7 +129,7 @@
 					el.remove();
 					return;
 				}
-				el.outerHTML = html;
+				replaceWithHtml(el, html);
 			})
 			.catch(function () {
 				showFallback(el);

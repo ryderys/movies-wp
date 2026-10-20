@@ -88,7 +88,7 @@ function streamit_child_render_lazy_morelike_placeholder( $st_data ) {
 	wp_enqueue_script(
 		'streamit-child-lazy-morelike',
 		$theme_uri . '/assets/js/lazy-morelike.js',
-		array(),
+		array( 'jquery', 'st-slick-js' ),
 		file_exists( $js_path ) ? (string) filemtime( $js_path ) : '1.0',
 		true
 	);
