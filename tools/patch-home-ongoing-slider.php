@@ -1,6 +1,7 @@
 <?php
 /**
- * Add/update homepage Main Card Slider filtered by tv_status "Returning Series".
+ * Replace homepage "در حال پخش" Main Card Slider with a Top Ten Slider
+ * filtered by tv_status "Returning Series".
  *
  * Usage (inside WordPress container):
  *   php wp-cli.phar eval-file /path/to/patch-home-ongoing-slider.php
@@ -11,10 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( 1 );
 }
 
-const SC_HOME_POST_ID     = 3859;
-const SC_RETURNING_TERM   = '95';
-const SC_SLIDER_TITLE     = 'در حال پخش';
-const SC_CONTINUE_PARENT  = '5006cb8';
+const SC_HOME_POST_ID    = 3859;
+const SC_RETURNING_TERM  = '95';
+const SC_SLIDER_TITLE    = 'در حال پخش';
+const SC_CONTINUE_PARENT = '5006cb8';
 
 /**
  * @param int $post_id
@@ -34,80 +35,69 @@ function sc_load_elementor( $post_id ) {
 }
 
 /**
- * @param array<int, mixed> $nodes
- * @param string            $id
- * @return array<string, mixed>|null
+ * @return array<string, mixed>
  */
-function sc_find_widget( array &$nodes, $id ) {
-	foreach ( $nodes as &$n ) {
-		if ( ( $n['id'] ?? '' ) === $id ) {
-			return $n;
-		}
-		if ( ! empty( $n['elements'] ) && is_array( $n['elements'] ) ) {
-			$found = sc_find_widget( $n['elements'], $id );
-			if ( null !== $found ) {
-				return $found;
-			}
-		}
+function sc_top_ten_ongoing_settings() {
+	return array(
+		'slider_title'              => SC_SLIDER_TITLE,
+		'title_tag'                 => 'h4',
+		'st_post_type'              => 'tvshow',
+		'st_select_post_filter'     => 'status',
+		'st_selected_tvshow_status' => array( SC_RETURNING_TERM ),
+		'st_selected_tvshows'       => array(),
+		'st_selected_tvshow_tag'    => array(),
+		'st_selected_tvshow_genre'  => array(),
+		'st_selected_movies'        => array(),
+		'st_selected_videos'        => array(),
+		'posts_per_page'            => array(
+			'unit'  => '%',
+			'size'  => 10,
+			'sizes' => array(),
+		),
+		'enable_premium_badges'     => 'yes',
+		'_title'                    => 'Top Ten Slider',
+	);
+}
+
+/**
+ * @param array<string, mixed> $widget
+ * @return bool
+ */
+function sc_is_ongoing_home_widget( array $widget ) {
+	$type   = (string) ( $widget['widgetType'] ?? '' );
+	$title  = (string) ( $widget['settings']['slider_title'] ?? '' );
+	$filter = (string) ( $widget['settings']['st_select_post_filter'] ?? '' );
+	if ( ! in_array( $type, array( 'main-card-slider', 'top-ten-slider' ), true ) ) {
+		return false;
 	}
-	return null;
+	return in_array( $title, array( 'در حال پخش', 'درحال پخش' ), true ) || 'status' === $filter;
 }
 
 $live   = sc_load_elementor( SC_HOME_POST_ID );
-$draft  = sc_load_elementor( 7263 );
-$latest = sc_find_widget( $live, 'ca44334' );
-$old    = sc_find_widget( $draft, '8b308ac' );
-
-if ( ! $latest || ! is_array( $latest['settings'] ?? null ) ) {
-	fwrite( STDERR, "missing latest slider template ca44334\n" );
-	exit( 1 );
-}
-
-$settings                                 = $latest['settings'];
-$settings['slider_title']                 = SC_SLIDER_TITLE;
-$settings['st_select_content_type']       = 'tvshow';
-$settings['st_select_post_filter']        = 'status';
-$settings['st_selected_tvshow_status']    = array( SC_RETURNING_TERM );
-$settings['st_selected_tvshows']          = array();
-$settings['st_selected_tvshow_tag']       = array();
-$settings['st_selected_tvshow_genre']     = array();
-unset( $settings['st_selected_movie_genre'], $settings['st_selected_video_genre'] );
-
-if ( is_array( $old ) && ! empty( $old['settings'] ) && is_array( $old['settings'] ) ) {
-	foreach ( array( 'show_title', 'show_view_all', 'slider_style', 'card_style', 'st_iqonic_has_box_shadow', 'space_between', 'navigation', 'pagination' ) as $k ) {
-		if ( array_key_exists( $k, $old['settings'] ) ) {
-			$settings[ $k ] = $old['settings'][ $k ];
-		}
-	}
-}
-
-$new_id = substr( md5( 'ongoing-status-slider-v1' ), 0, 7 );
-$widget = array(
-	'id'         => $new_id,
-	'elType'     => 'widget',
-	'settings'   => $settings,
-	'elements'   => array(),
-	'widgetType' => 'main-card-slider',
-);
-
 $placed = '';
-$walk   = function ( array &$nodes ) use ( &$walk, $widget, &$placed ) {
+$walk   = function ( array &$nodes ) use ( &$walk, &$placed ) {
 	foreach ( $nodes as &$n ) {
 		if ( ( $n['id'] ?? '' ) === SC_CONTINUE_PARENT && isset( $n['elements'] ) && is_array( $n['elements'] ) ) {
 			foreach ( $n['elements'] as &$child ) {
-				if ( 'main-card-slider' !== ( $child['widgetType'] ?? '' ) ) {
+				if ( ! sc_is_ongoing_home_widget( $child ) ) {
 					continue;
 				}
-				$title  = (string) ( $child['settings']['slider_title'] ?? '' );
-				$filter = (string) ( $child['settings']['st_select_post_filter'] ?? '' );
-				if ( in_array( $title, array( 'در حال پخش', 'درحال پخش' ), true ) || 'status' === $filter ) {
-					$child['settings'] = $widget['settings'];
-					$placed            = 'updated:' . ( $child['id'] ?? '' );
-					return;
-				}
+				$child['widgetType'] = 'top-ten-slider';
+				$child['elType']     = 'widget';
+				$child['settings']   = sc_top_ten_ongoing_settings();
+				$child['elements']   = array();
+				$placed              = 'replaced:' . ( $child['id'] ?? '' );
+				return;
 			}
 			unset( $child );
 
+			$widget = array(
+				'id'         => substr( md5( 'ongoing-top-ten-slider-v1' ), 0, 7 ),
+				'elType'     => 'widget',
+				'settings'   => sc_top_ten_ongoing_settings(),
+				'elements'   => array(),
+				'widgetType' => 'top-ten-slider',
+			);
 			$insert_at = count( $n['elements'] );
 			if ( ! empty( $n['elements'] ) && 'st_continue_watching' === ( $n['elements'][0]['widgetType'] ?? '' ) ) {
 				$insert_at = 1;
@@ -127,7 +117,7 @@ $walk   = function ( array &$nodes ) use ( &$walk, $widget, &$placed ) {
 $walk( $live );
 
 if ( '' === $placed ) {
-	fwrite( STDERR, "could not find container " . SC_CONTINUE_PARENT . "\n" );
+	fwrite( STDERR, 'could not find container ' . SC_CONTINUE_PARENT . "\n" );
 	exit( 1 );
 }
 
@@ -144,4 +134,4 @@ if ( class_exists( '\Elementor\Plugin' ) && isset( \Elementor\Plugin::$instance-
 }
 
 echo "ok {$placed}\n";
-echo 'title=' . SC_SLIDER_TITLE . " filter=status status_term=" . SC_RETURNING_TERM . "\n";
+echo 'title=' . SC_SLIDER_TITLE . " widget=top-ten-slider filter=status status_term=" . SC_RETURNING_TERM . "\n";

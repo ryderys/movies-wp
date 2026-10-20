@@ -133,19 +133,22 @@ function streamit_child_process_pending_tv_status() {
 add_action( 'shutdown', 'streamit_child_process_pending_tv_status', 20 );
 
 /**
- * Add the "TV Show Status" filter to the Main Card Slider widget.
+ * Add the "TV Show Status" filter to Main Card Slider and Top Ten Slider.
  *
  * @param \Elementor\Widgets_Manager $widgets_manager Widgets manager.
  */
 function streamit_child_register_tv_status_slider( $widgets_manager ) {
-	if ( ! class_exists( '\Elementor\ST_Slider' ) ) {
-		return;
+	if ( class_exists( '\Elementor\ST_Slider' ) ) {
+		require_once get_stylesheet_directory() . '/inc/elementor/class-st-slider-tv-status.php';
+		$widgets_manager->unregister( 'main-card-slider' );
+		$widgets_manager->register( new \Elementor\ST_Slider_Tv_Status() );
 	}
 
-	require_once get_stylesheet_directory() . '/inc/elementor/class-st-slider-tv-status.php';
-
-	$widgets_manager->unregister( 'main-card-slider' );
-	$widgets_manager->register( new \Elementor\ST_Slider_Tv_Status() );
+	if ( class_exists( '\Elementor\ST_Top_Ten' ) ) {
+		require_once get_stylesheet_directory() . '/inc/elementor/class-st-top-ten-tv-status.php';
+		$widgets_manager->unregister( 'top-ten-slider' );
+		$widgets_manager->register( new \Elementor\ST_Top_Ten_Tv_Status() );
+	}
 }
 add_action( 'elementor/widgets/register', 'streamit_child_register_tv_status_slider', 99 );
 
