@@ -738,6 +738,11 @@ class Movies_WP_Series_Import_Job_Runner {
 			$options
 		);
 		self::enqueue_telegram( 'series', $series_id, $token, $options );
+		if ( class_exists( 'Movies_WP_Series_Ongoing_Sync', false ) ) {
+			$snapshot = self::snapshot_for_job( $job, $options );
+			$payload  = is_array( $snapshot['payload'] ?? null ) ? $snapshot['payload'] : array();
+			Movies_WP_Series_Ongoing_Sync::after_successful_import( $series_id, $payload, $options );
+		}
 	}
 
 	/**

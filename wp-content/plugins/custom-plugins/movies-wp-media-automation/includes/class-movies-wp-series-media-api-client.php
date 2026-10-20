@@ -9,9 +9,11 @@ defined( 'ABSPATH' ) || exit;
 
 class Movies_WP_Series_Media_Api_Client {
 
-	const REQUEST_PATH = '/scan/series';
-	const DEFAULT_BASE = 'https://media.asiastarx.ir';
-	const TIMEOUT      = 20;
+	const REQUEST_PATH      = '/scan/series';
+	const LIST_REQUEST_PATH = '/list/series';
+	const DEFAULT_BASE      = 'https://media.asiastarx.ir';
+	const TIMEOUT           = 20;
+	const LIST_TIMEOUT      = 15;
 
 	/**
 	 * @param string $relative_directory e.g. series/korea/2024/Marry.My.Husband.
@@ -104,6 +106,100 @@ class Movies_WP_Series_Media_Api_Client {
 			return new WP_Error(
 				'series_media_api_invalid_response',
 				__( 'The series scan response was missing required fields.', 'movies-wp' ),
+				array( 'status' => $status )
+			);
+		}
+
+		return $decoded;
+	}
+
+	/**
+	 * Cheap series listing (paths + sizes, no ffprobe).
+	 *
+	 * @param string $relative_directory e.g. series/korea/2024/Marry.My.Husband.
+	 * @return array<string, mixed>|WP_Error
+	 */
+	public static function list_series_directory( $relative_directory ) {
+		$config = self::config();
+		if ( is_wp_error( $config ) ) {
+			return $config;
+		}
+
+		$dir = self::normalize_directory( $relative_directory );
+		if ( is_wp_error( $dir ) ) {
+			return $dir;
+		}
+
+		$timestamp = (string) time();
+		$encoded   = rawurlencode( $dir );
+		$canonical = $timestamp . "\nGET\n" . self::LIST_REQUEST_PATH . "\ndir=" . $encoded;
+		$signature = hash_hmac( 'sha256', $canonical, $config['hmac_secret'] );
+		$url       = $config['base_url'] . self::LIST_REQUEST_PATH . '?dir=' . $encoded;
+
+		$args = array(
+			'timeout'     => self::LIST_TIMEOUT,
+			'redirection' => 0,
+			'sslverify'   => true,
+			'headers'     => array(
+				'Accept'            => 'application/json',
+				'X-Media-Key'       => $config['api_key'],
+				'X-Media-Timestamp' => $timestamp,
+				'X-Media-Signature' => $signature,
+			),
+		);
+
+		$response = wp_remote_get( $url, $args );
+		if ( is_wp_error( $response ) && ! self::is_timeout( $response ) ) {
+			sleep( 1 );
+			$response = wp_remote_get( $url, $args );
+		}
+
+		if ( is_wp_error( $response ) ) {
+			return self::transport_error( $response );
+		}
+
+		$status  = (int) wp_remote_retrieve_response_code( $response );
+		$body    = (string) wp_remote_retrieve_body( $response );
+		$decoded = json_decode( $body, true );
+		if ( ! is_array( $decoded ) ) {
+			return new WP_Error(
+				'series_media_api_invalid_json',
+				__( 'The series list response was not valid JSON.', 'movies-wp' ),
+				array( 'status' => $status )
+			);
+		}
+
+		if ( 401 === $status || 403 === $status ) {
+			return self::server_error(
+				'series_media_api_authentication_failed',
+				__( 'Series list authentication failed.', 'movies-wp' ),
+				$status,
+				$decoded
+			);
+		}
+
+		if ( empty( $decoded['ok'] ) ) {
+			$code = $status >= 500 ? 'series_media_api_http_error' : 'series_media_api_list_error';
+			return self::server_error(
+				$code,
+				__( 'Series list failed.', 'movies-wp' ),
+				$status,
+				$decoded
+			);
+		}
+
+		if ( $status < 200 || $status >= 300 ) {
+			return new WP_Error(
+				'series_media_api_http_error',
+				__( 'The series list request returned an unexpected HTTP status.', 'movies-wp' ),
+				array( 'status' => $status )
+			);
+		}
+
+		if ( ( $decoded['kind'] ?? '' ) !== 'series' || ! isset( $decoded['files'] ) || ! is_array( $decoded['files'] ) ) {
+			return new WP_Error(
+				'series_media_api_invalid_response',
+				__( 'The series list response was missing required fields.', 'movies-wp' ),
 				array( 'status' => $status )
 			);
 		}

@@ -92,6 +92,7 @@ foreach ( array( '', '/series/korea/2024/Show', 'Movie/korea/2024/Show', 'Series
 echo "Series media API client config\n";
 
 sm_api_same( '/scan/series', Movies_WP_Series_Media_Api_Client::REQUEST_PATH, 'Series scan HTTP route remains unchanged' );
+sm_api_same( '/list/series', Movies_WP_Series_Media_Api_Client::LIST_REQUEST_PATH, 'Series list HTTP route is /list/series' );
 
 if ( ! class_exists( 'Movies_WP_Media_Api_Client' ) ) {
 	class Movies_WP_Media_Api_Client {

@@ -300,6 +300,34 @@ class Movies_WP_Series_Import_Job_Store {
 	}
 
 	/**
+	 * Whether any preparing/queued/running/paused job targets this series directory.
+	 *
+	 * @param string $directory Normalized series/... path.
+	 * @return bool
+	 */
+	public static function has_active_for_directory( $directory ) {
+		$directory = str_replace( '\\', '/', trim( (string) $directory ) );
+		$directory = trim( $directory, '/' );
+		if ( '' === $directory ) {
+			return false;
+		}
+		foreach ( self::all_rows() as $row ) {
+			$row_dir = str_replace( '\\', '/', trim( (string) ( $row['directory'] ?? '' ) ) );
+			$row_dir = trim( $row_dir, '/' );
+			if ( $row_dir !== $directory ) {
+				continue;
+			}
+			if ( 1 === (int) ( $row['active_slot'] ?? 0 ) ) {
+				return true;
+			}
+			if ( in_array( (string) $row['status'], array( 'queued', 'running', 'preparing', 'paused' ), true ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Newest jobs for one owner, ordered by updated_at DESC.
 	 *
 	 * @return list<array<string, mixed>>

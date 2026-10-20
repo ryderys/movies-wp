@@ -310,6 +310,13 @@ class Movies_WP_Series_Admin {
 		$normalized = isset( $preview['input'] ) && is_array( $preview['input'] )
 			? array_merge( $values, $preview['input'] )
 			: $values;
+		if ( ! empty( $values['series_ongoing'] ) ) {
+			if ( ! isset( $preview['input'] ) || ! is_array( $preview['input'] ) ) {
+				$preview['input'] = array();
+			}
+			$preview['input']['series_ongoing'] = true;
+			$normalized['series_ongoing']       = true;
+		}
 		return array(
 			'values'          => $normalized,
 			'preview'         => $preview,
@@ -544,6 +551,7 @@ class Movies_WP_Series_Admin {
 			'title'            => isset( $post['title'] ) ? sanitize_text_field( (string) $post['title'] ) : '',
 			'summary'          => isset( $post['summary'] ) ? sanitize_textarea_field( (string) $post['summary'] ) : '',
 			'series_directory' => isset( $post['series_directory'] ) ? sanitize_text_field( (string) $post['series_directory'] ) : '',
+			'series_ongoing'   => ! empty( $post['series_ongoing'] ),
 		);
 		if ( isset( $post['season_number'] ) && '' !== trim( (string) $post['season_number'] ) ) {
 			$values['season_number'] = (string) absint( $post['season_number'] );

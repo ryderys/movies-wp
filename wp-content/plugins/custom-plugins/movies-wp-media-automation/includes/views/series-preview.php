@@ -294,6 +294,16 @@ if ( is_array( $plan['seasons'] ?? null ) ) {
 						<p class="description"><?php esc_html_e( 'Explicit season number. Required when filenames do not identify a season (e.g. EP01.mkv). Must match filenames if season is present.', 'movies-wp' ); ?></p>
 					</td>
 				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Ongoing series', 'movies-wp' ); ?></th>
+					<td>
+						<label for="series-ongoing">
+							<input id="series-ongoing" name="series_ongoing" type="checkbox" value="1"<?php checked( ! empty( $values['series_ongoing'] ) ); ?>>
+							<?php esc_html_e( 'Auto-sync when new episodes appear in this directory', 'movies-wp' ); ?>
+						</label>
+						<p class="description"><?php esc_html_e( 'Polls a cheap directory listing every 15 minutes. Full scan/import runs only when files change.', 'movies-wp' ); ?></p>
+					</td>
+				</tr>
 			</table>
 			<?php submit_button( __( 'Scan & Preview', 'movies-wp' ) ); ?>
 		</form>
