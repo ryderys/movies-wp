@@ -1069,11 +1069,21 @@ function streamit_child_series_download_episode_entry_from_object( $episode ) {
 		$title = (string) $episode->get_post_title();
 	}
 
+	// Streamit episode IDs are not wp_posts IDs — never call core get_permalink( $id ).
 	$permalink = '';
 	if ( method_exists( $episode, 'get_permalink' ) ) {
 		$permalink = (string) $episode->get_permalink();
-	} elseif ( function_exists( 'get_permalink' ) ) {
-		$permalink = (string) get_permalink( $id );
+	} elseif (
+		function_exists( 'streamit_get_permalink' )
+		&& method_exists( $episode, 'get_post_name' )
+	) {
+		$slug = trim( (string) $episode->get_post_name() );
+		if ( '' !== $slug ) {
+			$resolved = streamit_get_permalink( 'episode', $slug );
+			if ( is_string( $resolved ) && '' !== trim( $resolved ) ) {
+				$permalink = trim( $resolved );
+			}
+		}
 	}
 
 	$sources = method_exists( $episode, 'get_meta' ) ? $episode->get_meta( '_sources' ) : array();

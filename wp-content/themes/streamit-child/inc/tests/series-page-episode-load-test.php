@@ -63,6 +63,37 @@ if ( ! function_exists( 'streamit_child_resolve_subtitle_url' ) ) {
 	}
 }
 
+$GLOBALS['spel_wp_permalink_calls'] = array();
+
+if ( ! function_exists( 'get_permalink' ) ) {
+	function get_permalink( $post = 0, $leavename = false ) {
+		unset( $leavename );
+		$GLOBALS['spel_wp_permalink_calls'][] = (int) $post;
+		return false;
+	}
+}
+
+/**
+ * Toggle: when false, streamit_get_permalink returns '' so entry builder keeps empty permalink.
+ *
+ * @var bool
+ */
+$GLOBALS['spel_streamit_permalink_ok'] = true;
+
+if ( ! function_exists( 'streamit_get_permalink' ) ) {
+	function streamit_get_permalink( $post_type, $post_slug = '', $post_filter = '' ) {
+		unset( $post_filter );
+		if ( empty( $GLOBALS['spel_streamit_permalink_ok'] ) ) {
+			return '';
+		}
+		$post_slug = trim( (string) $post_slug );
+		if ( '' === $post_slug ) {
+			return '';
+		}
+		return 'https://example.test/' . rawurlencode( (string) $post_type ) . '/' . rawurlencode( $post_slug );
+	}
+}
+
 $GLOBALS['spel_queries']     = array();
 $GLOBALS['spel_episode_map'] = array();
 
@@ -375,6 +406,132 @@ $unlocked = streamit_child_build_series_download_catalog_from_data(
 );
 spel_assert( false === $unlocked['can_download'], 'locked catalog keeps can_download false' );
 spel_assert( '' === ( $unlocked['seasons'][0]['episodes'][0]['sources'][0]['href'] ?? 'x' ), 'locked catalog omits hrefs' );
+
+echo "\n5. Entry permalink uses Streamit API; never core get_permalink( Streamit id )\n";
+
+/**
+ * Build a Streamit-like episode without get_permalink() (production Streamit_Episode shape).
+ *
+ * @param int                  $id   Episode id.
+ * @param array<string, mixed> $data Title / slug / meta.
+ * @return object
+ */
+$spel_streamit_shaped_episode = static function ( int $id, array $data ) {
+	return new class( $id, $data ) {
+		private $id;
+		private $data;
+		public function __construct( $id, $data ) {
+			$this->id   = $id;
+			$this->data = $data;
+		}
+		public function get_id() {
+			return $this->id;
+		}
+		public function get_post_title() {
+			return $this->data['title'] ?? '';
+		}
+		public function get_post_name() {
+			return $this->data['slug'] ?? '';
+		}
+		public function get_meta( $key ) {
+			if ( '_sources' === $key ) {
+				return $this->data['sources'] ?? array();
+			}
+			if ( '_subtitles' === $key ) {
+				return $this->data['subtitles'] ?? array();
+			}
+			if ( '_season_number' === $key ) {
+				return $this->data['season_number'] ?? '';
+			}
+			if ( '_episode_number' === $key ) {
+				return $this->data['episode_number'] ?? '';
+			}
+			return null;
+		}
+	};
+};
+
+$GLOBALS['spel_wp_permalink_calls']    = array();
+$GLOBALS['spel_streamit_permalink_ok'] = true;
+$entry_ok                              = streamit_child_series_download_episode_entry_from_object(
+	$spel_streamit_shaped_episode(
+		1419,
+		array(
+			'title'          => 'S01E01',
+			'slug'           => 's01e01-success',
+			'season_number'  => '1',
+			'episode_number' => 'E01',
+			'sources'        => array(
+				array(
+					'quality'          => '1080p',
+					'download_content' => 'series/Show/S01E01.mkv',
+				),
+			),
+			'subtitles'      => array(),
+		)
+	)
+);
+spel_assert( is_array( $entry_ok ), 'entry built for Streamit-shaped episode' );
+spel_assert(
+	'https://example.test/episode/s01e01-success' === ( $entry_ok['permalink'] ?? '' ),
+	'Streamit permalink resolved from post_name'
+);
+spel_assert( array() === $GLOBALS['spel_wp_permalink_calls'], 'core get_permalink not called on success path' );
+spel_assert( 'S01E01' === ( $entry_ok['title'] ?? '' ), 'title preserved' );
+spel_assert( '1' === (string) ( $entry_ok['season_number'] ?? '' ), 'season_number preserved' );
+spel_assert( 'E01' === (string) ( $entry_ok['episode_number'] ?? '' ), 'episode_number preserved' );
+spel_assert( ! empty( $entry_ok['sources'] ) && is_array( $entry_ok['sources'] ), 'sources preserved' );
+
+$GLOBALS['spel_wp_permalink_calls']    = array();
+$GLOBALS['spel_streamit_permalink_ok'] = false;
+$entry_empty                           = streamit_child_series_download_episode_entry_from_object(
+	$spel_streamit_shaped_episode(
+		1420,
+		array(
+			'title' => 'S01E02',
+			'slug'  => 's01e02-secret',
+		)
+	)
+);
+spel_assert( '' === ( $entry_empty['permalink'] ?? 'x' ), 'empty permalink when Streamit resolution returns empty' );
+spel_assert( array() === $GLOBALS['spel_wp_permalink_calls'], 'core get_permalink not called when Streamit URL empty' );
+
+$GLOBALS['spel_wp_permalink_calls']    = array();
+$GLOBALS['spel_streamit_permalink_ok'] = true;
+$entry_no_slug                         = streamit_child_series_download_episode_entry_from_object(
+	$spel_streamit_shaped_episode(
+		1421,
+		array(
+			'title' => 'No slug',
+			'slug'  => '',
+		)
+	)
+);
+spel_assert( '' === ( $entry_no_slug['permalink'] ?? 'x' ), 'empty permalink when post_name missing' );
+spel_assert( array() === $GLOBALS['spel_wp_permalink_calls'], 'core get_permalink not called when slug missing' );
+
+$GLOBALS['spel_wp_permalink_calls'] = array();
+$double                             = new class() {
+	public function get_id() {
+		return 999;
+	}
+	public function get_post_title() {
+		return 'Double';
+	}
+	public function get_permalink() {
+		return 'https://example.test/episode-double';
+	}
+	public function get_meta( $key ) {
+		unset( $key );
+		return null;
+	}
+};
+$entry_double = streamit_child_series_download_episode_entry_from_object( $double );
+spel_assert(
+	'https://example.test/episode-double' === ( $entry_double['permalink'] ?? '' ),
+	'test doubles with get_permalink() still win'
+);
+spel_assert( array() === $GLOBALS['spel_wp_permalink_calls'], 'core get_permalink not called for method doubles' );
 
 echo "\n";
 if ( 0 === $failures ) {
