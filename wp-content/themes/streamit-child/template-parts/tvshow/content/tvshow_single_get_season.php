@@ -162,8 +162,17 @@ $slick_args = array(
 														}
 													}
 
-													foreach ( $episode_posts as $episode ) {
-														streamit_get_template( 'episode/content/episode_single_slider.php', array( 'episode' => $episode ) );
+													if ( function_exists( 'streamit_child_tvshow_time_begin' ) ) {
+														streamit_child_tvshow_time_begin( 'slider_cards' );
+													}
+													try {
+														foreach ( $episode_posts as $episode ) {
+															streamit_get_template( 'episode/content/episode_single_slider.php', array( 'episode' => $episode ) );
+														}
+													} finally {
+														if ( function_exists( 'streamit_child_tvshow_time_end' ) ) {
+															streamit_child_tvshow_time_end( 'slider_cards' );
+														}
 													}
 													$slider_episodes_loaded = true;
 												}

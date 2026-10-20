@@ -155,6 +155,19 @@ assert_eq( 1, count( $GLOBALS['tvshow_timing_test_logs'] ), 'repeated begin stil
 streamit_child_tvshow_time_end( 'episode_objects' );
 assert_eq( 1, count( $GLOBALS['tvshow_timing_test_logs'] ), 'second end after close is ignored' );
 
+// 3b) slider_cards is allowlisted and follows the same opt-in emission rules.
+assert_true( in_array( 'slider_cards', streamit_child_tvshow_timing_phases(), true ), 'slider_cards is an allowlisted phase' );
+streamit_child_tvshow_timing_reset();
+tvshow_timing_capture_logs();
+streamit_child_tvshow_time_begin( 'slider_cards' );
+usleep( 1000 );
+streamit_child_tvshow_time_end( 'slider_cards' );
+assert_eq( 1, count( $GLOBALS['tvshow_timing_test_logs'] ), 'slider_cards emits one line when enabled' );
+assert_true(
+	(bool) preg_match( '/^STC_TVSHOW_TIMING phase=slider_cards ms=\d+\.\d{2}$/', $GLOBALS['tvshow_timing_test_logs'][0] ),
+	'slider_cards line uses fixed label format: ' . $GLOBALS['tvshow_timing_test_logs'][0]
+);
+
 // 4) Instrumentation helpers do not change catalog/helper return values.
 streamit_child_tvshow_timing_reset();
 tvshow_timing_capture_logs();

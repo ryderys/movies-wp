@@ -15,8 +15,10 @@ defined( 'ABSPATH' ) || exit;
  *
  * Overlap note (TV-show single path):
  * - `template_render` wraps the season + download template includes and therefore
- *   contains the nested `get_available_seasons`, `episode_objects`, and
- *   `download_catalog` phases. Do not sum nested phases with `template_render`.
+ *   contains the nested `get_available_seasons`, `episode_objects`, `slider_cards`,
+ *   and `download_catalog` phases. Do not sum nested phases with `template_render`.
+ * - `slider_cards` is only the episode_single_slider.php loop; it does not include
+ *   `episode_objects` hydration.
  * - `download_catalog` calls `streamit_child_get_available_seasons()` again
  *   (usually a request-cache hit) and may reuse the episode map memoized by
  *   `episode_objects`. Those nested costs are inside `download_catalog`, not additive.
@@ -27,6 +29,7 @@ function streamit_child_tvshow_timing_phases() {
 	return array(
 		'get_available_seasons',
 		'episode_objects',
+		'slider_cards',
 		'download_catalog',
 		'template_render',
 	);
