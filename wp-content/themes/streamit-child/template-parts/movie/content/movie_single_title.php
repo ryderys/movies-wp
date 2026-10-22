@@ -23,12 +23,12 @@ $secondary_title = (
 ) ? $persian_title : '';
 ?>
 <?php if ( '' !== $primary_title ) : ?>
-	<h1 class="text-uppercase mt-1 mb-2 texture-text fw-bold font-size-37">
+	<h1 class="text-uppercase mt-1 mb-2 text-white fw-bold font-size-37">
 		<?php echo esc_html( $primary_title ); ?>
 	</h1>
 <?php endif; ?>
 <?php if ( '' !== $secondary_title ) : ?>
-	<p class="streamit-child-tmdb-title mt-0 mb-3" dir="auto">
+	<p class="streamit-child-tmdb-title text-white mt-0 mb-3" dir="auto">
 		<?php echo esc_html( $secondary_title ); ?>
 	</p>
 <?php endif; ?>
