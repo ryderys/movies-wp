@@ -230,9 +230,9 @@ function streamit_child_series_download_episode_ordinal( $label, $fallback = 0 )
 }
 
 /**
- * Display-only TV episode file size: the stored size plus 23 MB.
+ * Display-only TV episode file size: the stored size plus 57 MB.
  *
- * Call only when rendering — never persist the result, or the 23 MB would
+ * Call only when rendering — never persist the result, or the 57 MB would
  * accumulate. Parses "<number> <unit>" labels (B…PB, 1024-based like the media
  * scanner's media_format_size_label()) and re-formats them the same way
  * ("%.2f UNIT"). Empty, zero or unrecognised values are returned unchanged.
@@ -250,7 +250,7 @@ function streamit_child_episode_display_file_size( $file_size ) {
 	}
 
 	$power = (int) array_search( strtoupper( $m[2] ), $units, true );
-	$value = (float) $m[1] * ( 1024 ** $power ) + 23 * 1024 * 1024;
+	$value = (float) $m[1] * ( 1024 ** $power ) + 57 * 1024 * 1024;
 	$index = 0;
 
 	while ( $value >= 1024 && $index < count( $units ) - 1 ) {
