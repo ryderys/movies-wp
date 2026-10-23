@@ -64,7 +64,6 @@
 			panel: panel,
 			title: $('[data-stc-ost-title]', panel),
 			toggle: $('[data-stc-ost-toggle]', panel),
-			toggleText: $('[data-stc-ost-toggle-text]', panel),
 			stop: $('[data-stc-ost-stop]', panel),
 			seek: $('[data-stc-ost-seek]', panel),
 			current: $('[data-stc-ost-current]', panel),
@@ -100,10 +99,8 @@
 			? (parts.toggle.getAttribute('data-label-pause') || 'توقف')
 			: (parts.toggle.getAttribute('data-label-play') || 'پخش');
 		parts.toggle.setAttribute('aria-label', label);
+		parts.toggle.title = label;
 		parts.toggle.classList.toggle('is-playing', !!playing);
-		if (parts.toggleText) {
-			parts.toggleText.textContent = label;
-		}
 	}
 
 	function syncDuration() {

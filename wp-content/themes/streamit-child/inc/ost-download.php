@@ -783,23 +783,24 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 					<div class="stc-dl-ost-player__transport">
 						<button
 							type="button"
-							class="btn btn-secondary border stc-dl-btn stc-dl-ost-player__btn"
+							class="btn btn-secondary border stc-dl-btn stc-dl-ost-player__btn stc-dl-ost-player__btn--icon"
 							data-stc-ost-toggle
 							data-label-play="<?php echo esc_attr( __( 'پخش', 'streamit' ) ); ?>"
 							data-label-pause="<?php echo esc_attr( __( 'توقف', 'streamit' ) ); ?>"
+							title="<?php esc_attr_e( 'پخش', 'streamit' ); ?>"
 							aria-label="<?php esc_attr_e( 'پخش', 'streamit' ); ?>"
 						>
-							<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-							<span data-stc-ost-toggle-text><?php esc_html_e( 'پخش', 'streamit' ); ?></span>
+							<span class="stc-dl__icon stc-dl-ost-player__icon-play" aria-hidden="true"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+							<span class="stc-dl-ost-player__icon-pause" aria-hidden="true"></span>
 						</button>
 						<button
 							type="button"
-							class="btn btn-secondary border stc-dl-btn stc-dl-ost-player__btn"
+							class="btn btn-secondary border stc-dl-btn stc-dl-ost-player__btn stc-dl-ost-player__btn--icon"
 							data-stc-ost-stop
+							title="<?php esc_attr_e( 'قطع', 'streamit' ); ?>"
 							aria-label="<?php esc_attr_e( 'قطع', 'streamit' ); ?>"
 						>
 							<span class="stc-dl__icon stc-dl-ost-player__stop-icon" aria-hidden="true"></span>
-							<span><?php esc_html_e( 'قطع', 'streamit' ); ?></span>
 						</button>
 						<span class="stc-dl-ost-player__time" data-stc-ost-current>0:00</span>
 						<label class="stc-dl-ost-player__seek-wrap">

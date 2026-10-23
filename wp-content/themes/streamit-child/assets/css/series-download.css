@@ -165,8 +165,8 @@
 }
 
 .stc-dl-ost__play.is-playing {
-	border-color: var(--stc-dl-accent, #e50914);
-	color: var(--stc-dl-accent, #e50914);
+	border-color: var(--stc-dl-accent);
+	color: var(--stc-dl-accent);
 }
 
 /* --- OST mini-player --- */
@@ -177,9 +177,9 @@
 	gap: 10px;
 	margin-bottom: 12px;
 	padding: 12px 14px;
-	border: 1px solid var(--stc-dl-border, rgba(255, 255, 255, 0.12));
-	border-radius: var(--stc-dl-radius, 8px);
-	background: rgba(255, 255, 255, 0.03);
+	border: 1px solid var(--stc-dl-border);
+	border-radius: var(--stc-dl-radius);
+	background: var(--stc-dl-surface);
 }
 
 .stc-dl-ost-player[hidden] {
@@ -195,8 +195,9 @@
 }
 
 .stc-dl-ost-player__now {
-	opacity: 0.7;
+	color: var(--stc-dl-muted);
 	font-size: 0.85rem;
+	font-weight: 500;
 	white-space: nowrap;
 }
 
@@ -213,14 +214,53 @@
 	gap: 8px 10px;
 }
 
-.stc-dl-ost-player__btn {
+.stc-dl-ost-player__btn--icon {
 	flex: 0 0 auto;
-	min-height: 36px;
+	width: 40px;
+	min-width: 40px;
+	height: 40px;
+	min-height: 40px;
+	padding: 0;
+	gap: 0;
 }
 
-.stc-dl-ost-player__btn.is-playing {
-	border-color: var(--stc-dl-accent, #e50914);
-	color: var(--stc-dl-accent, #e50914);
+.stc-dl-ost-player__btn--icon.is-playing {
+	border-color: var(--stc-dl-accent);
+	color: var(--stc-dl-accent);
+}
+
+.stc-dl-ost-player__icon-pause {
+	display: none;
+	width: 0.85em;
+	height: 0.85em;
+	position: relative;
+}
+
+.stc-dl-ost-player__icon-pause::before,
+.stc-dl-ost-player__icon-pause::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 0.22em;
+	border-radius: 1px;
+	background: currentColor;
+}
+
+.stc-dl-ost-player__icon-pause::before {
+	inset-inline-start: 0.1em;
+}
+
+.stc-dl-ost-player__icon-pause::after {
+	inset-inline-end: 0.1em;
+}
+
+.stc-dl-ost-player__btn--icon.is-playing .stc-dl-ost-player__icon-play {
+	display: none;
+}
+
+.stc-dl-ost-player__btn--icon.is-playing .stc-dl-ost-player__icon-pause {
+	display: inline-block;
 }
 
 .stc-dl-ost-player__stop-icon {
@@ -234,8 +274,9 @@
 .stc-dl-ost-player__time {
 	font-variant-numeric: tabular-nums;
 	font-size: 0.85rem;
-	opacity: 0.85;
-	min-width: 2.5em;
+	font-weight: 500;
+	color: var(--stc-dl-muted);
+	min-width: 2.75em;
 	text-align: center;
 }
 
@@ -249,7 +290,7 @@
 
 .stc-dl-ost-player__seek {
 	width: 100%;
-	accent-color: var(--stc-dl-accent, #e50914);
+	accent-color: var(--stc-dl-accent);
 	cursor: pointer;
 }
 
@@ -259,14 +300,6 @@
 }
 
 @media (max-width: 768px) {
-	.stc-dl-ost-player__transport {
-		gap: 8px;
-	}
-
-	.stc-dl-ost-player__btn {
-		flex: 1 1 auto;
-	}
-
 	.stc-dl-ost-player__seek-wrap {
 		flex: 1 1 100%;
 		order: 5;

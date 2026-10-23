@@ -125,13 +125,19 @@ h1.text-uppercase.fw-bold {
 .stc-dl-series-subs__count,
 .stc-dl-btn,
 .stc-dl__util-btn,
-.stc-dl__sub-link {
+.stc-dl__sub-link,
+.stc-dl-ost-player,
+.stc-dl-ost-player__now,
+.stc-dl-ost-player__title,
+.stc-dl-ost-player__time {
 	font-family: var(--stc-font-peyda);
 }
 
 .stc-dl__subs-label,
 .stc-dl-row__label,
-.stc-dl-series-subs__count {
+.stc-dl-series-subs__count,
+.stc-dl-ost-player__now,
+.stc-dl-ost-player__time {
 	font-weight: 500;
 }
 
@@ -140,7 +146,8 @@ h1.text-uppercase.fw-bold {
 .stc-dl-row__value,
 .stc-dl-btn,
 .stc-dl__util-btn,
-.stc-dl__sub-link {
+.stc-dl__sub-link,
+.stc-dl-ost-player__title {
 	font-weight: 600;
 }
 
