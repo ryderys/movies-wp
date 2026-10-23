@@ -269,12 +269,13 @@
 	min-height: 4.75rem;
 }
 
+/* Keep header min-height; give the logo a real visible size (auto was collapsing it). */
 #default-header.header-default .logo {
-	padding: 0.65em 0 !important;
+	padding: 0.35em 0 !important;
 	width: auto !important;
-	max-width: 10rem !important;
-	max-height: 3.5rem !important;
-	height: auto !important;
+	max-width: 12rem !important;
+	height: 2.75rem !important;
+	max-height: 2.75rem !important;
 	object-fit: contain;
 }
 
@@ -307,9 +308,10 @@
 	}
 
 	#default-header.header-default .logo {
-		padding: 0.45em 0 !important;
-		max-height: 2.85rem !important;
-		max-width: 8.75rem !important;
+		padding: 0.3em 0 !important;
+		height: 2.35rem !important;
+		max-height: 2.35rem !important;
+		max-width: 10rem !important;
 	}
 }
 
