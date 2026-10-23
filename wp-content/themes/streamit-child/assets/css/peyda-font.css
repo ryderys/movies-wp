@@ -1,0 +1,23 @@
+/**
+ * Peyda application rules only.
+ * @font-face faces are injected from PHP with absolute URLs so CSS
+ * minify/combine plugins cannot break relative font paths.
+ */
+
+body,
+button,
+input,
+select,
+textarea,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.elementor-widget,
+.elementor-heading-title,
+.elementor-widget-text-editor,
+.elementor-button-text {
+	font-family: "Peyda", Tahoma, Arial, sans-serif !important;
+}

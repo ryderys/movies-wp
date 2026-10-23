@@ -164,3 +164,131 @@ function streamit_child_enqueue_frontend_rtl_styles() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_frontend_rtl_styles', 101 );
+
+/**
+ * Absolute URI for a child-theme font file, or empty if missing.
+ *
+ * @param string $filename Font filename under assets/fonts/.
+ * @return string
+ */
+function streamit_child_peyda_font_uri( $filename ) {
+	$rel = '/assets/fonts/' . ltrim( $filename, '/' );
+	if ( ! file_exists( get_stylesheet_directory() . $rel ) ) {
+		return '';
+	}
+
+	return get_stylesheet_directory_uri() . $rel;
+}
+
+/**
+ * Build @font-face CSS with absolute URLs (safe under CSS minify/combine).
+ *
+ * @return string
+ */
+function streamit_child_peyda_font_face_css() {
+	$faces = array(
+		array( 'file' => 'PeydaWeb-Light.woff2', 'weight' => 300, 'format' => 'woff2' ),
+		array( 'file' => 'PeydaWeb-Regular.woff', 'weight' => 400, 'format' => 'woff' ),
+		array( 'file' => 'PeydaWeb-Medium.woff2', 'weight' => 500, 'format' => 'woff2' ),
+		array( 'file' => 'PeydaWeb-SemiBold.woff', 'weight' => 600, 'format' => 'woff' ),
+		array( 'file' => 'PeydaWeb-Bold.woff2', 'weight' => 700, 'format' => 'woff2' ),
+	);
+
+	$css = '';
+	foreach ( $faces as $face ) {
+		$uri = streamit_child_peyda_font_uri( $face['file'] );
+		if ( '' === $uri ) {
+			continue;
+		}
+		$css .= '@font-face{font-family:"Peyda";src:url("' . esc_url( $uri ) . '") format("' . $face['format'] . '");font-weight:' . (int) $face['weight'] . ';font-style:normal;font-display:swap;}';
+	}
+
+	return $css;
+}
+
+/**
+ * Shared font-family stack forced onto text UI (not icon fonts).
+ *
+ * @return string
+ */
+function streamit_child_peyda_font_family_css() {
+	return 'body,button,input,select,textarea,h1,h2,h3,h4,h5,h6,.elementor-widget,.elementor-heading-title,.elementor-widget-text-editor,.elementor-button-text{font-family:"Peyda",Tahoma,Arial,sans-serif!important;}';
+}
+
+/**
+ * Self-hosted Peyda webfont for Persian UI.
+ */
+function streamit_child_enqueue_peyda_font() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$css_path = get_stylesheet_directory() . '/assets/css/peyda-font.css';
+	if ( ! file_exists( $css_path ) ) {
+		return;
+	}
+
+	$deps = array( 'child-style' );
+	if ( wp_style_is( 'streamit-global', 'registered' ) || wp_style_is( 'streamit-global', 'enqueued' ) ) {
+		$deps[] = 'streamit-global';
+	}
+
+	wp_enqueue_style(
+		'streamit-child-peyda-font',
+		get_stylesheet_directory_uri() . '/assets/css/peyda-font.css',
+		$deps,
+		filemtime( $css_path )
+	);
+
+	$face_css = streamit_child_peyda_font_face_css();
+	if ( '' !== $face_css ) {
+		wp_add_inline_style( 'streamit-child-peyda-font', $face_css );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'streamit_child_enqueue_peyda_font', 102 );
+
+/**
+ * Preload the primary body weight so Persian text paints sooner.
+ */
+function streamit_child_preload_peyda_font() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$uri = streamit_child_peyda_font_uri( 'PeydaWeb-Regular.woff' );
+	if ( '' === $uri ) {
+		return;
+	}
+
+	printf(
+		'<link rel="preload" href="%s" as="font" type="font/woff" crossorigin>' . "\n",
+		esc_url( $uri )
+	);
+}
+add_action( 'wp_head', 'streamit_child_preload_peyda_font', 1 );
+
+/**
+ * Beat Redux dynamic typography (uses font-family !important on body/h1–h6).
+ */
+function streamit_child_force_peyda_font_family( $css ) {
+	return $css . streamit_child_peyda_font_family_css();
+}
+add_filter( 'st_inline_css', 'streamit_child_force_peyda_font_family', 100 );
+
+/**
+ * Last-resort override after Elementor kit CSS (prints late in wp_head).
+ */
+function streamit_child_print_peyda_font_late() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$face = streamit_child_peyda_font_face_css();
+	$fam  = streamit_child_peyda_font_family_css();
+	if ( '' === $face && '' === $fam ) {
+		return;
+	}
+
+	echo '<style id="streamit-child-peyda-late">' . $face . $fam . '</style>' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_url + fixed CSS.
+}
+add_action( 'wp_head', 'streamit_child_print_peyda_font_late', 99 );
