@@ -221,13 +221,24 @@
 	content: "\f008";
 }
 
-/* --- Header: smoked charcoal glass, compact height --- */
-#default-header.header-default {
-	background: rgba(10, 10, 12, 0.52);
-	backdrop-filter: blur(20px) saturate(120%);
-	-webkit-backdrop-filter: blur(20px) saturate(120%);
-	border: 1px solid rgba(255, 255, 255, 0.08);
+/* --- Header: real dark glass (translucent + blur), compact height ---
+ * Parent .header-sticky and Redux header background often paint opaque
+ * gray/black — force glass on default + sticky so hero art stays visible.
+ */
+#default-header.header-default,
+#default-header.header-default.header-sticky {
+	/* Low fill + strong blur = glass, not a solid black slab. */
+	background: linear-gradient(
+			180deg,
+			rgba(255, 255, 255, 0.07) 0%,
+			rgba(255, 255, 255, 0) 42%
+		),
+		rgba(0, 0, 0, 0.28) !important;
+	backdrop-filter: blur(28px) saturate(160%);
+	-webkit-backdrop-filter: blur(28px) saturate(160%);
+	border: 1px solid rgba(255, 255, 255, 0.12);
 	border-radius: 12px;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 	box-sizing: border-box;
 	/* No red underline / border branding on the bar itself. */
 }
