@@ -186,12 +186,16 @@ function streamit_child_peyda_font_uri( $filename ) {
  * @return string
  */
 function streamit_child_peyda_font_face_css() {
+	// Static files only (no variable font). 800/900 alias Bold so parent
+	// theme rules like .slider-text { font-weight: 800 } load a real face.
 	$faces = array(
 		array( 'file' => 'PeydaWeb-Light.woff2', 'weight' => 300, 'format' => 'woff2' ),
 		array( 'file' => 'PeydaWeb-Regular.woff', 'weight' => 400, 'format' => 'woff' ),
 		array( 'file' => 'PeydaWeb-Medium.woff2', 'weight' => 500, 'format' => 'woff2' ),
 		array( 'file' => 'PeydaWeb-SemiBold.woff', 'weight' => 600, 'format' => 'woff' ),
 		array( 'file' => 'PeydaWeb-Bold.woff2', 'weight' => 700, 'format' => 'woff2' ),
+		array( 'file' => 'PeydaWeb-Bold.woff2', 'weight' => 800, 'format' => 'woff2' ),
+		array( 'file' => 'PeydaWeb-Bold.woff2', 'weight' => 900, 'format' => 'woff2' ),
 	);
 
 	$css = '';
@@ -212,7 +216,25 @@ function streamit_child_peyda_font_face_css() {
  * @return string
  */
 function streamit_child_peyda_font_family_css() {
-	return 'body,button,input,select,textarea,h1,h2,h3,h4,h5,h6,.elementor-widget,.elementor-heading-title,.elementor-widget-text-editor,.elementor-button-text{font-family:"Peyda",Tahoma,Arial,sans-serif!important;}';
+	return 'body,button,input,select,textarea,h1,h2,h3,h4,h5,h6,p,a,.elementor-widget,.elementor-heading-title,.elementor-widget-text-editor,.elementor-button-text,.slider-text,.css_prefix-title,.title-tag,.menu-title{font-family:"Peyda",Tahoma,Arial,sans-serif!important;}';
+}
+
+/**
+ * Critical weight hierarchy — late/high priority so parent font-weight:800
+ * and Elementor kit rules cannot flatten Peyda to a synthetic bold.
+ *
+ * @return string
+ */
+function streamit_child_peyda_weight_hierarchy_css() {
+	return '.slider-text,.slider-text.texture-text{font-weight:700!important;}'
+		. 'h1.font-size-37,.detail-page h1{font-weight:700!important;}'
+		. '.streamit-card-title .title-tag,.title .title-tag{font-weight:700!important;}'
+		. '.css_prefix-title,.card-description .css_prefix-title,.card-description .css_prefix-title a{font-weight:600!important;}'
+		. '.btn,.hover-card-action-btn,.view-all-btn a{font-weight:600!important;}'
+		. '#site-navigation .menu-title{font-weight:500!important;}'
+		. '.imdb-ratting,.movie-time-text,.movie-time,.movie-language{font-weight:400!important;}'
+		. '.streamit-child-card-fa-title{font-weight:300!important;}'
+		. '.streamit-child-tmdb-title{font-weight:400!important;}';
 }
 
 /**
@@ -271,7 +293,7 @@ add_action( 'wp_head', 'streamit_child_preload_peyda_font', 1 );
  * Beat Redux dynamic typography (uses font-family !important on body/h1–h6).
  */
 function streamit_child_force_peyda_font_family( $css ) {
-	return $css . streamit_child_peyda_font_family_css();
+	return $css . streamit_child_peyda_font_family_css() . streamit_child_peyda_weight_hierarchy_css();
 }
 add_filter( 'st_inline_css', 'streamit_child_force_peyda_font_family', 100 );
 
@@ -285,10 +307,11 @@ function streamit_child_print_peyda_font_late() {
 
 	$face = streamit_child_peyda_font_face_css();
 	$fam  = streamit_child_peyda_font_family_css();
-	if ( '' === $face && '' === $fam ) {
+	$wts  = streamit_child_peyda_weight_hierarchy_css();
+	if ( '' === $face && '' === $fam && '' === $wts ) {
 		return;
 	}
 
-	echo '<style id="streamit-child-peyda-late">' . $face . $fam . '</style>' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_url + fixed CSS.
+	echo '<style id="streamit-child-peyda-late">' . $face . $fam . $wts . '</style>' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_url + fixed CSS.
 }
 add_action( 'wp_head', 'streamit_child_print_peyda_font_late', 99 );

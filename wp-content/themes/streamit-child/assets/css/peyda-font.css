@@ -1,8 +1,20 @@
 /**
- * Peyda application rules only.
- * @font-face faces are injected from PHP with absolute URLs so CSS
- * minify/combine plugins cannot break relative font paths.
+ * Peyda family + typography hierarchy for ASIASTAR.
+ *
+ * @font-face faces are injected from PHP (rtl-default.php) with absolute URLs
+ * so CSS minify/combine cannot break relative font paths.
+ *
+ * Available static weights: 300 Light, 400 Regular, 500 Medium,
+ * 600 SemiBold, 700 Bold (also aliased to 800/900 in PHP).
  */
+
+:root {
+	--stc-font-peyda: "Peyda", Tahoma, Arial, sans-serif;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Family (icons keep their own stacks)                                       */
+/* -------------------------------------------------------------------------- */
 
 body,
 button,
@@ -15,9 +27,227 @@ h3,
 h4,
 h5,
 h6,
+p,
+a,
 .elementor-widget,
 .elementor-heading-title,
 .elementor-widget-text-editor,
-.elementor-button-text {
-	font-family: "Peyda", Tahoma, Arial, sans-serif !important;
+.elementor-button-text,
+.slider-text,
+.css_prefix-title,
+.title-tag,
+.menu-title,
+.trending-list,
+.card-description,
+.streamit-child-tmdb-title,
+.streamit-child-card-fa-title,
+.streamit-child-tmdb-status {
+	font-family: var(--stc-font-peyda);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Base body                                                                  */
+/* -------------------------------------------------------------------------- */
+
+body {
+	font-weight: 400;
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Hero / featured banner titles                                              */
+/* Parent theme uses ~4.375em + weight 800; keep size, use real Bold.         */
+/* -------------------------------------------------------------------------- */
+
+.slider-text,
+.slider-text.texture-text,
+.css_prefix-banner .slider-text,
+.css_prefix-banner-thumb-slider .slider-text,
+.vertical-banner-info-desc .slider-text {
+	font-family: var(--stc-font-peyda);
+	font-weight: 700;
+	line-height: 1.15;
+	letter-spacing: normal;
+}
+
+@media (max-width: 991.98px) {
+	.slider-text,
+	.slider-text.texture-text {
+		font-weight: 700;
+	}
+}
+
+@media (max-width: 575.98px) {
+	.slider-text,
+	.slider-text.texture-text {
+		font-size: clamp(1.75rem, 8vw, 2.5rem);
+		font-weight: 700;
+	}
+}
+
+/* -------------------------------------------------------------------------- */
+/* Main page titles (movie / TV single)                                       */
+/* -------------------------------------------------------------------------- */
+
+.detail-page h1,
+.detail-page h1.font-size-37,
+h1.font-size-37,
+h1.text-uppercase.fw-bold {
+	font-family: var(--stc-font-peyda);
+	font-weight: 700;
+	line-height: 1.2;
+	font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+}
+
+/* Persian secondary under English primary on singles */
+.streamit-child-tmdb-title {
+	font-weight: 400;
+}
+
+.streamit-child-tmdb-status {
+	font-weight: 500;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Section headings (rail / slider block titles)                              */
+/* -------------------------------------------------------------------------- */
+
+.streamit-card-title .title-tag,
+.streamit-card-title .title .title-tag,
+.title .title-tag {
+	font-family: var(--stc-font-peyda);
+	font-weight: 700;
+	font-size: clamp(1.25rem, 2vw, 1.75rem);
+	line-height: 1.3;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Movie / TV card titles                                                     */
+/* -------------------------------------------------------------------------- */
+
+.css_prefix-title,
+.card-description .css_prefix-title,
+.card-description .css_prefix-title a,
+h5.css_prefix-title {
+	font-family: var(--stc-font-peyda);
+	font-weight: 600;
+	font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
+	line-height: 1.35;
+}
+
+/* Persian subtitle under English card title */
+.streamit-child-card-fa-title {
+	font-weight: 400;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Subheadings                                                                */
+/* -------------------------------------------------------------------------- */
+
+h3,
+h4,
+.elementor-heading-title {
+	font-weight: 600;
+}
+
+h2:not(.slider-text) {
+	font-weight: 700;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Descriptions / body copy                                                   */
+/* -------------------------------------------------------------------------- */
+
+.trending-list,
+.trending-list .genres,
+.trending-list .tag,
+.trending-list .starring,
+.trending-info p,
+.elementor-widget-text-editor,
+.card-description p {
+	font-weight: 400;
+	font-size: clamp(0.875rem, 1.1vw, 1rem);
+	line-height: 1.55;
+}
+
+.trending-list .genres,
+.trending-list .tag,
+.trending-list .starring {
+	font-weight: 500;
+}
+
+.trending-list .genres span,
+.trending-list .tag span,
+.trending-list .starring span {
+	font-weight: 400;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Metadata (IMDb, runtime, language, genre chips)                            */
+/* -------------------------------------------------------------------------- */
+
+.imdb-ratting,
+.imdb-ratting .rating-text,
+.movie-time,
+.movie-time-text,
+.movie-language,
+.release-date,
+.genres-list li,
+.genres-list li a {
+	font-family: var(--stc-font-peyda);
+	font-weight: 400;
+	font-size: clamp(0.75rem, 1vw, 0.875rem);
+	line-height: 1.4;
+}
+
+.genres-list li {
+	font-weight: 500;
+}
+
+/* Soft secondary — only where already faded */
+.streamit-child-card-fa-title,
+.continue-watching-desc .streamit-child-card-fa-title {
+	font-weight: 300;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Buttons & important controls                                               */
+/* -------------------------------------------------------------------------- */
+
+.btn,
+.btn.btn-primary,
+.hover-card-action-btn,
+.view-all-btn a,
+.subscribe-btn,
+.watch-list-btn {
+	font-family: var(--stc-font-peyda);
+	font-weight: 600;
+}
+
+.view-all-btn a {
+	font-size: clamp(0.8125rem, 1vw, 0.9375rem);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Navigation                                                                 */
+/* -------------------------------------------------------------------------- */
+
+#site-navigation .menu-title,
+.header-default #site-navigation .menu-title,
+.css_prefix-menu-item-text {
+	font-family: var(--stc-font-peyda);
+	font-weight: 500;
+}
+
+#site-navigation .sf-menu > li.current-menu-item > a .menu-title,
+#site-navigation .sf-menu > li.current_page_item > a .menu-title,
+#site-navigation .sf-menu > li.current-menu-ancestor > a .menu-title {
+	font-weight: 600;
+}
+
+/* Keep Font Awesome icons on their own face (do not inherit Peyda). */
+#site-navigation li[class*="menu-icon-"] > a .menu-title::before {
+	font-family: "Font Awesome 6 Free";
+	font-weight: 900;
 }
