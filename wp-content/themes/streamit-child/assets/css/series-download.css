@@ -164,6 +164,11 @@
 	white-space: nowrap;
 }
 
+.stc-dl-ost__play.is-playing {
+	border-color: var(--stc-dl-accent, #e50914);
+	color: var(--stc-dl-accent, #e50914);
+}
+
 .stc-dl-btn:focus-visible,
 .stc-dl__util-btn:focus-visible,
 .stc-dl-season__toggle:focus-visible,

@@ -4,7 +4,7 @@
  *
  * Tracks stay on the media server. Paths are validated under the title
  * `_media_directory` + `/OST/` with an allowlisted audio extension, then
- * signed with type `d` (attachment) via the existing mint.
+ * signed via the existing mint: type `d` (download) and `v` (inline play).
  *
  * @package streamit-child
  */
@@ -105,15 +105,19 @@ function streamit_child_is_allowed_ost_media_path( $title_directory, $relative )
 }
 
 /**
- * Signed download URL for one OST path, or empty when locked/invalid.
+ * Signed media URL for one OST path, or empty when locked/invalid.
  *
- * Always mints type `d` so verify.php sends Content-Disposition: attachment.
- *
- * @param string $relative_path Relative path under media root.
+ * @param string $relative_path   Relative path under media root.
  * @param string $title_directory Title `_media_directory`.
+ * @param string $type            `d` (download) or `v` (stream/play).
  * @return string
  */
-function streamit_child_resolve_ost_download_url( $relative_path, $title_directory ) {
+function streamit_child_resolve_ost_media_url( $relative_path, $title_directory, $type = 'd' ) {
+	$type = strtolower( (string) $type );
+	if ( ! in_array( $type, array( 'd', 'v' ), true ) ) {
+		return '';
+	}
+
 	if ( ! streamit_child_is_allowed_ost_media_path( $title_directory, $relative_path ) ) {
 		return '';
 	}
@@ -123,7 +127,7 @@ function streamit_child_resolve_ost_download_url( $relative_path, $title_directo
 		return '';
 	}
 
-	$signed = movies_wp_media_signed_url( $relative_path, 'd' );
+	$signed = movies_wp_media_signed_url( $relative_path, $type );
 	if ( is_wp_error( $signed ) ) {
 		return '';
 	}
@@ -134,6 +138,28 @@ function streamit_child_resolve_ost_download_url( $relative_path, $title_directo
 	}
 
 	return $signed;
+}
+
+/**
+ * Signed download URL for one OST path (type `d` / attachment).
+ *
+ * @param string $relative_path Relative path under media root.
+ * @param string $title_directory Title `_media_directory`.
+ * @return string
+ */
+function streamit_child_resolve_ost_download_url( $relative_path, $title_directory ) {
+	return streamit_child_resolve_ost_media_url( $relative_path, $title_directory, 'd' );
+}
+
+/**
+ * Signed stream URL for one OST path (type `v` / inline playback).
+ *
+ * @param string $relative_path Relative path under media root.
+ * @param string $title_directory Title `_media_directory`.
+ * @return string
+ */
+function streamit_child_resolve_ost_stream_url( $relative_path, $title_directory ) {
+	return streamit_child_resolve_ost_media_url( $relative_path, $title_directory, 'v' );
 }
 
 /**
@@ -686,12 +712,14 @@ function streamit_child_build_ost_download_rows( $st_data, $can_download = true 
 			continue;
 		}
 
-		$href = '';
+		$href        = '';
+		$stream_href = '';
 		if ( $can_download ) {
 			$href = streamit_child_resolve_ost_download_url( $path, $title_directory );
 			if ( '' === $href ) {
 				continue;
 			}
+			$stream_href = streamit_child_resolve_ost_stream_url( $path, $title_directory );
 		}
 
 		$title = $filename;
@@ -700,10 +728,11 @@ function streamit_child_build_ost_download_rows( $st_data, $can_download = true 
 		}
 
 		$rows[] = array(
-			'filename'   => $filename,
-			'size_label' => $size,
-			'title'      => $title,
-			'href'       => $href,
+			'filename'    => $filename,
+			'size_label'  => $size,
+			'title'       => $title,
+			'href'        => $href,
+			'stream_href' => $stream_href,
 		);
 	}
 
@@ -723,8 +752,12 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 
 	$can_download = (bool) $can_download;
 	$count        = count( $ost_rows );
+
+	if ( function_exists( 'streamit_child_enqueue_ost_player_assets' ) ) {
+		streamit_child_enqueue_ost_player_assets();
+	}
 	?>
-	<details class="stc-dl-series-subs stc-dl-ost">
+	<details class="stc-dl-series-subs stc-dl-ost" data-stc-ost>
 		<summary class="stc-dl-series-subs__toggle">
 			<span class="stc-dl-series-subs__meta">
 				<span class="stc-dl-series-subs__title">
@@ -748,8 +781,13 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 					$size_label     = isset( $track['size_label'] ) ? (string) $track['size_label'] : '';
 					$title          = isset( $track['title'] ) ? (string) $track['title'] : $filename;
 					$href           = isset( $track['href'] ) ? (string) $track['href'] : '';
+					$stream_href    = isset( $track['stream_href'] ) ? (string) $track['stream_href'] : '';
 					/* translators: %s: soundtrack filename */
 					$download_label = sprintf( __( 'دانلود %s', 'streamit' ), $filename );
+					/* translators: %s: soundtrack filename */
+					$play_label     = sprintf( __( 'پخش %s', 'streamit' ), $filename );
+					/* translators: %s: soundtrack filename */
+					$pause_label    = sprintf( __( 'توقف %s', 'streamit' ), $filename );
 					?>
 					<li class="stc-dl-row stc-dl-row--ost">
 						<div class="stc-dl-row__cell stc-dl-row__cell--quality">
@@ -765,6 +803,36 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 							<?php endif; ?>
 						</div>
 						<div class="stc-dl-row__actions">
+							<?php if ( $can_download && '' !== $stream_href ) : ?>
+								<button
+									type="button"
+									class="btn btn-secondary border stc-dl-btn stc-dl-ost__play"
+									data-stc-ost-play
+									data-src="<?php echo esc_url( $stream_href ); ?>"
+									data-label-play="<?php echo esc_attr( __( 'پخش', 'streamit' ) ); ?>"
+									data-label-pause="<?php echo esc_attr( __( 'توقف', 'streamit' ) ); ?>"
+									data-aria-play="<?php echo esc_attr( $play_label ); ?>"
+									data-aria-pause="<?php echo esc_attr( $pause_label ); ?>"
+									title="<?php echo esc_attr( $play_label ); ?>"
+									aria-label="<?php echo esc_attr( $play_label ); ?>"
+								>
+									<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+									<span class="stc-dl-ost__play-text"><?php esc_html_e( 'پخش', 'streamit' ); ?></span>
+								</button>
+							<?php elseif ( ! $can_download ) : ?>
+								<button
+									type="button"
+									class="btn btn-secondary border stc-dl-btn stc-dl-ost__play"
+									title="<?php echo esc_attr( $play_label ); ?>"
+									aria-label="<?php echo esc_attr( $play_label ); ?>"
+									data-bs-toggle="modal"
+									data-bs-target="#subscribeRequiredModal"
+								>
+									<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+									<span><?php esc_html_e( 'پخش', 'streamit' ); ?></span>
+								</button>
+							<?php endif; ?>
+
 							<?php if ( $can_download && '' !== $href ) : ?>
 								<a
 									class="btn btn-primary stc-dl-btn"
@@ -800,4 +868,23 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 		</div>
 	</details>
 	<?php
+}
+
+/**
+ * Enqueue OST inline player script (call when the OST section is rendered).
+ */
+function streamit_child_enqueue_ost_player_assets() {
+	$js_path = get_stylesheet_directory() . '/assets/js/ost-player.js';
+
+	if ( ! file_exists( $js_path ) ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'streamit-child-ost-player',
+		get_stylesheet_directory_uri() . '/assets/js/ost-player.js',
+		array(),
+		(string) filemtime( $js_path ),
+		true
+	);
 }
