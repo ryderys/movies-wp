@@ -335,3 +335,36 @@ h2:not(.slider-text):not(.title) {
 	font-family: "Font Awesome 6 Free";
 	font-weight: 900;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Footer — match title/card weight so copyright + widgets aren't thin        */
+/* -------------------------------------------------------------------------- */
+
+.css_prefix-footer,
+.css_prefix-footer .widget,
+.css_prefix-footer .widget-title,
+.css_prefix-footer p,
+.css_prefix-footer a,
+.css_prefix-footer li,
+.copyright-footer,
+.copyright-footer .copyright,
+.copyright-footer a,
+.copyright-footer p {
+	font-family: var(--stc-font-peyda);
+}
+
+.css_prefix-footer .widget-title {
+	font-weight: 700;
+}
+
+.css_prefix-footer,
+.css_prefix-footer .widget,
+.css_prefix-footer p,
+.css_prefix-footer a,
+.css_prefix-footer li,
+.copyright-footer,
+.copyright-footer .copyright,
+.copyright-footer a,
+.copyright-footer p {
+	font-weight: 600;
+}
