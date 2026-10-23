@@ -221,26 +221,26 @@
 	content: "\f008";
 }
 
-/* --- Header: real dark glass (translucent + blur), compact height ---
- * Parent .header-sticky and Redux header background often paint opaque
- * gray/black — force glass on default + sticky so hero art stays visible.
+/* --- Header: dark red glass (translucent crimson + blur), compact height ---
+ * Parent .header-sticky / Redux solid backgrounds are overridden so the bar
+ * stays frosted red glass, not opaque black or solid burgundy.
  */
 #default-header.header-default,
 #default-header.header-default.header-sticky {
-	/* Low fill + strong blur = glass, not a solid black slab. */
+	/* Dark red tint at low opacity + strong blur = glass, hero still readable. */
 	background: linear-gradient(
 			180deg,
-			rgba(255, 255, 255, 0.07) 0%,
-			rgba(255, 255, 255, 0) 42%
+			rgba(255, 120, 140, 0.1) 0%,
+			rgba(255, 40, 60, 0) 45%
 		),
-		rgba(0, 0, 0, 0.28) !important;
-	backdrop-filter: blur(28px) saturate(160%);
-	-webkit-backdrop-filter: blur(28px) saturate(160%);
-	border: 1px solid rgba(255, 255, 255, 0.12);
+		rgba(90, 6, 18, 0.38) !important;
+	backdrop-filter: blur(28px) saturate(180%);
+	-webkit-backdrop-filter: blur(28px) saturate(180%);
+	border: 1px solid rgba(255, 90, 110, 0.18);
 	border-radius: 12px;
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+	box-shadow: inset 0 1px 0 rgba(255, 160, 170, 0.08);
 	box-sizing: border-box;
-	/* No red underline / border branding on the bar itself. */
+	/* No solid red underline — the glass tint is the branding. */
 }
 
 /* Header dropdown stacking: keep menus above hero/media containers, but below Bootstrap modals.
@@ -286,13 +286,13 @@
 	}
 }
 
-/* Dropdown/sub-menu: dark smoked glass (not burgundy). */
+/* Dropdown/sub-menu: matching dark red glass. */
 .header-default #site-navigation ul.sub-menu,
 .header-default #site-navigation .sub-menu {
-	background-color: rgba(14, 14, 18, 0.92);
-	backdrop-filter: blur(16px);
-	-webkit-backdrop-filter: blur(16px);
-	border: 1px solid rgba(255, 255, 255, 0.08);
+	background-color: rgba(70, 5, 16, 0.88);
+	backdrop-filter: blur(16px) saturate(160%);
+	-webkit-backdrop-filter: blur(16px) saturate(160%);
+	border: 1px solid rgba(255, 90, 110, 0.16);
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
 	border-radius: 8px;
 	padding: 8px 0;
