@@ -113,12 +113,16 @@ h1.text-uppercase.fw-bold {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Section headings (rail / slider block titles)                              */
+/* Section headings (rail / slider / detail: Trailer, Episodes, …)            */
 /* -------------------------------------------------------------------------- */
 
 .streamit-card-title .title-tag,
 .streamit-card-title .title .title-tag,
-.title .title-tag {
+.title .title-tag,
+.main-title,
+h5.main-title,
+.streamit-child-detail-trailer-section .main-title,
+.episode-section .main-title {
 	font-family: var(--stc-font-peyda);
 	font-weight: 700;
 	font-size: clamp(1.25rem, 2vw, 1.75rem);
@@ -228,6 +232,7 @@ h2:not(.slider-text):not(.title) {
 
 /* -------------------------------------------------------------------------- */
 /* Buttons & important controls                                               */
+/* Detail tags (e.g. Limited Series) use pill links, not .btn.                */
 /* -------------------------------------------------------------------------- */
 
 .btn,
@@ -235,7 +240,18 @@ h2:not(.slider-text):not(.title) {
 .hover-card-action-btn,
 .view-all-btn a,
 .subscribe-btn,
-.watch-list-btn {
+.watch-list-btn,
+.detail-part .movie-tags li a,
+.detail-part .tvshow-tags li a,
+.detail-part .video-tags li a,
+.movie-tags li a,
+.tvshow-tags li a,
+.video-tags li a,
+.episode-nav-btn .nav-link,
+.episode-nav-btn .css_prefix-change-season,
+.badge.bg-secondary .fw-medium,
+.timeline-badge,
+.view-more-episode-btn {
 	font-family: var(--stc-font-peyda);
 	font-weight: 600;
 }

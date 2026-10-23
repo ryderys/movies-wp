@@ -216,7 +216,7 @@ function streamit_child_peyda_font_face_css() {
  * @return string
  */
 function streamit_child_peyda_font_family_css() {
-	return 'body,button,input,select,textarea,h1,h2,h3,h4,h5,h6,p,a,.elementor-widget,.elementor-heading-title,.elementor-widget-text-editor,.elementor-button-text,.slider-text,.css_prefix-title,.title-tag,.menu-title,.css_prefix-menu-item-title,.css_prefix-menu-item-text,.movie-description,.tvshow-description,.readmore-text,.slider-desc,.verticle-title,.streamit-child-card-fa-title{font-family:"Peyda",Tahoma,Arial,sans-serif!important;}';
+	return 'body,button,input,select,textarea,h1,h2,h3,h4,h5,h6,p,a,.elementor-widget,.elementor-heading-title,.elementor-widget-text-editor,.elementor-button-text,.slider-text,.css_prefix-title,.title-tag,.main-title,.menu-title,.css_prefix-menu-item-title,.css_prefix-menu-item-text,.movie-description,.tvshow-description,.readmore-text,.slider-desc,.verticle-title,.streamit-child-card-fa-title,.movie-tags li a,.tvshow-tags li a,.video-tags li a,.episode-nav-btn .nav-link{font-family:"Peyda",Tahoma,Arial,sans-serif!important;}';
 }
 
 /**
@@ -228,10 +228,10 @@ function streamit_child_peyda_font_family_css() {
 function streamit_child_peyda_weight_hierarchy_css() {
 	return '.slider-text,.slider-text.texture-text{font-weight:700!important;}'
 		. 'h1.font-size-37,.detail-page h1{font-weight:700!important;}'
-		. '.streamit-card-title .title-tag,.title .title-tag{font-weight:700!important;}'
+		. '.streamit-card-title .title-tag,.title .title-tag,.main-title,h5.main-title{font-weight:700!important;}'
 		. '.css_prefix-title,.card-description .css_prefix-title,.card-description .css_prefix-title a,.vertical-banner-info-desc h2.title,.verticle-title,.css_prefix-verticle-title,.streamit-child-card-fa-title{font-weight:600!important;}'
 		. '.movie-description,.movie-description .readmore-text,.tvshow-description,.tvshow-description .readmore-text,.episode-description .readmore-text,.slider-desc,.trending-dec,.season-excerpt,.vertical-banner-info-desc .description{font-weight:500!important;}'
-		. '.btn,.hover-card-action-btn,.view-all-btn a{font-weight:600!important;}'
+		. '.btn,.hover-card-action-btn,.view-all-btn a,.movie-tags li a,.tvshow-tags li a,.video-tags li a,.episode-nav-btn .nav-link,.episode-nav-btn .css_prefix-change-season{font-weight:600!important;}'
 		. '#site-navigation .menu-title,#site-navigation .css_prefix-menu-item-title,#site-navigation .css_prefix-menu-item-text{font-weight:500!important;}'
 		. '#site-navigation .sf-menu > li.current-menu-item > a .menu-title,#site-navigation .sf-menu > li.current-menu-item > a .css_prefix-menu-item-title,#site-navigation .sf-menu > li.current_page_item > a .menu-title,#site-navigation .sf-menu > li.current_page_item > a .css_prefix-menu-item-title{font-weight:600!important;}'
 		. '.imdb-ratting,.movie-time-text,.movie-time,.movie-language{font-weight:400!important;}'
