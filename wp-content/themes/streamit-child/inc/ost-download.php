@@ -774,6 +774,52 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 		</summary>
 
 		<div class="stc-dl-series-subs__panel">
+			<?php if ( $can_download ) : ?>
+				<div class="stc-dl-ost-player" data-stc-ost-player hidden>
+					<div class="stc-dl-ost-player__meta">
+						<span class="stc-dl-ost-player__now"><?php esc_html_e( 'در حال پخش:', 'streamit' ); ?></span>
+						<bdi class="stc-dl-ost-player__title" data-stc-ost-title></bdi>
+					</div>
+					<div class="stc-dl-ost-player__transport">
+						<button
+							type="button"
+							class="btn btn-secondary border stc-dl-btn stc-dl-ost-player__btn"
+							data-stc-ost-toggle
+							data-label-play="<?php echo esc_attr( __( 'پخش', 'streamit' ) ); ?>"
+							data-label-pause="<?php echo esc_attr( __( 'توقف', 'streamit' ) ); ?>"
+							aria-label="<?php esc_attr_e( 'پخش', 'streamit' ); ?>"
+						>
+							<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+							<span data-stc-ost-toggle-text><?php esc_html_e( 'پخش', 'streamit' ); ?></span>
+						</button>
+						<button
+							type="button"
+							class="btn btn-secondary border stc-dl-btn stc-dl-ost-player__btn"
+							data-stc-ost-stop
+							aria-label="<?php esc_attr_e( 'قطع', 'streamit' ); ?>"
+						>
+							<span class="stc-dl__icon stc-dl-ost-player__stop-icon" aria-hidden="true"></span>
+							<span><?php esc_html_e( 'قطع', 'streamit' ); ?></span>
+						</button>
+						<span class="stc-dl-ost-player__time" data-stc-ost-current>0:00</span>
+						<label class="stc-dl-ost-player__seek-wrap">
+							<span class="screen-reader-text"><?php esc_html_e( 'موقعیت پخش', 'streamit' ); ?></span>
+							<input
+								type="range"
+								class="stc-dl-ost-player__seek"
+								min="0"
+								max="0"
+								value="0"
+								step="0.1"
+								data-stc-ost-seek
+								disabled
+							/>
+						</label>
+						<span class="stc-dl-ost-player__time" data-stc-ost-duration>0:00</span>
+					</div>
+				</div>
+			<?php endif; ?>
+
 			<ul class="stc-dl__rows stc-dl-ost__rows">
 				<?php foreach ( $ost_rows as $track ) : ?>
 					<?php
@@ -786,8 +832,6 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 					$download_label = sprintf( __( 'دانلود %s', 'streamit' ), $filename );
 					/* translators: %s: soundtrack filename */
 					$play_label     = sprintf( __( 'پخش %s', 'streamit' ), $filename );
-					/* translators: %s: soundtrack filename */
-					$pause_label    = sprintf( __( 'توقف %s', 'streamit' ), $filename );
 					?>
 					<li class="stc-dl-row stc-dl-row--ost">
 						<div class="stc-dl-row__cell stc-dl-row__cell--quality">
@@ -809,15 +853,12 @@ function streamit_child_render_ost_download_section( array $ost_rows, $can_downl
 									class="btn btn-secondary border stc-dl-btn stc-dl-ost__play"
 									data-stc-ost-play
 									data-src="<?php echo esc_url( $stream_href ); ?>"
-									data-label-play="<?php echo esc_attr( __( 'پخش', 'streamit' ) ); ?>"
-									data-label-pause="<?php echo esc_attr( __( 'توقف', 'streamit' ) ); ?>"
-									data-aria-play="<?php echo esc_attr( $play_label ); ?>"
-									data-aria-pause="<?php echo esc_attr( $pause_label ); ?>"
+									data-title="<?php echo esc_attr( $filename ); ?>"
 									title="<?php echo esc_attr( $play_label ); ?>"
 									aria-label="<?php echo esc_attr( $play_label ); ?>"
 								>
 									<span class="stc-dl__icon" aria-hidden="true"><?php echo st_get_icon( 'play' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-									<span class="stc-dl-ost__play-text"><?php esc_html_e( 'پخش', 'streamit' ); ?></span>
+									<span><?php esc_html_e( 'پخش', 'streamit' ); ?></span>
 								</button>
 							<?php elseif ( ! $can_download ) : ?>
 								<button
