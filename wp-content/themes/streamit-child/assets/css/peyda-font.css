@@ -104,12 +104,48 @@ h1.text-uppercase.fw-bold {
 	font-size: clamp(1.75rem, 2.5vw, 2.25rem);
 }
 
-.streamit-child-tmdb-title {
-	font-weight: 400;
+.streamit-child-tmdb-title,
+.streamit-child-tmdb-status {
+	font-family: var(--stc-font-peyda);
+	font-weight: 600;
 }
 
-.streamit-child-tmdb-status {
+/* -------------------------------------------------------------------------- */
+/* Download box (.stc-dl) — movie + series                                    */
+/* -------------------------------------------------------------------------- */
+
+.stc-dl,
+.stc-dl .main-title,
+.stc-dl__subs-label,
+.stc-dl-row__label,
+.stc-dl-row__quality,
+.stc-dl-row__value,
+.stc-dl-season__toggle,
+.stc-dl-series-subs__title,
+.stc-dl-series-subs__count,
+.stc-dl-btn,
+.stc-dl__util-btn,
+.stc-dl__sub-link {
+	font-family: var(--stc-font-peyda);
+}
+
+.stc-dl__subs-label,
+.stc-dl-row__label,
+.stc-dl-series-subs__count {
 	font-weight: 500;
+}
+
+.stc-dl-season__toggle,
+.stc-dl-series-subs__title,
+.stc-dl-row__value,
+.stc-dl-btn,
+.stc-dl__util-btn,
+.stc-dl__sub-link {
+	font-weight: 600;
+}
+
+.stc-dl-row__quality {
+	font-weight: 700;
 }
 
 /* -------------------------------------------------------------------------- */
