@@ -260,42 +260,42 @@
 	align-items: center;
 }
 
-/* Mid size: shorter than parent 1.5em/1.8em padding, not as tight as the last pass. */
+/* Mid-tall: a notch above the previous mid size, still below parent 1.5em/1.8em. */
 #default-header.header-default .logo {
-	padding: 0.45em 0;
+	padding: 0.55em 0;
 	width: auto;
-	max-width: 9rem;
-	max-height: 2.75rem;
+	max-width: 9.5rem;
+	max-height: 3.1rem;
 	height: auto;
 	object-fit: contain;
 }
 
 #default-header.header-default .sf-menu > li {
-	padding: 0.25em 0.35em;
+	padding: 0.35em 0.4em;
 }
 
 #default-header.header-default .sf-menu > li > a,
 #default-header.header-default .navbar-nav > li > a {
-	padding: 0.5em 0.75em;
+	padding: 0.6em 0.8em;
 	border-radius: 8px;
 	transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 #default-header.header-default .css_prefix-header-right .dropdown .dropdown-toggle.btn {
-	padding-block: 0.45em;
+	padding-block: 0.55em;
 }
 
 #default-header.header-default .subscribe-btn.btn {
-	padding-block: 0.4rem;
-	padding-inline: 0.7rem;
+	padding-block: 0.45rem;
+	padding-inline: 0.75rem;
 	line-height: 1.3;
 }
 
 @media (max-width: 767.98px) {
 	#default-header.header-default .logo {
-		padding: 0.35em 0;
-		max-height: 2.35rem;
-		max-width: 8rem;
+		padding: 0.4em 0;
+		max-height: 2.6rem;
+		max-width: 8.5rem;
 	}
 }
 
