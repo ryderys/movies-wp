@@ -221,13 +221,12 @@
 	content: "\f008";
 }
 
-/* --- Header: dark red glass (translucent crimson + blur), compact height ---
- * Parent .header-sticky / Redux solid backgrounds are overridden so the bar
- * stays frosted red glass, not opaque black or solid burgundy.
+/* --- Header: dark red glass, shorter bar ---
+ * Logo width/height: Theme Options → Logo → Logo Dimensions only.
+ * No red underline/border on the bar.
  */
 #default-header.header-default,
 #default-header.header-default.header-sticky {
-	/* Dark red tint at low opacity + strong blur = glass, hero still readable. */
 	background: linear-gradient(
 			180deg,
 			rgba(255, 120, 140, 0.1) 0%,
@@ -236,88 +235,80 @@
 		rgba(90, 6, 18, 0.38) !important;
 	backdrop-filter: blur(28px) saturate(180%);
 	-webkit-backdrop-filter: blur(28px) saturate(180%);
-	border: 1px solid rgba(255, 90, 110, 0.18);
+	/* Neutral glass edge — not red underline */
+	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
 	border-radius: 12px;
-	box-shadow: inset 0 1px 0 rgba(255, 160, 170, 0.08);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 	box-sizing: border-box;
-	/* No solid red underline — the glass tint is the branding. */
+	min-height: 3.5rem;
 }
 
-/* Header dropdown stacking: keep menus above hero/media containers, but below Bootstrap modals.
- * Bootstrap z-index scale: dropdown=1000, sticky=1020, fixed=1030, offcanvas=1050, modal=1055.
- * The header redesign previously used 9999/10000, which caused the search modal to render behind
- * the header and blocked input focus/clicks.
- */
+/* Header dropdown stacking: keep menus above hero/media, below Bootstrap modals. */
 #default-header.header-default {
 	position: relative;
 	z-index: 1030 !important;
-	overflow: visible; /* avoid clipping dropdowns */
+	overflow: visible;
 }
 
 #default-header.header-default > .container-fluid,
 #default-header.header-default .d-flex {
 	overflow: visible;
 	align-items: center;
+	min-height: inherit;
 }
 
-/*
- * Header bar size only — logo width/height come from Streamit Theme Options
- * (Logo → Logo Dimensions). Do not override .logo size here.
- */
-#default-header.header-default,
-#default-header.header-default.header-sticky {
-	min-height: 4.75rem;
-}
-
+/* Do not set logo width/height — Redux Logo Dimensions owns that. */
 #default-header.header-default .logo {
-	padding: 0.35em 0;
+	padding: 0.25em 0;
 	object-fit: contain;
+	vertical-align: middle;
 }
 
 #default-header.header-default .sf-menu > li {
-	padding: 0.4em 0.45em !important;
+	padding: 0.15em 0.3em !important;
 }
 
 #default-header.header-default .sf-menu > li > a,
 #default-header.header-default .navbar-nav > li > a {
-	padding: 0.7em 0.85em !important;
+	padding: 0.4em 0.7em !important;
 	border-radius: 8px;
 	transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 #default-header.header-default .css_prefix-header-right .dropdown .dropdown-toggle.btn {
-	padding-top: 0.6em !important;
-	padding-bottom: 0.6em !important;
+	padding-top: 0.35em !important;
+	padding-bottom: 0.35em !important;
 }
 
 #default-header.header-default .subscribe-btn.btn {
-	padding-block: 0.5rem !important;
-	padding-inline: 0.8rem !important;
-	line-height: 1.3;
+	padding-block: 0.3rem !important;
+	padding-inline: 0.65rem !important;
+	line-height: 1.25;
 }
 
 @media (max-width: 767.98px) {
 	#default-header.header-default,
 	#default-header.header-default.header-sticky {
-		min-height: 4rem;
+		min-height: 3.25rem;
 	}
 
 	#default-header.header-default .logo {
-		padding: 0.3em 0;
+		padding: 0.2em 0;
 	}
 }
 
-/* Dropdown/sub-menu: matching dark red glass. */
+/* Dropdown/sub-menu: matching dark red glass (no red underline). */
 .header-default #site-navigation ul.sub-menu,
 .header-default #site-navigation .sub-menu {
 	background-color: rgba(70, 5, 16, 0.88);
 	backdrop-filter: blur(16px) saturate(160%);
 	-webkit-backdrop-filter: blur(16px) saturate(160%);
-	border: 1px solid rgba(255, 90, 110, 0.16);
+	border: 1px solid rgba(255, 255, 255, 0.1);
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
 	border-radius: 8px;
 	padding: 8px 0;
-	z-index: 1031; /* above header itself, still below modals */
+	z-index: 1031;
 }
 
 .header-default #site-navigation ul.sub-menu a,

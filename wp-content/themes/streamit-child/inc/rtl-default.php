@@ -321,16 +321,19 @@ function streamit_child_print_peyda_font_late() {
 add_action( 'wp_head', 'streamit_child_print_peyda_font_late', 99 );
 
 /**
- * Header bar / nav padding only. Logo width & height stay under Theme Options
- * (Logo → Logo Dimensions / Redux logo-dimensions).
+ * Compact header bar + kill red bottom border. Logo size = Theme Options only.
  */
 function streamit_child_header_size_override_css( $css ) {
-	$css .= '#default-header.header-default,#default-header.header-default.header-sticky{min-height:4.75rem!important;}'
-		. '#default-header.header-default .sf-menu>li{padding:.4em .45em!important;}'
-		. '#default-header.header-default .sf-menu>li>a,#default-header.header-default .navbar-nav>li>a{padding:.7em .85em!important;}'
-		. '#default-header.header-default .css_prefix-header-right .dropdown .dropdown-toggle.btn{padding-top:.6em!important;padding-bottom:.6em!important;}'
-		. '#default-header.header-default .subscribe-btn.btn{padding-block:.5rem!important;padding-inline:.8rem!important;}'
-		. '@media (max-width:767.98px){#default-header.header-default,#default-header.header-default.header-sticky{min-height:4rem!important;}}';
+	$css .= '#default-header.header-default,#default-header.header-default.header-sticky{'
+		. 'min-height:3.5rem!important;'
+		. 'border:1px solid rgba(255,255,255,.1)!important;'
+		. 'border-bottom:1px solid rgba(255,255,255,.1)!important;'
+		. '}'
+		. '#default-header.header-default .sf-menu>li{padding:.15em .3em!important;}'
+		. '#default-header.header-default .sf-menu>li>a,#default-header.header-default .navbar-nav>li>a{padding:.4em .7em!important;}'
+		. '#default-header.header-default .css_prefix-header-right .dropdown .dropdown-toggle.btn{padding-top:.35em!important;padding-bottom:.35em!important;}'
+		. '#default-header.header-default .subscribe-btn.btn{padding-block:.3rem!important;padding-inline:.65rem!important;}'
+		. '@media (max-width:767.98px){#default-header.header-default,#default-header.header-default.header-sticky{min-height:3.25rem!important;}}';
 	return $css;
 }
 add_filter( 'st_inline_css', 'streamit_child_header_size_override_css', 200 );
