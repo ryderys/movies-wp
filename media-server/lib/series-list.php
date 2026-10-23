@@ -248,6 +248,20 @@ function media_series_list_video_category(
 
 		$child = $category_abs . '/' . $name;
 		if ( is_dir( $child ) || ( is_link( $child ) && is_dir( realpath( $child ) ?: '' ) ) ) {
+			// Season/release folders may each ship their own Trailer/Trailers/.
+			if ( strcasecmp( $name, 'Trailer' ) === 0 || strcasecmp( $name, 'Trailers' ) === 0 ) {
+				$trailer_classification = media_classify_series_category( $name );
+				media_series_list_trailer_category(
+					$series_directory,
+					$category_name . '/' . $name,
+					$trailer_classification,
+					$child,
+					$series_abs,
+					$files,
+					$warnings
+				);
+				continue;
+			}
 			$warnings[] = media_series_list_warning(
 				'unexpected_video_subdirectory',
 				'Nested directory inside a video release category is skipped.',

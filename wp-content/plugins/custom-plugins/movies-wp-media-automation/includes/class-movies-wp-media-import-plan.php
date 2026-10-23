@@ -233,7 +233,7 @@ class Movies_WP_Media_Import_Plan {
 				'Encoder/name uses the parser allowlist only (YIFY/YTS/RARBG); otherwise "".',
 				'On update, an empty detected encoder preserves an existing manual Streamit name.',
 				'Unmatched existing _source rows are keep_existing — never delete.',
-				'Trailer discovery stores every eligible Trailer/ or Trailers/ file. The first fills an empty _name_trailer_link; the full list is merged into _name_trailer_links. Missing trailers are non-fatal.',
+				'Trailer discovery stores every eligible Trailer/ or Trailers/ file (show-root or nested under a season/release folder). The first fills an empty _name_trailer_link; the full list is merged into _name_trailer_links. Missing trailers are non-fatal.',
 			),
 		);
 	}

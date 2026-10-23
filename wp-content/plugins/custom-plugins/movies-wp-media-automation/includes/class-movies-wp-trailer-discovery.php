@@ -5,11 +5,14 @@
  * Selection rule (documented): among eligible files under the validated title
  * directory, prefer the folder name Trailer over Trailers (case-insensitive),
  * then order by the full relative path using strcasecmp. Every eligible file
- * is kept. Only direct children of those folders with extensions mp4, webm,
- * or mkv are eligible. Discovery never uploads, moves, renames, or deletes
- * files. A non-empty `_name_trailer_link` is left as the primary playback
- * URL. The ordered paths are merged into `_name_trailer_links` without
- * removing paths already stored.
+ * is kept. A file is eligible when its parent folder is Trailer or Trailers
+ * (case-insensitive) anywhere under the title directory — show-root or nested
+ * under a season/release folder — and the extension is mp4, webm, or mkv.
+ * Files nested deeper inside Trailer/ (e.g. Trailer/extra/x.mp4) are not
+ * eligible. Discovery never uploads, moves, renames, or deletes files. A
+ * non-empty `_name_trailer_link` is left as the primary playback URL. The
+ * ordered paths are merged into `_name_trailer_links` without removing paths
+ * already stored.
  *
  * @package movies-wp
  */
@@ -116,6 +119,9 @@ class Movies_WP_Trailer_Discovery {
 	/**
 	 * Whether a relative path is a direct trailer file under the title directory.
 	 *
+	 * Parent segment must be Trailer or Trailers (show-root or nested under a
+	 * season/release folder). Deeper nesting inside that folder is rejected.
+	 *
 	 * @param string $title_directory
 	 * @param string $path
 	 * @return bool
@@ -127,26 +133,32 @@ class Movies_WP_Trailer_Discovery {
 			return false;
 		}
 
-		$prefix_trailer  = $dir . '/Trailer/';
-		$prefix_trailers = $dir . '/Trailers/';
-		$lower_path      = strtolower( $path );
-		$under_trailer   = str_starts_with( $lower_path, strtolower( $prefix_trailer ) );
-		$under_trailers  = str_starts_with( $lower_path, strtolower( $prefix_trailers ) );
-		if ( ! $under_trailer && ! $under_trailers ) {
+		$prefix = strtolower( $dir . '/' );
+		if ( ! str_starts_with( strtolower( $path ), $prefix ) ) {
 			return false;
 		}
 
-		$prefix_len = $under_trailer ? strlen( $prefix_trailer ) : strlen( $prefix_trailers );
-		$rest       = substr( $path, $prefix_len );
-		if ( false === $rest || '' === $rest || false !== strpos( $rest, '/' ) ) {
+		$relative = substr( $path, strlen( $dir ) + 1 );
+		if ( false === $relative || '' === $relative ) {
 			return false;
 		}
 
-		if ( str_starts_with( $rest, '.' ) ) {
+		$parts = explode( '/', $relative );
+		if ( count( $parts ) < 2 ) {
 			return false;
 		}
 
-		$ext = strtolower( (string) pathinfo( $rest, PATHINFO_EXTENSION ) );
+		$basename = $parts[ count( $parts ) - 1 ];
+		$parent   = $parts[ count( $parts ) - 2 ];
+		if ( 0 !== strcasecmp( $parent, 'Trailer' ) && 0 !== strcasecmp( $parent, 'Trailers' ) ) {
+			return false;
+		}
+
+		if ( '' === $basename || str_starts_with( $basename, '.' ) ) {
+			return false;
+		}
+
+		$ext = strtolower( (string) pathinfo( $basename, PATHINFO_EXTENSION ) );
 		return in_array( $ext, self::EXTENSIONS, true );
 	}
 
@@ -257,7 +269,7 @@ class Movies_WP_Trailer_Discovery {
 			'media_path'     => $paths[0] ?? null,
 			'media_paths'    => $paths,
 			'candidates'     => $candidates,
-			'selection_rule' => 'Store every direct mp4/webm/mkv child of Trailer/ and Trailers/. Order prefers Trailer/ over Trailers/ (case-insensitive), then strcasecmp. The first path fills an empty _name_trailer_link; the full ordered list is merged into _name_trailer_links.',
+			'selection_rule' => 'Store every direct mp4/webm/mkv child of Trailer/ and Trailers/ under the title directory (show-root or nested under a season/release folder). Order prefers Trailer/ over Trailers/ (case-insensitive), then strcasecmp. The first path fills an empty _name_trailer_link; the full ordered list is merged into _name_trailer_links.',
 		);
 	}
 
