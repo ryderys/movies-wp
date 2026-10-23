@@ -37,11 +37,23 @@ a,
 .css_prefix-title,
 .title-tag,
 .menu-title,
+.css_prefix-menu-item-title,
+.css_prefix-menu-item-text,
 .trending-list,
 .card-description,
 .streamit-child-tmdb-title,
 .streamit-child-card-fa-title,
-.streamit-child-tmdb-status {
+.streamit-child-tmdb-status,
+.movie-description,
+.tvshow-description,
+.episode-description,
+.video-description,
+.readmore-text,
+.slider-desc,
+.trending-dec,
+.season-excerpt,
+.verticle-title,
+.css_prefix-verticle-title {
 	font-family: var(--stc-font-peyda);
 }
 
@@ -57,7 +69,6 @@ body {
 
 /* -------------------------------------------------------------------------- */
 /* Hero / featured banner titles                                              */
-/* Parent theme uses ~4.375em + weight 800; keep size, use real Bold.         */
 /* -------------------------------------------------------------------------- */
 
 .slider-text,
@@ -69,13 +80,6 @@ body {
 	font-weight: 700;
 	line-height: 1.15;
 	letter-spacing: normal;
-}
-
-@media (max-width: 991.98px) {
-	.slider-text,
-	.slider-text.texture-text {
-		font-weight: 700;
-	}
 }
 
 @media (max-width: 575.98px) {
@@ -100,7 +104,6 @@ h1.text-uppercase.fw-bold {
 	font-size: clamp(1.75rem, 2.5vw, 2.25rem);
 }
 
-/* Persian secondary under English primary on singles */
 .streamit-child-tmdb-title {
 	font-weight: 400;
 }
@@ -124,21 +127,30 @@ h1.text-uppercase.fw-bold {
 
 /* -------------------------------------------------------------------------- */
 /* Movie / TV card titles                                                     */
+/* Primary English: .css_prefix-title / vertical banner .title / .verticle-*  */
+/* Persian secondary under cards: .streamit-child-card-fa-title               */
 /* -------------------------------------------------------------------------- */
 
 .css_prefix-title,
 .card-description .css_prefix-title,
 .card-description .css_prefix-title a,
-h5.css_prefix-title {
+h5.css_prefix-title,
+.vertical-banner-info-desc > .title,
+.vertical-banner-info-desc h2.title,
+.vertical-thumb-card-desc .verticle-title,
+h5.verticle-title,
+.css_prefix-verticle-title,
+.streamit-child-card-fa-title,
+.continue-watching-desc .streamit-child-card-fa-title {
 	font-family: var(--stc-font-peyda);
 	font-weight: 600;
-	font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
 	line-height: 1.35;
 }
 
-/* Persian subtitle under English card title */
-.streamit-child-card-fa-title {
-	font-weight: 400;
+.css_prefix-title,
+.card-description .css_prefix-title,
+h5.css_prefix-title {
+	font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -151,23 +163,32 @@ h4,
 	font-weight: 600;
 }
 
-h2:not(.slider-text) {
+h2:not(.slider-text):not(.title) {
 	font-weight: 700;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Descriptions / body copy                                                   */
+/* Descriptions / synopses (Persian body copy) — Medium 500                   */
 /* -------------------------------------------------------------------------- */
 
-.trending-list,
-.trending-list .genres,
-.trending-list .tag,
-.trending-list .starring,
-.trending-info p,
-.elementor-widget-text-editor,
-.card-description p {
-	font-weight: 400;
-	font-size: clamp(0.875rem, 1.1vw, 1rem);
+.movie-description,
+.movie-description .readmore-text,
+.tvshow-description,
+.tvshow-description .readmore-text,
+.episode-description,
+.episode-description .readmore-text,
+.video-description,
+.video-description .readmore-text,
+.slider-desc,
+.trending-dec,
+.season-excerpt,
+.vertical-banner-info-desc .description,
+.vertical-banner-info-desc .description p,
+.css_prefix-banner p.line-count-3,
+.trending-info p.line-count-3,
+.trending-info .line-count-3 {
+	font-family: var(--stc-font-peyda);
+	font-weight: 500;
 	line-height: 1.55;
 }
 
@@ -205,12 +226,6 @@ h2:not(.slider-text) {
 	font-weight: 500;
 }
 
-/* Soft secondary — only where already faded */
-.streamit-child-card-fa-title,
-.continue-watching-desc .streamit-child-card-fa-title {
-	font-weight: 300;
-}
-
 /* -------------------------------------------------------------------------- */
 /* Buttons & important controls                                               */
 /* -------------------------------------------------------------------------- */
@@ -230,11 +245,16 @@ h2:not(.slider-text) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Navigation                                                                 */
+/* Navigation — same weight for icon tabs (.menu-title) and plain tabs        */
+/* (.css_prefix-menu-item-title from Streamit when no menu icon is set).      */
 /* -------------------------------------------------------------------------- */
 
 #site-navigation .menu-title,
 .header-default #site-navigation .menu-title,
+#site-navigation .css_prefix-menu-item-title,
+.header-default #site-navigation .css_prefix-menu-item-title,
+#site-navigation .css_prefix-menu-item-text,
+.header-default #site-navigation .css_prefix-menu-item-text,
 .css_prefix-menu-item-text {
 	font-family: var(--stc-font-peyda);
 	font-weight: 500;
@@ -242,7 +262,12 @@ h2:not(.slider-text) {
 
 #site-navigation .sf-menu > li.current-menu-item > a .menu-title,
 #site-navigation .sf-menu > li.current_page_item > a .menu-title,
-#site-navigation .sf-menu > li.current-menu-ancestor > a .menu-title {
+#site-navigation .sf-menu > li.current-menu-ancestor > a .menu-title,
+#site-navigation .sf-menu > li.current-menu-item > a .css_prefix-menu-item-title,
+#site-navigation .sf-menu > li.current_page_item > a .css_prefix-menu-item-title,
+#site-navigation .sf-menu > li.current-menu-ancestor > a .css_prefix-menu-item-title,
+#site-navigation .navbar-nav > li.current-menu-item > a .menu-title,
+#site-navigation .navbar-nav > li.current-menu-item > a .css_prefix-menu-item-title {
 	font-weight: 600;
 }
 
