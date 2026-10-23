@@ -260,42 +260,56 @@
 	align-items: center;
 }
 
-/* Mid-tall: a notch above the previous mid size, still below parent 1.5em/1.8em. */
+/*
+ * Header size — !important needed: Redux injects .header-default .logo { height/width }
+ * as inline CSS after this file, which silently blocked earlier height tweaks.
+ */
+#default-header.header-default,
+#default-header.header-default.header-sticky {
+	min-height: 4.75rem;
+}
+
 #default-header.header-default .logo {
-	padding: 0.55em 0;
-	width: auto;
-	max-width: 9.5rem;
-	max-height: 3.1rem;
-	height: auto;
+	padding: 0.65em 0 !important;
+	width: auto !important;
+	max-width: 10rem !important;
+	max-height: 3.5rem !important;
+	height: auto !important;
 	object-fit: contain;
 }
 
 #default-header.header-default .sf-menu > li {
-	padding: 0.35em 0.4em;
+	padding: 0.4em 0.45em !important;
 }
 
 #default-header.header-default .sf-menu > li > a,
 #default-header.header-default .navbar-nav > li > a {
-	padding: 0.6em 0.8em;
+	padding: 0.7em 0.85em !important;
 	border-radius: 8px;
 	transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 #default-header.header-default .css_prefix-header-right .dropdown .dropdown-toggle.btn {
-	padding-block: 0.55em;
+	padding-top: 0.6em !important;
+	padding-bottom: 0.6em !important;
 }
 
 #default-header.header-default .subscribe-btn.btn {
-	padding-block: 0.45rem;
-	padding-inline: 0.75rem;
+	padding-block: 0.5rem !important;
+	padding-inline: 0.8rem !important;
 	line-height: 1.3;
 }
 
 @media (max-width: 767.98px) {
+	#default-header.header-default,
+	#default-header.header-default.header-sticky {
+		min-height: 4rem;
+	}
+
 	#default-header.header-default .logo {
-		padding: 0.4em 0;
-		max-height: 2.6rem;
-		max-width: 8.5rem;
+		padding: 0.45em 0 !important;
+		max-height: 2.85rem !important;
+		max-width: 8.75rem !important;
 	}
 }
 
