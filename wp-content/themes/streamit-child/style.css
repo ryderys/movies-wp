@@ -260,29 +260,44 @@
 	align-items: center;
 }
 
-/* Parent theme uses .logo { padding: 1.5em 0 } and .sf-menu > li { padding: 1.8em } — cut height. */
+/* Parent uses .logo { padding: 1.5em 0 } and .sf-menu > li { padding: 1.8em }.
+ * Cap logo height + shrink vertical padding only — keep hit targets usable.
+ */
 #default-header.header-default .logo {
-	padding: 0.5em 0;
+	padding: 0.2em 0;
+	width: auto;
+	max-width: 7.5rem;
+	max-height: 2rem;
+	height: auto;
+	object-fit: contain;
 }
 
 #default-header.header-default .sf-menu > li {
-	padding: 0.35em 0.35em;
+	padding: 0.1em 0.25em;
 }
 
 #default-header.header-default .sf-menu > li > a,
 #default-header.header-default .navbar-nav > li > a {
-	padding: 0.55em 0.75em;
+	padding: 0.35em 0.65em;
 	border-radius: 8px;
 	transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 #default-header.header-default .css_prefix-header-right .dropdown .dropdown-toggle.btn {
-	padding-block: 0.5em;
+	padding-block: 0.3em;
+}
+
+#default-header.header-default .subscribe-btn.btn {
+	padding-block: 0.25rem;
+	padding-inline: 0.55rem;
+	line-height: 1.25;
 }
 
 @media (max-width: 767.98px) {
 	#default-header.header-default .logo {
-		padding: 0.4em 0;
+		padding: 0.15em 0;
+		max-height: 1.75rem;
+		max-width: 6.5rem;
 	}
 }
 
