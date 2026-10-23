@@ -221,14 +221,15 @@
 	content: "\f008";
 }
 
-/* --- Header: dark burgundy glass (compact; logo/nav/RTL unchanged) --- */
+/* --- Header: smoked charcoal glass, compact height --- */
 #default-header.header-default {
-	background: rgba(72, 16, 32, 0.82);
-	backdrop-filter: blur(18px) saturate(140%);
-	-webkit-backdrop-filter: blur(18px) saturate(140%);
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	background: rgba(10, 10, 12, 0.52);
+	backdrop-filter: blur(20px) saturate(120%);
+	-webkit-backdrop-filter: blur(20px) saturate(120%);
+	border: 1px solid rgba(255, 255, 255, 0.08);
 	border-radius: 12px;
 	box-sizing: border-box;
+	/* No red underline / border branding on the bar itself. */
 }
 
 /* Header dropdown stacking: keep menus above hero/media containers, but below Bootstrap modals.
@@ -245,13 +246,42 @@
 #default-header.header-default > .container-fluid,
 #default-header.header-default .d-flex {
 	overflow: visible;
+	align-items: center;
 }
 
-/* Dropdown/sub-menu: match burgundy glass header. */
+/* Parent theme uses .logo { padding: 1.5em 0 } and .sf-menu > li { padding: 1.8em } — cut height. */
+#default-header.header-default .logo {
+	padding: 0.5em 0;
+}
+
+#default-header.header-default .sf-menu > li {
+	padding: 0.35em 0.35em;
+}
+
+#default-header.header-default .sf-menu > li > a,
+#default-header.header-default .navbar-nav > li > a {
+	padding: 0.55em 0.75em;
+	border-radius: 8px;
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#default-header.header-default .css_prefix-header-right .dropdown .dropdown-toggle.btn {
+	padding-block: 0.5em;
+}
+
+@media (max-width: 767.98px) {
+	#default-header.header-default .logo {
+		padding: 0.4em 0;
+	}
+}
+
+/* Dropdown/sub-menu: dark smoked glass (not burgundy). */
 .header-default #site-navigation ul.sub-menu,
 .header-default #site-navigation .sub-menu {
-	background-color: rgba(55, 12, 24, 0.92);
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	background-color: rgba(14, 14, 18, 0.92);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border: 1px solid rgba(255, 255, 255, 0.08);
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
 	border-radius: 8px;
 	padding: 8px 0;
@@ -263,13 +293,7 @@
 	line-height: 1.6;
 }
 
-/* Header nav hover/active states (no spacing changes). */
-.header-default #site-navigation .sf-menu > li > a,
-.header-default #site-navigation .navbar-nav > li > a {
-	border-radius: 8px;
-	transition: background-color 0.15s ease, color 0.15s ease;
-}
-
+/* Hover: soft glass highlight. Active: red branding only. */
 .header-default #site-navigation .sf-menu > li > a:hover,
 .header-default #site-navigation .sf-menu > li > a:focus,
 .header-default #site-navigation .navbar-nav > li > a:hover,
