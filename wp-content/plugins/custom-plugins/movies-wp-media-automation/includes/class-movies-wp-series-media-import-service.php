@@ -90,6 +90,10 @@ class Movies_WP_Series_Media_Import_Service {
 			);
 		}
 
+		if ( function_exists( 'streamit_child_ost_invalidate_discovery' ) ) {
+			streamit_child_ost_invalidate_discovery( $directory );
+		}
+
 		return $presented;
 	}
 

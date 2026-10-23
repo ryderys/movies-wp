@@ -279,6 +279,11 @@ class Movies_WP_Series_Ongoing_Sync {
 			return;
 		}
 
+		// Folder contents may have changed (e.g. new OST/); drop stale discovery cache.
+		if ( function_exists( 'streamit_child_ost_invalidate_discovery' ) ) {
+			streamit_child_ost_invalidate_discovery( $dir );
+		}
+
 		$list = isset( $options['list_series'] ) && is_callable( $options['list_series'] )
 			? call_user_func( $options['list_series'], $dir )
 			: Movies_WP_Series_Media_Api_Client::list_series_directory( $dir );

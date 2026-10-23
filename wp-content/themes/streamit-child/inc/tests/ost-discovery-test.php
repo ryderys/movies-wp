@@ -85,8 +85,8 @@ if ( ! function_exists( 'get_transient' ) ) {
 
 if ( ! function_exists( 'set_transient' ) ) {
 	function set_transient( $key, $value, $ttl = 0 ) {
-		unset( $ttl );
-		$GLOBALS['ost_test_transients'][ $key ] = $value;
+		$GLOBALS['ost_test_transients'][ $key ]     = $value;
+		$GLOBALS['ost_test_transient_ttls'][ $key ] = (int) $ttl;
 		return true;
 	}
 }
@@ -238,8 +238,9 @@ function assert_eq( $expected, $actual, string $label ): void {
 }
 
 function ost_test_reset(): void {
-	$GLOBALS['ost_test_transients'] = array();
-	$GLOBALS['ost_test_options']    = array();
+	$GLOBALS['ost_test_transients']     = array();
+	$GLOBALS['ost_test_transient_ttls'] = array();
+	$GLOBALS['ost_test_options']        = array();
 	$GLOBALS['ost_test_schedule']   = array(
 		'calls'     => 0,
 		'args'      => array(),
@@ -329,9 +330,9 @@ assert_eq( 1, count( $tracks ), 'positive transient returns tracks' );
 assert_eq( 0, $GLOBALS['ost_test_scan']['calls'], 'positive transient does not scan' );
 assert_eq( 0, $GLOBALS['ost_test_schedule']['calls'], 'positive transient does not schedule' );
 
-// 3) Cached empty transient: no scan until expiry.
+// 3) Cached empty transient: no scan until short empty TTL expires.
 ost_test_reset();
-set_transient( streamit_child_ost_result_transient_key( $series_dir ), array(), streamit_child_ost_positive_ttl() );
+set_transient( streamit_child_ost_result_transient_key( $series_dir ), array(), streamit_child_ost_empty_ttl() );
 $tracks = streamit_child_get_ost_tracks( $st );
 assert_eq( 0, count( $tracks ), 'empty positive transient returns no tracks' );
 assert_eq( 0, $GLOBALS['ost_test_scan']['calls'], 'empty positive transient does not scan' );
@@ -357,10 +358,30 @@ streamit_child_ost_run_discovery( $series_dir );
 assert_eq( 1, $GLOBALS['ost_test_scan']['calls'], 'worker performs one scan' );
 $cached = get_transient( streamit_child_ost_result_transient_key( $series_dir ) );
 assert_true( is_array( $cached ) && 1 === count( $cached ), 'worker stores validated tracks' );
+assert_eq(
+	streamit_child_ost_positive_ttl(),
+	$GLOBALS['ost_test_transient_ttls'][ streamit_child_ost_result_transient_key( $series_dir ) ] ?? null,
+	'non-empty discovery uses positive TTL'
+);
 $tracks = streamit_child_get_ost_tracks( $st );
 assert_eq( 1, count( $tracks ), 'read after worker returns tracks' );
 assert_eq( 1, $GLOBALS['ost_test_scan']['calls'], 'read after worker does not scan again' );
 assert_eq( 0, $GLOBALS['ost_test_schedule']['calls'], 'read after worker does not schedule' );
+
+// 5b) Empty successful scan uses short empty TTL.
+ost_test_reset();
+$GLOBALS['ost_test_scan']['result'] = array(
+	'ok'     => true,
+	'tracks' => array(),
+);
+streamit_child_ost_run_discovery( $series_dir );
+$empty_key = streamit_child_ost_result_transient_key( $series_dir );
+assert_true( is_array( get_transient( $empty_key ) ) && array() === get_transient( $empty_key ), 'empty success still caches []' );
+assert_eq(
+	streamit_child_ost_empty_ttl(),
+	$GLOBALS['ost_test_transient_ttls'][ $empty_key ] ?? null,
+	'empty discovery uses empty TTL'
+);
 
 // 6) Worker failure/timeout: empty result, lock released, negative backoff, no immediate reschedule.
 ost_test_reset();
@@ -624,10 +645,19 @@ assert_true( isset( $movie_catalog['ost'] ) && is_array( $movie_catalog['ost'] )
 assert_eq( 0, $GLOBALS['ost_test_scan']['calls'], 'movie catalog build does not scan' );
 assert_eq( 1, $GLOBALS['ost_test_schedule']['calls'], 'movie catalog schedules discovery on miss' );
 
-// Negative TTL constant policy.
+// Negative / empty TTL constant policy.
 assert_true( streamit_child_ost_negative_ttl() < streamit_child_ost_positive_ttl(), 'negative TTL is shorter than positive TTL' );
 assert_eq( 2 * MINUTE_IN_SECONDS, streamit_child_ost_negative_ttl(), 'negative TTL is 2 minutes' );
+assert_eq( streamit_child_ost_negative_ttl(), streamit_child_ost_empty_ttl(), 'empty TTL matches negative TTL' );
 assert_eq( 15 * MINUTE_IN_SECONDS, streamit_child_ost_positive_ttl(), 'positive TTL remains 15 minutes' );
+
+// Invalidate clears result + failure caches.
+ost_test_reset();
+set_transient( streamit_child_ost_result_transient_key( $series_dir ), array(), streamit_child_ost_empty_ttl() );
+set_transient( streamit_child_ost_failure_transient_key( $series_dir ), 1, streamit_child_ost_negative_ttl() );
+streamit_child_ost_invalidate_discovery( $series_dir );
+assert_eq( false, get_transient( streamit_child_ost_result_transient_key( $series_dir ) ), 'invalidate clears result transient' );
+assert_eq( false, get_transient( streamit_child_ost_failure_transient_key( $series_dir ) ), 'invalidate clears failure transient' );
 
 // Hook registered for Action Scheduler worker.
 assert_true( ! empty( $GLOBALS['ost_test_actions'][ STREAMIT_CHILD_OST_DISCOVER_HOOK ] ), 'discover action is registered' );

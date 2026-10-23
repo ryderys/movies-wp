@@ -127,6 +127,11 @@ class Movies_WP_Streamit_Adapter {
 			$warnings = array_merge( $warnings, $gallery['warnings'] );
 		}
 
+		$media_dir = isset( $plan['movie']['media_directory'] ) ? (string) $plan['movie']['media_directory'] : '';
+		if ( '' !== $media_dir && function_exists( 'streamit_child_ost_invalidate_discovery' ) ) {
+			streamit_child_ost_invalidate_discovery( $media_dir );
+		}
+
 		return array(
 			'ok'              => true,
 			'movie_id'        => $movie_id,

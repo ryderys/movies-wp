@@ -269,12 +269,24 @@ const STREAMIT_CHILD_OST_DISCOVER_HOOK = 'streamit_child_ost_discover';
 const STREAMIT_CHILD_OST_DISCOVER_GROUP = 'streamit-child-ost';
 
 /**
- * Positive OST result TTL (successful scan, including empty track lists).
+ * Positive OST result TTL for a successful scan that found tracks.
  *
  * @return int Seconds.
  */
 function streamit_child_ost_positive_ttl() {
 	return 15 * MINUTE_IN_SECONDS;
+}
+
+/**
+ * TTL for a successful scan that found zero OST files.
+ *
+ * Kept short so adding an OST/ folder later is not stuck behind a long empty
+ * cache. Matches the failure backoff window.
+ *
+ * @return int Seconds.
+ */
+function streamit_child_ost_empty_ttl() {
+	return streamit_child_ost_negative_ttl();
 }
 
 /**
@@ -342,6 +354,23 @@ function streamit_child_ost_failure_transient_key( $title_directory ) {
  */
 function streamit_child_ost_lock_key( $title_directory ) {
 	return 'stc_ost_lock_' . md5( streamit_child_normalize_ost_relative_path( $title_directory ) );
+}
+
+/**
+ * Drop cached OST discovery state for a title directory.
+ *
+ * Call after rematch/import so newly added OST files are eligible immediately.
+ *
+ * @param string $title_directory Relative Movie/... or series/... path.
+ * @return void
+ */
+function streamit_child_ost_invalidate_discovery( $title_directory ) {
+	$title_directory = streamit_child_normalize_ost_relative_path( $title_directory );
+	if ( '' === $title_directory || ! function_exists( 'delete_transient' ) ) {
+		return;
+	}
+	delete_transient( streamit_child_ost_result_transient_key( $title_directory ) );
+	delete_transient( streamit_child_ost_failure_transient_key( $title_directory ) );
 }
 
 /**
@@ -554,8 +583,11 @@ function streamit_child_ost_run_discovery( $title_directory ) {
 		$scan = streamit_child_ost_scan_directory( $title_directory );
 		if ( ! empty( $scan['ok'] ) ) {
 			$tracks = isset( $scan['tracks'] ) && is_array( $scan['tracks'] ) ? $scan['tracks'] : array();
+			$ttl    = empty( $tracks )
+				? streamit_child_ost_empty_ttl()
+				: streamit_child_ost_positive_ttl();
 			if ( function_exists( 'set_transient' ) ) {
-				set_transient( $result_key, $tracks, streamit_child_ost_positive_ttl() );
+				set_transient( $result_key, $tracks, $ttl );
 			}
 			if ( function_exists( 'delete_transient' ) ) {
 				delete_transient( streamit_child_ost_failure_transient_key( $title_directory ) );
